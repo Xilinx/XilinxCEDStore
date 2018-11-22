@@ -1,0 +1,22 @@
+﻿<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<ExampleDesign>
+
+  <Vendor>danielm.com</Vendor>
+
+  <Library>examples</Library>
+
+  <Name>supercoolpicozed</Name>
+
+  <DisplayName>Super Cool PicoZED Design</DisplayName>
+
+  <Version>1.0</Version>
+
+  <Design>init.tcl</Design>
+
+<Description>
+This is a Zynq-7000 based system. 
+</Description>
+<Image>picozed_fmc2_carrier_card.jpg</Image>
+
+</ExampleDesign>
+
