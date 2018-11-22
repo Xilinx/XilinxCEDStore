@@ -25,9 +25,9 @@
             "website": "www.zedboard.org/product/picozed",
             "dependencies": [
               {
-                "store": "xilinx_ced_store",
-                "company": "xilinx.com",
-                "item": "picozed_7010_fmc2",
+                "store": "xilinx_board_store",
+                "company": "avnet.com",
+                "item": "Ultra96",
                 "revision": "1.2"
               }
             ],   
