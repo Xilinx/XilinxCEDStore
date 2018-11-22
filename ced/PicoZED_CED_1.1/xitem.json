@@ -14,7 +14,7 @@
               {
                 "group": "Xilinx",
                 "url": "www.xilinx.com"
-              }
+              },
               {
                 "group": "Avnet",
                 "url": "www.avnet.com"
@@ -27,7 +27,7 @@
             "search-keywords": [
               "picozed",
               "xilinx.com",
-              "avnet.com"
+              "avnet.com",
               "example"             
             ]
           }
