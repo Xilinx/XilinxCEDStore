@@ -2,20 +2,39 @@
     "catalog": {
         "items": [
             {
-                "name": "Sample_kc705",
-                "display": "Sample Kintex-7 KC705 Evaluation Platform",
-                "latest_revision": "1.5",
-                "commit_id": "b6e219daf5f1c90a8e73bf323d544c24439c1bb6",
+                "name": "supercoolpicozed",
+                "display": "Super Cool PicoZED Design",
+                "latest_revision": "1.0",
+                "commit_id": "e91a84bb0802a9723ebc667dcf2fbebe4a4de9f8",
                 "revisions": [
                     {
-                        "revision": "1.5",
-                        "commit_id": "b6e219daf5f1c90a8e73bf323d544c24439c1bb6",
-                        "date": "APR2018",
-                        "history": "Sample Kintex-7 KC705 Evaluation Platform."
+                        "revision": "1.0",
+                        "commit_id": "e91a84bb0802a9723ebc667dcf2fbebe4a4de9f8",
+                        "date": "NOV2018",
+                        "history": "Super Cool PicoZED Design."
                     }
                 ],
                 "config": {
-                    "root": "boards/example_vendor/example_board",
+                    "root": "ced/PicoZED_CED_1.1",
+                    "metadata_file": "xitem.json"
+                },
+                "company": "avnet.com"
+            },
+            {
+                "name": "picozed_7010_fmc2",
+                "display": "PicoZed 7010 SOM + FMC Carrier V2",
+                "latest_revision": "1.2",
+                "commit_id": "b46972691a0ecd69e6e0caa907557cdba3c88d05",
+                "revisions": [
+                    {
+                        "revision": "1.2",
+                        "commit_id": "b46972691a0ecd69e6e0caa907557cdba3c88d05",
+                        "date": "NOV2018",
+                        "history": "PicoZed 7010 SOM + FMC Carrier V2."
+                    }
+                ],
+                "config": {
+                    "root": "ced/picozed_7010_fmc2/1.2",
                     "metadata_file": "xitem.json"
                 },
                 "company": "xilinx.com"
@@ -27,7 +46,7 @@
                 "display_name": "Single Part",
                 "description": "This category represents all the boards which have single part",
                 "parent": ""
-            },
+            },             
             {
                 "name": "multi_part",
                 "display_name": "Multi Part",
@@ -44,6 +63,13 @@
                 "name": "misc",
                 "display_name": "Misc",
                 "description": "This category represents miscellaneous variety of boards",
+                "default": true,
+                "parent": ""
+            },
+            {
+                "name": "examples",
+                "display_name": "Examples",
+                "description": "This category represents configurable example designs",
                 "default": true,
                 "parent": ""
             }
