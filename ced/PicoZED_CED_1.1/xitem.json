@@ -23,6 +23,14 @@
             ],
             "category": "example",
             "website": "www.zedboard.org/product/picozed",
+            "dependencies": [
+              {
+                "store": "xilinx_ced_store",
+                "company": "xilinx.com",
+                "item": "picozed_7010_fmc2",
+                "revision": "1.2"
+              }
+            ],   
             "is_active" : true, 
             "search-keywords": [
               "picozed",
