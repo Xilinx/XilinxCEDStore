@@ -27,7 +27,7 @@
               {
                 "store": "xilinx_board_store",
                 "company": "avnet.com",
-                "item": "Ultra96",
+                "item": "picozed_7010_fmc2",
                 "revision": "1.2"
               }
             ],   
