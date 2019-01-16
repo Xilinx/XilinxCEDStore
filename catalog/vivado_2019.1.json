@@ -38,6 +38,102 @@
                     "metadata_file": "xitem.json"
                 },
                 "company": "xilinx.com"
+            },
+            {
+                "name": "minized",
+                "display": "MiniZed Evaluation Platform",
+                "latest_revision": "1.2",
+                "commit_id": "2242d899a707459766cfe0eaf84905dcd40d60a0",
+                "revisions": [
+                    {
+                        "revision": "1.2",
+                        "commit_id": "2242d899a707459766cfe0eaf84905dcd40d60a0",
+                        "date": "JAN2019",
+                        "history": "MiniZed Evaluation Platform."
+                    }
+                ],
+                "config": { 
+                    "root": "ced/Avnet/minized/1.2",
+                    "metadata_file": "xitem.json"
+
+                },
+                "company": "avnet.com"
+            },
+            {
+                "name": "ultra96",
+                "display": "Ultra96 Evaluation Platform",
+                "latest_revision": "1.2",
+                "commit_id": "2242d899a707459766cfe0eaf84905dcd40d60a0",
+                "revisions": [
+                    {
+                        "revision": "1.2",
+                        "commit_id": "2242d899a707459766cfe0eaf84905dcd40d60a0",
+                        "date": "JAN2019",
+                        "history": "Ultra96 Evaluation Platform."
+                    }
+                ],
+                "config": {
+                    "root": "ced/Avnet/ultra96/1.2",
+                    "metadata_file": "xitem.json"
+                },
+                "company": "avnet.com"
+            },
+            {
+                "name": "arty-s7-50-RT",
+                "display": "Arty S7-50 RealTime Processor Preset",
+                "latest_revision": "1.0",
+                "commit_id": "2242d899a707459766cfe0eaf84905dcd40d60a0",
+                "revisions": [
+                    {
+                        "revision": "1.0",
+                        "commit_id": "2242d899a707459766cfe0eaf84905dcd40d60a0",
+                        "date": "JAN2019",
+                        "history": "Arty S7-50 RealTime Processor Preset"
+                    }
+                ],
+                "config": {
+                    "root": "ced/Digilent/arty-s7-50-RT/1.0",
+                    "metadata_file": "xitem.json"
+                },
+                "company": "digilentinc.com"
+            },
+            {
+                "name": "arty-s7-50-uC",
+                "display": "Arty S7-50 Microcontroller Preset",
+                "latest_revision": "1.0",
+                "commit_id": "2242d899a707459766cfe0eaf84905dcd40d60a0",
+                "revisions": [
+                    {
+                        "revision": "1.0",
+                        "commit_id": "2242d899a707459766cfe0eaf84905dcd40d60a0",
+                        "date": "JAN2019",
+                        "history": "Arty S7-50 Microcontroller Preset"
+                    }
+                ],
+                "config": {
+                    "root": "ced/Digilent/arty-s7-50-uC/1.0",
+                    "metadata_file": "xitem.json"
+                },
+                "company": "digilentinc.com"
+            },
+            {
+                "name": "zybo-z7-20",
+                "display": "Zybo Z7-20 Basic I/O Preset",
+                "latest_revision": "1.0",
+                "commit_id": "2242d899a707459766cfe0eaf84905dcd40d60a0",
+                "revisions": [
+                    {
+                        "revision": "1.0",
+                        "commit_id": "2242d899a707459766cfe0eaf84905dcd40d60a0",
+                        "date": "JAN2019",
+                        "history": "Zybo Z7-20 Basic I/O Preset"
+                    }
+                ],
+                "config": {
+                    "root": "ced/Digilent/zybo-z7-20/1.0",
+                    "metadata_file": "xitem.json"
+                },
+                "company": "digilentinc.com"
             }
         ],
         "categories": [
