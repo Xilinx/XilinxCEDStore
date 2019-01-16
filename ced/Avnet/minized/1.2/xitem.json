@@ -1,0 +1,47 @@
+{
+    "config": {
+      "items": [
+        {
+          "infra": {
+            "name": "minized",
+            "display": "MiniZed Evaluation Platform",
+            "revision": "1.2",
+            "description": "MiniZed is a single-core Zynq 7Z007S development board. This board targets entry-level Zynq developers with a low-cost prototyping platform.",
+            "company": "avnet.com",
+            "company_display": "Avnet",
+            "author": "em.avnet.com",
+            "contributors": [
+              {
+                "group": "Xilinx",
+                "url": "www.xilinx.com"
+              },
+              {
+                "group": "Avnet",
+                "url": "www.avnet.com"
+              }
+ 
+            ],
+            "category": "example",
+            "website": "http://zedboard.org/product/minized",
+            "dependencies": [
+              {
+                "store": "xilinx_board_store",
+                "company": "avnet.com",
+                "item": "minized",
+                "revision": "1.2"
+              }
+            ],   
+            "is_active" : true, 
+            "search-keywords": [
+              "minized",
+              "xilinx.com",
+              "avnet.com",
+              "example"             
+            ]
+          }
+        }
+      ]
+    },
+    "_major" : 1,
+    "_minor" : 0
+}

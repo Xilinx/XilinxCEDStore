@@ -1,0 +1,17 @@
+ï»¿<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<ExampleDesign>
+
+  <Vendor>em.avnet.com</Vendor>
+
+  <Library>examples</Library>
+
+  <Name>ultra96</Name>
+
+  <Version>1.2</Version>
+
+  <Design>init.tcl</Design>
+
+	<DisplayName>Ultra96 Evaluation Platform</DisplayName>
+	<Description>Ultra96™ is an Arm-based, Xilinx Zynq UltraScale+™ MPSoC development board based on the Linaro 96Boards specification. The 96Boards' specifications are open and define a standard board layout for development platforms that can be used by software application, hardware device, kernel, and other system software developers. Ultra96 represents a unique position in the 96Boards community with a wide range of potential peripherals and acceleration engines in the programmable logic that is not available from other offerings.</Description>
+	<Image>ultra96_system.jpg</Image>
+</ExampleDesign>

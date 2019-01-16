@@ -1,0 +1,18 @@
+﻿<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<ExampleDesign>
+
+  <Vendor>digilentinc.com</Vendor>
+
+  <Library>examples</Library>
+
+  <Name>zybo-z7-20</Name>
+
+  <Version>1.0</Version>
+
+  <Design>init.tcl</Design>
+
+	<DisplayName>Zybo Z7-20 Basic I/O Preset</DisplayName>
+	<Description>Simple Zynq-based system with GPIO and UART peripherals</Description>
+	<!-- <Image>Zybo_Z7_20.png</Image> -->
+	<Image>zybo-z7-20_design.jpg</Image>
+</ExampleDesign>

@@ -1,0 +1,47 @@
+{
+    "config": {
+      "items": [
+        {
+          "infra": {
+            "name": "arty-s7-50-uC",
+            "display": "Arty S7-50 Microcontroller Preset",
+            "revision": "1.0",
+            "description": "Microblaze system with peripherals including GPIO and UART, intended for baremetal designs.",
+            "company": "digilentinc.com",
+            "company_display": "Digilentinc",
+            "author": "digilentinc.com",
+            "contributors": [
+              {
+                "group": "Xilinx",
+                "url": "www.xilinx.com"
+              },
+              {
+                "group": "Digilentinc",
+                "url": "www.digilentinc.com"
+              }
+ 
+            ],
+            "category": "example",
+            "website": "https://store.digilentinc.com/arty-s7-spartan-7-fpga-board-for-hobbyists-and-makers/",
+            "dependencies": [
+              {
+                "store": "xilinx_board_store",
+                "company": "digilentinc.com",
+                "item": "arty-s7-50",
+                "revision": "1.0"
+              }
+            ],   
+            "is_active" : true, 
+            "search-keywords": [
+              "arty-s7-50",
+              "xilinx.com",
+              "digilentinc.com",
+              "example"             
+            ]
+          }
+        }
+      ]
+    },
+    "_major" : 1,
+    "_minor" : 0
+}

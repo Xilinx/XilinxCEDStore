@@ -1,0 +1,18 @@
+﻿<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<ExampleDesign>
+
+  <Vendor>digilentinc.com</Vendor>
+
+  <Library>examples</Library>
+
+  <Name>arty-s7-50-uC</Name>
+
+  <Version>1.0</Version>
+
+  <Design>init.tcl</Design>
+
+	<DisplayName>Arty S7-50 Microcontroller Preset</DisplayName>
+	<Description>Microblaze system with peripherals including GPIO and UART, intended for baremetal designs</Description>
+	<!-- <Image>Microcontroller_Preset.png</Image> -->
+	<Image>arty-s7-50-uC_design.jpg</Image> -->
+</ExampleDesign>
