@@ -53,7 +53,7 @@
                     }
                 ],
                 "config": { 
-                    "root": "ced/Avnet/minized",
+                    "root": "ced/Avnet/minized/1.2",
                     "metadata_file": "xitem.json"
 
                 },
@@ -73,7 +73,7 @@
                     }
                 ],
                 "config": {
-                    "root": "ced/Avnet/ultra96",
+                    "root": "ced/Avnet/ultra96/1.2",
                     "metadata_file": "xitem.json"
                 },
                 "company": "avnet.com"
@@ -92,7 +92,7 @@
                     }
                 ],
                 "config": {
-                    "root": "ced/Digilent/arty-s7-50-RT",
+                    "root": "ced/Digilent/arty-s7-50-RT/1.0",
                     "metadata_file": "xitem.json"
                 },
                 "company": "digilentinc.com"
@@ -111,7 +111,7 @@
                     }
                 ],
                 "config": {
-                    "root": "ced/Digilent/arty-s7-50-uC",
+                    "root": "ced/Digilent/arty-s7-50-uC/1.0",
                     "metadata_file": "xitem.json"
                 },
                 "company": "digilentinc.com"
@@ -130,7 +130,7 @@
                     }
                 ],
                 "config": {
-                    "root": "ced/Digilent/zybo-z7-20",
+                    "root": "ced/Digilent/zybo-z7-20/1.0",
                     "metadata_file": "xitem.json"
                 },
                 "company": "digilentinc.com"
