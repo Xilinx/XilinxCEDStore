@@ -6,7 +6,7 @@
             "name": "picozed_7010_fmc2",
             "display": "PicoZed 7010 SOM + FMC Carrier V2",
             "revision": "1.2",
-            "description": "PicoZed 7010 SOM + FMC Carrier V2",
+            "description": "PicoZed 7010 SOM + FMC Carrier  V2",
             "company": "xilinx.com",
             "company_display": "Xilinx",
             "author": "Dan",
