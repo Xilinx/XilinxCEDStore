@@ -134,6 +134,25 @@
                     "metadata_file": "xitem.json"
                 },
                 "company": "digilentinc.com"
+            },
+            {
+                "name": "vcu118_platform",
+                "display": "vcu118_platform",
+                "latest_revision": "1.0",
+                "commit_id": "a3ad6b3843ae1c90ff37cb20289411aadea40e98",
+                "revisions": [
+                    {
+                        "revision": "1.0",
+                        "commit_id": "a3ad6b3843ae1c90ff37cb20289411aadea40e98",
+                        "date": "JAN2019",
+                        "history": "vcu 118 platform SED"
+                    }
+                ],
+                "config": {
+                    "root": "ced/Xilinx/vcu118_platform/1.0",
+                    "metadata_file": "xitem.json"
+                },
+                "company": "xilinx.com"
             }
         ],
         "categories": [
