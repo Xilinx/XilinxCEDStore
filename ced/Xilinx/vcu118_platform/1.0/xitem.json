@@ -6,7 +6,7 @@
             "name": "vcu118_platform",
             "display": "vcu118_platform",
             "revision": "1.0",
-            "description": "An example design for VCU118 board. DDR4, Slow peripherals, MB, QSPI, Timer and Interrupts based IPI system",
+            "description": "An example design for VCU118 board. DDR4, Slow peripherals, MB, QSPI, Timer and Interrupts based IPI system.",
             "company": "xilinx.com",
             "company_display": "Xilinx",
             "author": "vanitha",
