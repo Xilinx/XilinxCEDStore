@@ -153,7 +153,26 @@
                     "metadata_file": "xitem.json"
                 },
                 "company": "xilinx.com"
-            }
+            }, 
+		    {
+				"name": "sp701_platform", 
+				"display": "sp701_platform", 
+				"latest_revision": "1.0", 
+				"commit_id": "ce95951b68b0bd394451102bb1a13f51e74400bf", 
+				"revisions": [
+				  {
+					"revision": "1.0", 
+					"commit_id": "ce95951b68b0bd394451102bb1a13f51e74400bf", 
+					"date": "12-02-2019:12:01:08", 
+					"history": "An example design for SP701 board. DDR3, QSPI, MB, Ethernet and Interrupts based IPI system"
+				  }
+				], 
+				"config": {
+				  "root": "ced/Xilinx/sp701_platform", 
+				  "metadata_file": "xitem.json"
+				}, 
+				"company": "xilinx.com"
+		    }
         ],
         "categories": [
             {
