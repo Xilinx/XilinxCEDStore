@@ -18,14 +18,6 @@
             ],
             "category": "example",
             "website": "www.xilinx.com",
-            "dependencies": [
-              {
-                "store": "xilinx_ced_store",
-                "company": "xilinx.com",
-                "item": "sp701_platform",
-                "revision": "1.0"
-              }
-            ],   
             "is_active" : true, 
             "search-keywords": [
               "sp701_platform",
