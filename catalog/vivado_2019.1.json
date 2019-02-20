@@ -158,12 +158,12 @@
 				"name": "sp701_platform", 
 				"display": "sp701_platform", 
 				"latest_revision": "1.0", 
-				"commit_id": "54ff2425cc76f1f6bfca2255166b3f64e9fa1473", 
+				"commit_id": "55c27548584e4d8f8bd39468ee3933ce277238c0 ", 
 				"revisions": [
 				  {
 					"revision": "1.0", 
-					"commit_id": "54ff2425cc76f1f6bfca2255166b3f64e9fa1473", 
-					"date": "12-02-2019:12:01:08", 
+					"commit_id": "55c27548584e4d8f8bd39468ee3933ce277238c0", 
+					"date": "20-02-2019:15:25:00", 
 					"history": "An example design for SP701 board. DDR3, QSPI, MB, Ethernet and Interrupts based IPI system"
 				  }
 				], 
