@@ -5,7 +5,6 @@ proc getConfigDesignInfo {} {
 }
 
 proc getSupportedParts {} { 
-  return [list virtexuplus{xcvu9p-flga2104-2L-e}]
 }
 
 proc getSupportedBoards {} { 
