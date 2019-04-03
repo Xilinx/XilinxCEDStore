@@ -134,7 +134,45 @@
                     "metadata_file": "xitem.json"
                 },
                 "company": "digilentinc.com"
-            }
+            },
+            {
+                "name": "vcu118_platform",
+                "display": "vcu118_platform",
+                "latest_revision": "1.0",
+                "commit_id": "f66f8c10ad131b8b3aaab089d5469a0accf879af",
+                "revisions": [
+                    {
+                        "revision": "1.0",
+                        "commit_id": "f66f8c10ad131b8b3aaab089d5469a0accf879af",
+                        "date": "JAN2019",
+                        "history": "vcu118 platform SED"
+                    }
+                ],
+                "config": {
+                    "root": "ced/Xilinx/vcu118_platform/1.0",
+                    "metadata_file": "xitem.json"
+                },
+                "company": "xilinx.com"
+            }, 
+		    {
+				"name": "sp701_platform", 
+				"display": "sp701_platform", 
+				"latest_revision": "1.0", 
+				"commit_id": "55c27548584e4d8f8bd39468ee3933ce277238c0", 
+				"revisions": [
+				  {
+					"revision": "1.0", 
+					"commit_id": "55c27548584e4d8f8bd39468ee3933ce277238c0", 
+					"date": "20-02-2019:15:25:00", 
+					"history": "An example design for SP701 board. DDR3, QSPI, MB, Ethernet and Interrupts based IPI system"
+				  }
+				], 
+				"config": {
+				  "root": "ced/Xilinx/sp701_platform", 
+				  "metadata_file": "xitem.json"
+				}, 
+				"company": "xilinx.com"
+		    }
         ],
         "categories": [
             {

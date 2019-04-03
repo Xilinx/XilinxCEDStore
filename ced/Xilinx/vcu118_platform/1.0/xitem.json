@@ -3,27 +3,26 @@
       "items": [
         {
           "infra": {
-            "name": "picozed_7010_fmc2",
-            "display": "PicoZed 7010 SOM + FMC Carrier V2",
-            "revision": "1.2",
-            "description": "PicoZed 7010 SOM + FMC Carrier  V2",
+            "name": "vcu118_platform",
+            "display": "vcu118_platform",
+            "revision": "1.0",
+            "description": "An example design for VCU118 board. DDR4, Slow peripherals, MB, QSPI, Timer and Interrupts based IPI system.",
             "company": "xilinx.com",
             "company_display": "Xilinx",
-            "author": "Dan",
+            "author": "vanitha",
             "contributors": [
               {
                 "group": "Xilinx",
                 "url": "www.xilinx.com"
               }
             ],
-            "category": "Single Part",
-            "website": "http://www.picozed.org",
+            "category": "example",
+            "website": "www.xilinx.com",
             "is_active" : true, 
             "search-keywords": [
-              "Picozed_7010_fmc2",
+              "vcu118_platform",
               "xilinx.com",
-              "board",
-              "Single Part"
+              "example"             
             ]
           }
         }
