@@ -140,7 +140,6 @@ set obj [get_filesets sources_1]
 
 set files  "[file dirname [file normalize [info script]]]/sources/design_1_wrapper.v"
 
-
 set imported_files [import_files -fileset sources_1 $files]
 
 # Set 'sources_1' fileset file properties for remote files
@@ -164,7 +163,13 @@ if {[string equal [get_filesets -quiet constrs_1] ""]} {
 # Set 'constrs_1' fileset object
 set obj [get_filesets constrs_1]
 
-# Empty (no sources present)
+# Add/Import constrs file and set constrs file properties
+#set file "[file normalize ${origin_dir}/project_ext_50/project_ext_50.srcs/constrs_1/new/top.xdc]"
+set file  "[file dirname [file normalize [info script]]]/constrs/top.xdc"
+set file_imported [import_files -fileset constrs_1 [list $file]]
+set file "constrs/top.xdc"
+set file_obj [get_files -of_objects [get_filesets constrs_1] [list "*$file"]]
+set_property -name "file_type" -value "XDC" -objects $file_obj
 
 # Set 'constrs_1' fileset properties
 set obj [get_filesets constrs_1]

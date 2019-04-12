@@ -5,7 +5,6 @@ proc getConfigDesignInfo {} {
 }
 
 proc getSupportedParts {} { 
-  return [list spartan7{xc7s100fgga676-2}]
 }
 
 proc getSupportedBoards {} { 
