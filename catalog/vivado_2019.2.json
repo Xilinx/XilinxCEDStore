@@ -19,26 +19,7 @@
                     "metadata_file": "xitem.json"
                 },
                 "company": "avnet.com"
-            },
-            {
-                "name": "picozed_7010_fmc2",
-                "display": "PicoZed 7010 SOM + FMC Carrier V2",
-                "latest_revision": "1.2",
-                "commit_id": "b46972691a0ecd69e6e0caa907557cdba3c88d05",
-                "revisions": [
-                    {
-                        "revision": "1.2",
-                        "commit_id": "b46972691a0ecd69e6e0caa907557cdba3c88d05",
-                        "date": "NOV2018",
-                        "history": "PicoZed 7010 SOM + FMC Carrier V2."
-                    }
-                ],
-                "config": {
-                    "root": "ced/picozed_7010_fmc2/1.2",
-                    "metadata_file": "xitem.json"
-                },
-                "company": "xilinx.com"
-            },
+            },            
             {
                 "name": "minized",
                 "display": "MiniZed Evaluation Platform",
