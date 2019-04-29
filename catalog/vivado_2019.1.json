@@ -24,11 +24,11 @@
 		"name": "MicroBlaze_Application_Configuration_for_SP701_design", 
 		"display": "MicroBlaze_Application_Configuration_for_SP701_design", 
 		"latest_revision": "1.0", 
-		"commit_id": "253e0060b0fbc3e81c757add588ca3026f982a44", 
+		"commit_id": "8f2d0855917dc471f9fdf37be85eadfceee15eb5", 
 		"revisions": [
 		    {
 			"revision": "1.0", 
-			"commit_id": "253e0060b0fbc3e81c757add588ca3026f982a44", 
+			"commit_id": "8f2d0855917dc471f9fdf37be85eadfceee15eb5", 
 			"date": "20-02-2019:15:25:00", 
 			"history": "An example design for SP701 board. DDR3, QSPI, MB, Ethernet and Interrupts based IPI system"
 		    }
