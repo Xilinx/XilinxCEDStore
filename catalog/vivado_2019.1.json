@@ -21,14 +21,14 @@
                 "company": "xilinx.com"
             }, 
 	    {
-		"name": "sp701_platform", 
-		"display": "sp701_platform", 
+		"name": "MicroBlaze_Application_Configuration_for_SP701_design", 
+		"display": "MicroBlaze_Application_Configuration_for_SP701_design", 
 		"latest_revision": "1.0", 
-		"commit_id": "8f2cbd546fe6961595f1eda2a8aa85015bc3cc56", 
+		"commit_id": "b563e9715cabfe43b3d53079b694e6c8f50b60c7", 
 		"revisions": [
 		    {
 			"revision": "1.0", 
-			"commit_id": "8f2cbd546fe6961595f1eda2a8aa85015bc3cc56", 
+			"commit_id": "b563e9715cabfe43b3d53079b694e6c8f50b60c7", 
 			"date": "20-02-2019:15:25:00", 
 			"history": "An example design for SP701 board. DDR3, QSPI, MB, Ethernet and Interrupts based IPI system"
 		    }
