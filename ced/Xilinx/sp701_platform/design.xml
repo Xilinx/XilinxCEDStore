@@ -5,14 +5,13 @@
 
   <Library>design</Library>
 
-  <Name>sp701_platform</Name>
-  
-  <Description> An example design for SP701 board. DDR3, QSPI, MB, Ethernet and Interrupts based IPI system </Description>
+  <Name>MicroBlaze_Application_Configuration_for_SP701</Name>
+
+  <Description>An example design for SP701 board. DDR3, QSPI, MB, Ethernet and Interrupts based IPI system </Description>
   
   <Version>1.0</Version>
-   
+
   <Design>init.tcl</Design>
 
 </ExampleDesign>
-
 
