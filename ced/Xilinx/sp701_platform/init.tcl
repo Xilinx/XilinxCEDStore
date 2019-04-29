@@ -1,7 +1,7 @@
 set currentFile [file normalize [info script]] 
 set currentDir [file dirname $currentFile] 
 proc getConfigDesignInfo {} { 
-  return [dict create name {sp701} description {}]
+  return [dict create name {MicroBlaze_Application_Configuration_for_SP701} description {}]
 }
 
 proc getSupportedParts {} { 
@@ -30,7 +30,7 @@ proc createDesign { project_name {project_location "."} {options ""}} {
   set curr_location [pwd]
   cd $project_location
   #set ::user_project_location $project_location
-  catch {source -notrace "$currentDir/sp701_design.tcl"} retString 
+  catch {source -notrace "$currentDir/MicroBlaze_Application_Configuration_for_SP701_design.tcl"} retString 
 
   cd $curr_location
 }

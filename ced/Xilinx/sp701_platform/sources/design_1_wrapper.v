@@ -1,8 +1,8 @@
 //Copyright 1986-2019 Xilinx, Inc. All Rights Reserved.
 //--------------------------------------------------------------------------------
-//Tool Version: Vivado v.2019.1.0 (lin64) Build 2444047 Wed Feb  6 02:39:29 MST 2019
-//Date        : Fri Feb  8 15:58:52 2019
-//Host        : xhdrdevl206 running 64-bit CentOS Linux release 7.4.1708 (Core)
+//Tool Version: Vivado v.2019.1 (lin64) Build 2514510 Mon Apr 15 08:01:32 MDT 2019
+//Date        : Tue Apr 16 16:48:13 2019
+//Host        : xhdrdevl100 running 64-bit CentOS Linux release 7.4.1708 (Core)
 //Command     : generate_target design_1_wrapper.bd
 //Design      : design_1_wrapper
 //Purpose     : IP block netlist
@@ -25,6 +25,8 @@ module design_1_wrapper
     ddr3_sdram_reset_n,
     ddr3_sdram_we_n,
     dip_switches_16bits_tri_i,
+    iic0_main_scl_io,
+    iic0_main_sda_io,
     led_8bits_tri_o,
     mdio_mdc_1_mdc,
     mdio_mdc_1_mdio_io,
@@ -61,6 +63,8 @@ module design_1_wrapper
   output ddr3_sdram_reset_n;
   output ddr3_sdram_we_n;
   input [15:0]dip_switches_16bits_tri_i;
+  inout iic0_main_scl_io;
+  inout iic0_main_sda_io;
   output [7:0]led_8bits_tri_o;
   output mdio_mdc_1_mdc;
   inout mdio_mdc_1_mdio_io;
@@ -98,6 +102,14 @@ module design_1_wrapper
   wire ddr3_sdram_reset_n;
   wire ddr3_sdram_we_n;
   wire [15:0]dip_switches_16bits_tri_i;
+  wire iic0_main_scl_i;
+  wire iic0_main_scl_io;
+  wire iic0_main_scl_o;
+  wire iic0_main_scl_t;
+  wire iic0_main_sda_i;
+  wire iic0_main_sda_io;
+  wire iic0_main_sda_o;
+  wire iic0_main_sda_t;
   wire [7:0]led_8bits_tri_o;
   wire mdio_mdc_1_mdc;
   wire mdio_mdc_1_mdio_i;
@@ -154,6 +166,12 @@ module design_1_wrapper
         .ddr3_sdram_reset_n(ddr3_sdram_reset_n),
         .ddr3_sdram_we_n(ddr3_sdram_we_n),
         .dip_switches_16bits_tri_i(dip_switches_16bits_tri_i),
+        .iic0_main_scl_i(iic0_main_scl_i),
+        .iic0_main_scl_o(iic0_main_scl_o),
+        .iic0_main_scl_t(iic0_main_scl_t),
+        .iic0_main_sda_i(iic0_main_sda_i),
+        .iic0_main_sda_o(iic0_main_sda_o),
+        .iic0_main_sda_t(iic0_main_sda_t),
         .led_8bits_tri_o(led_8bits_tri_o),
         .mdio_mdc_1_mdc(mdio_mdc_1_mdc),
         .mdio_mdc_1_mdio_i(mdio_mdc_1_mdio_i),
@@ -187,6 +205,16 @@ module design_1_wrapper
         .spi_flash_ss_t(spi_flash_ss_t),
         .sys_diff_clock_clk_n(sys_diff_clock_clk_n),
         .sys_diff_clock_clk_p(sys_diff_clock_clk_p));
+  IOBUF iic0_main_scl_iobuf
+       (.I(iic0_main_scl_o),
+        .IO(iic0_main_scl_io),
+        .O(iic0_main_scl_i),
+        .T(iic0_main_scl_t));
+  IOBUF iic0_main_sda_iobuf
+       (.I(iic0_main_sda_o),
+        .IO(iic0_main_sda_io),
+        .O(iic0_main_sda_i),
+        .T(iic0_main_sda_t));
   IOBUF mdio_mdc_1_mdio_iobuf
        (.I(mdio_mdc_1_mdio_o),
         .IO(mdio_mdc_1_mdio_io),
