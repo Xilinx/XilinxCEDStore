@@ -34,7 +34,7 @@
 		    }
 		], 
 		"config": {
-		    "root": "ced/Xilinx/MicroBlaze_Application_Configuration_for_SP701_design", 
+		    "root": "ced/Xilinx/MicroBlaze_Application_Configuration_for_SP701_design/1.0", 
 		    "metadata_file": "xitem.json"
 		}, 
 		"company": "xilinx.com"
