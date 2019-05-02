@@ -22,7 +22,7 @@
             }, 
 		    {
 				"name": "sp701_platform", 
-				"display": "sp701_platform", 
+				"display": "sp701_platform  .", 
 				"latest_revision": "1.0", 
 				"commit_id": "55c27548584e4d8f8bd39468ee3933ce277238c0", 
 				"revisions": [
