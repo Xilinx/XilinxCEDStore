@@ -30,7 +30,7 @@
 			"revision": "1.0", 
 			"commit_id": "8f2d0855917dc471f9fdf37be85eadfceee15eb5", 
 			"date": "20-02-2019:15:25:00", 
-			"history": "An example design for SP701 board. DDR3, QSPI, MB, Ethernet and Interrupts based IPI system"
+			"history": "An example design based on SP701 board. DDR3, QSPI, MB, Ethernet and Interrupts based IPI system"
 		    }
 		], 
 		"config": {
