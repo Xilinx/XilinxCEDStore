@@ -5,12 +5,12 @@
                 "name": "vcu118_platform",
                 "display": "vcu118_platform",
                 "latest_revision": "1.0",
-                "commit_id": "f66f8c10ad131b8b3aaab089d5469a0accf879af",
+                "commit_id": "f9d5c83db5b7271e9efe4d3368463f95620e86f3",
                 "revisions": [
                     {
                         "revision": "1.0",
-                        "commit_id": "f66f8c10ad131b8b3aaab089d5469a0accf879af",
-                        "date": "JAN2019",
+                        "commit_id": "f9d5c83db5b7271e9efe4d3368463f95620e86f3",
+                        "date": "03-05-2019",
                         "history": "vcu118 platform SED"
                     }
                 ],
@@ -21,20 +21,20 @@
                 "company": "xilinx.com"
             }, 
 		    {
-				"name": "sp701_platform", 
-				"display": "sp701_platform  .", 
+				"name": "MicroBlaze_Application_Configuration_for_SP701_design", 
+				"display": "MicroBlaze_Application_Configuration_for_SP701_design", 
 				"latest_revision": "1.0", 
-				"commit_id": "55c27548584e4d8f8bd39468ee3933ce277238c0", 
+				"commit_id": "f9d5c83db5b7271e9efe4d3368463f95620e86f3", 
 				"revisions": [
 				  {
 					"revision": "1.0", 
-					"commit_id": "55c27548584e4d8f8bd39468ee3933ce277238c0", 
-					"date": "20-02-2019:15:25:00", 
+					"commit_id": "f9d5c83db5b7271e9efe4d3368463f95620e86f3", 
+					"date": "03-05-2019:15:25:00", 
 					"history": "An example design for SP701 board. DDR3, QSPI, MB, Ethernet and Interrupts based IPI system"
 				  }
 				], 
 				"config": {
-				  "root": "ced/Xilinx/sp701_platform", 
+				  "root": "ced/Xilinx/MicroBlaze_Application_Configuration_for_SP701_design", 
 				  "metadata_file": "xitem.json"
 				}, 
 				"company": "xilinx.com"
