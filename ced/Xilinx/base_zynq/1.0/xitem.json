@@ -1,0 +1,33 @@
+{
+  "config": {
+    "items": [
+      {
+        "infra": {
+          "name": "base_zynq", 
+          "display": "Base Zynq", 
+          "revision": "1.0", 
+          "description": "Zynq system that contains a GPIO and memory blocks.", 
+          "company": "xilinx.com", 
+          "company_display": "Xilinx", 
+          "author": "Vanitha", 
+          "contributors": [
+            {
+              "group": "Xilinx", 
+              "url": "www.xilinx.com"
+            }
+          ], 
+          "category": "IPI", 
+          "website": "www.xilinx.com", 
+          "is_active": true, 
+          "search-keywords": [
+            "base_zynq", 
+            "xilinx.com", 
+            "examples"
+          ]
+        }
+      }
+    ]
+  }, 
+  "_major": 1, 
+  "_minor": 0
+}
