@@ -1,80 +1,251 @@
 {
-    "catalog": {
-        "items": [
-            {
-                "name": "vcu118_platform",
-                "display": "vcu118_platform",
-                "latest_revision": "1.0",
-                "commit_id": "f9d5c83db5b7271e9efe4d3368463f95620e86f3",
-                "revisions": [
-                    {
-                        "revision": "1.0",
-                        "commit_id": "f9d5c83db5b7271e9efe4d3368463f95620e86f3",
-                        "date": "03-05-2019",
-                        "history": "vcu118 platform SED"
-                    }
-                ],
-                "config": {
-                    "root": "ced/Xilinx/vcu118_platform/1.0",
-                    "metadata_file": "xitem.json"
-                },
-                "company": "xilinx.com"
-            }, 
-		    {
-				"name": "MicroBlaze_Application_Configuration_for_SP701_design", 
-				"display": "MicroBlaze_Application_Configuration_for_SP701_design", 
-				"latest_revision": "1.0", 
-				"commit_id": "f9d5c83db5b7271e9efe4d3368463f95620e86f3", 
-				"revisions": [
-				  {
-					"revision": "1.0", 
-					"commit_id": "f9d5c83db5b7271e9efe4d3368463f95620e86f3", 
-					"date": "03-05-2019:15:25:00", 
-					"history": "An example design for SP701 board. DDR3, QSPI, MB, Ethernet and Interrupts based IPI system"
-				  }
-				], 
-				"config": {
-				  "root": "ced/Xilinx/MicroBlaze_Application_Configuration_for_SP701_design/1.0", 
-				  "metadata_file": "xitem.json"
-				}, 
-				"company": "xilinx.com"
-		    }
-        ],
-        "categories": [
-            {
-                "name": "single_part",
-                "display_name": "Single Part",
-                "description": "This category represents all the boards which have single part",
-                "parent": ""
-            },             
-            {
-                "name": "multi_part",
-                "display_name": "Multi Part",
-                "description": "This category represents all the boards which have multi part",
-                "parent": ""
-            },
-            {
-                "name": "daughter_card",
-                "display_name": "Daughter Card",
-                "description": "This category represents all the boards which are daughter cards",
-                "parent": ""
-            },
-            {
-                "name": "misc",
-                "display_name": "Misc",
-                "description": "This category represents miscellaneous variety of boards",
-                "default": true,
-                "parent": ""
-            },
-            {
-                "name": "examples",
-                "display_name": "Examples",
-                "description": "This category represents configurable example designs",
-                "default": true,
-                "parent": ""
-            }
-        ]
-    },
-    "_major": 1,
-    "_minor": 0
+  "catalog": {
+    "items": [
+      {
+        "name": "vcu118_platform", 
+        "display": "vcu118_platform", 
+        "latest_revision": "1.0", 
+        "commit_id": "f9d5c83db5b7271e9efe4d3368463f95620e86f3", 
+        "revisions": [
+          {
+            "revision": "1.0", 
+            "commit_id": "f9d5c83db5b7271e9efe4d3368463f95620e86f3", 
+            "date": "03-05-2019", 
+            "history": "vcu118 platform SED"
+          }
+        ], 
+        "config": {
+          "root": "ced/Xilinx/vcu118_platform/1.0", 
+          "metadata_file": "xitem.json"
+        }, 
+        "company": "xilinx.com"
+      }, 
+      {
+        "name": "MicroBlaze_Application_Configuration_for_SP701_design", 
+        "display": "MicroBlaze_Application_Configuration_for_SP701_design", 
+        "latest_revision": "1.0", 
+        "commit_id": "f9d5c83db5b7271e9efe4d3368463f95620e86f3", 
+        "revisions": [
+          {
+            "revision": "1.0", 
+            "commit_id": "f9d5c83db5b7271e9efe4d3368463f95620e86f3", 
+            "date": "03-05-2019:15:25:00", 
+            "history": "An example design for SP701 board. DDR3, QSPI, MB, Ethernet and Interrupts based IPI system"
+          }
+        ], 
+        "config": {
+          "root": "ced/Xilinx/MicroBlaze_Application_Configuration_for_SP701_design/1.0", 
+          "metadata_file": "xitem.json"
+        }, 
+        "company": "xilinx.com"
+      }, 
+      {
+        "name": "base_mb", 
+        "display": "Base MicroBlaze", 
+        "latest_revision": "1.0", 
+        "commit_id": "67cda74c9d71d26bb70f89f8df6435d1e4f1676c", 
+        "revisions": [
+          {
+            "revision": "1.0", 
+            "commit_id": "67cda74c9d71d26bb70f89f8df6435d1e4f1676c", 
+            "date": "31-05-2019:05:24:21", 
+            "history": "Adding entry for base microblaze example design"
+          }
+        ], 
+        "config": {
+          "root": "ced/Xilinx/base_microblaze/1.0", 
+          "metadata_file": "xitem.json"
+        }, 
+        "company": "xilinx.com"
+      }, 
+      {
+        "name": "base_zynq", 
+        "display": "Base Zynq", 
+        "latest_revision": "1.0", 
+        "commit_id": "67cda74c9d71d26bb70f89f8df6435d1e4f1676c", 
+        "revisions": [
+          {
+            "revision": "1.0", 
+            "commit_id": "67cda74c9d71d26bb70f89f8df6435d1e4f1676c", 
+            "date": "31-05-2019:05:25:34", 
+            "history": "Adding entry for base zynq based example design"
+          }
+        ], 
+        "config": {
+          "root": "ced/Xilinx/base_zynq/1.0", 
+          "metadata_file": "xitem.json"
+        }, 
+        "company": "xilinx.com"
+      }, 
+      {
+        "name": "Base_Zynq_MPSoC", 
+        "display": "Base Zynq UltraScale+ MPSoC", 
+        "latest_revision": "1.0", 
+        "commit_id": "67cda74c9d71d26bb70f89f8df6435d1e4f1676c", 
+        "revisions": [
+          {
+            "revision": "1.0", 
+            "commit_id": "67cda74c9d71d26bb70f89f8df6435d1e4f1676c", 
+            "date": "31-05-2019:05:25:53", 
+            "history": "Adding entry for base zynq mpsoc based example design"
+          }
+        ], 
+        "config": {
+          "root": "ced/Xilinx/base_zynq_mpsoc/1.0", 
+          "metadata_file": "xitem.json"
+        }, 
+        "company": "xilinx.com"
+      }, 
+      {
+        "name": "config_mb", 
+        "display": "Configurable MicroBlaze Design", 
+        "latest_revision": "1.0", 
+        "commit_id": "67cda74c9d71d26bb70f89f8df6435d1e4f1676c", 
+        "revisions": [
+          {
+            "revision": "1.0", 
+            "commit_id": "67cda74c9d71d26bb70f89f8df6435d1e4f1676c", 
+            "date": "31-05-2019:05:30:57", 
+            "history": "Adding entry for configurable example design"
+          }
+        ], 
+        "config": {
+          "root": "ced/Xilinx/configurable_example_design/1.0", 
+          "metadata_file": "xitem.json"
+        }, 
+        "company": "xilinx.com"
+      }, 
+      {
+        "name": "config_mpsoc", 
+        "display": "Configurable Zynq UltraScale+ MPSoC Design", 
+        "latest_revision": "1.0", 
+        "commit_id": "67cda74c9d71d26bb70f89f8df6435d1e4f1676c", 
+        "revisions": [
+          {
+            "revision": "1.0", 
+            "commit_id": "67cda74c9d71d26bb70f89f8df6435d1e4f1676c", 
+            "date": "31-05-2019:05:32:11", 
+            "history": "Adding entry for zynqus+_mpsoc configurable example design"
+          }
+        ], 
+        "config": {
+          "root": "ced/Xilinx/configurable_example_design_zynqus+_mpsoc/1.0", 
+          "metadata_file": "xitem.json"
+        }, 
+        "company": "xilinx.com"
+      }, 
+      {
+        "name": "bft", 
+        "display": "BFT", 
+        "latest_revision": "1.0", 
+        "commit_id": "67cda74c9d71d26bb70f89f8df6435d1e4f1676c", 
+        "revisions": [
+          {
+            "revision": "1.0", 
+            "commit_id": "67cda74c9d71d26bb70f89f8df6435d1e4f1676c", 
+            "date": "31-05-2019:05:32:45", 
+            "history": "Adding entry for bft example design"
+          }
+        ], 
+        "config": {
+          "root": "ced/Xilinx/bft/1.0", 
+          "metadata_file": "xitem.json"
+        }, 
+        "company": "xilinx.com"
+      }, 
+      {
+        "name": "cpu_hdl", 
+        "display": "CPU (HDL)", 
+        "latest_revision": "1.0", 
+        "commit_id": "67cda74c9d71d26bb70f89f8df6435d1e4f1676c", 
+        "revisions": [
+          {
+            "revision": "1.0", 
+            "commit_id": "67cda74c9d71d26bb70f89f8df6435d1e4f1676c", 
+            "date": "31-05-2019:05:33:14", 
+            "history": "Adding entry for cpu hdl example design"
+          }
+        ], 
+        "config": {
+          "root": "ced/Xilinx/cpu_hdl/1.0", 
+          "metadata_file": "xitem.json"
+        }, 
+        "company": "xilinx.com"
+      }, 
+      {
+        "name": "cpu_netlist", 
+        "display": "CPU (Synthesized)", 
+        "latest_revision": "1.0", 
+        "commit_id": "67cda74c9d71d26bb70f89f8df6435d1e4f1676c", 
+        "revisions": [
+          {
+            "revision": "1.0", 
+            "commit_id": "67cda74c9d71d26bb70f89f8df6435d1e4f1676c", 
+            "date": "31-05-2019:05:33:37", 
+            "history": "Adding entry for cpu_netlist example design"
+          }
+        ], 
+        "config": {
+          "root": "ced/Xilinx/cpu_netlist/1.0", 
+          "metadata_file": "xitem.json"
+        }, 
+        "company": "xilinx.com"
+      }, 
+      {
+        "name": "wave_gen", 
+        "display": "Wavegen (HDL)", 
+        "latest_revision": "1.0", 
+        "commit_id": "67cda74c9d71d26bb70f89f8df6435d1e4f1676c", 
+        "revisions": [
+          {
+            "revision": "1.0", 
+            "commit_id": "67cda74c9d71d26bb70f89f8df6435d1e4f1676c", 
+            "date": "31-05-2019:05:34:01", 
+            "history": "Adding entry for wavegen example design"
+          }
+        ], 
+        "config": {
+          "root": "ced/Xilinx/wavegen/1.0", 
+          "metadata_file": "xitem.json"
+        }, 
+        "company": "xilinx.com"
+      }
+    ], 
+    "categories": [
+      {
+        "name": "single_part", 
+        "display_name": "Single Part", 
+        "description": "This category represents all the boards which have single part", 
+        "parent": ""
+      }, 
+      {
+        "name": "multi_part", 
+        "display_name": "Multi Part", 
+        "description": "This category represents all the boards which have multi part", 
+        "parent": ""
+      }, 
+      {
+        "name": "daughter_card", 
+        "display_name": "Daughter Card", 
+        "description": "This category represents all the boards which are daughter cards", 
+        "parent": ""
+      }, 
+      {
+        "name": "misc", 
+        "display_name": "Misc", 
+        "description": "This category represents miscellaneous variety of boards", 
+        "default": true, 
+        "parent": ""
+      }, 
+      {
+        "name": "examples", 
+        "display_name": "Examples", 
+        "description": "This category represents configurable example designs", 
+        "default": true, 
+        "parent": ""
+      }
+    ]
+  }, 
+  "_major": 1, 
+  "_minor": 0
 }
