@@ -17,7 +17,7 @@
 #*****************************************************************************************
 
 # Set the reference directory for source file relative paths (by default the value is script directory path)
-set origin_dir "/proj/dsv_xhd/Vanitha/sp701/i2c_test"
+set origin_dir "/proj/dsv_xhd/Vanitha/crs_20191/1031105"
 
 # Use origin directory path location variable, if specified in the tcl shell
 if { [info exists ::origin_dir_loc] } {
@@ -25,7 +25,7 @@ if { [info exists ::origin_dir_loc] } {
 }
 
 # Set the project name
-set _xil_proj_name_ "project_3"
+set _xil_proj_name_ "project_1"
 
 # Use project name variable, if specified in the tcl shell
 if { [info exists ::user_project_name] } {
@@ -113,6 +113,21 @@ set_property -name "enable_vhdl_2008" -value "1" -objects $obj
 set_property -name "ip_cache_permissions" -value "read write" -objects $obj
 set_property -name "ip_output_repo" -value "$proj_dir/${_xil_proj_name_}.cache/ip" -objects $obj
 set_property -name "mem.enable_memory_map_generation" -value "1" -objects $obj
+set_property -name "platform.accelerator_binary_content" -value "bitstream" -objects $obj
+set_property -name "platform.accelerator_binary_format" -value "xclbin2" -objects $obj
+set_property -name "platform.board_id" -value "sp701" -objects $obj
+set_property -name "platform.description" -value "Vivado generated DSA" -objects $obj
+set_property -name "platform.dr_bd_base_address" -value "0" -objects $obj
+set_property -name "platform.emu_dir" -value "emu" -objects $obj
+set_property -name "platform.flash_interface_type" -value "bpix16" -objects $obj
+set_property -name "platform.flash_offset_address" -value "0" -objects $obj
+set_property -name "platform.flash_size" -value "1024" -objects $obj
+set_property -name "platform.host_architecture" -value "x86_64" -objects $obj
+set_property -name "platform.host_interface" -value "pcie" -objects $obj
+set_property -name "platform.num_compute_units" -value "60" -objects $obj
+set_property -name "platform.platform_state" -value "pre_synth" -objects $obj
+set_property -name "platform.vendor" -value "xilinx" -objects $obj
+set_property -name "platform.version" -value "0.0" -objects $obj
 set_property -name "sim.central_dir" -value "$proj_dir/${_xil_proj_name_}.ip_user_files" -objects $obj
 set_property -name "sim.ip.auto_export_scripts" -value "1" -objects $obj
 set_property -name "simulator_language" -value "Mixed" -objects $obj
@@ -594,7 +609,7 @@ proc create_hier_cell_microblaze_0_local_memory { parentCell nameHier } {
   # Create instance: microblaze_0_xlconcat, and set properties
   set microblaze_0_xlconcat [ create_bd_cell -type ip -vlnv xilinx.com:ip:xlconcat microblaze_0_xlconcat ]
   set_property -dict [ list \
-   CONFIG.NUM_PORTS {7} \
+   CONFIG.NUM_PORTS {8} \
  ] $microblaze_0_xlconcat
 
   # Create instance: mig_7series_0, and set properties
@@ -663,6 +678,7 @@ proc create_hier_cell_microblaze_0_local_memory { parentCell nameHier } {
   connect_bd_net -net axi_ethernet_0_refclk_clk_out1 [get_bd_pins axi_ethernet_0/axis_clk] [get_bd_pins axi_ethernet_0/ref_clk] [get_bd_pins axi_ethernet_0_dma/m_axi_mm2s_aclk] [get_bd_pins axi_ethernet_0_dma/m_axi_s2mm_aclk] [get_bd_pins axi_ethernet_0_dma/m_axi_sg_aclk] [get_bd_pins axi_ethernet_0_refclk/clk_out1] [get_bd_pins axi_smc/aclk1]
   connect_bd_net -net axi_ethernet_0_refclk_clk_out2 [get_bd_pins axi_ethernet_0/gtx_clk] [get_bd_pins axi_ethernet_0_refclk/clk_out2]
   connect_bd_net -net axi_ethernet_0_refclk_clk_out3 [get_bd_pins axi_ethernet_0_refclk/clk_out3] [get_bd_pins axi_quad_spi_0/ext_spi_clk]
+  connect_bd_net -net axi_iic_0_iic2intc_irpt [get_bd_pins axi_iic_0/iic2intc_irpt] [get_bd_pins microblaze_0_xlconcat/In7]
   connect_bd_net -net axi_quad_spi_0_ip2intc_irpt [get_bd_pins axi_quad_spi_0/ip2intc_irpt] [get_bd_pins microblaze_0_xlconcat/In6]
   connect_bd_net -net axi_timer_0_interrupt [get_bd_pins axi_timer_0/interrupt] [get_bd_pins microblaze_0_xlconcat/In0]
   connect_bd_net -net axi_uartlite_0_interrupt [get_bd_pins axi_uartlite_0/interrupt] [get_bd_pins microblaze_0_xlconcat/In5]
