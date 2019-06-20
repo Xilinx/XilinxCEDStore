@@ -1,8 +1,8 @@
 //Copyright 1986-2019 Xilinx, Inc. All Rights Reserved.
 //--------------------------------------------------------------------------------
-//Tool Version: Vivado v.2019.1.0 (lin64) Build 2426067 Tue Jan 15 01:40:59 MST 2019
-//Date        : Thu Jan 17 15:37:51 2019
-//Host        : xhdrdevl31 running 64-bit Red Hat Enterprise Linux Workstation release 6.6 (Santiago)
+//Tool Version: Vivado v.2019.2.0 (lin64) Build 2571518 Tue Jun 18 20:30:31 MDT 2019
+//Date        : Thu Jun 20 16:28:26 2019
+//Host        : xhdrdevl204 running 64-bit CentOS Linux release 7.4.1708 (Core)
 //Command     : generate_target config_mb_wrapper.bd
 //Design      : config_mb_wrapper
 //Purpose     : IP block netlist
@@ -27,6 +27,8 @@ module config_mb_wrapper
     default_250mhz_clk1_clk_n,
     default_250mhz_clk1_clk_p,
     dip_switches_4bits_tri_i,
+    iic_main_scl_io,
+    iic_main_sda_io,
     led_8bits_tri_o,
     mdio_mdc_mdc,
     mdio_mdc_mdio_io,
@@ -63,6 +65,8 @@ module config_mb_wrapper
   input default_250mhz_clk1_clk_n;
   input default_250mhz_clk1_clk_p;
   input [3:0]dip_switches_4bits_tri_i;
+  inout iic_main_scl_io;
+  inout iic_main_sda_io;
   output [7:0]led_8bits_tri_o;
   output mdio_mdc_mdc;
   inout mdio_mdc_mdio_io;
@@ -100,6 +104,14 @@ module config_mb_wrapper
   wire default_250mhz_clk1_clk_n;
   wire default_250mhz_clk1_clk_p;
   wire [3:0]dip_switches_4bits_tri_i;
+  wire iic_main_scl_i;
+  wire iic_main_scl_io;
+  wire iic_main_scl_o;
+  wire iic_main_scl_t;
+  wire iic_main_sda_i;
+  wire iic_main_sda_io;
+  wire iic_main_sda_o;
+  wire iic_main_sda_t;
   wire [7:0]led_8bits_tri_o;
   wire mdio_mdc_mdc;
   wire mdio_mdc_mdio_i;
@@ -156,6 +168,12 @@ module config_mb_wrapper
         .default_250mhz_clk1_clk_n(default_250mhz_clk1_clk_n),
         .default_250mhz_clk1_clk_p(default_250mhz_clk1_clk_p),
         .dip_switches_4bits_tri_i(dip_switches_4bits_tri_i),
+        .iic_main_scl_i(iic_main_scl_i),
+        .iic_main_scl_o(iic_main_scl_o),
+        .iic_main_scl_t(iic_main_scl_t),
+        .iic_main_sda_i(iic_main_sda_i),
+        .iic_main_sda_o(iic_main_sda_o),
+        .iic_main_sda_t(iic_main_sda_t),
         .led_8bits_tri_o(led_8bits_tri_o),
         .mdio_mdc_mdc(mdio_mdc_mdc),
         .mdio_mdc_mdio_i(mdio_mdc_mdio_i),
@@ -187,6 +205,16 @@ module config_mb_wrapper
         .spi_flash_ss_i(spi_flash_ss_i),
         .spi_flash_ss_o(spi_flash_ss_o),
         .spi_flash_ss_t(spi_flash_ss_t));
+  IOBUF iic_main_scl_iobuf
+       (.I(iic_main_scl_o),
+        .IO(iic_main_scl_io),
+        .O(iic_main_scl_i),
+        .T(iic_main_scl_t));
+  IOBUF iic_main_sda_iobuf
+       (.I(iic_main_sda_o),
+        .IO(iic_main_sda_io),
+        .O(iic_main_sda_i),
+        .T(iic_main_sda_t));
   IOBUF mdio_mdc_mdio_iobuf
        (.I(mdio_mdc_mdio_o),
         .IO(mdio_mdc_mdio_io),
