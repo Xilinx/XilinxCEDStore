@@ -38,6 +38,25 @@
           "metadata_file": "xitem.json"
         }, 
         "company": "xilinx.com"
+      },     
+	  {
+        "name": "MicroBlaze_Application_Configuration_for_AC701_design", 
+        "display": "MicroBlaze_Application_Configuration_for_AC701_design", 
+        "latest_revision": "1.0", 
+        "commit_id": "8a9765585e4da795d62e1a429bc75824867af02f", 
+        "revisions": [
+          {
+            "revision": "1.0", 
+            "commit_id": "8a9765585e4da795d62e1a429bc75824867af02f", 
+            "date": "01-08-2019:15:25:00", 
+            "history": "An example design for AC701 board. DDR3, QSPI, MB, Ethernet and Interrupts based IPI system"
+          }
+        ], 
+        "config": {
+          "root": "ced/Xilinx/IPI/MicroBlaze_Application_Configuration_for_AC701_design/1.0", 
+          "metadata_file": "xitem.json"
+        }, 
+        "company": "xilinx.com"
       }, 
       {
         "name": "base_mb", 
