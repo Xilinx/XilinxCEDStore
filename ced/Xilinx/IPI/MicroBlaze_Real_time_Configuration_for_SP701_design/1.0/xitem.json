@@ -3,8 +3,8 @@
       "items": [
         {
           "infra": {
-            "name": "MicroBlaze_Real_time_Configuration_for_SP701_design",
-            "display": "MicroBlaze_Real_time_Configuration_for_SP701_design",
+            "name": "MicroBlaze_Real_time_Configuration_for_SP701",
+            "display": "MicroBlaze_Real_time_Configuration_for_SP701",
             "revision": "1.0",
             "description": "An example design for SP701 board. DDR3, Slow peripherals, MB, QSPI, Timer and Interrupts based IPI system",
             "company": "xilinx.com",
@@ -20,7 +20,7 @@
             "website": "www.xilinx.com",
             "is_active" : true, 
             "search-keywords": [
-              "MicroBlaze_Real_time_Configuration_for_SP701_design",
+              "MicroBlaze_Real_time_Configuration_for_SP701",
               "xilinx.com",
               "example"             
             ]
