@@ -6,7 +6,7 @@
             "name": "MicroBlaze_Application_Configuration_for_AC701_design",
             "display": "MicroBlaze_Application_Configuration_for_AC701_design",
             "revision": "1.0",
-            "description": "An example design for SP701 board. DDR3, Slow peripherals, MB, QSPI, Timer and Interrupts based IPI system",
+            "description": "An example design for AC701 board. DDR3, Slow peripherals, MB, QSPI, Timer and Interrupts based IPI system",
             "company": "xilinx.com",
             "company_display": "Xilinx",
             "author": "vanitha",
