@@ -7,8 +7,7 @@
 
   <Name>MicroBlaze_Application_Configuration_for_AC701</Name>
 
-  <Description>An example design for AC701 board. DDR3, QSPI, MB, Ethernet and Interrupts based IPI system </Description>
-  
+<Description>An example design for AC701 board. DDR3, QSPI, MB, Ethernet and Interrupts based IPI system </Description>
   <Version>1.0</Version>
 
   <Design>init.tcl</Design>
