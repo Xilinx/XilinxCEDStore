@@ -63,11 +63,11 @@
         "name": "MicroBlaze_Application_Configuration_for_AC701_design", 
         "display": "MicroBlaze_Application_Configuration_for_AC701_design", 
         "latest_revision": "1.0", 
-        "commit_id": "1ee5178d636eb35481d442baf8889fba1faf0f5b", 
+        "commit_id": "449e6dadf003dc79807a6499530afdd2b7fb10dc", 
         "revisions": [
           {
             "revision": "1.0", 
-            "commit_id": "1ee5178d636eb35481d442baf8889fba1faf0f5b", 
+            "commit_id": "449e6dadf003dc79807a6499530afdd2b7fb10dc", 
             "date": "01-08-2019:15:25:00", 
             "history": "An example design for AC701 board. DDR3, QSPI, MB, Ethernet and Interrupts based IPI system"
           }
