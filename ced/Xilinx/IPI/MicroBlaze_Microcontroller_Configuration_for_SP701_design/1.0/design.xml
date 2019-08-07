@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<ExampleDesign>
+
+  <Vendor>xilinx.com</Vendor>
+
+  <Library>design</Library>
+
+  <Name>MicroBlaze_Microcontroller_Configuration_for_SP701</Name>
+
+  <Description>An example design for SP701 board with Microcontroller preset. DDR3, QSPI, MB, Ethernet and Interrupts based IPI system </Description>
+
+  <Version>1.0</Version>
+
+  <Design>init.tcl</Design>
+
+</ExampleDesign>
+
