@@ -14,14 +14,7 @@ Copyright (C) 2019, Xilinx Inc - All rights reserved
 * License for the specific language governing permissions and limitations
 * under the License.
 */
-//--------------------------------------------------------------------------------
-//Tool Version: Vivado v.2019.2.0 (lin64) Build 2581651 Mon Jul  1 22:21:51 MDT 2019
-//Date        : Wed Jul  3 16:54:46 2019
-//Host        : xhdrdevl204 running 64-bit CentOS Linux release 7.4.1708 (Core)
-//Command     : generate_target design_1_wrapper.bd
-//Design      : design_1_wrapper
-//Purpose     : IP block netlist
-//--------------------------------------------------------------------------------
+
 `timescale 1 ps / 1 ps
 
 module design_1_wrapper
