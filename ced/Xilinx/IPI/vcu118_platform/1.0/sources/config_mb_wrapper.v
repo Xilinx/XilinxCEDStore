@@ -1,12 +1,20 @@
-//Copyright 1986-2019 Xilinx, Inc. All Rights Reserved.
-//--------------------------------------------------------------------------------
-//Tool Version: Vivado v.2019.2.0 (lin64) Build 2571518 Tue Jun 18 20:30:31 MDT 2019
-//Date        : Thu Jun 20 16:28:26 2019
-//Host        : xhdrdevl204 running 64-bit CentOS Linux release 7.4.1708 (Core)
-//Command     : generate_target config_mb_wrapper.bd
-//Design      : config_mb_wrapper
-//Purpose     : IP block netlist
-//--------------------------------------------------------------------------------
+/*
+Copyright (C) 2019, Xilinx Inc - All rights reserved
+*
+* Licensed under the Apache License, Version 2.0 (the "License"). You may
+* not use this file except in compliance with the License. A copy of the
+* License is located at
+*
+*     http://www.apache.org/licenses/LICENSE-2.0
+
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+* WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+* License for the specific language governing permissions and limitations
+* under the License.
+*/
+
 `timescale 1 ps / 1 ps
 
 module config_mb_wrapper
