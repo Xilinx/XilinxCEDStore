@@ -1,3 +1,4 @@
+# ########################################################################
 # Copyright (C) 2019, Xilinx Inc - All rights reserved
 
 # Licensed under the Apache License, Version 2.0 (the "License"). You may
@@ -11,6 +12,7 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
+# ########################################################################
 
 # Set the reference directory for source file relative paths (by default the value is script directory path)
 set origin_dir [pwd]
