@@ -6,6 +6,6 @@ The CED Store is an open source repository of example designs designed primarily
 This feature is supported from Vivado 2019.2 release
 
 # Documentation
-The wiki contains documentation on how to use and contribute to the Board Store:
+The wiki contains documentation on how to use and contribute to the CED Store:
 
 [Click Here to go to the Wiki](https://github.com/Xilinx/XilinxCEDStore/wiki/Xilinx-CED-Store-Home)
