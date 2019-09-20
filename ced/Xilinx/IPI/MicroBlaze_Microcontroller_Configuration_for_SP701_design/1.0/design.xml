@@ -27,6 +27,6 @@
   <Version>1.0</Version>
 
   <Design>init.tcl</Design>
-
+ <Image>Microblaze_Platform.png</Image>
 </ExampleDesign>
 
