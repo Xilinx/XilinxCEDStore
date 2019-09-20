@@ -5,11 +5,11 @@
         "name": "vcu118_platform", 
         "display": "vcu118_platform", 
         "latest_revision": "1.0", 
-        "commit_id": "5f650a85fa267798b040bcc3d99fa88916b0491e", 
+        "commit_id": "4427d5e7bb6df4d13a843f9c9151544d1477d701", 
         "revisions": [
           {
             "revision": "1.0", 
-            "commit_id": "5f650a85fa267798b040bcc3d99fa88916b0491e", 
+            "commit_id": "4427d5e7bb6df4d13a843f9c9151544d1477d701", 
             "date": "20-06-2019", 
             "history": "vcu118 platform SED"
           }
