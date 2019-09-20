@@ -6,11 +6,11 @@
         "name": "vcu118_platform", 
         "display": "vcu118_platform", 
         "latest_revision": "1.0", 
-        "commit_id": "ba14bbff70e5c5192e41354365260a30de9a861a", 
+        "commit_id": "6c5440c7ab6dc535576e2fb915c09f24b9f68f85", 
         "revisions": [
           {
             "revision": "1.0", 
-            "commit_id": "ba14bbff70e5c5192e41354365260a30de9a861a", 
+            "commit_id": "6c5440c7ab6dc535576e2fb915c09f24b9f68f85", 
             "date": "20-06-2019", 
             "history": "vcu118 platform SED"
           }
@@ -25,11 +25,11 @@
         "name": "MicroBlaze_Microcontroller_Configuration_for_SP701_design", 
         "display": "MicroBlaze_Microcontroller_Configuration_for_SP701_design", 
         "latest_revision": "1.0", 
-        "commit_id": "ba14bbff70e5c5192e41354365260a30de9a861a", 
+        "commit_id": "6c5440c7ab6dc535576e2fb915c09f24b9f68f85", 
         "revisions": [
           {
             "revision": "1.0", 
-            "commit_id": "ba14bbff70e5c5192e41354365260a30de9a861a", 
+            "commit_id": "6c5440c7ab6dc535576e2fb915c09f24b9f68f85", 
             "date": "07-08-2019", 
             "history": "An example design for SP701 board with Microcontroller preset. DDR3, QSPI, MB, Ethernet and Interrupts based IPI system"
           }
@@ -44,11 +44,11 @@
         "name": "MicroBlaze_Real_time_Configuration_for_SP701_design", 
         "display": "MicroBlaze_Real_time_Configuration_for_SP701_design", 
         "latest_revision": "1.0", 
-        "commit_id": "ba14bbff70e5c5192e41354365260a30de9a861a", 
+        "commit_id": "6c5440c7ab6dc535576e2fb915c09f24b9f68f85", 
         "revisions": [
           {
             "revision": "1.0", 
-            "commit_id": "ba14bbff70e5c5192e41354365260a30de9a861a", 
+            "commit_id": "6c5440c7ab6dc535576e2fb915c09f24b9f68f85", 
             "date": "02-08-2019", 
             "history": "An example design for SP701 board. DDR3, QSPI, MB, Ethernet and Interrupts based IPI system"
           }
@@ -63,11 +63,11 @@
         "name": "MicroBlaze_Application_Configuration_for_SP701_design", 
         "display": "MicroBlaze_Application_Configuration_for_SP701_design", 
         "latest_revision": "1.0", 
-        "commit_id": "ba14bbff70e5c5192e41354365260a30de9a861a", 
+        "commit_id": "6c5440c7ab6dc535576e2fb915c09f24b9f68f85", 
         "revisions": [
           {
             "revision": "1.0", 
-            "commit_id": "ba14bbff70e5c5192e41354365260a30de9a861a", 
+            "commit_id": "6c5440c7ab6dc535576e2fb915c09f24b9f68f85", 
             "date": "20-06-2019:15:25:00", 
             "history": "An example design for SP701 board. DDR3, QSPI, MB, Ethernet and Interrupts based IPI system"
           }
@@ -82,11 +82,11 @@
         "name": "MicroBlaze_Application_Configuration_for_AC701_design", 
         "display": "MicroBlaze_Application_Configuration_for_AC701_design", 
         "latest_revision": "1.0", 
-        "commit_id": "ba14bbff70e5c5192e41354365260a30de9a861a", 
+        "commit_id": "6c5440c7ab6dc535576e2fb915c09f24b9f68f85", 
         "revisions": [
           {
             "revision": "1.0", 
-            "commit_id": "ba14bbff70e5c5192e41354365260a30de9a861a", 
+            "commit_id": "6c5440c7ab6dc535576e2fb915c09f24b9f68f85", 
             "date": "01-08-2019:15:25:00", 
             "history": "An example design for AC701 board. DDR3, QSPI, MB, Ethernet and Interrupts based IPI system"
           }
