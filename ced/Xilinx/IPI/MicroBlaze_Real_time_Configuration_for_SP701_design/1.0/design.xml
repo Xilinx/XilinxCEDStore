@@ -28,6 +28,6 @@
   <Version>1.0</Version>
 
   <Design>init.tcl</Design>
-
+  <Image>MicroBlaze_Platform.png</Image>
 </ExampleDesign>
 
