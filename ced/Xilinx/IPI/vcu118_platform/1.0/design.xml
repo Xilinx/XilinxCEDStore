@@ -25,7 +25,7 @@
 
   <Version>1.0</Version>
   <Description> An example design for VCU118 board. DDR4, Slow peripherals, MB, QSPI, Timer and Interrupts based IPI system  </Description>
-
+  <Image>miciblaze_platform.png</Image>
   <Design>init.tcl</Design>
 
 </ExampleDesign>
