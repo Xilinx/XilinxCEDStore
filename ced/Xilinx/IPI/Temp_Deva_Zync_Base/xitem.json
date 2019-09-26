@@ -1,0 +1,33 @@
+{
+    "config": {
+      "items": [
+        {
+          "infra": {
+            "name": "DEVA_ZYNC_BASE",
+            "display": "DEVA_ZYNC_BASE",
+            "revision": "1.0",
+            "description": "An example design Zync Base for GitHub Test",
+            "company": "xilinx.com",
+            "company_display": "Xilinx",
+            "author": "vanitha",
+            "contributors": [
+              {
+                "group": "Xilinx",
+                "url": "www.xilinx.com"
+              }
+            ],
+            "category": "example",
+            "website": "www.xilinx.com",
+            "is_active" : true, 
+            "search-keywords": [
+              "DEVA_ZYNC_BASE",
+              "xilinx.com",
+              "example"             
+            ]
+          }
+        }
+      ]
+    },
+    "_major" : 1,
+    "_minor" : 0
+}
