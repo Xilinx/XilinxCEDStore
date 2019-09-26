@@ -34,7 +34,7 @@
           }
         ], 
         "config": {
-          "root": "ced/Xilinx/IPI/DEVA_ZYNC_BASE/", 
+          "root": "ced/Xilinx/IPI/DEVA_ZYNC_BASE/1.0", 
           "metadata_file": "xitem.json"
         }, 
         "company": "xilinx.com"
