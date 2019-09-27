@@ -5,11 +5,11 @@
         "name": "DEVA_VCU118_TEMP", 
         "display": "DEVA_VCU118_TEMP", 
         "latest_revision": "1.0", 
-        "commit_id": "df072faa88fbc981a409bb3842619443a974197e", 
+        "commit_id": "5ee7e313b63092ada169eb7a4ea45a6624697256", 
         "revisions": [
           {
             "revision": "1.0", 
-            "commit_id": "df072faa88fbc981a409bb3842619443a974197e", 
+            "commit_id": "5ee7e313b63092ada169eb7a4ea45a6624697256", 
             "date": "20-06-2019", 
             "history": "DEVA MB AC701"
           }
@@ -24,11 +24,11 @@
         "name": "DEVA_MB_AC701", 
         "display": "DEVA_MB_AC701", 
         "latest_revision": "1.0", 
-        "commit_id": "19b63d6f9730640f3eadd62a239e0c54ba399c80", 
+        "commit_id": "5ee7e313b63092ada169eb7a4ea45a6624697256", 
         "revisions": [
           {
             "revision": "1.0", 
-            "commit_id": "19b63d6f9730640f3eadd62a239e0c54ba399c80", 
+            "commit_id": "5ee7e313b63092ada169eb7a4ea45a6624697256", 
             "date": "20-06-2019", 
             "history": "DEVA MB AC701"
           }
