@@ -715,7 +715,7 @@ proc create_hier_cell_microblaze_0_local_memory { parentCell nameHier } {
 
   validate_bd_design
   save_bd_design
-  close_bd_design $design_name 
+  #close_bd_design $design_name 
 }
 # End of cr_bd_design_1()
 cr_bd_design_1 ""

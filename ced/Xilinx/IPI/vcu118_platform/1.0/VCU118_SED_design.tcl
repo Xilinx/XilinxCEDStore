@@ -781,7 +781,7 @@ pagesize -pg 1 -db -bbox -sgen -210 0 3080 2080
 
   validate_bd_design
   save_bd_design
-  close_bd_design $design_name 
+  #close_bd_design $design_name 
 }
 # End of cr_bd_config_mb()
 cr_bd_config_mb ""
