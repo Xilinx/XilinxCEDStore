@@ -2,6 +2,25 @@
   "catalog": {
     "items": [
 	{
+        "name": "DEVA_VCU118_TEMP", 
+        "display": "DEVA_VCU118_TEMP", 
+        "latest_revision": "1.0", 
+        "commit_id": "df072faa88fbc981a409bb3842619443a974197e", 
+        "revisions": [
+          {
+            "revision": "1.0", 
+            "commit_id": "df072faa88fbc981a409bb3842619443a974197e", 
+            "date": "20-06-2019", 
+            "history": "DEVA MB AC701"
+          }
+        ], 
+        "config": {
+          "root": "ced/Xilinx/IPI/DEVA_VCU118_TEMP/1.0", 
+          "metadata_file": "xitem.json"
+        }, 
+        "company": "xilinx.com"
+      },
+	{
         "name": "DEVA_MB_AC701", 
         "display": "DEVA_MB_AC701", 
         "latest_revision": "1.0", 
