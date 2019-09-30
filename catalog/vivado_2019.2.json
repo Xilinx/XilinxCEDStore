@@ -21,8 +21,8 @@
         "company": "xilinx.com"
       },
 	  {
-        "name": "MicroBlaze_Microcontroller_Configuration_for_SP701_design", 
-        "display": "MicroBlaze_Microcontroller_Configuration_for_SP701_design", 
+        "name": "MicroBlaze_Microcontroller_Configuration_for_SP701", 
+        "display": "MicroBlaze_Microcontroller_Configuration_for_SP701", 
         "latest_revision": "1.0", 
         "commit_id": "885937cb5f6dc5ee74a3fa2eeb0a60c27a6058fe", 
         "revisions": [
@@ -34,14 +34,14 @@
           }
         ], 
         "config": {
-          "root": "ced/Xilinx/IPI/MicroBlaze_Microcontroller_Configuration_for_SP701_design", 
+          "root": "ced/Xilinx/IPI/MicroBlaze_Microcontroller_Configuration_for_SP701", 
           "metadata_file": "xitem.json"
         }, 
         "company": "xilinx.com"
       },
 	  {
-        "name": "MicroBlaze_Real_time_Configuration_for_SP701_design", 
-        "display": "MicroBlaze_Real_time_Configuration_for_SP701_design", 
+        "name": "MicroBlaze_Real_time_Configuration_for_SP701", 
+        "display": "MicroBlaze_Real_time_Configuration_for_SP701", 
         "latest_revision": "1.0", 
         "commit_id": "885937cb5f6dc5ee74a3fa2eeb0a60c27a6058fe", 
         "revisions": [
@@ -53,14 +53,14 @@
           }
         ], 
         "config": {
-          "root": "ced/Xilinx/IPI/MicroBlaze_Real_time_Configuration_for_SP701_design", 
+          "root": "ced/Xilinx/IPI/MicroBlaze_Real_time_Configuration_for_SP701", 
           "metadata_file": "xitem.json"
         }, 
         "company": "xilinx.com"
       },
       {
-        "name": "MicroBlaze_Application_Configuration_for_SP701_design", 
-        "display": "MicroBlaze_Application_Configuration_for_SP701_design", 
+        "name": "MicroBlaze_Application_Configuration_for_SP701", 
+        "display": "MicroBlaze_Application_Configuration_for_SP701", 
         "latest_revision": "1.0", 
         "commit_id": "885937cb5f6dc5ee74a3fa2eeb0a60c27a6058fe", 
         "revisions": [
@@ -72,14 +72,14 @@
           }
         ], 
         "config": {
-          "root": "ced/Xilinx/IPI/MicroBlaze_Application_Configuration_for_SP701_design", 
+          "root": "ced/Xilinx/IPI/MicroBlaze_Application_Configuration_for_SP701", 
           "metadata_file": "xitem.json"
         }, 
         "company": "xilinx.com"
       },     
 	  {
-        "name": "MicroBlaze_Application_Configuration_for_AC701_design", 
-        "display": "MicroBlaze_Application_Configuration_for_AC701_design", 
+        "name": "MicroBlaze_Application_Configuration_for_AC701", 
+        "display": "MicroBlaze_Application_Configuration_for_AC701", 
         "latest_revision": "1.0", 
         "commit_id": "885937cb5f6dc5ee74a3fa2eeb0a60c27a6058fe", 
         "revisions": [
@@ -91,7 +91,7 @@
           }
         ], 
         "config": {
-          "root": "ced/Xilinx/IPI/MicroBlaze_Application_Configuration_for_AC701_design", 
+          "root": "ced/Xilinx/IPI/MicroBlaze_Application_Configuration_for_AC701", 
           "metadata_file": "xitem.json"
         }, 
         "company": "xilinx.com"
