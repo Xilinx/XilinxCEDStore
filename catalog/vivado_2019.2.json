@@ -5,11 +5,11 @@
         "name": "vcu118_platform", 
         "display": "MicroBlaze_Linux_With_MMU_Configuration_for_VCU118", 
         "latest_revision": "1.0", 
-        "commit_id": "885937cb5f6dc5ee74a3fa2eeb0a60c27a6058fe", 
+        "commit_id": "e7afcca7ba980d8c2665881354731c624f4be982", 
         "revisions": [
           {
             "revision": "1.0", 
-            "commit_id": "885937cb5f6dc5ee74a3fa2eeb0a60c27a6058fe", 
+            "commit_id": "e7afcca7ba980d8c2665881354731c624f4be982", 
             "date": "20-06-2019", 
             "history": "vcu118 platform SED"
           }
