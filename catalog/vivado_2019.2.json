@@ -24,17 +24,17 @@
         "name": "MicroBlaze_Microcontroller_Configuration_for_SP701_design", 
         "display": "MicroBlaze_Microcontroller_Configuration_for_SP701_design", 
         "latest_revision": "1.0", 
-        "commit_id": "e1c069c58424a3b91016d96a9a962fb23861f47f", 
+        "commit_id": "4ebb3961f9772d44937ffb27f740ebc82f9b3e2b", 
         "revisions": [
           {
             "revision": "1.0", 
-            "commit_id": "e1c069c58424a3b91016d96a9a962fb23861f47f", 
+            "commit_id": "4ebb3961f9772d44937ffb27f740ebc82f9b3e2b", 
             "date": "07-08-2019", 
             "history": "An example design for SP701 board with Microcontroller preset. DDR3, QSPI, MB, Ethernet and Interrupts based IPI system"
           }
         ], 
         "config": {
-          "root": "ced/Xilinx/IPI/MicroBlaze_Microcontroller_Configuration_for_SP701_design/1.0", 
+          "root": "ced/Xilinx/IPI/MicroBlaze_Microcontroller_Configuration_for_SP701_design", 
           "metadata_file": "xitem.json"
         }, 
         "company": "xilinx.com"
