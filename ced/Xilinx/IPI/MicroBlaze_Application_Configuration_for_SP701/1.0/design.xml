@@ -1,4 +1,5 @@
 ﻿<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+
 <!-- Copyright (C) 2019, Xilinx Inc - All rights reserved
 
  Licensed under the Apache License, Version 2.0 (the "License"). You may
@@ -13,20 +14,20 @@
  WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
  License for the specific language governing permissions and limitations
  under the License. -->
- 
+
 <ExampleDesign>
 
   <Vendor>xilinx.com</Vendor>
 
   <Library>design</Library>
 
-  <!-- <Name>VCU118_SED</Name> -->
-   <Name>vcu118_platform</Name> -->
+  <Name>MicroBlaze_Application_Configuration_for_SP701</Name>
 
+  <Description>An example design for SP701 board. DDR3, QSPI, MB, Ethernet and Interrupts based IPI system </Description>
+  
   <Version>1.0</Version>
-  <Description> An example design for VCU118 board. DDR4, Slow peripherals, MB, QSPI, Timer and Interrupts based IPI system  </Description>
 
   <Design>init.tcl</Design>
- <Image>Microblaze_Platform.png</Image>
+  <Image>MicroBlaze_Platform.png</Image>
 </ExampleDesign>
 
