@@ -18,8 +18,8 @@
 
   <Vendor>xilinx.com</Vendor>
   <Library>design</Library>
-  <Name>MicroBlaze_Linux_With_MMU_Configuration_for_VCU118</Name> 
-   <!-- <Name>vcu118_platform</Name> --> -->
+  <DisplayName>MicroBlaze_Linux_With_MMU_Configuration_for_VCU118</DisplayName> 
+  <Name>vcu118_platform</Name>
   <Version>1.0</Version>
   <Description> An example design for VCU118 board. DDR4, Slow peripherals, MB, QSPI, Timer and Interrupts based IPI system  </Description>
   <Design>init.tcl</Design>
