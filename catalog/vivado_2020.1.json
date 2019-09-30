@@ -10,7 +10,7 @@
           {
             "revision": "1.0", 
             "commit_id": "44a005e4ef2ae2d2010c02d41a0fc128d2adca27", 
-            "date": "20-06-2019", 
+            "date": "20-09-2019", 
             "history": "vcu118 platform SED"
           }
         ], 
@@ -29,7 +29,7 @@
           {
             "revision": "1.0", 
             "commit_id": "44a005e4ef2ae2d2010c02d41a0fc128d2adca27", 
-            "date": "07-08-2019", 
+            "date": "20-09-2019", 
             "history": "An example design for SP701 board with Microcontroller preset. DDR3, QSPI, MB, Ethernet and Interrupts based IPI system"
           }
         ], 
@@ -67,7 +67,7 @@
           {
             "revision": "1.0", 
             "commit_id": "44a005e4ef2ae2d2010c02d41a0fc128d2adca27", 
-            "date": "20-06-2019:15:25:00", 
+            "date": "02-08-2019", 
             "history": "An example design for SP701 board. DDR3, QSPI, MB, Ethernet and Interrupts based IPI system"
           }
         ], 
@@ -86,7 +86,7 @@
           {
             "revision": "1.0", 
             "commit_id": "44a005e4ef2ae2d2010c02d41a0fc128d2adca27", 
-            "date": "01-08-2019:15:25:00", 
+            "date": "02-08-2019", 
             "history": "An example design for AC701 board. DDR3, QSPI, MB, Ethernet and Interrupts based IPI system"
           }
         ], 
