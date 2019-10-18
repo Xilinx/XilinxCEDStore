@@ -1,4 +1,5 @@
 ﻿<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+
 <!-- Copyright (C) 2019, Xilinx Inc - All rights reserved
 
  Licensed under the Apache License, Version 2.0 (the "License"). You may
@@ -20,9 +21,10 @@
 
   <Library>design</Library>
 
-  <Name>MicroBlaze_Application_Configuration_for_AC701</Name>
+  <Name>MicroBlaze_Application_Configuration_for_SP701</Name>
 
-<Description>An example design for AC701 board. DDR3, QSPI, MB, Ethernet and Interrupts based IPI system </Description>
+  <Description>An example design for SP701 board. DDR3, QSPI, MB, Ethernet and Interrupts based IPI system </Description>
+  
   <Version>1.0</Version>
 
   <Design>init.tcl</Design>

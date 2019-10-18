@@ -17,14 +17,14 @@
 set currentFile [file normalize [info script]] 
 set currentDir [file dirname $currentFile] 
 proc getConfigDesignInfo {} { 
-  return [dict create name {MicroBlaze_Application_Configuration_for_AC701} description {}]
+  return [dict create name {MicroBlaze_Application_Configuration_for_SP701} description {}]
 }
 
 proc getSupportedParts {} { 
 }
 
 proc getSupportedBoards {} { 
-  return [list xilinx.com:ac701:1.3]
+  return [list xilinx.com:sp701:1.0]
 }
 
 #proc addOptions {DESIGNOBJ} { 
@@ -46,7 +46,7 @@ proc createDesign { project_name {project_location "."} {options ""}} {
   set curr_location [pwd]
   cd $project_location
   #set ::user_project_location $project_location
-  catch {source -notrace "$currentDir/MicroBlaze_Application_Configuration_for_AC701_design.tcl"} retString 
+  catch {source -notrace "$currentDir/MicroBlaze_Application_Configuration_for_SP701_design.tcl"} retString 
 
   cd $curr_location
 }
