@@ -3,12 +3,11 @@ if {[catch {
   set_param ced.repoPaths [get_property LOCAL_ROOT_DIR [xhub::get_xstores Vivado_example_project]]
   xhub::uninstall [xhub::get_xitems -of_objects [xhub::get_xstores Vivado_example_project]]
   xhub::refresh_catalog [xhub::get_xstores Vivado_example_project]
-  puts "after refresh_ctalog"
   xhub::install [xhub::get_xitems -of_objects [xhub::get_xstores Vivado_example_project]]
-  puts "after install "
 } result]} {
   puts "Failed to download example designs from github."
   puts "error : $result"
+  return 1
 } else {
   puts "Successfully downloaded example designs from github."
 }
