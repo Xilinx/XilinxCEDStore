@@ -1,11 +1,9 @@
 # ########################################################################
-# Copyright (C) 2019, Xilinx Inc - All rights reserved
-
 # Licensed under the Apache License, Version 2.0 (the "License"). You may
 # not use this file except in compliance with the License. A copy of the
 # License is located at
 
-#     http://www.apache.org/licenses/LICENSE-2.0
+#      http://www.apache.org/licenses/LICENSE-2.0
 
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
@@ -15,8 +13,7 @@
 # ########################################################################
 
 # Set the reference directory for source file relative paths (by default the value is script directory path)
-set origin_dir "/proj/dsv_xhd/Vanitha/crs_20191/1031105"
-
+set origin_dir [pwd]
 # Use origin directory path location variable, if specified in the tcl shell
 if { [info exists ::origin_dir_loc] } {
   set origin_dir $::origin_dir_loc
@@ -79,7 +76,7 @@ if { $::argc > 0 } {
 }
 
 # Set the directory path for the original project from where this script was exported
-set orig_proj_dir "[file normalize "$origin_dir/project_3/project_3"]"
+set orig_proj_dir "[file normalize "$origin_dir/project_1"]"
 
 # Create project
 create_project ${_xil_proj_name_} ./${_xil_proj_name_} -part xc7s100fgga676-2
@@ -90,42 +87,14 @@ set proj_dir [get_property directory [current_project]]
 # Set project properties
 set obj [current_project]
 set_property -name "board_part" -value "xilinx.com:sp701:part0:1.0" -objects $obj
-#set_property -name "board_part_repo_paths" -value "/proj/dsv_xhd/Vanitha/perforce/Rodin/HEAD/data/boards/board_files/sp701/1.0" -objects $obj
+#set_property -name "board_part_repo_paths" -value "[file normalize "$origin_dir/../../../../../../../../home/skemidi/.Xilinx/Vivado/2019.2/xhub/board_store"] [file normalize "$origin_dir/../../../../../../Vanitha/PRs/192/14845/tenzing"]" -objects $obj
 set_property -name "default_lib" -value "xil_defaultlib" -objects $obj
-set_property -name "dsa.accelerator_binary_content" -value "bitstream" -objects $obj
-set_property -name "dsa.accelerator_binary_format" -value "xclbin2" -objects $obj
-set_property -name "dsa.board_id" -value "sp701" -objects $obj
-set_property -name "dsa.description" -value "Vivado generated DSA" -objects $obj
-set_property -name "dsa.dr_bd_base_address" -value "0" -objects $obj
-set_property -name "dsa.emu_dir" -value "emu" -objects $obj
-set_property -name "dsa.flash_interface_type" -value "bpix16" -objects $obj
-set_property -name "dsa.flash_offset_address" -value "0" -objects $obj
-set_property -name "dsa.flash_size" -value "1024" -objects $obj
-set_property -name "dsa.host_architecture" -value "x86_64" -objects $obj
-set_property -name "dsa.host_interface" -value "pcie" -objects $obj
-set_property -name "dsa.num_compute_units" -value "60" -objects $obj
-set_property -name "dsa.platform_state" -value "pre_synth" -objects $obj
-set_property -name "dsa.vendor" -value "xilinx" -objects $obj
-set_property -name "dsa.version" -value "0.0" -objects $obj
 set_property -name "enable_vhdl_2008" -value "1" -objects $obj
 set_property -name "ip_cache_permissions" -value "read write" -objects $obj
 set_property -name "ip_output_repo" -value "$proj_dir/${_xil_proj_name_}.cache/ip" -objects $obj
 set_property -name "mem.enable_memory_map_generation" -value "1" -objects $obj
-set_property -name "platform.accelerator_binary_content" -value "bitstream" -objects $obj
-set_property -name "platform.accelerator_binary_format" -value "xclbin2" -objects $obj
 set_property -name "platform.board_id" -value "sp701" -objects $obj
 set_property -name "platform.description" -value "Vivado generated DSA" -objects $obj
-set_property -name "platform.dr_bd_base_address" -value "0" -objects $obj
-set_property -name "platform.emu_dir" -value "emu" -objects $obj
-set_property -name "platform.flash_interface_type" -value "bpix16" -objects $obj
-set_property -name "platform.flash_offset_address" -value "0" -objects $obj
-set_property -name "platform.flash_size" -value "1024" -objects $obj
-set_property -name "platform.host_architecture" -value "x86_64" -objects $obj
-set_property -name "platform.host_interface" -value "pcie" -objects $obj
-set_property -name "platform.num_compute_units" -value "60" -objects $obj
-set_property -name "platform.platform_state" -value "pre_synth" -objects $obj
-set_property -name "platform.vendor" -value "xilinx" -objects $obj
-set_property -name "platform.version" -value "0.0" -objects $obj
 set_property -name "sim.central_dir" -value "$proj_dir/${_xil_proj_name_}.ip_user_files" -objects $obj
 set_property -name "sim.ip.auto_export_scripts" -value "1" -objects $obj
 set_property -name "simulator_language" -value "Mixed" -objects $obj
@@ -146,13 +115,11 @@ if {[string equal [get_filesets -quiet sources_1] ""]} {
 # Set 'sources_1' fileset object
 set obj [get_filesets sources_1]
 # Import local files from the original project
-# set files [list \
- # [file normalize "${origin_dir}/../project_2.srcs/sources_1/bd/design_1/hdl/design_1_wrapper.v" ]\
- # [file normalize "${origin_dir}/../project_2.srcs/sources_1/bd/design_1/ip/design_1_mig_7series_0_0/board.prj" ]\
-# ]
-
+#set files [list \
+# [file normalize "${origin_dir}/project_1/project_1.srcs/sources_1/imports/sources/design_1_wrapper.v"]\
+# [file normalize "${origin_dir}/project_1/project_1.srcs/sources_1/bd/design_1/ip/design_1_mig_7series_0_0/board.prj" ]\
+#]
 set files  "[file dirname [file normalize [info script]]]/sources/design_1_wrapper.v"
-
 set imported_files [import_files -fileset sources_1 $files]
 
 # Set 'sources_1' fileset file properties for remote files
@@ -178,7 +145,7 @@ if {[string equal [get_filesets -quiet constrs_1] ""]} {
 set obj [get_filesets constrs_1]
 
 # Add/Import constrs file and set constrs file properties
-#set file "[file normalize ${origin_dir}/project_ext_50/project_ext_50.srcs/constrs_1/new/top.xdc]"
+#set file "[file normalize ${origin_dir}/project_1/project_1.srcs/constrs_1/imports/constrs/top.xdc]"
 set file  "[file dirname [file normalize [info script]]]/constrs/top.xdc"
 set file_imported [import_files -fileset constrs_1 [list $file]]
 set file "constrs/top.xdc"
@@ -235,6 +202,7 @@ proc cr_bd_design_1 { parentCell } {
   xilinx.com:ip:axi_dma:*\
   xilinx.com:ip:clk_wiz:*\
   xilinx.com:ip:axi_gpio:*\
+  xilinx.com:ip:axi_iic:*\
   xilinx.com:ip:axi_quad_spi:*\
   xilinx.com:ip:smartconnect:*\
   xilinx.com:ip:axi_timer:*\
@@ -249,7 +217,6 @@ proc cr_bd_design_1 { parentCell } {
   xilinx.com:ip:lmb_bram_if_cntlr:*\
   xilinx.com:ip:lmb_v10:*\
   xilinx.com:ip:blk_mem_gen:*\
-  xilinx.com:ip:axi_iic:2.0\
   "
 
    set list_ips_missing ""
@@ -495,7 +462,7 @@ proc create_hier_cell_microblaze_0_local_memory { parentCell nameHier } {
    CONFIG.MMCM_CLKOUT2_DIVIDE {20} \
    CONFIG.MMCM_DIVCLK_DIVIDE {1} \
    CONFIG.NUM_OUT_CLKS {3} \
-   CONFIG.PRIM_SOURCE {Single_ended_clock_capable_pin} \
+   CONFIG.PRIM_SOURCE {No_buffer} \
    CONFIG.USE_RESET {false} \
  ] $axi_ethernet_0_refclk
 
@@ -515,7 +482,7 @@ proc create_hier_cell_microblaze_0_local_memory { parentCell nameHier } {
  ] $axi_gpio_1
 
   # Create instance: axi_iic_0, and set properties
-  set axi_iic_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_iic:2.0 axi_iic_0 ]
+  set axi_iic_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_iic axi_iic_0 ]
   set_property -dict [ list \
    CONFIG.IIC_BOARD_INTERFACE {iic0_main} \
    CONFIG.USE_BOARD_FLOW {true} \
@@ -673,7 +640,7 @@ proc create_hier_cell_microblaze_0_local_memory { parentCell nameHier } {
   connect_bd_net -net axi_ethernet_0_interrupt [get_bd_pins axi_ethernet_0/interrupt] [get_bd_pins microblaze_0_xlconcat/In4]
   connect_bd_net -net axi_ethernet_0_mac_irq [get_bd_pins axi_ethernet_0/mac_irq] [get_bd_pins microblaze_0_xlconcat/In3]
   connect_bd_net -net axi_ethernet_0_phy_rst_n [get_bd_ports phy_reset_out_1] [get_bd_pins axi_ethernet_0/phy_rst_n]
-  connect_bd_net -net axi_ethernet_0_refclk_clk_out1 [get_bd_pins axi_ethernet_0/axis_clk] [get_bd_pins axi_ethernet_0/ref_clk] [get_bd_pins axi_ethernet_0_dma/m_axi_mm2s_aclk] [get_bd_pins axi_ethernet_0_dma/m_axi_s2mm_aclk] [get_bd_pins axi_ethernet_0_dma/m_axi_sg_aclk] [get_bd_pins axi_ethernet_0_refclk/clk_out1] [get_bd_pins axi_smc/aclk1]
+  connect_bd_net -net axi_ethernet_0_refclk_clk_out1 [get_bd_pins axi_ethernet_0/ref_clk] [get_bd_pins axi_ethernet_0_refclk/clk_out1]
   connect_bd_net -net axi_ethernet_0_refclk_clk_out2 [get_bd_pins axi_ethernet_0/gtx_clk] [get_bd_pins axi_ethernet_0_refclk/clk_out2]
   connect_bd_net -net axi_ethernet_0_refclk_clk_out3 [get_bd_pins axi_ethernet_0_refclk/clk_out3] [get_bd_pins axi_quad_spi_0/ext_spi_clk]
   connect_bd_net -net axi_iic_0_iic2intc_irpt [get_bd_pins axi_iic_0/iic2intc_irpt] [get_bd_pins microblaze_0_xlconcat/In7]
@@ -681,7 +648,7 @@ proc create_hier_cell_microblaze_0_local_memory { parentCell nameHier } {
   connect_bd_net -net axi_timer_0_interrupt [get_bd_pins axi_timer_0/interrupt] [get_bd_pins microblaze_0_xlconcat/In0]
   connect_bd_net -net axi_uartlite_0_interrupt [get_bd_pins axi_uartlite_0/interrupt] [get_bd_pins microblaze_0_xlconcat/In5]
   connect_bd_net -net mdm_1_debug_sys_rst [get_bd_pins mdm_1/Debug_SYS_Rst] [get_bd_pins rst_mig_7series_0_100M/mb_debug_sys_rst]
-  connect_bd_net -net microblaze_0_Clk [get_bd_pins axi_ethernet_0/s_axi_lite_clk] [get_bd_pins axi_ethernet_0_dma/s_axi_lite_aclk] [get_bd_pins axi_ethernet_0_refclk/clk_in1] [get_bd_pins axi_gpio_0/s_axi_aclk] [get_bd_pins axi_gpio_1/s_axi_aclk] [get_bd_pins axi_iic_0/s_axi_aclk] [get_bd_pins axi_quad_spi_0/s_axi_aclk] [get_bd_pins axi_smc/aclk] [get_bd_pins axi_timer_0/s_axi_aclk] [get_bd_pins axi_uartlite_0/s_axi_aclk] [get_bd_pins microblaze_0/Clk] [get_bd_pins microblaze_0_axi_intc/processor_clk] [get_bd_pins microblaze_0_axi_intc/s_axi_aclk] [get_bd_pins microblaze_0_axi_periph/ACLK] [get_bd_pins microblaze_0_axi_periph/M00_ACLK] [get_bd_pins microblaze_0_axi_periph/M01_ACLK] [get_bd_pins microblaze_0_axi_periph/M02_ACLK] [get_bd_pins microblaze_0_axi_periph/M03_ACLK] [get_bd_pins microblaze_0_axi_periph/M04_ACLK] [get_bd_pins microblaze_0_axi_periph/M05_ACLK] [get_bd_pins microblaze_0_axi_periph/M06_ACLK] [get_bd_pins microblaze_0_axi_periph/M07_ACLK] [get_bd_pins microblaze_0_axi_periph/M08_ACLK] [get_bd_pins microblaze_0_axi_periph/S00_ACLK] [get_bd_pins microblaze_0_local_memory/LMB_Clk] [get_bd_pins mig_7series_0/ui_clk] [get_bd_pins rst_mig_7series_0_100M/slowest_sync_clk]
+  connect_bd_net -net microblaze_0_Clk [get_bd_pins axi_ethernet_0/axis_clk] [get_bd_pins axi_ethernet_0/s_axi_lite_clk] [get_bd_pins axi_ethernet_0_dma/m_axi_mm2s_aclk] [get_bd_pins axi_ethernet_0_dma/m_axi_s2mm_aclk] [get_bd_pins axi_ethernet_0_dma/m_axi_sg_aclk] [get_bd_pins axi_ethernet_0_dma/s_axi_lite_aclk] [get_bd_pins axi_ethernet_0_refclk/clk_in1] [get_bd_pins axi_gpio_0/s_axi_aclk] [get_bd_pins axi_gpio_1/s_axi_aclk] [get_bd_pins axi_iic_0/s_axi_aclk] [get_bd_pins axi_quad_spi_0/s_axi_aclk] [get_bd_pins axi_smc/aclk] [get_bd_pins axi_smc/aclk1] [get_bd_pins axi_timer_0/s_axi_aclk] [get_bd_pins axi_uartlite_0/s_axi_aclk] [get_bd_pins microblaze_0/Clk] [get_bd_pins microblaze_0_axi_intc/processor_clk] [get_bd_pins microblaze_0_axi_intc/s_axi_aclk] [get_bd_pins microblaze_0_axi_periph/ACLK] [get_bd_pins microblaze_0_axi_periph/M00_ACLK] [get_bd_pins microblaze_0_axi_periph/M01_ACLK] [get_bd_pins microblaze_0_axi_periph/M02_ACLK] [get_bd_pins microblaze_0_axi_periph/M03_ACLK] [get_bd_pins microblaze_0_axi_periph/M04_ACLK] [get_bd_pins microblaze_0_axi_periph/M05_ACLK] [get_bd_pins microblaze_0_axi_periph/M06_ACLK] [get_bd_pins microblaze_0_axi_periph/M07_ACLK] [get_bd_pins microblaze_0_axi_periph/M08_ACLK] [get_bd_pins microblaze_0_axi_periph/S00_ACLK] [get_bd_pins microblaze_0_local_memory/LMB_Clk] [get_bd_pins mig_7series_0/ui_clk] [get_bd_pins rst_mig_7series_0_100M/slowest_sync_clk]
   connect_bd_net -net microblaze_0_intr [get_bd_pins microblaze_0_axi_intc/intr] [get_bd_pins microblaze_0_xlconcat/dout]
   connect_bd_net -net mig_7series_0_mmcm_locked [get_bd_pins mig_7series_0/mmcm_locked] [get_bd_pins rst_mig_7series_0_100M/dcm_locked]
   connect_bd_net -net mig_7series_0_ui_clk_sync_rst [get_bd_pins mig_7series_0/ui_clk_sync_rst] [get_bd_pins rst_mig_7series_0_100M/ext_reset_in]
@@ -692,29 +659,136 @@ proc create_hier_cell_microblaze_0_local_memory { parentCell nameHier } {
   connect_bd_net -net rst_mig_7series_0_100M_peripheral_aresetn [get_bd_pins axi_ethernet_0/s_axi_lite_resetn] [get_bd_pins axi_ethernet_0_dma/axi_resetn] [get_bd_pins axi_gpio_0/s_axi_aresetn] [get_bd_pins axi_gpio_1/s_axi_aresetn] [get_bd_pins axi_iic_0/s_axi_aresetn] [get_bd_pins axi_quad_spi_0/s_axi_aresetn] [get_bd_pins axi_smc/aresetn] [get_bd_pins axi_timer_0/s_axi_aresetn] [get_bd_pins axi_uartlite_0/s_axi_aresetn] [get_bd_pins microblaze_0_axi_intc/s_axi_aresetn] [get_bd_pins microblaze_0_axi_periph/ARESETN] [get_bd_pins microblaze_0_axi_periph/M00_ARESETN] [get_bd_pins microblaze_0_axi_periph/M01_ARESETN] [get_bd_pins microblaze_0_axi_periph/M02_ARESETN] [get_bd_pins microblaze_0_axi_periph/M03_ARESETN] [get_bd_pins microblaze_0_axi_periph/M04_ARESETN] [get_bd_pins microblaze_0_axi_periph/M05_ARESETN] [get_bd_pins microblaze_0_axi_periph/M06_ARESETN] [get_bd_pins microblaze_0_axi_periph/M07_ARESETN] [get_bd_pins microblaze_0_axi_periph/M08_ARESETN] [get_bd_pins microblaze_0_axi_periph/S00_ARESETN] [get_bd_pins mig_7series_0/aresetn] [get_bd_pins rst_mig_7series_0_100M/peripheral_aresetn]
 
   # Create address segments
-  create_bd_addr_seg -range 0x20000000 -offset 0x80000000 [get_bd_addr_spaces axi_ethernet_0_dma/Data_SG] [get_bd_addr_segs mig_7series_0/memmap/memaddr] SEG_mig_7series_0_memaddr
-  create_bd_addr_seg -range 0x20000000 -offset 0x80000000 [get_bd_addr_spaces axi_ethernet_0_dma/Data_MM2S] [get_bd_addr_segs mig_7series_0/memmap/memaddr] SEG_mig_7series_0_memaddr
-  create_bd_addr_seg -range 0x20000000 -offset 0x80000000 [get_bd_addr_spaces axi_ethernet_0_dma/Data_S2MM] [get_bd_addr_segs mig_7series_0/memmap/memaddr] SEG_mig_7series_0_memaddr
-  create_bd_addr_seg -range 0x00010000 -offset 0x40C00000 [get_bd_addr_spaces microblaze_0/Data] [get_bd_addr_segs axi_ethernet_0/s_axi/Reg0] SEG_axi_ethernet_0_Reg0
-  create_bd_addr_seg -range 0x00010000 -offset 0x41E00000 [get_bd_addr_spaces microblaze_0/Data] [get_bd_addr_segs axi_ethernet_0_dma/S_AXI_LITE/Reg] SEG_axi_ethernet_0_dma_Reg
-  create_bd_addr_seg -range 0x00010000 -offset 0x40000000 [get_bd_addr_spaces microblaze_0/Data] [get_bd_addr_segs axi_gpio_0/S_AXI/Reg] SEG_axi_gpio_0_Reg
-  create_bd_addr_seg -range 0x00010000 -offset 0x40010000 [get_bd_addr_spaces microblaze_0/Data] [get_bd_addr_segs axi_gpio_1/S_AXI/Reg] SEG_axi_gpio_1_Reg
-  create_bd_addr_seg -range 0x00010000 -offset 0x40800000 [get_bd_addr_spaces microblaze_0/Data] [get_bd_addr_segs axi_iic_0/S_AXI/Reg] SEG_axi_iic_0_Reg
-  create_bd_addr_seg -range 0x00010000 -offset 0x44A00000 [get_bd_addr_spaces microblaze_0/Data] [get_bd_addr_segs axi_quad_spi_0/AXI_LITE/Reg] SEG_axi_quad_spi_0_Reg
-  create_bd_addr_seg -range 0x00010000 -offset 0x41C00000 [get_bd_addr_spaces microblaze_0/Data] [get_bd_addr_segs axi_timer_0/S_AXI/Reg] SEG_axi_timer_0_Reg
-  create_bd_addr_seg -range 0x00010000 -offset 0x40600000 [get_bd_addr_spaces microblaze_0/Data] [get_bd_addr_segs axi_uartlite_0/S_AXI/Reg] SEG_axi_uartlite_0_Reg
-  create_bd_addr_seg -range 0x00020000 -offset 0x00000000 [get_bd_addr_spaces microblaze_0/Data] [get_bd_addr_segs microblaze_0_local_memory/dlmb_bram_if_cntlr/SLMB/Mem] SEG_dlmb_bram_if_cntlr_Mem
-  create_bd_addr_seg -range 0x00020000 -offset 0x00000000 [get_bd_addr_spaces microblaze_0/Instruction] [get_bd_addr_segs microblaze_0_local_memory/ilmb_bram_if_cntlr/SLMB/Mem] SEG_ilmb_bram_if_cntlr_Mem
-  create_bd_addr_seg -range 0x00010000 -offset 0x41200000 [get_bd_addr_spaces microblaze_0/Data] [get_bd_addr_segs microblaze_0_axi_intc/S_AXI/Reg] SEG_microblaze_0_axi_intc_Reg
-  create_bd_addr_seg -range 0x20000000 -offset 0x80000000 [get_bd_addr_spaces microblaze_0/Data] [get_bd_addr_segs mig_7series_0/memmap/memaddr] SEG_mig_7series_0_memaddr
-  create_bd_addr_seg -range 0x20000000 -offset 0x80000000 [get_bd_addr_spaces microblaze_0/Instruction] [get_bd_addr_segs mig_7series_0/memmap/memaddr] SEG_mig_7series_0_memaddr
+  assign_bd_address -offset 0x80000000 -range 0x20000000 -target_address_space [get_bd_addr_spaces axi_ethernet_0_dma/Data_SG] [get_bd_addr_segs mig_7series_0/memmap/memaddr] -force
+  assign_bd_address -offset 0x80000000 -range 0x20000000 -target_address_space [get_bd_addr_spaces axi_ethernet_0_dma/Data_MM2S] [get_bd_addr_segs mig_7series_0/memmap/memaddr] -force
+  assign_bd_address -offset 0x80000000 -range 0x20000000 -target_address_space [get_bd_addr_spaces axi_ethernet_0_dma/Data_S2MM] [get_bd_addr_segs mig_7series_0/memmap/memaddr] -force
+  assign_bd_address -offset 0x40C00000 -range 0x00010000 -target_address_space [get_bd_addr_spaces microblaze_0/Data] [get_bd_addr_segs axi_ethernet_0/s_axi/Reg0] -force
+  assign_bd_address -offset 0x41E00000 -range 0x00010000 -target_address_space [get_bd_addr_spaces microblaze_0/Data] [get_bd_addr_segs axi_ethernet_0_dma/S_AXI_LITE/Reg] -force
+  assign_bd_address -offset 0x40000000 -range 0x00010000 -target_address_space [get_bd_addr_spaces microblaze_0/Data] [get_bd_addr_segs axi_gpio_0/S_AXI/Reg] -force
+  assign_bd_address -offset 0x40010000 -range 0x00010000 -target_address_space [get_bd_addr_spaces microblaze_0/Data] [get_bd_addr_segs axi_gpio_1/S_AXI/Reg] -force
+  assign_bd_address -offset 0x40800000 -range 0x00010000 -target_address_space [get_bd_addr_spaces microblaze_0/Data] [get_bd_addr_segs axi_iic_0/S_AXI/Reg] -force
+  assign_bd_address -offset 0x44A00000 -range 0x00010000 -target_address_space [get_bd_addr_spaces microblaze_0/Data] [get_bd_addr_segs axi_quad_spi_0/AXI_LITE/Reg] -force
+  assign_bd_address -offset 0x41C00000 -range 0x00010000 -target_address_space [get_bd_addr_spaces microblaze_0/Data] [get_bd_addr_segs axi_timer_0/S_AXI/Reg] -force
+  assign_bd_address -offset 0x40600000 -range 0x00010000 -target_address_space [get_bd_addr_spaces microblaze_0/Data] [get_bd_addr_segs axi_uartlite_0/S_AXI/Reg] -force
+  assign_bd_address -offset 0x00000000 -range 0x00020000 -target_address_space [get_bd_addr_spaces microblaze_0/Data] [get_bd_addr_segs microblaze_0_local_memory/dlmb_bram_if_cntlr/SLMB/Mem] -force
+  assign_bd_address -offset 0x00000000 -range 0x00020000 -target_address_space [get_bd_addr_spaces microblaze_0/Instruction] [get_bd_addr_segs microblaze_0_local_memory/ilmb_bram_if_cntlr/SLMB/Mem] -force
+  assign_bd_address -offset 0x41200000 -range 0x00010000 -target_address_space [get_bd_addr_spaces microblaze_0/Data] [get_bd_addr_segs microblaze_0_axi_intc/S_AXI/Reg] -force
+  assign_bd_address -offset 0x80000000 -range 0x20000000 -target_address_space [get_bd_addr_spaces microblaze_0/Data] [get_bd_addr_segs mig_7series_0/memmap/memaddr] -force
+  assign_bd_address -offset 0x80000000 -range 0x20000000 -target_address_space [get_bd_addr_spaces microblaze_0/Instruction] [get_bd_addr_segs mig_7series_0/memmap/memaddr] -force
 
+  # Perform GUI Layout
+  regenerate_bd_layout -layout_string {
+   "ActiveEmotionalView":"Default View",
+   "Default View_ScaleFactor":"0.702976",
+   "Default View_TopLeft":"-156,118",
+   "DisplayPinAutomationMissing":"1",
+   "DisplayPinsOfHiddenNets":"1",
+   "DisplayTieOff":"1",
+   "ExpandedHierarchyInLayout":"",
+   "guistr":"# # String gsaved with Nlview 7.0.21  2019-05-29 bk=1.5064 VDI=41 GEI=36 GUI=JA:9.0 TLS
+#  -string -flagsOSRD
+preplace port ddr3_sdram -pg 1 -lvl 7 -x 2600 -y 1520 -defaultsOSRD
+preplace port dip_switches_16bits -pg 1 -lvl 7 -x 2600 -y 750 -defaultsOSRD
+preplace port iic0_main -pg 1 -lvl 7 -x 2600 -y 1000 -defaultsOSRD
+preplace port led_8bits -pg 1 -lvl 7 -x 2600 -y 1370 -defaultsOSRD
+preplace port mdio_mdc_1 -pg 1 -lvl 7 -x 2600 -y 130 -defaultsOSRD
+preplace port push_buttons_5bits -pg 1 -lvl 7 -x 2600 -y 1350 -defaultsOSRD
+preplace port rgmii_1 -pg 1 -lvl 7 -x 2600 -y 150 -defaultsOSRD
+preplace port rs232_uart -pg 1 -lvl 7 -x 2600 -y 1210 -defaultsOSRD
+preplace port spi_flash -pg 1 -lvl 7 -x 2600 -y 560 -defaultsOSRD
+preplace port sys_diff_clock -pg 1 -lvl 0 -x -10 -y 1550 -defaultsOSRD
+preplace port reset -pg 1 -lvl 0 -x -10 -y 1610 -defaultsOSRD
+preplace portBus phy_reset_out_1 -pg 1 -lvl 7 -x 2600 -y 210 -defaultsOSRD
+preplace inst axi_ethernet_0 -pg 1 -lvl 3 -x 1060 -y 170 -defaultsOSRD
+preplace inst axi_ethernet_0_dma -pg 1 -lvl 4 -x 1530 -y 550 -defaultsOSRD
+preplace inst axi_ethernet_0_refclk -pg 1 -lvl 2 -x 620 -y 400 -defaultsOSRD
+preplace inst axi_gpio_0 -pg 1 -lvl 6 -x 2420 -y 1360 -defaultsOSRD
+preplace inst axi_gpio_1 -pg 1 -lvl 6 -x 2420 -y 750 -defaultsOSRD
+preplace inst axi_iic_0 -pg 1 -lvl 6 -x 2420 -y 1020 -defaultsOSRD
+preplace inst axi_quad_spi_0 -pg 1 -lvl 6 -x 2420 -y 580 -defaultsOSRD
+preplace inst axi_smc -pg 1 -lvl 5 -x 2060 -y 860 -defaultsOSRD
+preplace inst axi_timer_0 -pg 1 -lvl 3 -x 1060 -y 640 -defaultsOSRD
+preplace inst axi_uartlite_0 -pg 1 -lvl 6 -x 2420 -y 1220 -defaultsOSRD
+preplace inst mdm_1 -pg 1 -lvl 3 -x 1060 -y 1270 -defaultsOSRD
+preplace inst microblaze_0 -pg 1 -lvl 4 -x 1530 -y 1060 -defaultsOSRD
+preplace inst microblaze_0_axi_intc -pg 1 -lvl 3 -x 1060 -y 890 -defaultsOSRD
+preplace inst microblaze_0_axi_periph -pg 1 -lvl 2 -x 620 -y 1090 -defaultsOSRD
+preplace inst microblaze_0_local_memory -pg 1 -lvl 5 -x 2060 -y 1090 -defaultsOSRD
+preplace inst microblaze_0_xlconcat -pg 1 -lvl 2 -x 620 -y 660 -defaultsOSRD
+preplace inst mig_7series_0 -pg 1 -lvl 6 -x 2420 -y 1560 -defaultsOSRD
+preplace inst reset_inv_0 -pg 1 -lvl 5 -x 2060 -y 1610 -defaultsOSRD
+preplace inst rst_mig_7series_0_100M -pg 1 -lvl 1 -x 230 -y 1430 -defaultsOSRD
+preplace netloc axi_ethernet_0_dma_mm2s_cntrl_reset_out_n 1 2 3 920 360 NJ 360 1840
+preplace netloc axi_ethernet_0_dma_mm2s_introut 1 1 4 470 520 NJ 520 1230J 710 1780
+preplace netloc axi_ethernet_0_dma_mm2s_prmry_reset_out_n 1 2 3 870 370 NJ 370 1770
+preplace netloc axi_ethernet_0_dma_s2mm_introut 1 1 4 450 790 800J 750 NJ 750 1770
+preplace netloc axi_ethernet_0_dma_s2mm_prmry_reset_out_n 1 2 3 890 380 NJ 380 1790
+preplace netloc axi_ethernet_0_dma_s2mm_sts_reset_out_n 1 2 3 900 390 NJ 390 1780
+preplace netloc axi_ethernet_0_interrupt 1 1 3 430 490 770J 460 1200
+preplace netloc axi_ethernet_0_mac_irq 1 1 3 440 510 780J 480 1220
+preplace netloc axi_ethernet_0_phy_rst_n 1 3 4 NJ 210 NJ 210 NJ 210 NJ
+preplace netloc axi_ethernet_0_refclk_clk_out1 1 2 1 780 280n
+preplace netloc axi_ethernet_0_refclk_clk_out2 1 2 1 770 260n
+preplace netloc axi_ethernet_0_refclk_clk_out3 1 2 4 830J 470 1240J 720 1790J 700 2220
+preplace netloc axi_iic_0_iic2intc_irpt 1 1 6 460 1440 NJ 1440 NJ 1440 NJ 1440 NJ 1440 2570
+preplace netloc axi_quad_spi_0_ip2intc_irpt 1 1 6 470 800 830J 780 NJ 780 1830J 710 2240J 670 2580
+preplace netloc axi_timer_0_interrupt 1 1 3 450 500 830J 510 1200
+preplace netloc axi_uartlite_0_interrupt 1 1 6 440 1450 NJ 1450 NJ 1450 NJ 1450 NJ 1450 2560
+preplace netloc mdm_1_debug_sys_rst 1 0 4 20 1330 420J 1370 NJ 1370 1200
+preplace netloc microblaze_0_Clk 1 0 7 10 1290 420 310 840 500 1220 890 1820 1180 2260 1140 2580
+preplace netloc microblaze_0_intr 1 2 1 810 660n
+preplace netloc mig_7series_0_mmcm_locked 1 0 7 40 1540 NJ 1540 NJ 1540 NJ 1540 NJ 1540 2220J 1660 2560
+preplace netloc mig_7series_0_ui_clk_sync_rst 1 0 7 30 1530 450J 1460 NJ 1460 NJ 1460 NJ 1460 NJ 1460 2560
+preplace netloc reset_1 1 0 5 NJ 1610 NJ 1610 NJ 1610 NJ 1610 NJ
+preplace netloc reset_inv_0_Res 1 5 1 2260J 1570n
+preplace netloc rst_mig_7series_0_100M_bus_struct_reset 1 1 4 NJ 1410 920J 1180 NJ 1180 1780
+preplace netloc rst_mig_7series_0_100M_mb_reset 1 1 3 NJ 1390 910 1090 NJ
+preplace netloc rst_mig_7series_0_100M_peripheral_aresetn 1 1 5 410 1400 820 530 1210 730 1840 720 2250
+preplace netloc axi_ethernet_0_dma_M_AXIS_CNTRL 1 2 3 910 340 1230J 350 1820
+preplace netloc axi_ethernet_0_dma_M_AXIS_MM2S 1 2 3 850 350 1240J 340 1830
+preplace netloc axi_ethernet_0_dma_M_AXI_MM2S 1 4 1 1870 470n
+preplace netloc axi_ethernet_0_dma_M_AXI_S2MM 1 4 1 1860 490n
+preplace netloc axi_ethernet_0_dma_M_AXI_SG 1 4 1 1880 450n
+preplace netloc axi_ethernet_0_m_axis_rxd 1 3 1 1260 90n
+preplace netloc axi_ethernet_0_m_axis_rxs 1 3 1 1250 110n
+preplace netloc axi_ethernet_0_mdio 1 3 4 NJ 130 NJ 130 NJ 130 NJ
+preplace netloc axi_ethernet_0_rgmii 1 3 4 NJ 150 NJ 150 NJ 150 NJ
+preplace netloc axi_gpio_0_GPIO 1 6 1 NJ 1350
+preplace netloc axi_gpio_0_GPIO2 1 6 1 NJ 1370
+preplace netloc axi_gpio_1_GPIO 1 6 1 NJ 750
+preplace netloc axi_iic_0_IIC 1 6 1 NJ 1000
+preplace netloc axi_quad_spi_0_SPI_0 1 6 1 NJ 560
+preplace netloc axi_smc_M00_AXI 1 5 1 2220 860n
+preplace netloc axi_uartlite_0_UART 1 6 1 NJ 1210
+preplace netloc microblaze_0_M_AXI_DC 1 4 1 1770 790n
+preplace netloc microblaze_0_M_AXI_IC 1 4 1 1780 810n
+preplace netloc microblaze_0_axi_dp 1 1 4 470 1380 NJ 1380 NJ 1380 1790
+preplace netloc microblaze_0_axi_periph_M01_AXI 1 2 4 900 1000 1250J 960 1790J 990 2230J
+preplace netloc microblaze_0_axi_periph_M02_AXI 1 2 4 NJ 1050 1200J 1190 NJ 1190 2210
+preplace netloc microblaze_0_axi_periph_M03_AXI 1 2 4 860 760 NJ 760 1850J 730 NJ
+preplace netloc microblaze_0_axi_periph_M04_AXI 1 2 4 890J 770 NJ 770 1820J 690 2210
+preplace netloc microblaze_0_axi_periph_M05_AXI 1 2 1 850 590n
+preplace netloc microblaze_0_axi_periph_M06_AXI 1 2 1 790 60n
+preplace netloc microblaze_0_axi_periph_M07_AXI 1 2 2 870J 490 1230
+preplace netloc microblaze_0_axi_periph_M08_AXI 1 2 4 NJ 1170 NJ 1170 NJ 1170 2240
+preplace netloc microblaze_0_debug 1 3 1 1250 1050n
+preplace netloc microblaze_0_dlmb_1 1 4 1 1810 1020n
+preplace netloc microblaze_0_ilmb_1 1 4 1 1800 1040n
+preplace netloc microblaze_0_intc_axi 1 2 1 880 840n
+preplace netloc microblaze_0_interrupt 1 3 1 1200 890n
+preplace netloc mig_7series_0_DDR3 1 6 1 NJ 1520
+preplace netloc sys_diff_clock_1 1 0 6 NJ 1550 NJ 1550 NJ 1550 NJ 1550 NJ 1550 NJ
+levelinfo -pg 1 -10 230 620 1060 1530 2060 2420 2600
+pagesize -pg 1 -db -bbox -sgen -160 0 2810 1670
+"
+}
 
   # Restore current instance
   current_bd_instance $oldCurInst
 
   validate_bd_design
   save_bd_design
+  regenerate_bd_layout
   #close_bd_design $design_name 
 }
 # End of cr_bd_design_1()
@@ -956,6 +1030,7 @@ set_property -name "options.warn_on_violation" -value "1" -objects $obj
 }
 set obj [get_runs impl_1]
 set_property -name "strategy" -value "Vivado Implementation Defaults" -objects $obj
+set_property -name "steps.phys_opt_design.is_enabled" -value "1" -objects $obj
 set_property -name "steps.write_bitstream.args.readback_file" -value "0" -objects $obj
 set_property -name "steps.write_bitstream.args.verbose" -value "0" -objects $obj
 
