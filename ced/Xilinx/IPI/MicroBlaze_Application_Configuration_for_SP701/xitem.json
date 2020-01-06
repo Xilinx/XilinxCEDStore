@@ -17,6 +17,7 @@
               }
             ],
             "category": "example",
+            "logo": "MicroBlaze_Platform.png",  
             "website": "www.xilinx.com",
             "is_active" : true, 
             "search-keywords": [
