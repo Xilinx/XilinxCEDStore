@@ -1,0 +1,61 @@
+{
+  "catalog": {
+    "items": [
+      {
+        "name": "MicroBlaze_Application_Configuration_for_SP701", 
+        "display": "MicroBlaze_Application_Configuration_for_SP701", 
+        "latest_revision": "1.0", 
+        "commit_id": "a39c33856ac6e312a379db77fbe8947eaa887df4", 
+        "revisions": [
+          {
+            "revision": "1.0", 
+            "commit_id": "a39c33856ac6e312a379db77fbe8947eaa887df4", 
+            "date": "30-10-2019", 
+            "history": "An example design for SP701 board. DDR3, QSPI, MB, Ethernet and Interrupts based IPI system"
+          }
+        ], 
+        "config": {
+          "root": "ced/Xilinx/IPI/MicroBlaze_Application_Configuration_for_SP701", 
+          "metadata_file": "xitem.json"
+        }, 
+        "company": "xilinx.com"
+      }  
+    ], 
+    "categories": [
+      {
+        "name": "single_part", 
+        "display_name": "Single Part", 
+        "description": "This category represents all the boards which have single part", 
+        "parent": ""
+      }, 
+      {
+        "name": "multi_part", 
+        "display_name": "Multi Part", 
+        "description": "This category represents all the boards which have multi part", 
+        "parent": ""
+      }, 
+      {
+        "name": "daughter_card", 
+        "display_name": "Daughter Card", 
+        "description": "This category represents all the boards which are daughter cards", 
+        "parent": ""
+      }, 
+      {
+        "name": "misc", 
+        "display_name": "Misc", 
+        "description": "This category represents miscellaneous variety of boards", 
+        "default": true, 
+        "parent": ""
+      }, 
+      {
+        "name": "examples", 
+        "display_name": "Examples", 
+        "description": "This category represents configurable example designs", 
+        "default": true, 
+        "parent": ""
+      }
+    ]
+  }, 
+  "_major": 1, 
+  "_minor": 0
+}
