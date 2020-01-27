@@ -1,7 +1,7 @@
 {
    "catalog": {
 
-       "current_branch": "master",
+       "current_branch": "2019.2",
        "supported_products": [    
         {
           "product_name": "vivado",
