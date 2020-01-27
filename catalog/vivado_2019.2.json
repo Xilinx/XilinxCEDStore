@@ -15,7 +15,7 @@
           }
         ], 
         "config": {
-          "root": "ced/Xilinx/IPI/SP701_MicroBlaze_Application_Preset", 
+          "root": "ced/Xilinx/IPI/SP701_MicroBlaze_Application_preset", 
           "metadata_file": "xitem.json"
         }, 
         "company": "xilinx.com"
@@ -34,7 +34,7 @@
           }
         ], 
         "config": {
-          "root": "ced/Xilinx/IPI/AC701_MicroBlaze_Application_Preset", 
+          "root": "ced/Xilinx/IPI/AC701_MicroBlaze_Application_preset", 
           "metadata_file": "xitem.json"
         }, 
         "company": "xilinx.com"
@@ -53,7 +53,7 @@
           }
         ], 
         "config": {
-          "root": "ced/Xilinx/IPI/SP701_MicroBlaze_Microcontroller_Preset", 
+          "root": "ced/Xilinx/IPI/SP701_MicroBlaze_Microcontroller_preset", 
           "metadata_file": "xitem.json"
         }, 
         "company": "xilinx.com"
@@ -72,7 +72,7 @@
           }
         ], 
         "config": {
-          "root": "ced/Xilinx/IPI/SP701_MicroBlaze_Real_time_Preset", 
+          "root": "ced/Xilinx/IPI/SP701_MicroBlaze_Real_time_preset", 
           "metadata_file": "xitem.json"
         }, 
         "company": "xilinx.com"
