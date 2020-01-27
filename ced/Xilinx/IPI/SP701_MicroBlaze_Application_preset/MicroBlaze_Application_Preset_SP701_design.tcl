@@ -28,7 +28,7 @@ if { [info exists ::user_project_name] } {
 }
 
 variable script_file
-set script_file "MicroBlaze_Application_Configuration_for_SP701_design.tcl"
+set script_file "MicroBlaze_Application_Preset_SP701_design.tcl"
 
 # Help information for this script
 proc print_help {} {
