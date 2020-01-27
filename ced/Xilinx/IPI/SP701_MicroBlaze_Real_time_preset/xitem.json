@@ -4,7 +4,7 @@
         {
           "infra": {
             "name": "MicroBlaze_Realtime_Preset_SP701",
-            "display": "MicroBlaze Realtime Preset (SP701)",
+            "display": "MicroBlaze Real-time Preset (SP701)",
             "revision": "1.0",
             "description": "An example design for SP701 board. DDR3, Slow peripherals, MB, QSPI, Timer and Interrupts based IPI system",
             "company": "xilinx.com",
