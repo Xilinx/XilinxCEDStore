@@ -2,24 +2,81 @@
   "catalog": {
     "items": [
       {
-        "name": "MicroBlaze_Application_Configuration_for_SP701", 
-        "display": "MicroBlaze_Application_Configuration_for_SP701", 
+        "name": "MicroBlaze_Application_Preset_SP701", 
+        "display": "MicroBlaze Application Preset (SP701)", 
         "latest_revision": "1.0", 
-        "commit_id": "a39c33856ac6e312a379db77fbe8947eaa887df4", 
+        "commit_id": "c87b93c31bcf3f6634d2e1becb517522a392ad44", 
         "revisions": [
           {
             "revision": "1.0", 
-            "commit_id": "a39c33856ac6e312a379db77fbe8947eaa887df4", 
-            "date": "30-10-2019", 
+            "commit_id": "c87b93c31bcf3f6634d2e1becb517522a392ad44", 
+            "date": "27-10-2020", 
             "history": "An example design for SP701 board. DDR3, QSPI, MB, Ethernet and Interrupts based IPI system"
           }
         ], 
         "config": {
-          "root": "ced/Xilinx/IPI/MicroBlaze_Application_Configuration_for_SP701", 
+          "root": "ced/Xilinx/IPI/MicroBlaze_Application_Preset_SP701", 
           "metadata_file": "xitem.json"
         }, 
         "company": "xilinx.com"
-      }  
+      }, 
+      {
+        "name": "MicroBlaze_Application_Preset_AC701", 
+        "display": "MicroBlaze Application Preset (AC701)", 
+        "latest_revision": "1.0", 
+        "commit_id": "c87b93c31bcf3f6634d2e1becb517522a392ad44", 
+        "revisions": [
+          {
+            "revision": "1.0", 
+            "commit_id": "c87b93c31bcf3f6634d2e1becb517522a392ad44", 
+            "date": "27-10-2020",  
+            "history": "An example design for AC701 board. DDR3, QSPI, MB, Ethernet and Interrupts based IPI system"
+          }
+        ], 
+        "config": {
+          "root": "ced/Xilinx/IPI/MicroBlaze_Application_Preset_AC701", 
+          "metadata_file": "xitem.json"
+        }, 
+        "company": "xilinx.com"
+      }, 	 
+       {
+        "name": "MicroBlaze_Microcontroller_Preset_SP701", 
+        "display": "MicroBlaze Microcontroller Preset (SP701)", 
+        "latest_revision": "1.0", 
+        "commit_id": "c87b93c31bcf3f6634d2e1becb517522a392ad44", 
+        "revisions": [
+          {
+            "revision": "1.0", 
+            "commit_id": "c87b93c31bcf3f6634d2e1becb517522a392ad44", 
+            "date": "27-10-2020",  
+            "history": "An example design for AC701 board. DDR3, QSPI, MB, Ethernet and Interrupts based IPI system"
+          }
+        ], 
+        "config": {
+          "root": "ced/Xilinx/IPI/MicroBlaze_Microcontroller_Preset_SP701", 
+          "metadata_file": "xitem.json"
+        }, 
+        "company": "xilinx.com"
+      },  
+      {
+        "name": "MicroBlaze_Real_time_Preset_SP701", 
+        "display": "MicroBlaze Real-time Preset (SP701)", 
+        "latest_revision": "1.0", 
+        "commit_id": "c87b93c31bcf3f6634d2e1becb517522a392ad44", 
+        "revisions": [
+          {
+            "revision": "1.0", 
+            "commit_id": "c87b93c31bcf3f6634d2e1becb517522a392ad44", 
+            "date": "27-10-2020",  
+            "history": "An example design for AC701 board. DDR3, QSPI, MB, Ethernet and Interrupts based IPI system"
+          }
+        ], 
+        "config": {
+          "root": "ced/Xilinx/IPI/MicroBlaze_Real_time_Preset_SP701", 
+          "metadata_file": "xitem.json"
+        }, 
+        "company": "xilinx.com"
+      }	  
     ], 
     "categories": [
       {
