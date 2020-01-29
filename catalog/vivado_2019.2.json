@@ -10,7 +10,7 @@
           {
             "revision": "1.0", 
             "commit_id": "cc2d352ca12bbf5e4c294eaf3e588afa98ed20a7", 
-            "date": "27-10-2020", 
+            "date": "27-01-2020", 
             "history": "An example design for SP701 board. DDR3, QSPI, MB, Ethernet and Interrupts based IPI system"
           }
         ], 
@@ -29,7 +29,7 @@
           {
             "revision": "1.0", 
             "commit_id": "cc2d352ca12bbf5e4c294eaf3e588afa98ed20a7", 
-            "date": "27-10-2020",  
+            "date": "27-01-2020",  
             "history": "An example design for AC701 board. DDR3, QSPI, MB, Ethernet and Interrupts based IPI system"
           }
         ], 
@@ -48,7 +48,7 @@
           {
             "revision": "1.0", 
             "commit_id": "cc2d352ca12bbf5e4c294eaf3e588afa98ed20a7", 
-            "date": "27-10-2020",  
+            "date": "27-01-2020",  
             "history": "An example design for AC701 board. DDR3, QSPI, MB, Ethernet and Interrupts based IPI system"
           }
         ], 
@@ -59,20 +59,20 @@
         "company": "xilinx.com"
       },  
       {
-        "name": "MicroBlaze_Real_time_Preset_SP701", 
+        "name": "MicroBlaze_Realtime_Preset_SP701", 
         "display": "MicroBlaze Real-time Preset (SP701)", 
         "latest_revision": "1.0", 
-        "commit_id": "cc2d352ca12bbf5e4c294eaf3e588afa98ed20a7", 
+        "commit_id": "4b2e594759dbbce2ec580679b6834f86adde6df6", 
         "revisions": [
           {
             "revision": "1.0", 
-            "commit_id": "cc2d352ca12bbf5e4c294eaf3e588afa98ed20a7", 
-            "date": "27-10-2020",  
+            "commit_id": "4b2e594759dbbce2ec580679b6834f86adde6df6", 
+            "date": "29-01-2020",  
             "history": "An example design for AC701 board. DDR3, QSPI, MB, Ethernet and Interrupts based IPI system"
           }
         ], 
         "config": {
-          "root": "ced/Xilinx/IPI/SP701_MicroBlaze_Real_time_preset", 
+          "root": "ced/Xilinx/IPI/SP701_MicroBlaze_Realtime_preset", 
           "metadata_file": "xitem.json"
         }, 
         "company": "xilinx.com"
