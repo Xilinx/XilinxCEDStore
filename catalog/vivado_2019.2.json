@@ -2,7 +2,7 @@
   "catalog": {
     "items": [
       {
-        "name": "MicroBlaze_Application_Preset_SP701", 
+        "name": "MicroBlaze_Application_Preset_SP701 ", 
         "display": "MicroBlaze Application Preset (SP701)", 
         "latest_revision": "1.0", 
         "commit_id": "cc2d352ca12bbf5e4c294eaf3e588afa98ed20a7", 
