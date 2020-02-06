@@ -22,7 +22,7 @@
       }, 
       {
         "name": "MicroBlaze_Application_Preset_AC701", 
-        "display": "MicroBlaze Application Preset (AC701) New", 
+        "display": "MicroBlaze Application Preset (AC701)", 
         "latest_revision": "1.0", 
         "commit_id": "1b124d1c64884040c42f93296369790acc5d965a", 
         "revisions": [

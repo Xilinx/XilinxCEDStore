@@ -23,7 +23,7 @@
 
   <Name>MicroBlaze_Application_Preset_AC701</Name>
   
-  <DisplayName>MicroBlaze Application Preset (AC701) New </DisplayName>
+  <DisplayName>MicroBlaze Application Preset (AC701)</DisplayName>
   
   <Description>An example design for AC701 board. DDR3, QSPI, MB, Ethernet and Interrupts based IPI system </Description>
 
