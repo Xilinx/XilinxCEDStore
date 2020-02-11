@@ -34,7 +34,7 @@
           }
         ], 
         "config": {
-          "root": "ced/Xilinx/MicroBlaze Designs Presets", 
+          "root": "ced/Xilinx/IPI/MicroBlaze Designs Presets", 
           "metadata_file": "xitem.json"
         }, 
         "company": "xilinx.com"
@@ -53,7 +53,7 @@
           }
         ], 
         "config": {
-          "root": "ced/Xilinx/Zynq UltraScale+ MPSoC Design Presets", 
+          "root": "ced/Xilinx/IPI/Zynq UltraScale+ MPSoC Design Presets", 
           "metadata_file": "xitem.json"
         }, 
         "company": "xilinx.com"
@@ -72,7 +72,7 @@
           }
         ], 
         "config": {
-          "root": "ced/Xilinx/Zynq UltraScale+ MPSoC Design Presets", 
+          "root": "ced/Xilinx/IPI/Zynq UltraScale+ MPSoC Design Presets", 
           "metadata_file": "xitem.json"
         }, 
         "company": "xilinx.com"
