@@ -91,7 +91,7 @@
           }
         ], 
         "config": {
-          "root": "ced/Xilinx/Zynq-7000 Design Presets", 
+          "root": "ced/Xilinx/IPI/Zynq-7000 Design Presets", 
           "metadata_file": "xitem.json"
         }, 
         "company": "xilinx.com"
