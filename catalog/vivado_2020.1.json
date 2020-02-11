@@ -22,7 +22,7 @@
       },
       {
         "name": "mb_preset", 
-        "display": "MicroBlaze Designs Presets", 
+        "display": "MicroBlaze Design Presets", 
         "latest_revision": "1.0", 
         "commit_id": "1e739cd2e8b2cb579a0fe82468cf8ce54653defa", 
         "revisions": [
@@ -34,7 +34,7 @@
           }
         ], 
         "config": {
-          "root": "ced/Xilinx/IPI/MicroBlaze Designs Presets", 
+          "root": "ced/Xilinx/IPI/MicroBlaze Design Presets", 
           "metadata_file": "xitem.json"
         }, 
         "company": "xilinx.com"
