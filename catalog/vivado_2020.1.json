@@ -40,25 +40,6 @@
         "company": "xilinx.com"
       },
       {
-        "name": "mb_preset", 
-        "display": "Zynq UltraScale+ MPSoC Design Presets", 
-        "latest_revision": "1.0", 
-        "commit_id": "1e739cd2e8b2cb579a0fe82468cf8ce54653defa", 
-        "revisions": [
-          {
-            "revision": "1.0", 
-            "commit_id": "1e739cd2e8b2cb579a0fe82468cf8ce54653defa", 
-            "date": "11-02-2020", 
-            "history": "Zynq UltraScale+  based example design for Xilinx Evaluation Boards"
-          }
-        ], 
-        "config": {
-          "root": "ced/Xilinx/IPI/Zynq UltraScale+ MPSoC Design Presets", 
-          "metadata_file": "xitem.json"
-        }, 
-        "company": "xilinx.com"
-      }, 
-      {
         "name": "mpsoc_preset", 
         "display": "Zynq UltraScale+ MPSoC Design Presets", 
         "latest_revision": "1.0", 
@@ -76,7 +57,7 @@
           "metadata_file": "xitem.json"
         }, 
         "company": "xilinx.com"
-      },
+      }, 
       {
         "name": "zynq7000_preset", 
         "display": "Zynq-7000 Design Presets", 
