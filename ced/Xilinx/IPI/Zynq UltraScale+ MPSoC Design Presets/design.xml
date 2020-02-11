@@ -1,0 +1,53 @@
+﻿<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<!-- Copyright (C) 2019, Xilinx Inc - All rights reserved
+
+ Licensed under the Apache License, Version 2.0 (the "License"). You may
+ not use this file except in compliance with the License. A copy of the
+ License is located at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ License for the specific language governing permissions and limitations
+ under the License. -->
+ 
+<ExampleDesign>
+
+  <Vendor>xilinx.com</Vendor>
+
+  <Library>design</Library>
+
+  <Name>mpsoc_preset</Name>
+  
+  <DisplayName>Zynq UltraScale+ MPSoC Design Presets</DisplayName>
+
+  <Description>
+Zynq UltraScale+ consists of a Processing System (PS), a Platform Management Unit (PMU) and Programmable Logic (PL).
+
+These designs offer a Zynq UltraScale+ Processor-based subsystem comprised of: 
+
+	An implementation of  an ARM v8A architecture profile with a quad-core A53 and 1MB of L2 cache with memory virtualization, hardware virtualization for hypervisors and TrustZone security extensions to execute platform OSes
+	
+	An implementation of an ARM v7R architecture profile with two Cortex R5Fs, a Memory Protection Unit (MPU), caches and Tightly Coupled Memories (TCMs) that can be configured in split or lock-step mode suitable for real-time deterministic applications
+	
+	Integrated memory mapped peripherals
+	
+	A hardened DDR memory controller
+	
+	256KB of On-Chip Memory
+
+The Processing System capabilities can be augmented by leveraging the Programmable Logic.
+
+</Description>
+
+  <Version>1.0</Version>
+
+  <Design>init.tcl</Design>
+
+  <Image>Zynq_Platform.png</Image>
+
+</ExampleDesign>
+
