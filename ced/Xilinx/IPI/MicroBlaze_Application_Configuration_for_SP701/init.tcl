@@ -35,7 +35,9 @@ proc getSupportedBoards {} {
   #This proc is intended for gui layout information of configurable options
 #}
 
-#DO NOT MODIFY THIS PROC 
+#DO NOT MODIFY THIS PROC
+
+
 proc isGeneratedFromWriteProjectTcl {DESIGNOBJ} { 
   return true 
 }
