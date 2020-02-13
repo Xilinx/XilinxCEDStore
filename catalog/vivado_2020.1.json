@@ -43,11 +43,11 @@
         "name": "mpsoc_preset", 
         "display": "Zynq UltraScale+ MPSoC Design Presets", 
         "latest_revision": "1.0", 
-        "commit_id": "1e739cd2e8b2cb579a0fe82468cf8ce54653defa", 
+        "commit_id": "9bd064874e5a0eed934334fb14c36e922c908318", 
         "revisions": [
           {
             "revision": "1.0", 
-            "commit_id": "1e739cd2e8b2cb579a0fe82468cf8ce54653defa", 
+            "commit_id": "9bd064874e5a0eed934334fb14c36e922c908318", 
             "date": "11-02-2020", 
             "history": "Zynq UltraScale+  based example design for Xilinx Evaluation Boards"
           }
@@ -62,11 +62,11 @@
         "name": "zynq7000_preset", 
         "display": "Zynq-7000 Design Presets", 
         "latest_revision": "1.0", 
-        "commit_id": "1e739cd2e8b2cb579a0fe82468cf8ce54653defa", 
+        "commit_id": "9bd064874e5a0eed934334fb14c36e922c908318", 
         "revisions": [
           {
             "revision": "1.0", 
-            "commit_id": "1e739cd2e8b2cb579a0fe82468cf8ce54653defa", 
+            "commit_id": "9bd064874e5a0eed934334fb14c36e922c908318", 
             "date": "11-02-2020", 
             "history": "Zynq-7000 based example design for Xilinx Evaluation Boards"
           }
