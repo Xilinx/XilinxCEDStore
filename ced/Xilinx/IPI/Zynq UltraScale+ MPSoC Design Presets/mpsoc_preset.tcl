@@ -103,7 +103,7 @@ if {([lsearch $temp_options Preset.VALUE] == -1) || ([lsearch $temp_options MPSo
 }
 	regenerate_bd_layout
 	validate_bd_design
-	make_wrapper -files [get_files config_mpsoc.bd] -top -import
+	make_wrapper -files [get_files $design_name.bd] -top -import
 
 }
 # End of create_root_design()
