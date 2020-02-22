@@ -360,7 +360,7 @@ if {([lsearch $temp_options Preset.VALUE] == -1) || ([lsearch $temp_options "Mic
 			}
 		set usl_ethernet [lindex [board::get_board_component_interfaces *sgmii*] 0]
 			if { $usl_ethernet != "" } {
-			create_bd_cell -type ip -vlnv xilinx.com:ip:axi_ethernet:7.1 axi_ethernet_0
+			create_bd_cell -type ip -vlnv xilinx.com:ip:axi_ethernet axi_ethernet_0
 			apply_board_connection -board_interface "sgmii_lvds" -ip_intf "axi_ethernet_0/sgmii" -diagram $design_name 
 			apply_board_connection -board_interface "mdio_mdc" -ip_intf "axi_ethernet_0/mdio" -diagram $design_name
 			apply_board_connection -board_interface "sgmii_phyclk" -ip_intf "axi_ethernet_0/lvds_clk" -diagram $design_name
