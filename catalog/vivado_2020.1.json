@@ -24,13 +24,13 @@
         "name": "mb_preset", 
         "display": "MicroBlaze Design Presets", 
         "latest_revision": "1.0", 
-        "commit_id": "1e739cd2e8b2cb579a0fe82468cf8ce54653defa", 
+        "commit_id": "4c0e2937c5914cc6a420d245684a4a7ade25ce9e", 
         "revisions": [
           {
             "revision": "1.0", 
-            "commit_id": "1e739cd2e8b2cb579a0fe82468cf8ce54653defa", 
-            "date": "11-02-2020", 
-            "history": "Microblaze based example design for Xilinx Evaluation Boards"
+            "commit_id": "4c0e2937c5914cc6a420d245684a4a7ade25ce9e", 
+            "date": "22-02-2020", 
+            "history": "Removed version while calling AXI_Ethernet"
           }
         ], 
         "config": {
