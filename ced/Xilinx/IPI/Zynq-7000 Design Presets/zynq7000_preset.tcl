@@ -33,8 +33,8 @@ proc create_root_design { parentCell design_name temp_options} {
 
 puts "creat_root_desing"
 set board_part [get_property NAME [current_board_part]]
-set design_repo [get_property REPO_DIRECTORY [get_example_designs *$design_name*]]
-puts $design_repo
+#set design_repo [get_property REPO_DIRECTORY [get_example_designs *$design_name*]]
+#puts $design_repo
 puts $board_part
 puts $temp_options
 
