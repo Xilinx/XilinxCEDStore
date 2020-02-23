@@ -43,8 +43,8 @@ if { [regexp "xcvu" $fpga_part]||[regexp "xcku" $fpga_part] } {
 	} else {
 	set mem_ctrl ddr3
     set mem_int /mig_7series_0/ui_clk }
-set design_repo [get_property REPO_DIRECTORY [get_example_designs *$design_name*]]
-puts $design_repo
+#set design_repo [get_property REPO_DIRECTORY [get_example_designs *$design_name*]]
+#puts $design_repo
 puts $board_part
 puts $temp_options
 
