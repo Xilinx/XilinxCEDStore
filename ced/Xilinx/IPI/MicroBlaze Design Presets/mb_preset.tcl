@@ -72,7 +72,7 @@ catch { set uart_board_interface [get_property COMPONENT_NAME [lindex [get_board
 if { $uart_board_interface != "" } {
 create_bd_cell -type ip -vlnv xilinx.com:ip:axi_uartlite axi_uartlite_0
 apply_board_connection -board_interface "$uart_board_interface" -ip_intf "axi_uartlite_0/UART" -diagram $design_name 
-
+set_property -dict [list CONFIG.C_BAUDRATE {115200}] [get_bd_cells axi_uartlite_0]
 lappend inpt axi_uartlite_0/interrupt
 }}
 
