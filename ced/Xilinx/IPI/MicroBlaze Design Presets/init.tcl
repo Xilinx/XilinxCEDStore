@@ -34,33 +34,31 @@ proc getSupportedBoards {} {
 
 
 proc addOptions {DESIGNOBJ PROJECT_PARAM.BOARD_PART} {
-	lappend x [dict create name "Preset" type "string" value "Microcontroller" value_list {"Microcontroller" "Real-time_Processor" "Application_Processor"} enabled true]
+	lappend x [dict create name "Preset" type "string" value "Microcontroller" value_list {"Microcontroller Microcontorller___Suitable_for_running_baremetal_code" "Real-time_Processor Real-time____________Deterministic_real-time_processing_on_RTOS" "Application_Processor Application_________Embedded_linux_capable"} enabled true]
 	return $x
 }
 
 proc addGUILayout {DESIGNOBJ PROJECT_PARAM.BOARD_PART} {
 	set designObj $DESIGNOBJ
 	#place to define GUI layout for options
-	set page [ced::add_page -name "Page1" -display_name "Configuration" -designObject $designObj -layout horizontal]
-	
+	set page [ced::add_page -name "Page1" -display_name "Configuration" -designObject $designObj -layout horizontal]	
 	ced::add_param -name Preset -parent $page -designObject $designObj  -widget radioGroup 
-	
- }
-
-
-updater {PROJECT_PARAM.BOARD_PART} {Preset.DISPLAYNAME} {
-  set Preset.DISPLAYNAME "Microblaze Preset Configurations"
+    set imageVar [ced::add_image -name Image -parent $page -designObject $designObj -width 600 -height 400 -layout horizontal]
 }
 
 
- updater {Preset.VALUE} {preset.ENABLEMENT} {
+ updater {PROJECT_PARAM.BOARD_PART Preset.VALUE} {Image.IMAGE_PATH Preset.ENABLEMENT Preset.DISPLAYNAME} {
+  set Preset.DISPLAYNAME "Microblaze Preset Configurations"
   if { ${Preset.VALUE} == "Application_Processor"} {
      set Preset.ENABLEMENT true
-} elseif { ${Preset.VALUE} == "Microcontroller"} {
+     set Image.IMAGE_PATH "microblaze-application-processor.jpg"
+  } elseif { ${Preset.VALUE} == "Microcontroller"} {
 	 set Preset.ENABLEMENT true
-} elseif { ${Preset.VALUE} == "Real-time_Processor" } {
+	 set Image.IMAGE_PATH "microblaze-microcontroller.jpg"
+  } elseif { ${Preset.VALUE} == "Real-time_Processor" } {
 	 set preset.ENABLEMENT true
-}
+	 set Image.IMAGE_PATH "microblaze-real-time-processor.jpg"
+  }
 }
 
 
