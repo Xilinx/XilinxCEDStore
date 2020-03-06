@@ -34,7 +34,7 @@ proc getSupportedBoards {} {
 
 
 proc addOptions {DESIGNOBJ PROJECT_PARAM.BOARD_PART} {
-	lappend x [dict create name "Preset" type "string" value "PS7_Only" value_list { PS7_Only PS7_PL } enabled true]
+	lappend x [dict create name "Preset" type "string" value "PS7_Only" value_list { "PS7_Only Processing_System(PS)" "PS7_PL Processing_System_and_Programmable_Logic_(PS+PL)_with_GPIO_and_Block_RAM" } enabled true]
 	return $x
 }
 
@@ -42,20 +42,21 @@ proc addGUILayout {DESIGNOBJ PROJECT_PARAM.BOARD_PART} {
 	set designObj $DESIGNOBJ
 	#place to define GUI layout for options
 	set page [ced::add_page -name "Page1" -display_name "Configuration" -designObject $designObj -layout horizontal]
-	ced::add_param -name Preset -parent $page -designObject $designObj  -widget radioGroup 
+        ced::add_param -name Preset -parent $page -designObject $designObj  -widget radioGroup
+	set imageVar [ced::add_image -name Image -parent $page -designObject $designObj -width 600 -height 400 -layout horizontal]
  }
 
 
-updater {PROJECT_PARAM.BOARD_PART} {Preset.DISPLAYNAME} {
+updater {PROJECT_PARAM.BOARD_PART Preset.VALUE} {Image.IMAGE_PATH Preset.ENABLEMENT Preset.DISPLAYNAME} {
   set Preset.DISPLAYNAME "Preset Configurations"
-}
 
 
- updater {Preset.VALUE} {preset.ENABLEMENT} {
   if { ${Preset.VALUE} == {PS7_Only}} {
      set Preset.ENABLEMENT true
+     set Image.IMAGE_PATH ""
 } elseif { ${Preset.VALUE} == {PS7_PL} } {
 	 set Preset.ENABLEMENT true
+	 set Image.IMAGE_PATH ""
 } elseif { ${Preset.VALUE} == {PS7_Accelerated} } {
 	 set preset.ENABLEMENT true
 }

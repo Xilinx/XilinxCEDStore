@@ -34,32 +34,33 @@ proc getSupportedBoards {} {
 
 
 proc addOptions {DESIGNOBJ PROJECT_PARAM.BOARD_PART} {
-	lappend x [dict create name "Preset" type "string" value "MPSoC_Only" value_list { MPSoC_Only MPSoC_PL} enabled true]
+	lappend x [dict create name "Preset" type "string" value "MPSoC_Only" value_list { "MPSoC_Only Processing_System(PS)"   "MPSoC_PL Processing_System_and_Programmable_Logic_(PS+PL)_with_GPIO_and_Block_RAM"} enabled true]
 	return $x
 }
 
 proc addGUILayout {DESIGNOBJ PROJECT_PARAM.BOARD_PART} {
 	set designObj $DESIGNOBJ
 	#place to define GUI layout for options
-	#set page [ced::add_page -name "Page1" -display_name "Configuration" -designObject $designObj -layout horizontal]
-	#ced::add_param -name Preset -parent $page -designObject $designObj  -widget radioGroup 
-	ced::add_param -name Preset -display_name "Preset Configurations" -designObject $designObj  -widget radioGroup
+	set page [ced::add_page -name "Page1" -display_name "Configuration" -designObject $designObj -layout horizontal]
+        ced::add_param -name Preset -parent $page -designObject $designObj  -widget radioGroup
+	set imageVar [ced::add_image -name Image -parent $page -designObject $designObj -width 600 -height 400 -layout horizontal]
  }
 
 
-# updater {PROJECT_PARAM.BOARD_PART} {Preset.DISPLAYNAME} {
-  # set Preset.DISPLAYNAME "Preset Configurations"
-# }
+updater {PROJECT_PARAM.BOARD_PART Preset.VALUE} {Image.IMAGE_PATH Preset.ENABLEMENT Preset.DISPLAYNAME} {
+  set Preset.DISPLAYNAME "Preset Configurations"
 
 
- # updater {Preset.VALUE} {preset.ENABLEMENT} {
-  # if { ${Preset.VALUE} == {MPSoC_Only}} {
-     # set Preset.ENABLEMENT true
-# } elseif { ${Preset.VALUE} == {MPSoC_PL} } {
-	 # set Preset.ENABLEMENT true
-# } elseif { ${Preset.VALUE} == {MPSoC_Accelerated} } {
-	 # set preset.ENABLEMENT true
-# }
-# }
+
+ if { ${Preset.VALUE} == {MPSoC_Only}} {
+      set Preset.ENABLEMENT true
+	  set Image.IMAGE_PATH ""
+ } elseif { ${Preset.VALUE} == {MPSoC_PL} } {
+	  set Preset.ENABLEMENT true
+          set Image.IMAGE_PATH ""
+ } elseif { ${Preset.VALUE} == {MPSoC_Accelerated} } {
+	  set preset.ENABLEMENT true
+ }
+ }
 
 
