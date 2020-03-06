@@ -29,13 +29,13 @@ Zynq-7000 consists of a Processing System (PS) and programmable logic (PL).
 
 These designs offer a Zynq-7000 Processor-based subsystem comprised of: 
 
-	An implementation of  an ARM v7A architecture profile with a dual-core A9 and 512kB of L2 cache with lock down support, memory virtualization, hardware virtualization and TrustZone security extensions to execute platform OSes
+An implementation of  an ARM v7A architecture profile with a dual-core A9 and 512kB of L2 cache with lock down support, memory virtualization, hardware virtualization and TrustZone security extensions to execute platform OSes
 
-	Integrated memory mapped peripherals
+Integrated memory mapped peripherals
 
-	A hardened DDR memory controller
+A hardened DDR memory controller
 
-	256KB of On-Chip Memory
+256KB of On-Chip Memory
 
 The Processing System capabilities can be augmented by leveraging the Programmable Logic.
 

@@ -29,15 +29,15 @@ Zynq UltraScale+ consists of a Processing System (PS), a Platform Management Uni
 
 These designs offer a Zynq UltraScale+ Processor-based subsystem comprised of: 
 
-	An implementation of  an ARM v8A architecture profile with a quad-core A53 and 1MB of L2 cache with memory virtualization, hardware virtualization for hypervisors and TrustZone security extensions to execute platform OSes
+An implementation of  an ARM v8A architecture profile with a quad-core A53 and 1MB of L2 cache with memory virtualization, hardware virtualization for hypervisors and TrustZone security extensions to execute platform OSes
 	
-	An implementation of an ARM v7R architecture profile with two Cortex R5Fs, a Memory Protection Unit (MPU), caches and Tightly Coupled Memories (TCMs) that can be configured in split or lock-step mode suitable for real-time deterministic applications
+An implementation of an ARM v7R architecture profile with two Cortex R5Fs, a Memory Protection Unit (MPU), caches and Tightly Coupled Memories (TCMs) that can be configured in split or lock-step mode suitable for real-time deterministic applications
 	
-	Integrated memory mapped peripherals
+Integrated memory mapped peripherals
 	
-	A hardened DDR memory controller
+A hardened DDR memory controller
 	
-	256KB of On-Chip Memory
+256KB of On-Chip Memory
 
 The Processing System capabilities can be augmented by leveraging the Programmable Logic.
 
