@@ -475,7 +475,11 @@ if {([lsearch $temp_options Preset.VALUE] == -1) || ([lsearch $temp_options "Mic
 			if {[regexp kcu105 $board_name]} {
 				puts $fd "set_property LOC BITSLICE_RX_TX_X1Y79  \[get_cells -hier -filter {name =~ */pcs_pma_block_i/lvds_transceiver_mw/serdes_1_to_10_ser8_i/idelay_cal}\]"
 			}				
-	    }  
+	    }
+	  if {[regexp vcu118 $board_name]} {
+			puts $fd "set_property BITSTREAM.GENERAL.COMPRESS TRUE \[current_design\]"
+		}
+		
 		close $fd
 	add_files  -fileset constrs_1 [ list "$proj_dir/$proj_name.srcs/constrs_1/constrs/top.xdc" ] 
 	
