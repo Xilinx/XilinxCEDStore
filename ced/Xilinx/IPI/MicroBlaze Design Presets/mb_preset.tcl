@@ -479,8 +479,72 @@ if {([lsearch $temp_options Preset.VALUE] == -1) || ([lsearch $temp_options "Mic
 	  if {[regexp vcu118 $board_name]} {
 			puts $fd "set_property BITSTREAM.GENERAL.COMPRESS TRUE \[current_design\]"
 		}
+      if {[regexp ac701 $board_name]||[regexp sp701 $board_name]} {
+
+			puts $fd "# All the delay numbers have to provided by the user"
+			puts $fd "# CCLK delay is 0.5, 6.7 ns min/max for K7-2; refer Datasheet"
+			puts $fd "# We need to consider the max delay for worst case analysis"
+			
+			puts $fd "set cclk_delay 6.7"
+			puts $fd "# Following are the SPI device parameters"
+			puts $fd "# Max Tco"
+			puts $fd "set tco_max 7"
+			puts $fd "# Min Tco"
+			puts $fd "set tco_min 1"
+			
+			puts $fd "# Setup time requirement"
+			puts $fd "set tsu 2"
+			
+			puts $fd "# Hold time requirement"
+			puts $fd "set th 3"
+			
+			puts $fd "# Following are the board/trace delay numbers"
+			puts $fd "# Assumption is that all Data lines are matched"
+			puts $fd "set tdata_trace_delay_max 0.25"
+			puts $fd "set tdata_trace_delay_min 0.25"
+			puts $fd "set tclk_trace_delay_max 0.2"
+			puts $fd "set tclk_trace_delay_min 0.2"
+			
+			puts $fd "### End of user provided delay numbers"
+			
+			
+			puts $fd "# This is to ensure min routing delay from SCK generation to STARTUP input"
+			puts $fd "# User should change this value based on the results"
+			puts $fd "# Having more delay on this net reduces the Fmax"
+			
+			puts $fd "set_max_delay 1.5 -from \[get_pins -hier *SCK_O_reg_reg/C\] -to \[get_pins -hier *USRCCLKO\] -datapath_only"
+			puts $fd "set_min_delay 0.1 -from \[get_pins -hier *SCK_O_reg_reg/C\] -to \[get_pins -hier *USRCCLKO\]"
+			
+			puts $fd "# Following command creates a divide by 2 clock"
+			puts $fd "# It also takes into account the delay added by STARTUP block to route the CCLK"
+			puts $fd "# This constraint is not needed when STARTUP block is disabled"
+			
+			puts $fd "create_generated_clock  -name clk_sck -source \[get_pins -hierarchical *axi_quad_spi_0/ext_spi_clk\] \[get_pins -hierarchical *USRCCLKO\] -edges {3 5 7} -edge_shift \[list \$cclk_delay \$cclk_delay \$cclk_delay\]"
+			
+			puts $fd "# Data is captured into FPGA on the second rising edge of ext_spi_clk after the SCK falling edge"
+			puts $fd "# Data is driven by the FPGA on every alternate rising_edge of ext_spi_clk"
+			
+			puts $fd "#spi_flash_io0_io"
+			
+			puts $fd "set_input_delay -clock clk_sck -max \[expr \$tco_max + \$tdata_trace_delay_max + \$tclk_trace_delay_max\] \[get_ports spi_flash_io*io\] -clock_fall;"
+			
+			puts $fd "set_input_delay -clock clk_sck -min \[expr \$tco_min + \$tdata_trace_delay_min + \$tclk_trace_delay_min\] \[get_ports spi_flash_io*io\] -clock_fall;"
+			
+			puts $fd "set_multicycle_path 2 -setup -from clk_sck -to \[get_clocks -of_objects \[get_pins -hierarchical */ext_spi_clk\]\]"
+			puts $fd "set_multicycle_path 1 -hold -end -from clk_sck -to \[get_clocks -of_objects \[get_pins -hierarchical */ext_spi_clk\]\]"
+			
+			puts $fd "# Data is captured into SPI on the following rising edge of SCK"
+			puts $fd "# Data is driven by the IP on alternate rising_edge of the ext_spi_clk"
+			
+			puts $fd "set_output_delay -clock clk_sck -max \[expr \$tsu + \$tdata_trace_delay_max - \$tclk_trace_delay_min\] \[get_ports spi_flash_io*io\];"
+			puts $fd "set_output_delay -clock clk_sck -min \[expr \$tdata_trace_delay_min -\$th - \$tclk_trace_delay_max\] \[get_ports spi_flash_io*io\];"
+			
+			puts $fd "set_multicycle_path 2 -setup -start -from \[get_clocks -of_objects \[get_pins -hierarchical */ext_spi_clk\]\] -to clk_sck"
+			puts $fd "set_multicycle_path 1 -hold -from \[get_clocks -of_objects \[get_pins -hierarchical */ext_spi_clk\]\] -to clk_sck"
+		}
+
 		
-		close $fd
+	close $fd
 	add_files  -fileset constrs_1 [ list "$proj_dir/$proj_name.srcs/constrs_1/constrs/top.xdc" ] 
 	
   } else {
