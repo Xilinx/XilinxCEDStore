@@ -159,7 +159,7 @@ if {([lsearch $temp_options Preset.VALUE] == -1) || ([lsearch $temp_options "Mic
 		create_bd_cell -type ip -vlnv xilinx.com:ip:ddr4 ddr4_0
 		apply_board_connection -board_interface "$ddr4_board_interface_1" -ip_intf "ddr4_0/C0_DDR4" -diagram $design_name
 		
-		apply_bd_automation -rule xilinx.com:bd_rule:microblaze -config { axi_intc {1} axi_periph {Enabled} cache {8KB} clk {/ddr4_0/addn_ui_clkout1 (100 MHz)} debug_module {Debug Only} ecc {None} local_mem {32KB} preset {Real-time}}  [get_bd_cells microblaze_0]
+		apply_bd_automation -rule xilinx.com:bd_rule:microblaze -config { axi_intc {1} axi_periph {Enabled} cache {8KB} clk {/ddr4_0/addn_ui_clkout1 (100 MHz)} debug_module {Debug Only} ecc {None} local_mem {128KB} preset {Real-time}}  [get_bd_cells microblaze_0]
 		apply_bd_automation -rule xilinx.com:bd_rule:axi4 -config { Clk_master {/ddr4_0/addn_ui_clkout1 (100 MHz)} Clk_slave {/ddr4_0/c0_ddr4_ui_clk (300 MHz)} Clk_xbar {Auto} Master {/microblaze_0 (Cached)} Slave {/ddr4_0/C0_DDR4_S_AXI} ddr_seg {Auto} intc_ip {New AXI SmartConnect} master_apm {0}}  [get_bd_intf_pins ddr4_0/C0_DDR4_S_AXI]
 		set_property -dict [list CONFIG.C_USE_MMU {2}] [get_bd_cells microblaze_0]
 		
@@ -181,7 +181,7 @@ if {([lsearch $temp_options Preset.VALUE] == -1) || ([lsearch $temp_options "Mic
 		
 		set mem_int /clk_wiz_1/clk_out1
 		
-		apply_bd_automation -rule xilinx.com:bd_rule:microblaze -config { axi_intc {1} axi_periph {Enabled} cache {8KB} clk {New Clocking Wizard} debug_module {Debug Only} ecc {None} local_mem {32KB} preset {Real-time}}  [get_bd_cells microblaze_0]
+		apply_bd_automation -rule xilinx.com:bd_rule:microblaze -config { axi_intc {1} axi_periph {Enabled} cache {8KB} clk {New Clocking Wizard} debug_module {Debug Only} ecc {None} local_mem {128KB} preset {Real-time}}  [get_bd_cells microblaze_0]
 		set_property -dict [list CONFIG.C_USE_ICACHE {0} CONFIG.C_ADDR_TAG_BITS {0} CONFIG.C_USE_DCACHE {0} CONFIG.C_DCACHE_ADDR_TAG {0}] [get_bd_cells microblaze_0]
 		apply_bd_automation -rule xilinx.com:bd_rule:board -config { Board_Interface {default_sysclk1_300 ( 300 MHz System differential clock1 ) } Manual_Source {Auto}}  [get_bd_intf_pins clk_wiz_1/CLK_IN1_D]
 		apply_bd_automation -rule xilinx.com:bd_rule:board -config { Board_Interface {reset ( FPGA Reset ) } Manual_Source {Auto}}  [get_bd_pins clk_wiz_1/reset]
@@ -347,7 +347,7 @@ if {([lsearch $temp_options Preset.VALUE] == -1) || ([lsearch $temp_options "Mic
 			create_bd_cell -type ip -vlnv xilinx.com:ip:ddr4 ddr4_0
 			apply_board_connection -board_interface "$ddr4_board_interface_1" -ip_intf "ddr4_0/C0_DDR4" -diagram $design_name
 			
-			apply_bd_automation -rule xilinx.com:bd_rule:microblaze -config { axi_intc {1} axi_periph {Enabled} cache {32KB} clk {/ddr4_0/addn_ui_clkout1 (100 MHz)} debug_module {Debug Only} ecc {None} local_mem {32KB} preset {Application}}  [get_bd_cells microblaze_0]
+			apply_bd_automation -rule xilinx.com:bd_rule:microblaze -config { axi_intc {1} axi_periph {Enabled} cache {32KB} clk {/ddr4_0/addn_ui_clkout1 (100 MHz)} debug_module {Debug Only} ecc {None} local_mem {128KB} preset {Application}}  [get_bd_cells microblaze_0]
 	
 			apply_bd_automation -rule xilinx.com:bd_rule:axi4 -config { Clk_master {/ddr4_0/addn_ui_clkout1 (100 MHz)} Clk_slave {/ddr4_0/c0_ddr4_ui_clk (300 MHz)} Clk_xbar {Auto} Master {/microblaze_0 (Cached)} Slave {/ddr4_0/C0_DDR4_S_AXI} ddr_seg {Auto} intc_ip {New AXI SmartConnect} master_apm {0}}  [get_bd_intf_pins ddr4_0/C0_DDR4_S_AXI]
 			
@@ -367,7 +367,7 @@ if {([lsearch $temp_options Preset.VALUE] == -1) || ([lsearch $temp_options "Mic
 			apply_bd_automation -rule xilinx.com:bd_rule:board -config { Board_Interface {reset ( FPGA Reset ) } Manual_Source {Auto}}  [get_bd_pins ddr4_0/sys_rst]
 			apply_bd_automation -rule xilinx.com:bd_rule:board -config { Board_Interface {Custom} Manual_Source {/ddr4_0/c0_ddr4_ui_clk_sync_rst (ACTIVE_HIGH)}}  [get_bd_pins rst_ddr4_0_100M/ext_reset_in]
 		} else {
-			apply_bd_automation -rule xilinx.com:bd_rule:microblaze -config { axi_intc {1} axi_periph {Enabled} cache {32KB} clk {New Clocking Wizard} debug_module {Debug Only} ecc {None} local_mem {32KB} preset {Application}}  [get_bd_cells microblaze_0]
+			apply_bd_automation -rule xilinx.com:bd_rule:microblaze -config { axi_intc {1} axi_periph {Enabled} cache {32KB} clk {New Clocking Wizard} debug_module {Debug Only} ecc {None} local_mem {128KB} preset {Application}}  [get_bd_cells microblaze_0]
 			set_property -dict [list CONFIG.C_USE_ICACHE {0} CONFIG.C_ADDR_TAG_BITS {0} CONFIG.C_USE_DCACHE {0} CONFIG.C_DCACHE_ADDR_TAG {0}] [get_bd_cells microblaze_0]
 			apply_bd_automation -rule xilinx.com:bd_rule:board -config { Board_Interface {default_sysclk1_300 ( 300 MHz System differential clock1 ) } Manual_Source {Auto}}  [get_bd_intf_pins clk_wiz_1/CLK_IN1_D]
 			apply_bd_automation -rule xilinx.com:bd_rule:board -config { Board_Interface {reset ( FPGA Reset ) } Manual_Source {Auto}}  [get_bd_pins clk_wiz_1/reset]
