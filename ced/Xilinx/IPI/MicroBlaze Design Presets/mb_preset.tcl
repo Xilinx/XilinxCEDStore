@@ -32,7 +32,8 @@ proc createDesign {design_name options} {
 proc create_root_design { parentCell design_name temp_options} {
 
 # create_bd_design "mb_preset"
-puts "creat_root_desing"
+
+# puts "creat_root_desing"
 set board_part [get_property NAME [current_board_part]]
 set board_name [get_property BOARD_NAME [current_board]]
 set fpga_part [get_property PART_NAME [current_board_part]]
@@ -43,8 +44,8 @@ if { [regexp "xcvu" $fpga_part]||[regexp "xcku" $fpga_part] } {
 	} else {
 	set mem_ctrl ddr3
     set mem_int /mig_7series_0/ui_addn_clk_0 }
-puts $board_part
-puts $temp_options
+puts "INFO: $board_part is selected"
+puts "INFO: $temp_options"
 
 # source $design_repo/bd_7series/microcontroller_bd.tcl
 # set file  "[file dirname [file normalize [info script]]]/repo2/bd_7series/microcontroller_bd.tcl"
@@ -108,7 +109,7 @@ set ddr4_board_interface [board::get_board_part_interfaces *ddr4*]
 set ddr4_board_interface_1 [lindex [split $ddr4_board_interface { }] 0]
 
 if {([lsearch $temp_options Preset.VALUE] == -1) || ([lsearch $temp_options "Microcontroller"] != -1)} {
-	puts "Microcontroller preset enabled"
+	puts "INFO: Microcontroller preset enabled"
 
 	apply_bd_automation -rule xilinx.com:bd_rule:microblaze -config { axi_intc {1} axi_periph {Enabled} cache {None} clk {New Clocking Wizard} debug_module {Debug Only} ecc {None} local_mem {128KB} preset {Microcontroller}}  [get_bd_cells microblaze_0]
 
@@ -140,7 +141,7 @@ if {([lsearch $temp_options Preset.VALUE] == -1) || ([lsearch $temp_options "Mic
 	apply_bd_automation -rule xilinx.com:bd_rule:axi4 -config { Clk_master {/clk_wiz_1/clk_out1 (100 MHz)} Clk_slave {Auto} Clk_xbar {/clk_wiz_1/clk_out1 (100 MHz)} Master {/microblaze_0 (Periph)} Slave {/axi_timer_0/S_AXI} ddr_seg {Auto} intc_ip {/microblaze_0_axi_periph} master_apm {0}}  [get_bd_intf_pins axi_timer_0/S_AXI]
 
 } elseif { ([lsearch $temp_options "Real-time_Processor"] != -1 )} {
-	puts "Real-time_Processor preset enabled"
+	puts "INFO: Real-time_Processor preset enabled"
 	
 	if { $mem_ctrl != "ddr4" } {
 	if { $ddr3_board_interface != "" } {
@@ -243,7 +244,7 @@ if {([lsearch $temp_options Preset.VALUE] == -1) || ([lsearch $temp_options "Mic
 	add_files  -fileset constrs_1 [ list "$proj_dir/$proj_name.srcs/constrs_1/constrs/top.xdc" ]
 		 
 } elseif { ([lsearch $temp_options "Application_Processor"] != -1 )} {
-	puts "Application_Processor preset enabled"
+	puts "INFO: Application_Processor preset enabled"
 	
 	if { $mem_ctrl != "ddr4" } {
 	if { $ddr3_board_interface != "" } {
@@ -574,10 +575,9 @@ if {([lsearch $temp_options Preset.VALUE] == -1) || ([lsearch $temp_options "Mic
 	regenerate_bd_layout
 	validate_bd_design
 	make_wrapper -files [get_files $design_name.bd] -top -import
-# End of create_root_design()
 }
 
-puts "completed"
+puts "INFO: End of create_root_design"
 
 ##################################################################
 # MAIN FLOW
