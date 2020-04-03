@@ -24,12 +24,12 @@
         "name": "mpsoc_preset", 
         "display": "Zynq UltraScale+ MPSoC Design Presets", 
         "latest_revision": "1.0", 
-        "commit_id": "3e7ea01b55c0f55fd43abdc39a98ce558d0135ef", 
+        "commit_id": "610e7ecdf71bc73f4eee3cceebd9c70971ef338b", 
         "revisions": [
           {
             "revision": "1.0", 
-            "commit_id": "3e7ea01b55c0f55fd43abdc39a98ce558d0135ef", 
-            "date": "06-03-2020", 
+            "commit_id": "610e7ecdf71bc73f4eee3cceebd9c70971ef338b", 
+            "date": "03-04-2020", 
             "history": "Zynq UltraScale+  based example design for Xilinx Evaluation Boards"
           }
         ], 
