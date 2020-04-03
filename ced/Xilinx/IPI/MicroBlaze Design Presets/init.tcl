@@ -34,7 +34,7 @@ proc getSupportedBoards {} {
 
 
 proc addOptions {DESIGNOBJ PROJECT_PARAM.BOARD_PART} {
-	lappend x [dict create name "Preset" type "string" value "Microcontroller" value_list {"Microcontroller Microcontorller___Suitable_for_running_baremetal_code" "Real-time_Processor Real-time____________Deterministic_real-time_processing_on_RTOS" "Application_Processor Application_________Embedded_linux_capable"} enabled true]
+	lappend x [dict create name "Preset" type "string" value "Microcontroller" value_list {"Microcontroller Microcontroller___Suitable_for_running_baremetal_code" "Real-time_Processor Real-time____________Deterministic_real-time_processing_on_RTOS" "Application_Processor Application_________Embedded_linux_capable"} enabled true]
 	return $x
 }
 
