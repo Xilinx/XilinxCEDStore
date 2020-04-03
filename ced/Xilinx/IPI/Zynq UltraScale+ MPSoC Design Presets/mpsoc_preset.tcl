@@ -31,12 +31,12 @@ proc createDesign {design_name options} {
 proc create_root_design { parentCell design_name temp_options} {
 
 
-puts "creat_root_desing"
+#puts "creat_root_desing"
 set board_part [get_property NAME [current_board_part]]
 #set design_repo [get_property REPO_DIRECTORY [get_example_designs *$design_name*]]
 #puts $design_repo
-puts $board_part
-puts $temp_options
+puts "INFO: $board_part selected"
+puts "INFO: $temp_options"
 
 # source $design_repo/bd_7series/microcontroller_bd.tcl
 # set file  "[file dirname [file normalize [info script]]]/repo2/bd_7series/microcontroller_bd.tcl"
@@ -63,12 +63,12 @@ connect_bd_net [get_bd_pins zynq_ultra_ps_e_0/maxihpm1_fpd_aclk] [get_bd_pins zy
 	
 
 if {([lsearch $temp_options Preset.VALUE] == -1) || ([lsearch $temp_options MPSoC_Only] != -1)}   {
-	puts "MPSoC_Only preset enabled"
+	puts "INFO: MPSoC_Only preset enabled"
 	
 
 } elseif { ([lsearch $temp_options MPSoC_PL] != -1 )} {
 
-	puts "MPSoC_PL preset enabled"
+	puts "INFO: MPSoC_PL preset enabled"
 
 	set led_board_interface [get_property COMPONENT_NAME [lindex [get_board_components -filter {SUB_TYPE==led}] 0]]
 	if { $led_board_interface != "" } {
@@ -87,7 +87,7 @@ if {([lsearch $temp_options Preset.VALUE] == -1) || ([lsearch $temp_options MPSo
 
 
 } elseif { ([lsearch $temp_options MPSoC_Accelerated] != -1 )} {
-	puts "MPSoC_Accelerated preset enabled"
+	puts "INFO: MPSoC_Accelerated preset enabled"
 	
 	if { $ddr4_board_interface != "" } {
 	create_bd_cell -type ip -vlnv xilinx.com:ip:ddr4 ddr4_0
@@ -108,7 +108,7 @@ if {([lsearch $temp_options Preset.VALUE] == -1) || ([lsearch $temp_options MPSo
 }
 # End of create_root_design()
 	
-puts "completed"
+puts "INFO: End of create_root_design"
 
 
 ##################################################################
