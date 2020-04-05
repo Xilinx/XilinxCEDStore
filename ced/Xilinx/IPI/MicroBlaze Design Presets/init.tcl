@@ -41,9 +41,9 @@ proc addOptions {DESIGNOBJ PROJECT_PARAM.BOARD_PART} {
 proc addGUILayout {DESIGNOBJ PROJECT_PARAM.BOARD_PART} {
 	set designObj $DESIGNOBJ
 	#place to define GUI layout for options
-	set page [ced::add_page -name "Page1" -display_name "Configuration" -designObject $designObj -layout horizontal]	
+	set page [ced::add_page -name "Page1" -display_name "Configuration" -designObject $designObj -layout vertical]	
 	ced::add_param -name Preset -parent $page -designObject $designObj  -widget radioGroup 
-    set imageVar [ced::add_image -name Image -parent $page -designObject $designObj -width 600 -height 400 -layout horizontal]
+    set imageVar [ced::add_image -name Image -parent $page -designObject $designObj -width 500 -height 300 -layout vertical]
 }
 
 

@@ -41,9 +41,9 @@ proc addOptions {DESIGNOBJ PROJECT_PARAM.BOARD_PART} {
 proc addGUILayout {DESIGNOBJ PROJECT_PARAM.BOARD_PART} {
 	set designObj $DESIGNOBJ
 	#place to define GUI layout for options
-	set page [ced::add_page -name "Page1" -display_name "Configuration" -designObject $designObj -layout horizontal]
+	set page [ced::add_page -name "Page1" -display_name "Configuration" -designObject $designObj -layout vertical]
         ced::add_param -name Preset -parent $page -designObject $designObj  -widget radioGroup
-	set imageVar [ced::add_image -name Image -parent $page -designObject $designObj -width 600 -height 400 -layout horizontal]
+	set imageVar [ced::add_image -name Image -parent $page -designObject $designObj -width 500 -height 400 -layout vertical]
  }
 
 
@@ -53,10 +53,10 @@ updater {PROJECT_PARAM.BOARD_PART Preset.VALUE} {Image.IMAGE_PATH Preset.ENABLEM
 
   if { ${Preset.VALUE} == {PS7_Only}} {
      set Preset.ENABLEMENT true
-     set Image.IMAGE_PATH ""
+     set Image.IMAGE_PATH "Zynq-7000-Preset-1.jpg"
 } elseif { ${Preset.VALUE} == {PS7_PL} } {
 	 set Preset.ENABLEMENT true
-	 set Image.IMAGE_PATH ""
+	 set Image.IMAGE_PATH "Zynq-7000-Preset-2.jpg"
 } elseif { ${Preset.VALUE} == {PS7_Accelerated} } {
 	 set preset.ENABLEMENT true
 }
