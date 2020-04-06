@@ -17,7 +17,6 @@
               }
             ],
             "category": "example",
-            "logo": "MPSoC_Platform.png",  
             "website": "www.xilinx.com",
             "is_active" : true, 
             "search-keywords": [
