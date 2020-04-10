@@ -45,7 +45,7 @@ if { [regexp "xcvu" $fpga_part]||[regexp "xcku" $fpga_part] } {
 	set mem_ctrl ddr3
     set mem_int /mig_7series_0/ui_addn_clk_0 }
 puts "INFO: $board_part is selected"
-puts "INFO: $temp_options"
+#puts "INFO: $temp_options"
 
 # source $design_repo/bd_7series/microcontroller_bd.tcl
 # set file  "[file dirname [file normalize [info script]]]/repo2/bd_7series/microcontroller_bd.tcl"

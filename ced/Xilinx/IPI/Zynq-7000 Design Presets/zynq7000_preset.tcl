@@ -36,7 +36,7 @@ set board_part [get_property NAME [current_board_part]]
 #set design_repo [get_property REPO_DIRECTORY [get_example_designs *$design_name*]]
 #puts $design_repo
 puts "INFO: $board_part selected"
-puts "INFO: $temp_options"
+#puts "INFO: $temp_options"
 
 # source $design_repo/bd_7series/microcontroller_bd.tcl
 # set file  "[file dirname [file normalize [info script]]]/repo2/bd_7series/microcontroller_bd.tcl"
