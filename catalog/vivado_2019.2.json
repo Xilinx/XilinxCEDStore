@@ -43,11 +43,11 @@
         "name": "MicroBlaze_Microcontroller_Preset_SP701", 
         "display": "MicroBlaze Microcontroller Preset (SP701)", 
         "latest_revision": "1.0", 
-        "commit_id": "cc2d352ca12bbf5e4c294eaf3e588afa98ed20a7", 
+        "commit_id": "ca0354a99dab6b407a1ba2412c6e67092c570562", 
         "revisions": [
           {
             "revision": "1.0", 
-            "commit_id": "cc2d352ca12bbf5e4c294eaf3e588afa98ed20a7", 
+            "commit_id": "ca0354a99dab6b407a1ba2412c6e67092c570562", 
             "date": "27-01-2020",  
             "history": "An example design for AC701 board. DDR3, QSPI, MB, Ethernet and Interrupts based IPI system"
           }
