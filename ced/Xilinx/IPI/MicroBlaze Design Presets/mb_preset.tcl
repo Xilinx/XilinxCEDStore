@@ -306,7 +306,8 @@ if {([lsearch $temp_options Preset.VALUE] == -1) || ([lsearch $temp_options "Mic
 			if { $board_name == "vc707"} { 
 				set_property -dict [list CONFIG.ETHERNET_BOARD_INTERFACE {sgmii} CONFIG.DIFFCLK_BOARD_INTERFACE {Custom} CONFIG.ENABLE_LVDS {false}] [get_bd_cells axi_ethernet_0]
 				delete_bd_objs [get_bd_intf_nets axi_ethernet_0_sgmii] [get_bd_intf_ports sfp_sgmii]
-				apply_bd_automation -rule xilinx.com:bd_rule:board -config { Board_Interface {sgmii ( Onboard PHY ) } Manual_Source {Auto}} [get_bd_intf_pins axi_ethernet_0/sgmii] }
+				apply_bd_automation -rule xilinx.com:bd_rule:board -config { Board_Interface {sgmii ( Onboard PHY ) } Manual_Source {Auto}} [get_bd_intf_pins axi_ethernet_0/sgmii] 
+				}
 			
 			lappend inpt axi_ethernet_0_dma/mm2s_introut
 			lappend inpt axi_ethernet_0_dma/s2mm_introut
@@ -488,7 +489,11 @@ if {([lsearch $temp_options Preset.VALUE] == -1) || ([lsearch $temp_options "Mic
           if {[regexp vc707 $board_name]} {
 			puts $fd "create_clock -period 8 \[get_ports sgmii_mgt_clk_clk_p\]"
 		}
-
+		
+          if {[regexp vc709 $board_name]} {
+			puts $fd "create_clock -period 8 \[get_ports sfp_mgt_clk_clk_p\]"
+		}
+		
       if {[regexp ac701 $board_name]||[regexp sp701 $board_name]} {
 
 			puts $fd "# All the delay numbers have to provided by the user"
