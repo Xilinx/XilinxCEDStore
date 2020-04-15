@@ -108,6 +108,8 @@ set ddr3_board_interface_1 [lindex [split $ddr3_board_interface { }] 0]
 set ddr4_board_interface [board::get_board_part_interfaces *ddr4*]
 set ddr4_board_interface_1 [lindex [split $ddr4_board_interface { }] 0]
 
+
+
 if {([lsearch $temp_options Preset.VALUE] == -1) || ([lsearch $temp_options "Microcontroller"] != -1)} {
 	puts "INFO: Microcontroller preset enabled"
 
@@ -306,8 +308,8 @@ if {([lsearch $temp_options Preset.VALUE] == -1) || ([lsearch $temp_options "Mic
 			if { $board_name == "vc707"} { 
 				set_property -dict [list CONFIG.ETHERNET_BOARD_INTERFACE {sgmii} CONFIG.DIFFCLK_BOARD_INTERFACE {Custom} CONFIG.ENABLE_LVDS {false}] [get_bd_cells axi_ethernet_0]
 				delete_bd_objs [get_bd_intf_nets axi_ethernet_0_sgmii] [get_bd_intf_ports sfp_sgmii]
-				apply_bd_automation -rule xilinx.com:bd_rule:board -config { Board_Interface {sgmii ( Onboard PHY ) } Manual_Source {Auto}} [get_bd_intf_pins axi_ethernet_0/sgmii]
-			   }
+				apply_bd_automation -rule xilinx.com:bd_rule:board -config { Board_Interface {sgmii ( Onboard PHY ) } Manual_Source {Auto}} [get_bd_intf_pins axi_ethernet_0/sgmii] 
+				}
 			
 			lappend inpt axi_ethernet_0_dma/mm2s_introut
 			lappend inpt axi_ethernet_0_dma/s2mm_introut
@@ -450,6 +452,46 @@ if {([lsearch $temp_options Preset.VALUE] == -1) || ([lsearch $temp_options "Mic
 	#timer connection
 	apply_bd_automation -rule xilinx.com:bd_rule:axi4 -config { Clk_master {$mem_int (100 MHz)} Clk_slave {Auto} Clk_xbar {$mem_int (100 MHz)} Master {/microblaze_0 (Periph)} Slave {/axi_timer_0/S_AXI} ddr_seg {Auto} intc_ip {/microblaze_0_axi_periph} master_apm {0}}  [get_bd_intf_pins axi_timer_0/S_AXI]
 	
+	if {($ddr3_board_interface_1 == "") &&($ddr4_board_interface_1 == "")} {
+	
+	set_property -dict [list CONFIG.C_USE_ICACHE {1} CONFIG.C_ADDR_TAG_BITS {15} CONFIG.C_USE_DCACHE {1} CONFIG.C_DCACHE_ADDR_TAG {15}] [get_bd_cells microblaze_0]
+	
+	
+	create_bd_cell -type ip -vlnv xilinx.com:ip:axi_interconnect axi_interconnect_0
+	
+	
+	create_bd_cell -type ip -vlnv xilinx.com:ip:axi_bram_ctrl axi_bram_ctrl_0
+	
+	
+	set_property -dict [list CONFIG.NUM_SI {5} CONFIG.NUM_MI {1} CONFIG.NUM_MI {1}] [get_bd_cells axi_interconnect_0]
+	connect_bd_intf_net [get_bd_intf_pins microblaze_0/M_AXI_DC] -boundary_type upper [get_bd_intf_pins axi_interconnect_0/S00_AXI]
+	connect_bd_intf_net [get_bd_intf_pins microblaze_0/M_AXI_IC] -boundary_type upper [get_bd_intf_pins axi_interconnect_0/S01_AXI]
+	connect_bd_intf_net [get_bd_intf_pins axi_ethernet_0_dma/M_AXI_SG] -boundary_type upper [get_bd_intf_pins axi_interconnect_0/S02_AXI]
+	connect_bd_intf_net [get_bd_intf_pins axi_ethernet_0_dma/M_AXI_MM2S] -boundary_type upper [get_bd_intf_pins axi_interconnect_0/S03_AXI]
+	connect_bd_intf_net [get_bd_intf_pins axi_ethernet_0_dma/M_AXI_S2MM] -boundary_type upper [get_bd_intf_pins axi_interconnect_0/S04_AXI]
+	
+	connect_bd_intf_net -boundary_type upper [get_bd_intf_pins axi_interconnect_0/M00_AXI] [get_bd_intf_pins axi_bram_ctrl_0/S_AXI]
+	
+	
+	apply_bd_automation -rule xilinx.com:bd_rule:bram_cntlr -config {BRAM "Auto" }  [get_bd_intf_pins axi_bram_ctrl_0/BRAM_PORTA]
+	apply_bd_automation -rule xilinx.com:bd_rule:bram_cntlr -config {BRAM "Auto" }  [get_bd_intf_pins axi_bram_ctrl_0/BRAM_PORTB]
+	apply_bd_automation -rule xilinx.com:bd_rule:clkrst -config { Clk {/clk_wiz_1/clk_out1 (100 MHz)} Freq {100} Ref_Clk0 {} Ref_Clk1 {} Ref_Clk2 {}}  [get_bd_pins axi_bram_ctrl_0/s_axi_aclk]
+	apply_bd_automation -rule xilinx.com:bd_rule:clkrst -config { Clk {/clk_wiz_1/clk_out1 (100 MHz)} Freq {100} Ref_Clk0 {} Ref_Clk1 {} Ref_Clk2 {}}  [get_bd_pins axi_interconnect_0/ACLK]
+	apply_bd_automation -rule xilinx.com:bd_rule:clkrst -config { Clk {/clk_wiz_1/clk_out1 (100 MHz)} Freq {100} Ref_Clk0 {} Ref_Clk1 {} Ref_Clk2 {}}  [get_bd_pins axi_interconnect_0/S00_ACLK]
+	apply_bd_automation -rule xilinx.com:bd_rule:clkrst -config { Clk {/clk_wiz_1/clk_out1 (100 MHz)} Freq {100} Ref_Clk0 {} Ref_Clk1 {} Ref_Clk2 {}}  [get_bd_pins axi_interconnect_0/S01_ACLK]
+	apply_bd_automation -rule xilinx.com:bd_rule:clkrst -config { Clk {/clk_wiz_1/clk_out1 (100 MHz)} Freq {100} Ref_Clk0 {} Ref_Clk1 {} Ref_Clk2 {}}  [get_bd_pins axi_interconnect_0/S02_ACLK]
+	apply_bd_automation -rule xilinx.com:bd_rule:clkrst -config { Clk {/clk_wiz_1/clk_out1 (100 MHz)} Freq {100} Ref_Clk0 {} Ref_Clk1 {} Ref_Clk2 {}}  [get_bd_pins axi_interconnect_0/S03_ACLK]
+	apply_bd_automation -rule xilinx.com:bd_rule:clkrst -config { Clk {/clk_wiz_1/clk_out1 (100 MHz)} Freq {100} Ref_Clk0 {} Ref_Clk1 {} Ref_Clk2 {}}  [get_bd_pins axi_interconnect_0/S04_ACLK]
+	
+	
+	assign_bd_address
+	
+	set_property range 1M [get_bd_addr_segs {axi_ethernet_0_dma/Data_MM2S/SEG_axi_bram_ctrl_0_Mem0}]
+	set_property range 1M [get_bd_addr_segs {axi_ethernet_0_dma/Data_S2MM/SEG_axi_bram_ctrl_0_Mem0}]
+	set_property range 1M [get_bd_addr_segs {axi_ethernet_0_dma/Data_SG/SEG_axi_bram_ctrl_0_Mem0}]
+	set_property range 1M [get_bd_addr_segs {microblaze_0/Data/SEG_axi_bram_ctrl_0_Mem0}]
+	set_property range 1M [get_bd_addr_segs {microblaze_0/Instruction/SEG_axi_bram_ctrl_0_Mem0}]
+	}
 	#creating the top.xdc constraints
 	set proj_dir [get_property DIRECTORY [current_project ]]
 	set proj_name [get_property NAME [current_project ]]
@@ -489,10 +531,11 @@ if {([lsearch $temp_options Preset.VALUE] == -1) || ([lsearch $temp_options "Mic
           if {[regexp vc707 $board_name]} {
 			puts $fd "create_clock -period 8 \[get_ports sgmii_mgt_clk_clk_p\]"
 		}
+		
           if {[regexp vc709 $board_name]} {
 			puts $fd "create_clock -period 8 \[get_ports sfp_mgt_clk_clk_p\]"
 		}
-
+		
       if {[regexp ac701 $board_name]||[regexp sp701 $board_name]} {
 
 			puts $fd "# All the delay numbers have to provided by the user"
