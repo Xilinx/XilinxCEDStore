@@ -270,8 +270,8 @@ if {([lsearch $temp_options Preset.VALUE] == -1) || ([lsearch $temp_options "Mic
 	} elseif { ([lsearch $sfp_board_interface $var] != -1 )} {
 	set sfp_board_interface $var
 	}
-	puts $ethenet_board_interface
-	puts $sfp_board_interface
+	#puts $ethenet_board_interface
+	#puts $sfp_board_interface
 	
 	if { ( $ethenet_board_interface != "" ) || ( $sfp_board_interface != "" )} {
 	
