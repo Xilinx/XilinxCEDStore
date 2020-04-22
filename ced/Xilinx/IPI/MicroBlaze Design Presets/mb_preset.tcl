@@ -491,6 +491,11 @@ if {([lsearch $temp_options Preset.VALUE] == -1) || ([lsearch $temp_options "Mic
 	set_property range 1M [get_bd_addr_segs {microblaze_0/Data/SEG_axi_bram_ctrl_0_Mem0}]
 	set_property range 1M [get_bd_addr_segs {microblaze_0/Instruction/SEG_axi_bram_ctrl_0_Mem0}]
 	}
+	
+	if { ($board_name == "vcu128") || ($board_name == "vcu129") || ($board_name == "vcu129_es") } {
+	
+	set_property -dict [list CONFIG.M01_HAS_REGSLICE {1}] [get_bd_cells microblaze_0_axi_periph] }
+	
 	#creating the top.xdc constraints
 	set proj_dir [get_property DIRECTORY [current_project ]]
 	set proj_name [get_property NAME [current_project ]]
