@@ -536,9 +536,9 @@ if {([lsearch $temp_options Preset.VALUE] == -1) || ([lsearch $temp_options "Mic
 			puts $fd "create_clock -period 8 \[get_ports sgmii_mgt_clk_clk_p\]"
 		}
 		
-          if {[regexp vc709 $board_name]} {
-			puts $fd "create_clock -period 8 \[get_ports sfp_mgt_clk_clk_p\]"
-		}
+          # if {[regexp vc709 $board_name]} {
+			# puts $fd "create_clock -period 8 \[get_ports sfp_mgt_clk_clk_p\]"
+		# }
 		
       if {[regexp ac701 $board_name]||[regexp sp701 $board_name]} {
 
