@@ -5,13 +5,13 @@
         "name": "mb_preset", 
         "display": "MicroBlaze Design Presets", 
         "latest_revision": "1.0", 
-        "commit_id": "fc47e6cc0ab665691f9586f195ed66578846a2fc", 
+        "commit_id": "851b76c6f436b8febb1e22d3b98c5ef380da2a44", 
         "revisions": [
           {
             "revision": "1.0", 
-            "commit_id": "fc47e6cc0ab665691f9586f195ed66578846a2fc", 
-            "date": "06-04-2020", 
-            "history": "Added images for preset options"
+            "commit_id": "851b76c6f436b8febb1e22d3b98c5ef380da2a44", 
+            "date": "23-04-2020", 
+            "history": "Ethernet interface disabled for VC709"
           }
         ], 
         "config": {
