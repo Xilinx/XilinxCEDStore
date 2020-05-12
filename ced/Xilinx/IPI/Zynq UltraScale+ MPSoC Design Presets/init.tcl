@@ -54,10 +54,10 @@ updater {PROJECT_PARAM.BOARD_PART Preset.VALUE} {Image.IMAGE_PATH Preset.ENABLEM
 
  if { ${Preset.VALUE} == {MPSoC_Only}} {
       set Preset.ENABLEMENT true
-	  set Image.IMAGE_PATH "Zynq-UltraScale-Preset-1.jpg"
+	  set Image.IMAGE_PATH "Zynq-UltraScale-Preset-1.png"
  } elseif { ${Preset.VALUE} == {MPSoC_PL} } {
 	  set Preset.ENABLEMENT true
-          set Image.IMAGE_PATH "Zynq-UltraScale-Preset-2.jpg"
+          set Image.IMAGE_PATH "Zynq-UltraScale-Preset-2.png"
  } elseif { ${Preset.VALUE} == {MPSoC_Accelerated} } {
 	  set preset.ENABLEMENT true
  }

@@ -51,13 +51,13 @@ proc addGUILayout {DESIGNOBJ PROJECT_PARAM.BOARD_PART} {
   set Preset.DISPLAYNAME "Microblaze Preset Configurations"
   if { ${Preset.VALUE} == "Application_Processor"} {
      set Preset.ENABLEMENT true
-     set Image.IMAGE_PATH "microblaze-application-processor.jpg"
+     set Image.IMAGE_PATH "microblaze-application-processor.png"
   } elseif { ${Preset.VALUE} == "Microcontroller"} {
 	 set Preset.ENABLEMENT true
-	 set Image.IMAGE_PATH "microblaze-microcontroller.jpg"
+	 set Image.IMAGE_PATH "microblaze-microcontroller.png"
   } elseif { ${Preset.VALUE} == "Real-time_Processor" } {
 	 set preset.ENABLEMENT true
-	 set Image.IMAGE_PATH "microblaze-real-time-processor.jpg"
+	 set Image.IMAGE_PATH "microblaze-real-time-processor.png"
   }
 }
 

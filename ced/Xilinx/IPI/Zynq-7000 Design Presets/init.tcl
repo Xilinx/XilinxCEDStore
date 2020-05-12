@@ -53,10 +53,10 @@ updater {PROJECT_PARAM.BOARD_PART Preset.VALUE} {Image.IMAGE_PATH Preset.ENABLEM
 
   if { ${Preset.VALUE} == {PS7_Only}} {
      set Preset.ENABLEMENT true
-     set Image.IMAGE_PATH "Zynq-7000-Preset-1.jpg"
+     set Image.IMAGE_PATH "Zynq-7000-Preset-1.png"
 } elseif { ${Preset.VALUE} == {PS7_PL} } {
 	 set Preset.ENABLEMENT true
-	 set Image.IMAGE_PATH "Zynq-7000-Preset-2.jpg"
+	 set Image.IMAGE_PATH "Zynq-7000-Preset-2.png"
 } elseif { ${Preset.VALUE} == {PS7_Accelerated} } {
 	 set preset.ENABLEMENT true
 }
