@@ -47,7 +47,7 @@ The Processing System capabilities can be augmented by leveraging the Programmab
 
   <Design>init.tcl</Design>
 
-  <Image>Zynq_Platform.png</Image>
+  <!-- <Image>Zynq_Platform.png</Image> -->
 
 </ExampleDesign>
 

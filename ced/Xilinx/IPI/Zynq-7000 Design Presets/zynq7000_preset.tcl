@@ -31,12 +31,12 @@ proc createDesign {design_name options} {
 proc create_root_design { parentCell design_name temp_options} {
 
 
-puts "creat_root_desing"
+#puts "creat_root_desing"
 set board_part [get_property NAME [current_board_part]]
 #set design_repo [get_property REPO_DIRECTORY [get_example_designs *$design_name*]]
 #puts $design_repo
-puts $board_part
-puts $temp_options
+puts "INFO: $board_part selected"
+#puts "INFO: $temp_options"
 
 # source $design_repo/bd_7series/microcontroller_bd.tcl
 # set file  "[file dirname [file normalize [info script]]]/repo2/bd_7series/microcontroller_bd.tcl"
@@ -59,12 +59,12 @@ connect_bd_net [get_bd_pins processing_system7_0/FCLK_CLK0] [get_bd_pins process
 	
 
 if {([lsearch $temp_options Preset.VALUE] == -1) || ([lsearch $temp_options PS7_Only] != -1)}   {
-	puts "PS7_Only preset enabled"
+	puts "INFO: PS7_Only preset enabled"
 	
 
 } elseif { ([lsearch $temp_options PS7_PL] != -1 )} {
 
-	puts "PS7_PL preset enabled"
+	puts "INFO: PS7_PL preset enabled"
 
 	set led_board_interface [get_property COMPONENT_NAME [lindex [get_board_components -filter {SUB_TYPE==led}] 0]]
 	if { $led_board_interface != "" } {
@@ -81,7 +81,7 @@ if {([lsearch $temp_options Preset.VALUE] == -1) || ([lsearch $temp_options PS7_
 
 
 } elseif { ([lsearch $temp_options PS7_Accelerated] != -1 )} {
-	puts "PS7_Accelerated preset enabled"
+	puts "INFO: PS7_Accelerated preset enabled"
 	
 	if { $ddr3_board_interface != "" } {
 	create_bd_cell -type ip -vlnv xilinx.com:ip:mig_7series mig_7series_0
@@ -98,7 +98,7 @@ if {([lsearch $temp_options Preset.VALUE] == -1) || ([lsearch $temp_options PS7_
 }
 # End of create_root_design()
 	
-puts "completed"
+puts "INFO: End of create_root_design"
 
 
 ##################################################################

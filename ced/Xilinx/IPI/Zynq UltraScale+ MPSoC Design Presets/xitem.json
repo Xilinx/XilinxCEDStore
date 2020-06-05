@@ -4,9 +4,9 @@
         {
           "infra": {
             "name": "mpsoc_preset",
-            "display": "Zynq Ultracale+ MPSoC Design Presets",
+            "display": "Zynq UltraScale+ MPSoC Design Presets",
             "revision": "1.0",
-            "description": "A Zynq Ultracale+ MPSoC based example design",
+            "description": "A Zynq UltraScale+ MPSoC based example design",
             "company": "xilinx.com",
             "company_display": "Xilinx",
             "author": "vanitha",
@@ -17,7 +17,6 @@
               }
             ],
             "category": "example",
-            "logo": "MPSoC_Platform.png",  
             "website": "www.xilinx.com",
             "is_active" : true, 
             "search-keywords": [
