@@ -5,13 +5,13 @@
         "name": "mb_preset", 
         "display": "MicroBlaze Design Presets", 
         "latest_revision": "1.0", 
-        "commit_id": "c1d9c65e51b7cd728cf121ea41388e57cd64178c", 
+        "commit_id": "28e0b0161af481f4f3a2b2d96d148aa46d14e70e", 
         "revisions": [
           {
             "revision": "1.0", 
-            "commit_id": "c1d9c65e51b7cd728cf121ea41388e57cd64178c", 
-            "date": "04-03-2020", 
-            "history": "Added images for preset options"
+            "commit_id": "28e0b0161af481f4f3a2b2d96d148aa46d14e70e", 
+            "date": "16-06-2020", 
+            "history": "Updated Images"
           }
         ], 
         "config": {
