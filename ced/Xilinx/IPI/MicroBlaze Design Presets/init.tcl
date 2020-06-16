@@ -34,16 +34,16 @@ proc getSupportedBoards {} {
 
 
 proc addOptions {DESIGNOBJ PROJECT_PARAM.BOARD_PART} {
-	lappend x [dict create name "Preset" type "string" value "Microcontroller" value_list {"Microcontroller Microcontorller___Suitable_for_running_baremetal_code" "Real-time_Processor Real-time____________Deterministic_real-time_processing_on_RTOS" "Application_Processor Application_________Embedded_linux_capable"} enabled true]
+	lappend x [dict create name "Preset" type "string" value "Microcontroller" value_list {"Microcontroller Microcontroller___Suitable_for_running_baremetal_code" "Real-time_Processor Real-time____________Deterministic_real-time_processing_on_RTOS" "Application_Processor Application_________Embedded_linux_capable"} enabled true]
 	return $x
 }
 
 proc addGUILayout {DESIGNOBJ PROJECT_PARAM.BOARD_PART} {
 	set designObj $DESIGNOBJ
 	#place to define GUI layout for options
-	set page [ced::add_page -name "Page1" -display_name "Configuration" -designObject $designObj -layout horizontal]	
+	set page [ced::add_page -name "Page1" -display_name "Configuration" -designObject $designObj -layout vertical]	
 	ced::add_param -name Preset -parent $page -designObject $designObj  -widget radioGroup 
-    set imageVar [ced::add_image -name Image -parent $page -designObject $designObj -width 600 -height 400 -layout horizontal]
+    set imageVar [ced::add_image -name Image -parent $page -designObject $designObj -width 500 -height 300 -layout vertical]
 }
 
 
@@ -51,13 +51,13 @@ proc addGUILayout {DESIGNOBJ PROJECT_PARAM.BOARD_PART} {
   set Preset.DISPLAYNAME "Microblaze Preset Configurations"
   if { ${Preset.VALUE} == "Application_Processor"} {
      set Preset.ENABLEMENT true
-     set Image.IMAGE_PATH "microblaze-application-processor.jpg"
+     set Image.IMAGE_PATH "microblaze-application-processor.png"
   } elseif { ${Preset.VALUE} == "Microcontroller"} {
 	 set Preset.ENABLEMENT true
-	 set Image.IMAGE_PATH "microblaze-microcontroller.jpg"
+	 set Image.IMAGE_PATH "microblaze-microcontroller.png"
   } elseif { ${Preset.VALUE} == "Real-time_Processor" } {
 	 set preset.ENABLEMENT true
-	 set Image.IMAGE_PATH "microblaze-real-time-processor.jpg"
+	 set Image.IMAGE_PATH "microblaze-real-time-processor.png"
   }
 }
 
