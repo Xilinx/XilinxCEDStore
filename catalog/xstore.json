@@ -22,15 +22,15 @@
             "remote_repo_branch_to_sync": "2020.1"
            },
            {
-            "version": "2020.2",
-            "xitem_catalogue_file": "catalog/vivado_2020.2_SAM.json",
-            "remote_repo_branch_to_sync": "2020.2_SAM"
-           },
-          {
               "version": "2020.2",
               "xitem_catalogue_file": "catalog/vivado_2020.2.json",
               "remote_repo_branch_to_sync": "master"
-          }
+           },
+           {
+            "version": "2020.2_SAM",
+            "xitem_catalogue_file": "catalog/vivado_2020.2_SAM.json",
+            "remote_repo_branch_to_sync": "2020.2_SAM"
+           }
          ]
         }
       ]
