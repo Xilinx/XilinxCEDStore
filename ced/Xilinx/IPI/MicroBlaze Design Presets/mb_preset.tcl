@@ -68,10 +68,10 @@ lappend inpt axi_iic_0/iic2intc_irpt
 catch { set qspi_flash_board_interface [get_property COMPONENT_NAME [lindex [get_board_components -filter {SUB_TYPE==memory_flash_qspi}] 0]]
 if { $qspi_flash_board_interface != "" } {
 	create_bd_cell -type ip -vlnv xilinx.com:ip:axi_quad_spi axi_quad_spi_0
-	if { $board_name != "vcu118" } {
-	apply_board_connection -board_interface "$qspi_flash_board_interface" -ip_intf "axi_quad_spi_0/SPI_0" -diagram $design_name 
+	if { ($board_name == "vcu118")||($board_name == "kcu105") } {
+	apply_board_connection -board_interface "$qspi_flash_board_interface" -ip_intf "axi_quad_spi_0/SPI_1" -diagram $design_name 
 	} else {
-		apply_board_connection -board_interface "$qspi_flash_board_interface" -ip_intf "axi_quad_spi_0/SPI_1" -diagram $design_name }
+		apply_board_connection -board_interface "$qspi_flash_board_interface" -ip_intf "axi_quad_spi_0/SPI_0" -diagram $design_name }
 lappend inpt axi_quad_spi_0/ip2intc_irpt
 }}
 
@@ -585,7 +585,7 @@ if {([lsearch $temp_options Preset.VALUE] == -1) || ([lsearch $temp_options "Mic
 	 puts "[connect_bd_net [get_bd_pins $item] [get_bd_pins /microblaze_0_xlconcat/In$i]]"
 	 incr i
 	}
-	
+
 	set gpios_list [ get_board_component_interfaces -filter {BUSDEF_NAME == gpio_rtl} ]
 	set gpio_cnt 0
 	foreach gpio $gpios_list {
@@ -601,9 +601,9 @@ if {([lsearch $temp_options Preset.VALUE] == -1) || ([lsearch $temp_options "Mic
 	regenerate_bd_layout
 	validate_bd_design
 	make_wrapper -files [get_files $design_name.bd] -top -import
+	
+	puts "INFO: End of create_root_design"
 }
-
-puts "INFO: End of create_root_design"
 
 ##################################################################
 # MAIN FLOW
