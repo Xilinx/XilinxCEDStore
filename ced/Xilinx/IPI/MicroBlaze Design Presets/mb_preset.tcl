@@ -599,6 +599,8 @@ if {([lsearch $temp_options Preset.VALUE] == -1) || ([lsearch $temp_options "Mic
 			}
 	}
 	regenerate_bd_layout
+	if { $bpi_flash_board_interface != "" } {
+		set_property range 128M [get_bd_addr_segs {microblaze_0/Data/SEG_axi_emc_0_Mem0}] }
 	validate_bd_design
 	make_wrapper -files [get_files $design_name.bd] -top -import
 	
