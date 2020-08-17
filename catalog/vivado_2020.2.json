@@ -5,11 +5,11 @@
         "name": "mb_preset", 
         "display": "MicroBlaze Design Presets", 
         "latest_revision": "1.0", 
-        "commit_id": "416050c56bfbab207d6646b3309e88dac3a721c2", 
+        "commit_id": "050ae6c6128f80e35fdb6539ad7fc7c6fb077099", 
         "revisions": [
           {
             "revision": "1.0", 
-            "commit_id": "416050c56bfbab207d6646b3309e88dac3a721c2", 
+            "commit_id": "050ae6c6128f80e35fdb6539ad7fc7c6fb077099", 
             "date": "29-06-2020", 
             "history": "Enable QSPI on KCU105"
           }
