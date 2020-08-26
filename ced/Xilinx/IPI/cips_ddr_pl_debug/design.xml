@@ -1,0 +1,20 @@
+﻿<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+
+<ExampleDesign>
+
+<Vendor>xilinx.com</Vendor>
+
+<Library>design</Library>
+
+<Name>cips_ddr_pl_debug</Name>
+
+<DisplayName>CIPS DDR PL Debug</DisplayName>
+
+<Version>1.0</Version>
+
+<Design>init.tcl</Design>
+
+<Image></Image>
+
+</ExampleDesign>
+
