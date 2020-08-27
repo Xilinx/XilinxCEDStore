@@ -34,7 +34,7 @@
           }
         ], 
         "config": {
-          "root": "ced/Xilinx/IPI/extensible_platform", 
+          "root": "ced/Xilinx/IPI/cips_ddr_pl_debug", 
           "metadata_file": "xitem.json"
         }, 
         "company": "xilinx.com"
