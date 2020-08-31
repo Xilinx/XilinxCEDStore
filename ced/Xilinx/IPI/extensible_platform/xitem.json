@@ -4,7 +4,7 @@
         {
           "infra": {
             "name": "ext_platform",
-            "display": "Extensible Embedded Platform<",
+            "display": "Extensible Embedded Platform",
             "revision": "1.0",
             "description": "An example extendable platform design",
             "company": "xilinx.com",
