@@ -5,12 +5,12 @@
         "name": "ext_platform", 
         "display": "Extensible Platform Design", 
         "latest_revision": "1.0", 
-        "commit_id": "54bf60f776d23d173a575f5fc3cb2a1d49be1538", 
+        "commit_id": "62c61b004a8d2fda29c7165e114c31660681ebe9", 
         "revisions": [
           {
             "revision": "1.0", 
-            "commit_id": "54bf60f776d23d173a575f5fc3cb2a1d49be1538", 
-            "date": "27-08-2020", 
+            "commit_id": "62c61b004a8d2fda29c7165e114c31660681ebe9", 
+            "date": "31-08-2020", 
             "history": "Initial Release"
           }
         ], 
