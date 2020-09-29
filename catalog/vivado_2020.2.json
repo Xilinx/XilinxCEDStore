@@ -59,6 +59,25 @@
         "company": "xilinx.com"
       },
       {
+        "name": "vck190AXIDMA", 
+        "display": "Versal AXI DMA", 
+        "latest_revision": "1.0", 
+        "commit_id": "436fd0d56768198a62b5679f2fda3e84c2bd5380", 
+        "revisions": [
+          {
+            "revision": "1.0", 
+            "commit_id": "436fd0d56768198a62b5679f2fda3e84c2bd5380", 
+            "date": "09-29-2020", 
+            "history": "Versal AXI DMA example design"
+          }
+        ], 
+        "config": {
+          "root": "ced/Xilinx/IPI/VCK190-AXIDMA-WTS-Example", 
+          "metadata_file": "xitem.json"
+        }, 
+        "company": "xilinx.com"
+      }, 
+      {
         "name": "mpsoc_preset", 
         "display": "Zynq UltraScale+ MPSoC Design Presets", 
         "latest_revision": "1.0", 
