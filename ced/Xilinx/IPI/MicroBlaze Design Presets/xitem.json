@@ -16,7 +16,7 @@
                 "url": "www.xilinx.com"
               }
             ],
-            "category": "foo/Soft Processors",
+            "category": "Soft Processors",
             "website": "www.xilinx.com",
             "is_active" : true, 
             "search-keywords": [
