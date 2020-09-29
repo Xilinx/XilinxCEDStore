@@ -5,11 +5,11 @@
         "name": "ext_platform", 
         "display": "Extensible Platform Design", 
         "latest_revision": "1.0", 
-        "commit_id": "a9ed927dd4415e9c2a03306680a17a0d41f4ff84", 
+        "commit_id": "7cb027ae44f0da8f78a3cda5a61ed151594fd4a1",
         "revisions": [
           {
             "revision": "1.0", 
-            "commit_id": "a9ed927dd4415e9c2a03306680a17a0d41f4ff84", 
+            "commit_id": "7cb027ae44f0da8f78a3cda5a61ed151594fd4a1", 
             "date": "31-08-2020", 
             "history": "Update description and picture"
           }
@@ -24,11 +24,11 @@
         "name": "cips_ddr_pl_debug", 
         "display": "Versal CIPS Design", 
         "latest_revision": "1.0", 
-        "commit_id": "a9ed927dd4415e9c2a03306680a17a0d41f4ff84", 
+        "commit_id": "7cb027ae44f0da8f78a3cda5a61ed151594fd4a1", 
         "revisions": [
           {
             "revision": "1.0", 
-            "commit_id": "a9ed927dd4415e9c2a03306680a17a0d41f4ff84", 
+            "commit_id": "7cb027ae44f0da8f78a3cda5a61ed151594fd4a1", 
             "date": "27-08-2020", 
             "history": "Update description and image"
           }
@@ -43,11 +43,11 @@
         "name": "mb_preset", 
         "display": "MicroBlaze Design Presets", 
         "latest_revision": "1.0", 
-        "commit_id": "5cc1db1d60a607feabee5c8d344f0aea1f8c2c36", 
+        "commit_id": "7cb027ae44f0da8f78a3cda5a61ed151594fd4a1", 
         "revisions": [
           {
             "revision": "1.0", 
-            "commit_id": "5cc1db1d60a607feabee5c8d344f0aea1f8c2c36", 
+            "commit_id": "7cb027ae44f0da8f78a3cda5a61ed151594fd4a1", 
             "date": "29-06-2020", 
             "history": "Fixed typo"
           }
@@ -62,11 +62,11 @@
         "name": "vck190AXIDMA", 
         "display": "Versal AXI DMA", 
         "latest_revision": "1.0", 
-        "commit_id": "436fd0d56768198a62b5679f2fda3e84c2bd5380", 
+        "commit_id": "7cb027ae44f0da8f78a3cda5a61ed151594fd4a1", 
         "revisions": [
           {
             "revision": "1.0", 
-            "commit_id": "436fd0d56768198a62b5679f2fda3e84c2bd5380", 
+            "commit_id": "7cb027ae44f0da8f78a3cda5a61ed151594fd4a1", 
             "date": "09-29-2020", 
             "history": "Versal AXI DMA example design"
           }
@@ -81,11 +81,11 @@
         "name": "mpsoc_preset", 
         "display": "Zynq UltraScale+ MPSoC Design Presets", 
         "latest_revision": "1.0", 
-        "commit_id": "21d501d331cbb32bfc2eb4f2da5779b327d14cc7", 
+        "commit_id": "7cb027ae44f0da8f78a3cda5a61ed151594fd4a1", 
         "revisions": [
           {
             "revision": "1.0", 
-            "commit_id": "21d501d331cbb32bfc2eb4f2da5779b327d14cc7", 
+            "commit_id": "7cb027ae44f0da8f78a3cda5a61ed151594fd4a1", 
             "date": "06-03-2020", 
             "history": "Zynq UltraScale+  based example design for Xilinx Evaluation Boards"
           }
@@ -100,11 +100,11 @@
         "name": "zynq7000_preset", 
         "display": "Zynq-7000 Design Presets", 
         "latest_revision": "1.0", 
-        "commit_id": "21d501d331cbb32bfc2eb4f2da5779b327d14cc7", 
+        "commit_id": "7cb027ae44f0da8f78a3cda5a61ed151594fd4a1", 
         "revisions": [
           {
             "revision": "1.0", 
-            "commit_id": "21d501d331cbb32bfc2eb4f2da5779b327d14cc7", 
+            "commit_id": "7cb027ae44f0da8f78a3cda5a61ed151594fd4a1", 
             "date": "06-03-2020", 
             "history": "Zynq-7000 based example design for Xilinx Evaluation Boards"
           }
