@@ -37,8 +37,8 @@ proc addOptions {DESIGNOBJ PROJECT_PARAM.BOARD_PART} {
 proc addGUILayout {DESIGNOBJ PROJECT_PARAM.BOARD_PART} {
 	set designObj $DESIGNOBJ
 	set page [ced::add_page -name "Page1" -display_name "Configuration" -designObject $designObj -layout vertical]	
-	set ddr [ced::add_group -name "Versal LPDDR Configurations" -display_name "Versal LPDDR Configurations"  -parent $page -visible true -designObject $designObj ]
-	ced::add_param -name Include_LPDDR -display_name "Include_LPDDR" -parent $ddr -designObject $designObj -widget checkbox
+	set ddr [ced::add_group -name "Versal LPDDR4 Configurations" -display_name "Versal LPDDR4 Configurations"  -parent $page -visible true -designObject $designObj ]
+	ced::add_param -name Include_LPDDR -display_name "Include_LPDDR4" -parent $ddr -designObject $designObj -widget checkbox
     set imageVar [ced::add_image -name Image -parent $ddr -designObject $designObj -width 500 -height 300 -layout vertical]
 }
 
