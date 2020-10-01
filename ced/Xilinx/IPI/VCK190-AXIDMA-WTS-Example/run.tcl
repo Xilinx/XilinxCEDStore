@@ -307,4 +307,12 @@ create_root_design "" $design_name $options
 	# close_bd_design [get_bd_designs $design_name]
 	# set bdDesignPath [file join [get_property directory [current_project]] [current_project].srcs sources_1 bd $design_name]
 	open_bd_design [get_bd_files $design_name]
+	# Add USER_COMMENTS on $design_name
+	set_property USER_COMMENTS.comment_0 {} [current_bd_design]
+	set_property USER_COMMENTS.comment0 {Next Steps:
+1. Select Generate Device Image in the Flow Navigator to create .pdi image.
+2. Select File -> Export -> Export Hardware to export .xsa file.
+3. Refer to README.md in below url for Vitis steps
+https://github.com/abommera/XilinxCEDStore/tree/2020.2/ced/Xilinx/IPI/
+VCK190-AXIDMA-WTS-Example } [current_bd_design]
 }
