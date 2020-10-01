@@ -5,13 +5,13 @@
         "name": "ext_platform", 
         "display": "Extensible Platform Design", 
         "latest_revision": "1.0", 
-        "commit_id": "7cb027ae44f0da8f78a3cda5a61ed151594fd4a1",
+        "commit_id": "f32ba23cdc20c0aedf5599512d9e01e759d8afaf",
         "revisions": [
           {
             "revision": "1.0", 
-            "commit_id": "7cb027ae44f0da8f78a3cda5a61ed151594fd4a1", 
-            "date": "31-08-2020", 
-            "history": "Update description and picture"
+            "commit_id": "f32ba23cdc20c0aedf5599512d9e01e759d8afaf", 
+            "date": "01-10-2020", 
+            "history": "Updated PFM properties, Used contigous memory for LPDDR4, Enabled TLM SIM Models for NoC and CIPS"
           }
         ], 
         "config": {
