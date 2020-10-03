@@ -736,6 +736,8 @@ create_root_design "" $design_name $options
 	
 	open_bd_design [get_bd_files $design_name]
 	set board_name [get_property BOARD_NAME [current_board]]
+	set_property target_language Verilog [current_project]
+	
 	# Create PFM attributes
 
 	if [regexp "vmk" $board_name] {
