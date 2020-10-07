@@ -5,11 +5,11 @@
         "name": "ext_platform", 
         "display": "Extensible Platform Design", 
         "latest_revision": "1.0", 
-        "commit_id": "24d6f3222c03408f367a803776ccf1600f8c53fb",
+        "commit_id": "3032142c048023ec5afa97f3bead6885582b3e71",
         "revisions": [
           {
             "revision": "1.0", 
-            "commit_id": "24d6f3222c03408f367a803776ccf1600f8c53fb", 
+            "commit_id": "3032142c048023ec5afa97f3bead6885582b3e71", 
             "date": "07-10-2020", 
             "history": "Updated PFM properties, Used contigous memory for LPDDR4, Enabled TLM SIM Models for NoC and CIPS, Using Verilog and VCCAUX WA"
           }
