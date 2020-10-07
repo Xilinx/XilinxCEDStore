@@ -771,7 +771,7 @@ create_root_design "" $design_name $options
 	set_property SELECTED_SIM_MODEL tlm [get_bd_cells /axi_noc_ddr4]
 	
 	set_property -dict [list CONFIG.PRIM_SOURCE {No_buffer}] [get_bd_cells clk_wizard_0]
-	set_property -dict [list CONFIG.PMC_MIO_37_DIRECTION {out} CONFIG.PMC_MIO_37_USAGE {GPIO} CONFIG.PMC_MIO_37_OUTPUT_DATA {high}] [get_bd_cells versal_cips_0]
+	set_property -dict [list CONFIG.PMC_MIO_37_DIRECTION {out} CONFIG.PMC_MIO_37_USAGE {GPIO} CONFIG.PMC_MIO_37_OUTPUT_DATA {high}] [get_bd_cells /CIPS_0]
 	assign_bd_address
 	validate_bd_design
 	make_wrapper -files [get_files $design_name.bd] -top -import -quiet
