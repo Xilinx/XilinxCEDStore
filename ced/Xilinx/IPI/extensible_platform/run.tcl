@@ -675,7 +675,7 @@ connect_bd_intf_net -intf_net NOC_0_M00_AXI [get_bd_intf_pins ai_engine_0/S00_AX
 connect_bd_net -net ai_engine_0_s00_axi_aclk [get_bd_pins ai_engine_0/s00_axi_aclk] [get_bd_pins axi_noc_master/aclk9] }
 
 if { ([lsearch $temp_options "true"] != -1 )} {
-
+puts "INFO: lpddr4 selected"
 set_property -dict [list CONFIG.NUM_NMI {2}] [get_bd_cells axi_noc_master]
 set_property -dict [list CONFIG.CONNECTIONS {M01_INI { read_bw {5} write_bw {5}} M00_AXI { read_bw {5} write_bw {5} read_avg_burst {4} write_avg_burst {4}} M00_INI { read_bw {5} write_bw {5}} }] [get_bd_intf_pins /axi_noc_master/S00_AXI]
 set_property -dict [list CONFIG.CONNECTIONS {M01_INI { read_bw {5} write_bw {5}} M00_AXI { read_bw {5} write_bw {5} read_avg_burst {4} write_avg_burst {4}} M00_INI { read_bw {5} write_bw {5}} }] [get_bd_intf_pins /axi_noc_master/S01_AXI]
@@ -703,9 +703,9 @@ set_property -dict [list CONFIG.CONNECTIONS {M01_INI { read_bw {5} write_bw {5}}
    CONFIG.CH1_LPDDR4_0_BOARD_INTERFACE {ch1_lpddr4_c0} \
    CONFIG.CH1_LPDDR4_1_BOARD_INTERFACE {ch1_lpddr4_c1} \
    CONFIG.MC_CHAN_REGION0 {DDR_CH1} \
-   CONFIG.MC_CHAN_REGION1 {DDR_CH2} \
+   CONFIG.MC_CHAN_REGION1 {NONE} \
    CONFIG.NUM_CLKS {0} \
-   CONFIG.NUM_MCP {4} \
+   CONFIG.NUM_MCP {1} \
    CONFIG.NUM_MI {0} \
    CONFIG.NUM_NSI {1} \
    CONFIG.NUM_SI {0} \
@@ -723,7 +723,7 @@ set_property -dict [list CONFIG.CONNECTIONS {M01_INI { read_bw {5} write_bw {5}}
   connect_bd_intf_net -intf_net axi_noc_master_M01_INI [get_bd_intf_pins axi_noc_lpddr4/S00_INI] [get_bd_intf_pins axi_noc_master/M01_INI]  }
 
 	save_bd_design
-	puts "INFO: End of create_root_design"
+	#puts "INFO: End of create_root_design"
 }
 ##################################################################
 # MAIN FLOW
@@ -736,23 +736,44 @@ create_root_design "" $design_name $options
 	
 	open_bd_design [get_bd_files $design_name]
 	set board_name [get_property BOARD_NAME [current_board]]
+	set_property target_language Verilog [current_project]
+	
 	# Create PFM attributes
 
 	if [regexp "vmk" $board_name] {
-	set_property PFM_NAME {xilinx.com:xd:xilinx_vmk180_base_202020_1:1.0} [get_files [current_bd_design].bd]
+	puts "INFO: Creating extensible_platform for VMK_180"
+	set_property PFM_NAME {xilinx.com:xd:xilinx_vmk180_base:1.0} [get_files [current_bd_design].bd]
 	} else {
-	set_property PFM_NAME {xilinx.com:xd:xilinx_vck190_base_202020_1:1.0} [get_files [current_bd_design].bd] }
+	puts "INFO: Creating extensible_platform for VCK_190"
+	set_property PFM_NAME {xilinx.com:xd:xilinx_vck190_base:1.0} [get_files [current_bd_design].bd] }
 	set_property PFM.IRQ {intr {id 0 range 32}} [get_bd_cells /axi_intc_0]
 	set_property PFM.AXI_PORT {M00_AXI {memport "NOC_MASTER"}} [get_bd_cells /axi_noc_master]
+	
 	set_property PFM.CLOCK {clk_out1 {id "1" is_default "false" proc_sys_reset "proc_sys_reset_0" status "fixed"} clk_out2 {id "0" is_default "true" proc_sys_reset "/proc_sys_reset_1" status "fixed"} clk_out3 {id "2" is_default "false" proc_sys_reset "/proc_sys_reset_2" status "fixed"}} [get_bd_cells /clk_wizard_0]
 	set_property PFM.AXI_PORT {M01_AXI {memport "M_AXI_GP" sptag "" memory ""} M02_AXI {memport "M_AXI_GP" sptag "" memory ""} M03_AXI {memport "M_AXI_GP" sptag "" memory ""} M04_AXI {memport "M_AXI_GP" sptag "" memory ""} M05_AXI {memport "M_AXI_GP" sptag "" memory ""} M06_AXI {memport "M_AXI_GP" sptag "" memory ""} M07_AXI {memport "M_AXI_GP" sptag "" memory ""} M08_AXI {memport "M_AXI_GP" sptag "" memory ""} M09_AXI {memport "M_AXI_GP" sptag "" memory ""} M10_AXI {memport "M_AXI_GP" sptag "" memory ""} M11_AXI {memport "M_AXI_GP" sptag "" memory ""} M12_AXI {memport "M_AXI_GP" sptag "" memory ""} M13_AXI {memport "M_AXI_GP" sptag "" memory ""} M14_AXI {memport "M_AXI_GP" sptag "" memory ""} M15_AXI {memport "M_AXI_GP" sptag "" memory ""}} [get_bd_cells /smartconnect_1]
+	catch { set lpddr [get_bd_cells /axi_noc_lpddr4]
+	if { $lpddr == "/axi_noc_lpddr4" } {
+	puts "INFO: lpddr4 selected"
+    set_property PFM.AXI_PORT {S00_AXI {memport "S_AXI_NOC" sptag "LPDDR"} S01_AXI {memport "S_AXI_NOC" sptag "LPDDR"} S02_AXI {memport "S_AXI_NOC" sptag "LPDDR"} S03_AXI {memport "S_AXI_NOC" sptag "LPDDR"} S04_AXI {memport "S_AXI_NOC" sptag "LPDDR"} S05_AXI {memport "S_AXI_NOC" sptag "LPDDR"} S06_AXI {memport "S_AXI_NOC" sptag "LPDDR"} S07_AXI {memport "S_AXI_NOC" sptag "LPDDR"} S08_AXI {memport "S_AXI_NOC" sptag "LPDDR"} S09_AXI {memport "S_AXI_NOC" sptag "LPDDR"} S10_AXI {memport "S_AXI_NOC" sptag "LPDDR"} S11_AXI {memport "S_AXI_NOC" sptag "LPDDR"} S12_AXI {memport "S_AXI_NOC" sptag "LPDDR"} S13_AXI {memport "S_AXI_NOC" sptag "LPDDR"} S14_AXI {memport "S_AXI_NOC" sptag "LPDDR"} S15_AXI {memport "S_AXI_NOC" sptag "LPDDR"} S16_AXI {memport "S_AXI_NOC" sptag "LPDDR"} S17_AXI {memport "S_AXI_NOC" sptag "LPDDR"} S18_AXI {memport "S_AXI_NOC" sptag "LPDDR"} S19_AXI {memport "S_AXI_NOC" sptag "LPDDR"} S20_AXI {memport "S_AXI_NOC" sptag "LPDDR"} S21_AXI {memport "S_AXI_NOC" sptag "LPDDR"} S22_AXI {memport "S_AXI_NOC" sptag "LPDDR"} S23_AXI {memport "S_AXI_NOC" sptag "LPDDR"} S24_AXI {memport "S_AXI_NOC" sptag "LPDDR"} S25_AXI {memport "S_AXI_NOC" sptag "LPDDR"} S26_AXI {memport "S_AXI_NOC" sptag "LPDDR"} S27_AXI {memport "S_AXI_NOC" sptag "LPDDR"}} [get_bd_cells /axi_noc_lpddr4]
+	set_property SELECTED_SIM_MODEL tlm [get_bd_cells /axi_noc_lpddr4] } }
+    set_property PFM.AXI_PORT {S00_AXI {memport "S_AXI_NOC" sptag "DDR"} S01_AXI {memport "S_AXI_NOC" sptag "DDR"} S02_AXI {memport "S_AXI_NOC" sptag "DDR"} S03_AXI {memport "S_AXI_NOC" sptag "DDR"} S04_AXI {memport "S_AXI_NOC" sptag "DDR"} S05_AXI {memport "S_AXI_NOC" sptag "DDR"} S06_AXI {memport "S_AXI_NOC" sptag "DDR"} S07_AXI {memport "S_AXI_NOC" sptag "DDR"} S08_AXI {memport "S_AXI_NOC" sptag "DDR"} S09_AXI {memport "S_AXI_NOC" sptag "DDR"} S10_AXI {memport "S_AXI_NOC" sptag "DDR"} S11_AXI {memport "S_AXI_NOC" sptag "DDR"} S12_AXI {memport "S_AXI_NOC" sptag "DDR"} S13_AXI {memport "S_AXI_NOC" sptag "DDR"} S14_AXI {memport "S_AXI_NOC" sptag "DDR"} S15_AXI {memport "S_AXI_NOC" sptag "DDR"} S16_AXI {memport "S_AXI_NOC" sptag "DDR"} S17_AXI {memport "S_AXI_NOC" sptag "DDR"} S18_AXI {memport "S_AXI_NOC" sptag "DDR"} S19_AXI {memport "S_AXI_NOC" sptag "DDR"} S20_AXI {memport "S_AXI_NOC" sptag "DDR"} S21_AXI {memport "S_AXI_NOC" sptag "DDR"} S22_AXI {memport "S_AXI_NOC" sptag "DDR"} S23_AXI {memport "S_AXI_NOC" sptag "DDR"} S24_AXI {memport "S_AXI_NOC" sptag "DDR"} S25_AXI {memport "S_AXI_NOC" sptag "DDR"} S26_AXI {memport "S_AXI_NOC" sptag "DDR"} S27_AXI {memport "S_AXI_NOC" sptag "DDR"}} [get_bd_cells /axi_noc_ddr4]
+	puts "INFO: Platform creation completed!"
+	
 	regenerate_bd_layout
 
 	set_property platform.extensible true [current_project]
 	# Add USER_COMMENTS on $design_name
 	set_property USER_COMMENTS.comment0 "An example extendable platform design" [get_bd_designs $design_name]
-
+	
+	set_property SELECTED_SIM_MODEL tlm [get_bd_cells /CIPS_0]
+	set_property SELECTED_SIM_MODEL tlm [get_bd_cells /axi_noc_master]
+	#set_property SELECTED_SIM_MODEL tlm [get_bd_cells /axi_noc_lpddr4]
+	set_property SELECTED_SIM_MODEL tlm [get_bd_cells /axi_noc_ddr4]
+	
+	set_property -dict [list CONFIG.PRIM_SOURCE {No_buffer}] [get_bd_cells clk_wizard_0]
+	set_property -dict [list CONFIG.PMC_MIO_37_DIRECTION {out} CONFIG.PMC_MIO_37_USAGE {GPIO} CONFIG.PMC_MIO_37_OUTPUT_DATA {high}] [get_bd_cells /CIPS_0]
 	assign_bd_address
 	validate_bd_design
-	make_wrapper -files [get_files $design_name.bd] -top -import
+	make_wrapper -files [get_files $design_name.bd] -top -import -quiet
+	puts "INFO: End of create_root_design"
 }
