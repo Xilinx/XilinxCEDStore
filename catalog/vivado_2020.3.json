@@ -5,11 +5,11 @@
         "name": "ext_platform", 
         "display": "Extensible Platform Design", 
         "latest_revision": "1.0", 
-        "commit_id": "fe8c551a6e8d54f5873f85f95a2af5cc74c4d6f0", 
+        "commit_id": "253f8551cce4063d67d357c876654910f97bc82c", 
         "revisions": [
           {
             "revision": "1.0", 
-            "commit_id": "fe8c551a6e8d54f5873f85f95a2af5cc74c4d6f0", 
+            "commit_id": "253f8551cce4063d67d357c876654910f97bc82c", 
             "date": "31-08-2020", 
             "history": "Updated description and picture"
           }
@@ -24,11 +24,11 @@
         "name": "cips_ddr_pl_debug", 
         "display": "Versal CIPS Design", 
         "latest_revision": "1.0", 
-        "commit_id": "fe8c551a6e8d54f5873f85f95a2af5cc74c4d6f0", 
+        "commit_id": "253f8551cce4063d67d357c876654910f97bc82c", 
         "revisions": [
           {
             "revision": "1.0", 
-            "commit_id": "fe8c551a6e8d54f5873f85f95a2af5cc74c4d6f0", 
+            "commit_id": "253f8551cce4063d67d357c876654910f97bc82c", 
             "date": "27-08-2020", 
             "history": "Updated description and picture"
           }
