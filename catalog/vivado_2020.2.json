@@ -5,13 +5,13 @@
         "name": "ext_platform", 
         "display": "Extensible Platform Design", 
         "latest_revision": "1.0", 
-        "commit_id": "a9ed927dd4415e9c2a03306680a17a0d41f4ff84", 
+        "commit_id": "3032142c048023ec5afa97f3bead6885582b3e71",
         "revisions": [
           {
             "revision": "1.0", 
-            "commit_id": "a9ed927dd4415e9c2a03306680a17a0d41f4ff84", 
-            "date": "31-08-2020", 
-            "history": "Update description and picture"
+            "commit_id": "3032142c048023ec5afa97f3bead6885582b3e71", 
+            "date": "07-10-2020", 
+            "history": "Updated PFM properties, Used contigous memory for LPDDR4, Enabled TLM SIM Models for NoC and CIPS, Using Verilog and VCCAUX WA"
           }
         ], 
         "config": {
@@ -24,13 +24,13 @@
         "name": "cips_ddr_pl_debug", 
         "display": "Versal CIPS Design", 
         "latest_revision": "1.0", 
-        "commit_id": "a9ed927dd4415e9c2a03306680a17a0d41f4ff84", 
+        "commit_id": "24d6f3222c03408f367a803776ccf1600f8c53fb", 
         "revisions": [
           {
             "revision": "1.0", 
-            "commit_id": "a9ed927dd4415e9c2a03306680a17a0d41f4ff84", 
-            "date": "27-08-2020", 
-            "history": "Update description and image"
+            "commit_id": "24d6f3222c03408f367a803776ccf1600f8c53fb", 
+            "date": "07-10-2020", 
+            "history": "VCCAUX WA"
           }
         ], 
         "config": {
@@ -43,11 +43,11 @@
         "name": "mb_preset", 
         "display": "MicroBlaze Design Presets", 
         "latest_revision": "1.0", 
-        "commit_id": "4975a17bc1a3a40bb02a3eee153542716786761d", 
+        "commit_id": "7cb027ae44f0da8f78a3cda5a61ed151594fd4a1", 
         "revisions": [
           {
             "revision": "1.0", 
-            "commit_id": "4975a17bc1a3a40bb02a3eee153542716786761d", 
+            "commit_id": "7cb027ae44f0da8f78a3cda5a61ed151594fd4a1", 
             "date": "29-06-2020", 
             "history": "Fixed typo"
           }
@@ -59,14 +59,33 @@
         "company": "xilinx.com"
       },
       {
-        "name": "mpsoc_preset", 
-        "display": "Zynq UltraScale+ MPSoC Design Presets", 
+        "name": "vck190AXIDMA", 
+        "display": "Versal AXI DMA", 
         "latest_revision": "1.0", 
-        "commit_id": "21d501d331cbb32bfc2eb4f2da5779b327d14cc7", 
+        "commit_id": "7cb027ae44f0da8f78a3cda5a61ed151594fd4a1", 
         "revisions": [
           {
             "revision": "1.0", 
-            "commit_id": "21d501d331cbb32bfc2eb4f2da5779b327d14cc7", 
+            "commit_id": "7cb027ae44f0da8f78a3cda5a61ed151594fd4a1", 
+            "date": "09-29-2020", 
+            "history": "Versal AXI DMA example design"
+          }
+        ], 
+        "config": {
+          "root": "ced/Xilinx/IPI/VCK190-AXIDMA-WTS-Example", 
+          "metadata_file": "xitem.json"
+        }, 
+        "company": "xilinx.com"
+      }, 
+      {
+        "name": "mpsoc_preset", 
+        "display": "Zynq UltraScale+ MPSoC Design Presets", 
+        "latest_revision": "1.0", 
+        "commit_id": "7cb027ae44f0da8f78a3cda5a61ed151594fd4a1", 
+        "revisions": [
+          {
+            "revision": "1.0", 
+            "commit_id": "7cb027ae44f0da8f78a3cda5a61ed151594fd4a1", 
             "date": "06-03-2020", 
             "history": "Zynq UltraScale+  based example design for Xilinx Evaluation Boards"
           }
@@ -81,11 +100,11 @@
         "name": "zynq7000_preset", 
         "display": "Zynq-7000 Design Presets", 
         "latest_revision": "1.0", 
-        "commit_id": "21d501d331cbb32bfc2eb4f2da5779b327d14cc7", 
+        "commit_id": "7cb027ae44f0da8f78a3cda5a61ed151594fd4a1", 
         "revisions": [
           {
             "revision": "1.0", 
-            "commit_id": "21d501d331cbb32bfc2eb4f2da5779b327d14cc7", 
+            "commit_id": "7cb027ae44f0da8f78a3cda5a61ed151594fd4a1", 
             "date": "06-03-2020", 
             "history": "Zynq-7000 based example design for Xilinx Evaluation Boards"
           }

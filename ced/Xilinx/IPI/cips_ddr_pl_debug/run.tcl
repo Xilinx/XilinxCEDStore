@@ -293,6 +293,8 @@ puts "INFO: $fpga_part is selected"
   connect_bd_net -net versal_cips_0_pl0_resetn [get_bd_pins proc_sys_reset_0/ext_reset_in] [get_bd_pins versal_cips_0/pl0_resetn]
   connect_bd_net -net versal_cips_0_pmc_axi_noc_axi0_clk [get_bd_pins axi_noc_0/aclk0] [get_bd_pins versal_cips_0/pmc_axi_noc_axi0_clk]
 
+	set_property -dict [list CONFIG.PRIM_SOURCE {No_buffer}] [get_bd_cells clk_wizard_0]
+	set_property -dict [list CONFIG.PMC_MIO_37_DIRECTION {out} CONFIG.PMC_MIO_37_USAGE {GPIO} CONFIG.PMC_MIO_37_OUTPUT_DATA {high}] [get_bd_cells versal_cips_0]
 	assign_bd_address
 	validate_bd_design
 	regenerate_bd_layout
