@@ -722,6 +722,7 @@ set_property -dict [list CONFIG.CONNECTIONS {M01_INI { read_bw {5} write_bw {5}}
   connect_bd_intf_net -intf_net lpddr4_sma_clk2_1 [get_bd_intf_ports lpddr4_sma_clk2] [get_bd_intf_pins axi_noc_lpddr4/sys_clk1]
   connect_bd_intf_net -intf_net axi_noc_master_M01_INI [get_bd_intf_pins axi_noc_lpddr4/S00_INI] [get_bd_intf_pins axi_noc_master/M01_INI]  }
 
+	set_param project.replaceDontTouchWithKeepHierarchySoft 0
 	save_bd_design
 	#puts "INFO: End of create_root_design"
 }
