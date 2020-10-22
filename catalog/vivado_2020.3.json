@@ -5,13 +5,13 @@
         "name": "ext_platform", 
         "display": "Extensible Platform Design", 
         "latest_revision": "1.0", 
-        "commit_id": "6af9db817d4daf5ecc5149db2cddf673420bb220", 
+        "commit_id": "253f8551cce4063d67d357c876654910f97bc82c", 
         "revisions": [
           {
             "revision": "1.0", 
-            "commit_id": "6af9db817d4daf5ecc5149db2cddf673420bb220", 
-            "date": "22-10-2020", 
-            "history": "Updated dont touch param"
+            "commit_id": "253f8551cce4063d67d357c876654910f97bc82c", 
+            "date": "31-08-2020", 
+            "history": "Updated description and picture"
           }
         ], 
         "config": {
