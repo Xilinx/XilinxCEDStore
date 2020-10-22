@@ -5,13 +5,13 @@
         "name": "ext_platform", 
         "display": "Extensible Platform Design", 
         "latest_revision": "1.0", 
-        "commit_id": "7cb027ae44f0da8f78a3cda5a61ed151594fd4a1",
+        "commit_id": "fe5b86805967fa919ab39c6293f30ee62f2bd4da",
         "revisions": [
           {
             "revision": "1.0", 
-            "commit_id": "7cb027ae44f0da8f78a3cda5a61ed151594fd4a1", 
-            "date": "31-08-2020", 
-            "history": "Update description and picture"
+            "commit_id": "fe5b86805967fa919ab39c6293f30ee62f2bd4da", 
+            "date": "22-10-2020", 
+            "history": "Updated dont touch param"
           }
         ], 
         "config": {
@@ -24,13 +24,13 @@
         "name": "cips_ddr_pl_debug", 
         "display": "Versal CIPS Design", 
         "latest_revision": "1.0", 
-        "commit_id": "7cb027ae44f0da8f78a3cda5a61ed151594fd4a1", 
+        "commit_id": "24d6f3222c03408f367a803776ccf1600f8c53fb", 
         "revisions": [
           {
             "revision": "1.0", 
-            "commit_id": "7cb027ae44f0da8f78a3cda5a61ed151594fd4a1", 
-            "date": "27-08-2020", 
-            "history": "Update description and image"
+            "commit_id": "24d6f3222c03408f367a803776ccf1600f8c53fb", 
+            "date": "07-10-2020", 
+            "history": "VCCAUX WA"
           }
         ], 
         "config": {
