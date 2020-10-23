@@ -3,8 +3,8 @@
       "items": [
         {
           "infra": {
-            "name": "vck190_axidma",
-            "display": "VCK190 AXIDMA",
+            "name": "axidma",
+            "display": "AXI DMA",
             "revision": "1.0",
             "description": "A Versal example design that demostrates axi dma along with NOC",
             "company": "xilinx.com",
