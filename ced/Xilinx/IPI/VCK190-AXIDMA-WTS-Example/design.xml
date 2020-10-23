@@ -1,15 +1,22 @@
 ﻿<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+
 <ExampleDesign>
 
   <Vendor>xilinx.com</Vendor>
 
   <Library>design</Library>
 
-  <Name>axidma</Name>
+  <Name>axi_dma</Name>
+  
+  <DisplayName>AXI DMA</DisplayName>
+  
+  <Description>Versal System that contains a NOC and AXI DMA block.</Description>
 
   <Version>1.0</Version>
 
   <Design>init.tcl</Design>
+  
+  <Image>AXI_DMA.png</Image>
 
 </ExampleDesign>
 
