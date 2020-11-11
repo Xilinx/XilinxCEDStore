@@ -2,98 +2,98 @@
   "catalog": {
     "items": [
       {
-        "name": "mb_preset", 
-        "display": "MicroBlaze Design Presets", 
-        "latest_revision": "1.0", 
-        "commit_id": "77fcc111c4f362095598a88db2d43c953eaeb15f", 
+        "name": "mb_preset",
+        "display": "MicroBlaze Design Presets",
+        "latest_revision": "1.0",
+        "commit_id": "77fcc111c4f362095598a88db2d43c953eaeb15f",
         "revisions": [
           {
-            "revision": "1.0", 
-            "commit_id": "77fcc111c4f362095598a88db2d43c953eaeb15f", 
-            "date": "12-05-2020", 
+            "revision": "1.0",
+            "commit_id": "77fcc111c4f362095598a88db2d43c953eaeb15f",
+            "date": "12-05-2020",
             "history": "Updated Images"
           }
-        ], 
+        ],
         "config": {
-          "root": "ced/Xilinx/IPI/MicroBlaze Design Presets", 
+          "root": "ced/Xilinx/IPI/MicroBlaze Design Presets",
           "metadata_file": "xitem.json"
-        }, 
+        },
         "company": "xilinx.com"
       },
       {
-        "name": "mpsoc_preset", 
-        "display": "Zynq UltraScale+ MPSoC Design Presets", 
-        "latest_revision": "1.0", 
-        "commit_id": "77fcc111c4f362095598a88db2d43c953eaeb15f", 
+        "name": "mpsoc_preset",
+        "display": "Zynq UltraScale+ MPSoC Design Presets",
+        "latest_revision": "1.0",
+        "commit_id": "69c90861577f89d78190253d674bc5b7f46a0c72",
         "revisions": [
           {
-            "revision": "1.0", 
-            "commit_id": "77fcc111c4f362095598a88db2d43c953eaeb15f", 
-            "date": "12-05-2020", 
+            "revision": "1.0",
+            "commit_id": "69c90861577f89d78190253d674bc5b7f46a0c72",
+            "date": "12-05-2020",
             "history": "Updated Images"
           }
-        ], 
+        ],
         "config": {
-          "root": "ced/Xilinx/IPI/Zynq UltraScale+ MPSoC Design Presets", 
+          "root": "ced/Xilinx/IPI/Zynq UltraScale+ MPSoC Design Presets",
           "metadata_file": "xitem.json"
-        }, 
+        },
         "company": "xilinx.com"
-      }, 
+      },
       {
-        "name": "zynq7000_preset", 
-        "display": "Zynq-7000 Design Presets", 
-        "latest_revision": "1.0", 
-        "commit_id": "77fcc111c4f362095598a88db2d43c953eaeb15f", 
+        "name": "zynq7000_preset",
+        "display": "Zynq-7000 Design Presets",
+        "latest_revision": "1.0",
+        "commit_id": "77fcc111c4f362095598a88db2d43c953eaeb15f",
         "revisions": [
           {
-            "revision": "1.0", 
-            "commit_id": "77fcc111c4f362095598a88db2d43c953eaeb15f", 
-            "date": "12-05-2020", 
+            "revision": "1.0",
+            "commit_id": "77fcc111c4f362095598a88db2d43c953eaeb15f",
+            "date": "12-05-2020",
             "history": "Updated Images"
           }
-        ], 
+        ],
         "config": {
-          "root": "ced/Xilinx/IPI/Zynq-7000 Design Presets", 
+          "root": "ced/Xilinx/IPI/Zynq-7000 Design Presets",
           "metadata_file": "xitem.json"
-        }, 
+        },
         "company": "xilinx.com"
-      }  	  
-    ], 
+      }
+    ],
     "categories": [
       {
-        "name": "single_part", 
-        "display_name": "Single Part", 
-        "description": "This category represents all the boards which have single part", 
+        "name": "single_part",
+        "display_name": "Single Part",
+        "description": "This category represents all the boards which have single part",
         "parent": ""
-      }, 
+      },
       {
-        "name": "multi_part", 
-        "display_name": "Multi Part", 
-        "description": "This category represents all the boards which have multi part", 
+        "name": "multi_part",
+        "display_name": "Multi Part",
+        "description": "This category represents all the boards which have multi part",
         "parent": ""
-      }, 
+      },
       {
-        "name": "daughter_card", 
-        "display_name": "Daughter Card", 
-        "description": "This category represents all the boards which are daughter cards", 
+        "name": "daughter_card",
+        "display_name": "Daughter Card",
+        "description": "This category represents all the boards which are daughter cards",
         "parent": ""
-      }, 
+      },
       {
-        "name": "misc", 
-        "display_name": "Misc", 
-        "description": "This category represents miscellaneous variety of boards", 
-        "default": true, 
+        "name": "misc",
+        "display_name": "Misc",
+        "description": "This category represents miscellaneous variety of boards",
+        "default": true,
         "parent": ""
-      }, 
+      },
       {
-        "name": "examples", 
-        "display_name": "Examples", 
-        "description": "This category represents configurable example designs", 
-        "default": true, 
+        "name": "examples",
+        "display_name": "Examples",
+        "description": "This category represents configurable example designs",
+        "default": true,
         "parent": ""
       }
     ]
-  }, 
-  "_major": 1, 
+  },
+  "_major": 1,
   "_minor": 0
 }
