@@ -24,13 +24,13 @@
         "name": "mpsoc_preset", 
         "display": "Zynq UltraScale+ MPSoC Design Presets", 
         "latest_revision": "1.0", 
-        "commit_id": "77fcc111c4f362095598a88db2d43c953eaeb15f", 
+        "commit_id": "a044c08b3ae5f3e76476272696e2e092c70a63aa", 
         "revisions": [
           {
             "revision": "1.0", 
-            "commit_id": "77fcc111c4f362095598a88db2d43c953eaeb15f", 
-            "date": "12-05-2020", 
-            "history": "Updated Images"
+            "commit_id": "a044c08b3ae5f3e76476272696e2e092c70a63aa", 
+            "date": "11-11-2020", 
+            "history": "Added support for T1 boards"
           }
         ], 
         "config": {
