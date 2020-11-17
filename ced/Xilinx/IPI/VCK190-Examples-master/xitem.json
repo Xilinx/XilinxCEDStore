@@ -1,0 +1,33 @@
+{
+    "config": {
+      "items": [
+        {
+          "infra": {
+            "name": "axidma",
+            "display": "AXI DMA",
+            "revision": "1.0",
+            "description": "A Versal example design that demostrates axi dma along with NOC",
+            "company": "xilinx.com",
+            "company_display": "Xilinx",
+            "author": "abommera",
+            "contributors": [
+              {
+                "group": "Xilinx",
+                "url": "www.xilinx.com"
+              }
+            ],
+            "category": "example",
+            "website": "www.xilinx.com",
+            "is_active" : true, 
+            "search-keywords": [
+              "VCK190 AXIDMA",
+              "xilinx.com",
+              "example"        
+            ]
+          }
+        }
+      ]
+    },
+    "_major" : 1,
+    "_minor" : 0
+}
