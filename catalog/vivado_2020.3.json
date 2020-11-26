@@ -2,136 +2,136 @@
   "catalog": {
     "items": [
       {
-        "name": "ext_platform", 
-        "display": "Extensible Platform Design", 
-        "latest_revision": "1.0", 
-        "commit_id": "cfec43632a0cc6c88c9a147ebefd963f3c4e1e3c", 
+        "name": "ext_platform",
+        "display": "Extensible Platform Design",
+        "latest_revision": "1.0",
+        "commit_id": "70fb2c7c37e30f1d9f0a87c1b439563a2ea63473",
         "revisions": [
           {
-            "revision": "1.0", 
-            "commit_id": "cfec43632a0cc6c88c9a147ebefd963f3c4e1e3c", 
-            "date": "22-10-2020", 
+            "revision": "1.0",
+            "commit_id": "70fb2c7c37e30f1d9f0a87c1b439563a2ea63473",
+            "date": "22-10-2020",
             "history": "Updated dont touch param"
           }
-        ], 
+        ],
         "config": {
-          "root": "ced/Xilinx/IPI/extensible_platform", 
+          "root": "ced/Xilinx/IPI/extensible_platform",
           "metadata_file": "xitem.json"
-        }, 
+        },
         "company": "xilinx.com"
       },
       {
-        "name": "cips_ddr_pl_debug", 
-        "display": "Versal CIPS Design", 
-        "latest_revision": "1.0", 
-        "commit_id": "253f8551cce4063d67d357c876654910f97bc82c", 
+        "name": "cips_ddr_pl_debug",
+        "display": "Versal CIPS Design",
+        "latest_revision": "1.0",
+        "commit_id": "70fb2c7c37e30f1d9f0a87c1b439563a2ea63473",
         "revisions": [
           {
-            "revision": "1.0", 
-            "commit_id": "253f8551cce4063d67d357c876654910f97bc82c", 
-            "date": "27-08-2020", 
+            "revision": "1.0",
+            "commit_id": "70fb2c7c37e30f1d9f0a87c1b439563a2ea63473",
+            "date": "27-08-2020",
             "history": "Updated description and picture"
           }
-        ], 
+        ],
         "config": {
-          "root": "ced/Xilinx/IPI/cips_ddr_pl_debug", 
+          "root": "ced/Xilinx/IPI/cips_ddr_pl_debug",
           "metadata_file": "xitem.json"
-        }, 
+        },
         "company": "xilinx.com"
       },
       {
-        "name": "mb_preset", 
-        "display": "MicroBlaze Design Presets", 
-        "latest_revision": "1.0", 
-        "commit_id": "4975a17bc1a3a40bb02a3eee153542716786761d", 
+        "name": "mb_preset",
+        "display": "MicroBlaze Design Presets",
+        "latest_revision": "1.0",
+        "commit_id": "70fb2c7c37e30f1d9f0a87c1b439563a2ea63473",
         "revisions": [
           {
-            "revision": "1.0", 
-            "commit_id": "4975a17bc1a3a40bb02a3eee153542716786761d", 
-            "date": "29-06-2020", 
+            "revision": "1.0",
+            "commit_id": "70fb2c7c37e30f1d9f0a87c1b439563a2ea63473",
+            "date": "29-06-2020",
             "history": "Fixed typo"
           }
-        ], 
+        ],
         "config": {
-          "root": "ced/Xilinx/IPI/MicroBlaze Design Presets", 
+          "root": "ced/Xilinx/IPI/MicroBlaze Design Presets",
           "metadata_file": "xitem.json"
-        }, 
+        },
         "company": "xilinx.com"
       },
       {
-        "name": "mpsoc_preset", 
-        "display": "Zynq UltraScale+ MPSoC Design Presets", 
-        "latest_revision": "1.0", 
-        "commit_id": "21d501d331cbb32bfc2eb4f2da5779b327d14cc7", 
+        "name": "mpsoc_preset",
+        "display": "Zynq UltraScale+ MPSoC Design Presets",
+        "latest_revision": "1.0",
+        "commit_id": "70fb2c7c37e30f1d9f0a87c1b439563a2ea63473",
         "revisions": [
           {
-            "revision": "1.0", 
-            "commit_id": "21d501d331cbb32bfc2eb4f2da5779b327d14cc7", 
-            "date": "06-03-2020", 
+            "revision": "1.0",
+            "commit_id": "70fb2c7c37e30f1d9f0a87c1b439563a2ea63473",
+            "date": "06-03-2020",
             "history": "Zynq UltraScale+  based example design for Xilinx Evaluation Boards"
           }
-        ], 
+        ],
         "config": {
-          "root": "ced/Xilinx/IPI/Zynq UltraScale+ MPSoC Design Presets", 
+          "root": "ced/Xilinx/IPI/Zynq UltraScale+ MPSoC Design Presets",
           "metadata_file": "xitem.json"
-        }, 
+        },
         "company": "xilinx.com"
-      }, 
+      },
       {
-        "name": "zynq7000_preset", 
-        "display": "Zynq-7000 Design Presets", 
-        "latest_revision": "1.0", 
-        "commit_id": "21d501d331cbb32bfc2eb4f2da5779b327d14cc7", 
+        "name": "zynq7000_preset",
+        "display": "Zynq-7000 Design Presets",
+        "latest_revision": "1.0",
+        "commit_id": "70fb2c7c37e30f1d9f0a87c1b439563a2ea63473",
         "revisions": [
           {
-            "revision": "1.0", 
-            "commit_id": "21d501d331cbb32bfc2eb4f2da5779b327d14cc7", 
-            "date": "06-03-2020", 
+            "revision": "1.0",
+            "commit_id": "70fb2c7c37e30f1d9f0a87c1b439563a2ea63473",
+            "date": "06-03-2020",
             "history": "Zynq-7000 based example design for Xilinx Evaluation Boards"
           }
-        ], 
+        ],
         "config": {
-          "root": "ced/Xilinx/IPI/Zynq-7000 Design Presets", 
+          "root": "ced/Xilinx/IPI/Zynq-7000 Design Presets",
           "metadata_file": "xitem.json"
-        }, 
+        },
         "company": "xilinx.com"
-      }  	  
-    ], 
+      }
+    ],
     "categories": [
       {
-        "name": "single_part", 
-        "display_name": "Single Part", 
-        "description": "This category represents all the boards which have single part", 
+        "name": "single_part",
+        "display_name": "Single Part",
+        "description": "This category represents all the boards which have single part",
         "parent": ""
-      }, 
+      },
       {
-        "name": "multi_part", 
-        "display_name": "Multi Part", 
-        "description": "This category represents all the boards which have multi part", 
+        "name": "multi_part",
+        "display_name": "Multi Part",
+        "description": "This category represents all the boards which have multi part",
         "parent": ""
-      }, 
+      },
       {
-        "name": "daughter_card", 
-        "display_name": "Daughter Card", 
-        "description": "This category represents all the boards which are daughter cards", 
+        "name": "daughter_card",
+        "display_name": "Daughter Card",
+        "description": "This category represents all the boards which are daughter cards",
         "parent": ""
-      }, 
+      },
       {
-        "name": "misc", 
-        "display_name": "Misc", 
-        "description": "This category represents miscellaneous variety of boards", 
-        "default": true, 
+        "name": "misc",
+        "display_name": "Misc",
+        "description": "This category represents miscellaneous variety of boards",
+        "default": true,
         "parent": ""
-      }, 
+      },
       {
-        "name": "examples", 
-        "display_name": "Examples", 
-        "description": "This category represents configurable example designs", 
-        "default": true, 
+        "name": "examples",
+        "display_name": "Examples",
+        "description": "This category represents configurable example designs",
+        "default": true,
         "parent": ""
       }
     ]
-  }, 
-  "_major": 1, 
+  },
+  "_major": 1,
   "_minor": 0
 }
