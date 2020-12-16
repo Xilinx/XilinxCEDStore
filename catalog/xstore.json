@@ -38,7 +38,7 @@
            },
            {
               "version": "2020.2.2",
-              "xitem_catalogue_file": "catalog/vivado_2020.2.1.json",
+              "xitem_catalogue_file": "catalog/vivado_2020.2.2.json",
               "remote_repo_branch_to_sync": "2020.2.2"
            },		   
            {
