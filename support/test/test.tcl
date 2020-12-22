@@ -47,8 +47,18 @@ proc test_conf_example_design {tmpDir ced_download_location example_design_obj} 
    if { [catch { 
     create_project project_tmp $tmpDir
     set supported_boards [get_property SUPPORTED_BOARDS $example_design_obj] 
-    set board_to_set [lindex $supported_boards 0]
-    set_property board_part $board_to_set [current_project]
+    
+    if {$supported_boards == ""} {
+      puts "INFO: Setting part in project" 
+      set supported_parts [get_property SUPPORTED_PARTS $example_design_obj]
+	    set part_to_set [lindex $supported_parts 0]
+	    set_property PART $part_to_set [current_project]
+    } else {
+	    puts "INFO: Setting board in project"
+	    set board_to_set [lindex $supported_boards 0]
+	    set_property board_part $board_to_set [current_project]
+    }
+    
     create_bd_design "design_1"
     instantiate_example_design   -design design_1  $example_design_obj
    } result_2] } {
