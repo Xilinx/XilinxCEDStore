@@ -1,0 +1,22 @@
+﻿<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<ExampleDesign>
+
+  <Vendor>xilinx.com</Vendor>
+
+  <Library>design</Library>
+
+  <Name>versal_ibert</Name>
+  
+  <DisplayName>Versal IBERT</DisplayName>
+
+  <Description>This example offers a simple way to create an Versal design with transceivers.  Choose the transceivers desired with the corresponding line rates and refclks in the following pages.</Description>
+  
+  <Version>1.0</Version>
+
+  <Design>init.tcl</Design>
+  <Image>versal_ibert_ced.png</Image>
+  
+  <DesignType>IPI</DesignType>
+
+</ExampleDesign>
+
