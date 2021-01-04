@@ -2,6 +2,25 @@
   "catalog": {
     "items": [
       {
+        "name": "hsdp", 
+        "display": "Versal HSDP with Soft Aurora", 
+        "latest_revision": "1.0", 
+        "commit_id": "a684e0fc4557019773d16bc9d403f913782d5eff",
+        "revisions": [
+          {
+            "revision": "1.0", 
+            "commit_id": "a684e0fc4557019773d16bc9d403f913782d5eff", 
+            "date": "04-01-2021", 
+            "history": "Added new design"
+          }
+        ], 
+        "config": {
+          "root": "ced/Xilinx/IPI/hsdp_ced", 
+          "metadata_file": "xitem.json"
+        }, 
+        "company": "xilinx.com"
+      },
+      {
         "name": "ext_platform", 
         "display": "Extensible Platform Design", 
         "latest_revision": "1.0", 
