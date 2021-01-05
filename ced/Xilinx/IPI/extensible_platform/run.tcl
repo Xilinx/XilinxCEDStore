@@ -676,6 +676,7 @@ connect_bd_net -net ai_engine_0_s00_axi_aclk [get_bd_pins ai_engine_0/s00_axi_ac
 
 if { ([lsearch $temp_options "true"] != -1 )} {
 puts "INFO: lpddr4 selected"
+if [regexp "vck" $board_name] {
 set_property -dict [list CONFIG.NUM_NMI {2}] [get_bd_cells axi_noc_master]
 set_property -dict [list CONFIG.CONNECTIONS {M01_INI { read_bw {5} write_bw {5}} M00_AXI { read_bw {5} write_bw {5} read_avg_burst {4} write_avg_burst {4}} M00_INI { read_bw {5} write_bw {5}} }] [get_bd_intf_pins /axi_noc_master/S00_AXI]
 set_property -dict [list CONFIG.CONNECTIONS {M01_INI { read_bw {5} write_bw {5}} M00_AXI { read_bw {5} write_bw {5} read_avg_burst {4} write_avg_burst {4}} M00_INI { read_bw {5} write_bw {5}} }] [get_bd_intf_pins /axi_noc_master/S01_AXI]
@@ -685,6 +686,17 @@ set_property -dict [list CONFIG.CONNECTIONS {M01_INI { read_bw {5} write_bw {5}}
 set_property -dict [list CONFIG.CONNECTIONS {M01_INI { read_bw {5} write_bw {5}} M00_AXI { read_bw {5} write_bw {5} read_avg_burst {4} write_avg_burst {4}} M00_INI { read_bw {5} write_bw {5}} }] [get_bd_intf_pins /axi_noc_master/S05_AXI]
 set_property -dict [list CONFIG.CONNECTIONS {M01_INI { read_bw {5} write_bw {5}} M00_AXI { read_bw {5} write_bw {5} read_avg_burst {4} write_avg_burst {4}} M00_INI { read_bw {5} write_bw {5}} }] [get_bd_intf_pins /axi_noc_master/S06_AXI]
 set_property -dict [list CONFIG.CONNECTIONS {M01_INI { read_bw {5} write_bw {5}} M00_AXI { read_bw {5} write_bw {5} read_avg_burst {4} write_avg_burst {4}} M00_INI { read_bw {5} write_bw {5}} }] [get_bd_intf_pins /axi_noc_master/S07_AXI]
+} else {
+set_property -dict [list CONFIG.NUM_NMI {2}] [get_bd_cells axi_noc_master]
+set_property -dict [list CONFIG.CONNECTIONS {M01_INI { read_bw {5} write_bw {5}} M00_INI { read_bw {5} write_bw {5}} }] [get_bd_intf_pins /axi_noc_master/S00_AXI]
+set_property -dict [list CONFIG.CONNECTIONS {M01_INI { read_bw {5} write_bw {5}} M00_INI { read_bw {5} write_bw {5}} }] [get_bd_intf_pins /axi_noc_master/S01_AXI]
+set_property -dict [list CONFIG.CONNECTIONS {M01_INI { read_bw {5} write_bw {5}} M00_INI { read_bw {5} write_bw {5}} }] [get_bd_intf_pins /axi_noc_master/S02_AXI]
+set_property -dict [list CONFIG.CONNECTIONS {M01_INI { read_bw {5} write_bw {5}} M00_INI { read_bw {5} write_bw {5}} }] [get_bd_intf_pins /axi_noc_master/S03_AXI]
+set_property -dict [list CONFIG.CONNECTIONS {M01_INI { read_bw {5} write_bw {5}} M00_INI { read_bw {5} write_bw {5}} }] [get_bd_intf_pins /axi_noc_master/S04_AXI]
+set_property -dict [list CONFIG.CONNECTIONS {M01_INI { read_bw {5} write_bw {5}} M00_INI { read_bw {5} write_bw {5}} }] [get_bd_intf_pins /axi_noc_master/S05_AXI]
+set_property -dict [list CONFIG.CONNECTIONS {M01_INI { read_bw {5} write_bw {5}} M00_INI { read_bw {5} write_bw {5}} }] [get_bd_intf_pins /axi_noc_master/S06_AXI]
+set_property -dict [list CONFIG.CONNECTIONS {M01_INI { read_bw {5} write_bw {5}} M00_INI { read_bw {5} write_bw {5}} }] [get_bd_intf_pins /axi_noc_master/S07_AXI]
+}
 
   set ch0_lpddr4_c0 [ create_bd_intf_port -mode Master -vlnv xilinx.com:interface:lpddr4_rtl:1.0 ch0_lpddr4_c0 ]
   set ch0_lpddr4_c1 [ create_bd_intf_port -mode Master -vlnv xilinx.com:interface:lpddr4_rtl:1.0 ch0_lpddr4_c1 ]
