@@ -70,8 +70,14 @@ proc addOptions {DESIGNOBJ PROJECT_PARAM.PART PROJECT_PARAM.PACKAGE PROJECT_PARA
   set max_rr [get_max_refclk_rate ${PROJECT_PARAM.SPEEDGRADE}]
   
   set all_quads [get_all_quads ${PROJECT_PARAM.PACKAGE}]
+  set first 1
   foreach v $all_quads {
-    lappend x [dict create name ${v}_en type bool value false enabled true]
+    if {$first==1} {
+      lappend x [dict create name ${v}_en type bool value true enabled true]
+      set first 0
+    } else {
+      lappend x [dict create name ${v}_en type bool value false enabled true]
+    }
     lappend x [dict create name ${v}_lr type double value 10.3125 min_value 0 max_value $max_lr enabled false] 
     set refs [get_reflocs $v]
     lappend x [dict create name ${v}_ref type "string" value [lindex $refs 0] value_list $refs enabled false]
