@@ -1,5 +1,3 @@
-
-
 proc get_all_quads {pkg} {
   return [concat [get_left $pkg] [get_right $pkg]]
 }
@@ -166,6 +164,7 @@ proc createDesign {design_name options} {
     set f [open "create_design_bd.tcl" w]
     puts $f "# in create_root_design"
     puts $f "# options: $protocols"
+
     create_bd_cell -type ip -vlnv xilinx.com:ip:versal_cips versal_cips_0
     apply_bd_automation -rule xilinx.com:bd_rule:versal_cips -config {apply_board_preset {0} configure_noc {Add new AXI NoC} num_ddr {None} pcie0_lane_width {None} pcie0_mode {None} pcie0_port_type {Endpoint Device} pcie1_lane_width {None} pcie1_mode {None} pcie1_port_type {Endpoint Device} pl_clocks {1} pl_resets {1}}  [get_bd_cells versal_cips_0]
     set_property -dict [list CONFIG.PMC_CRP_PL0_REF_CTRL_FREQMHZ {125}] [get_bd_cells versal_cips_0]
@@ -328,12 +327,26 @@ proc createDesign {design_name options} {
   puts $f "in createDesign"
   set systemTime [clock seconds]
   puts $f "createDesign: [clock format $systemTime -format %H:%M:%S]"
-  puts $f $options
+
+  puts $f "Options: '$options'"
   foreach k $options {
     puts $f "$k"
   }
+
+  # If no options are specified, the default is to use the first quad for Rx and Tx
+  # this also ensures a default exists for non-GUI mode
+  if {$options == ""} {
+    puts $f "Defaulting to first quad since nothing specified"
+    set pkg [lindex [split [get_property part [current_project]] -] 1]
+    puts $f "B pkg new: $pkg"
+    set quad [lindex [get_all_quads $pkg] 0]
+    puts $f "B quad: $quad"
+    set options "${quad}_en.VALUE true\n${quad}_en.VALUE true"
+    puts $f "B options $options"
+  }
+
   set protocols [options2protocols $options]
-  puts $f "protocols: $protocols"
+  puts $f "protocols: '$protocols'"
   create_root_design "" $design_name $protocols
   puts $f "created root design, about to run make_xdc"
   make_xdc $design_name $protocols
@@ -341,7 +354,7 @@ proc createDesign {design_name options} {
   set proj_dir [get_property DIRECTORY $proj_name]
   set_property TARGET_LANGUAGE Verilog $proj_name
   make_wrapper -files [get_files ${proj_dir}/${proj_name}.srcs/sources_1/bd/${design_name}/${design_name}.bd] -top
-	add_files -norecurse ${proj_dir}/${proj_name}.srcs/sources_1/bd/${design_name}/hdl/${design_name}_wrapper.v
+  add_files -norecurse ${proj_dir}/${proj_name}.srcs/sources_1/bd/${design_name}/hdl/${design_name}_wrapper.v
 
   # close_bd_design [get_bd_designs $design_name]
   # set bdDesignPath [file join [get_property directory [current_project]] [current_project].srcs sources_1 bd $design_name]
