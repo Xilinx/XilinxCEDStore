@@ -5,11 +5,11 @@
         "name": "versal_ibert_ced", 
         "display": "Versal IBERT", 
         "latest_revision": "1.0", 
-        "commit_id": "95f03e5c7bd00fd17fd3558a27a0f62864f28ac4",
+        "commit_id": "fe0b1bfd7966a4c6ff3c2d792724e72ed5bb3091",
         "revisions": [
           {
             "revision": "1.0", 
-            "commit_id": "95f03e5c7bd00fd17fd3558a27a0f62864f28ac4", 
+            "commit_id": "fe0b1bfd7966a4c6ff3c2d792724e72ed5bb3091", 
             "date": "08-01-2021", 
             "history": "Minor fix to make defult selected in GUI"
           }
