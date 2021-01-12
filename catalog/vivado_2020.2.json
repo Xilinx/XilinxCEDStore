@@ -62,11 +62,11 @@
         "name": "soc_vip", 
         "display": "SoC VIP", 
         "latest_revision": "1.0", 
-        "commit_id": "124decf57f03e3cfb7ed2d85c70b183838acec78", 
+        "commit_id": "27a8657ad3dd46f89473998740fe02a47b41c0f1", 
         "revisions": [
           {
             "revision": "1.0", 
-            "commit_id": "124decf57f03e3cfb7ed2d85c70b183838acec78", 
+            "commit_id": "27a8657ad3dd46f89473998740fe02a47b41c0f1", 
             "date": "12-01-2021", 
             "history": "new design"
           }
