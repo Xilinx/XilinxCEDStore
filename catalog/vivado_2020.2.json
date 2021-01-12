@@ -2,212 +2,212 @@
   "catalog": {
     "items": [
       {
-        "name": "versal_ibert_ced", 
-        "display": "Versal IBERT", 
-        "latest_revision": "1.0", 
+        "name": "versal_ibert_ced",
+        "display": "Versal IBERT",
+        "latest_revision": "1.0",
         "commit_id": "fe0b1bfd7966a4c6ff3c2d792724e72ed5bb3091",
         "revisions": [
           {
-            "revision": "1.0", 
-            "commit_id": "fe0b1bfd7966a4c6ff3c2d792724e72ed5bb3091", 
-            "date": "08-01-2021", 
+            "revision": "1.0",
+            "commit_id": "fe0b1bfd7966a4c6ff3c2d792724e72ed5bb3091",
+            "date": "08-01-2021",
             "history": "Minor fix to make defult selected in GUI"
           }
-        ], 
+        ],
         "config": {
-          "root": "ced/Xilinx/IPI/versal_ibert_ced", 
+          "root": "ced/Xilinx/IPI/versal_ibert_ced",
           "metadata_file": "xitem.json"
-        }, 
+        },
         "company": "xilinx.com"
       },
       {
-        "name": "hsdp", 
-        "display": "Versal HSDP with Soft Aurora", 
-        "latest_revision": "1.0", 
+        "name": "hsdp",
+        "display": "Versal HSDP with Soft Aurora",
+        "latest_revision": "1.0",
         "commit_id": "a684e0fc4557019773d16bc9d403f913782d5eff",
         "revisions": [
           {
-            "revision": "1.0", 
-            "commit_id": "a684e0fc4557019773d16bc9d403f913782d5eff", 
-            "date": "04-01-2021", 
+            "revision": "1.0",
+            "commit_id": "a684e0fc4557019773d16bc9d403f913782d5eff",
+            "date": "04-01-2021",
             "history": "Added new design"
           }
-        ], 
+        ],
         "config": {
-          "root": "ced/Xilinx/IPI/hsdp_ced", 
+          "root": "ced/Xilinx/IPI/hsdp_ced",
           "metadata_file": "xitem.json"
-        }, 
+        },
         "company": "xilinx.com"
       },
       {
-        "name": "ext_platform", 
-        "display": "Extensible Platform Design", 
-        "latest_revision": "1.0", 
+        "name": "ext_platform",
+        "display": "Extensible Platform Design",
+        "latest_revision": "1.0",
         "commit_id": "fe5b86805967fa919ab39c6293f30ee62f2bd4da",
         "revisions": [
           {
-            "revision": "1.0", 
-            "commit_id": "fe5b86805967fa919ab39c6293f30ee62f2bd4da", 
-            "date": "22-10-2020", 
+            "revision": "1.0",
+            "commit_id": "fe5b86805967fa919ab39c6293f30ee62f2bd4da",
+            "date": "22-10-2020",
             "history": "Updated dont touch param"
           }
-        ], 
+        ],
         "config": {
-          "root": "ced/Xilinx/IPI/extensible_platform", 
+          "root": "ced/Xilinx/IPI/extensible_platform",
           "metadata_file": "xitem.json"
-        }, 
+        },
         "company": "xilinx.com"
       },
       {
-        "name": "cips_ddr_pl_debug", 
-        "display": "Versal CIPS Design", 
-        "latest_revision": "1.0", 
-        "commit_id": "24d6f3222c03408f367a803776ccf1600f8c53fb", 
+        "name": "cips_ddr_pl_debug",
+        "display": "Versal CIPS Design",
+        "latest_revision": "1.0",
+        "commit_id": "24d6f3222c03408f367a803776ccf1600f8c53fb",
         "revisions": [
           {
-            "revision": "1.0", 
-            "commit_id": "24d6f3222c03408f367a803776ccf1600f8c53fb", 
-            "date": "07-10-2020", 
+            "revision": "1.0",
+            "commit_id": "24d6f3222c03408f367a803776ccf1600f8c53fb",
+            "date": "07-10-2020",
             "history": "VCCAUX WA"
           }
-        ], 
+        ],
         "config": {
-          "root": "ced/Xilinx/IPI/cips_ddr_pl_debug", 
+          "root": "ced/Xilinx/IPI/cips_ddr_pl_debug",
           "metadata_file": "xitem.json"
-        }, 
+        },
         "company": "xilinx.com"
       },
-	    {
-        "name": "soc_vip", 
-        "display": "SoC VIP", 
-        "latest_revision": "1.0", 
-        "commit_id": "124decf57f03e3cfb7ed2d85c70b183838acec78", 
+      {
+        "name": "soc_vip",
+        "display": "SoC VIP",
+        "latest_revision": "1.0",
+        "commit_id": "27a8657ad3dd46f89473998740fe02a47b41c0f1",
         "revisions": [
           {
-            "revision": "1.0", 
-            "commit_id": "124decf57f03e3cfb7ed2d85c70b183838acec78", 
-            "date": "12-01-2021", 
+            "revision": "1.0",
+            "commit_id": "27a8657ad3dd46f89473998740fe02a47b41c0f1",
+            "date": "12-01-2021",
             "history": "new design"
           }
-        ], 
+        ],
         "config": {
-          "root": "ced/Xilinx/IPI/cips_vip", 
+          "root": "ced/Xilinx/IPI/cips_vip",
           "metadata_file": "xitem.json"
-        }, 
+        },
         "company": "xilinx.com"
       },
       {
-        "name": "mb_preset", 
-        "display": "MicroBlaze Design Presets", 
-        "latest_revision": "1.0", 
-        "commit_id": "7cb027ae44f0da8f78a3cda5a61ed151594fd4a1", 
+        "name": "mb_preset",
+        "display": "MicroBlaze Design Presets",
+        "latest_revision": "1.0",
+        "commit_id": "7cb027ae44f0da8f78a3cda5a61ed151594fd4a1",
         "revisions": [
           {
-            "revision": "1.0", 
-            "commit_id": "7cb027ae44f0da8f78a3cda5a61ed151594fd4a1", 
-            "date": "29-06-2020", 
+            "revision": "1.0",
+            "commit_id": "7cb027ae44f0da8f78a3cda5a61ed151594fd4a1",
+            "date": "29-06-2020",
             "history": "Fixed typo"
           }
-        ], 
+        ],
         "config": {
-          "root": "ced/Xilinx/IPI/MicroBlaze Design Presets", 
+          "root": "ced/Xilinx/IPI/MicroBlaze Design Presets",
           "metadata_file": "xitem.json"
-        }, 
+        },
         "company": "xilinx.com"
       },
       {
-        "name": "vck190AXIDMA", 
-        "display": "Versal AXI DMA", 
-        "latest_revision": "1.0", 
-        "commit_id": "943869cc4fdd6815276ca221fd5100c795078406", 
+        "name": "vck190AXIDMA",
+        "display": "Versal AXI DMA",
+        "latest_revision": "1.0",
+        "commit_id": "943869cc4fdd6815276ca221fd5100c795078406",
         "revisions": [
           {
-            "revision": "1.0", 
-            "commit_id": "943869cc4fdd6815276ca221fd5100c795078406", 
-            "date": "09-29-2020", 
+            "revision": "1.0",
+            "commit_id": "943869cc4fdd6815276ca221fd5100c795078406",
+            "date": "09-29-2020",
             "history": "Versal AXI DMA example design"
           }
-        ], 
+        ],
         "config": {
-          "root": "ced/Xilinx/IPI/VCK190-AXIDMA-WTS-Example", 
+          "root": "ced/Xilinx/IPI/VCK190-AXIDMA-WTS-Example",
           "metadata_file": "xitem.json"
-        }, 
+        },
         "company": "xilinx.com"
-      }, 
+      },
       {
-        "name": "mpsoc_preset", 
-        "display": "Zynq UltraScale+ MPSoC Design Presets", 
-        "latest_revision": "1.0", 
-        "commit_id": "7470f628a3089ae11f59cc3377c0e7c3074bfef4", 
+        "name": "mpsoc_preset",
+        "display": "Zynq UltraScale+ MPSoC Design Presets",
+        "latest_revision": "1.0",
+        "commit_id": "7470f628a3089ae11f59cc3377c0e7c3074bfef4",
         "revisions": [
           {
-            "revision": "1.0", 
-            "commit_id": "7470f628a3089ae11f59cc3377c0e7c3074bfef4", 
-            "date": "05-11-2020", 
+            "revision": "1.0",
+            "commit_id": "7470f628a3089ae11f59cc3377c0e7c3074bfef4",
+            "date": "05-11-2020",
             "history": "Added Support for T1 Boards"
           }
-        ], 
+        ],
         "config": {
-          "root": "ced/Xilinx/IPI/Zynq UltraScale+ MPSoC Design Presets", 
+          "root": "ced/Xilinx/IPI/Zynq UltraScale+ MPSoC Design Presets",
           "metadata_file": "xitem.json"
-        }, 
+        },
         "company": "xilinx.com"
-      }, 
+      },
       {
-        "name": "zynq7000_preset", 
-        "display": "Zynq-7000 Design Presets", 
-        "latest_revision": "1.0", 
-        "commit_id": "7cb027ae44f0da8f78a3cda5a61ed151594fd4a1", 
+        "name": "zynq7000_preset",
+        "display": "Zynq-7000 Design Presets",
+        "latest_revision": "1.0",
+        "commit_id": "7cb027ae44f0da8f78a3cda5a61ed151594fd4a1",
         "revisions": [
           {
-            "revision": "1.0", 
-            "commit_id": "7cb027ae44f0da8f78a3cda5a61ed151594fd4a1", 
-            "date": "06-03-2020", 
+            "revision": "1.0",
+            "commit_id": "7cb027ae44f0da8f78a3cda5a61ed151594fd4a1",
+            "date": "06-03-2020",
             "history": "Zynq-7000 based example design for Xilinx Evaluation Boards"
           }
-        ], 
+        ],
         "config": {
-          "root": "ced/Xilinx/IPI/Zynq-7000 Design Presets", 
+          "root": "ced/Xilinx/IPI/Zynq-7000 Design Presets",
           "metadata_file": "xitem.json"
-        }, 
+        },
         "company": "xilinx.com"
-      }  	  
-    ], 
+      }
+    ],
     "categories": [
       {
-        "name": "single_part", 
-        "display_name": "Single Part", 
-        "description": "This category represents all the boards which have single part", 
+        "name": "single_part",
+        "display_name": "Single Part",
+        "description": "This category represents all the boards which have single part",
         "parent": ""
-      }, 
+      },
       {
-        "name": "multi_part", 
-        "display_name": "Multi Part", 
-        "description": "This category represents all the boards which have multi part", 
+        "name": "multi_part",
+        "display_name": "Multi Part",
+        "description": "This category represents all the boards which have multi part",
         "parent": ""
-      }, 
+      },
       {
-        "name": "daughter_card", 
-        "display_name": "Daughter Card", 
-        "description": "This category represents all the boards which are daughter cards", 
+        "name": "daughter_card",
+        "display_name": "Daughter Card",
+        "description": "This category represents all the boards which are daughter cards",
         "parent": ""
-      }, 
+      },
       {
-        "name": "misc", 
-        "display_name": "Misc", 
-        "description": "This category represents miscellaneous variety of boards", 
-        "default": true, 
+        "name": "misc",
+        "display_name": "Misc",
+        "description": "This category represents miscellaneous variety of boards",
+        "default": true,
         "parent": ""
-      }, 
+      },
       {
-        "name": "examples", 
-        "display_name": "Examples", 
-        "description": "This category represents configurable example designs", 
-        "default": true, 
+        "name": "examples",
+        "display_name": "Examples",
+        "description": "This category represents configurable example designs",
+        "default": true,
         "parent": ""
       }
     ]
-  }, 
-  "_major": 1, 
+  },
+  "_major": 1,
   "_minor": 0
 }
