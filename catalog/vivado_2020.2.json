@@ -77,6 +77,25 @@
         }, 
         "company": "xilinx.com"
       },
+	    {
+        "name": "soc_vip", 
+        "display": "SoC VIP", 
+        "latest_revision": "1.0", 
+        "commit_id": "124decf57f03e3cfb7ed2d85c70b183838acec78", 
+        "revisions": [
+          {
+            "revision": "1.0", 
+            "commit_id": "124decf57f03e3cfb7ed2d85c70b183838acec78", 
+            "date": "12-01-2021", 
+            "history": "new design"
+          }
+        ], 
+        "config": {
+          "root": "ced/Xilinx/IPI/cips_vip", 
+          "metadata_file": "xitem.json"
+        }, 
+        "company": "xilinx.com"
+      },
       {
         "name": "mb_preset", 
         "display": "MicroBlaze Design Presets", 

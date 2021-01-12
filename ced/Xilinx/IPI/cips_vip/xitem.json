@@ -1,0 +1,33 @@
+{
+    "config": {
+      "items": [
+        {
+          "infra": {
+            "name": "soc_vip",
+            "display": "SoC VIP",
+            "revision": "1.0",
+            "description": "The Everest SoC VIP example design provides a simulation environment for users intended to simulate the PS functionality and implement their logic in the programmable part.",
+            "company": "xilinx.com",
+            "company_display": "Xilinx",
+            "author": "vanitha",
+            "contributors": [
+              {
+                "group": "Xilinx",
+                "url": "www.xilinx.com"
+              }
+            ],
+            "category": "Versal",
+            "website": "www.xilinx.com",
+            "is_active" : true, 
+            "search-keywords": [
+              "SoC VIP",
+              "xilinx.com",
+              "example"             
+            ]
+          }
+        }
+      ]
+    },
+    "_major" : 1,
+    "_minor" : 0
+}
