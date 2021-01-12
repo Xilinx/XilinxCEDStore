@@ -4,7 +4,7 @@
         {
           "infra": {
             "name": "soc_vip",
-            "display": "SoC VIP",
+            "display": "Versal ACAP CIPS PS VIP",
             "revision": "1.0",
             "description": "The Everest SoC VIP example design provides a simulation environment for users intended to simulate the PS functionality and implement their logic in the programmable part.",
             "company": "xilinx.com",
