@@ -9,4 +9,4 @@ VCK190 ES1
 Boot Mode: JTAG
 ## Block Diagram
 
-![Block Diagram](./Icons/Block_Diagram.jpg)
+![Block Diagram](./Icons/Block_Diagram.JPG)
