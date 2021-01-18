@@ -100,17 +100,17 @@
         "name": "axidma",
         "display": "AXI DMA",
         "latest_revision": "1.0",
-        "commit_id": "d20f17ee8b4300e1de215dc2123cfdb5fa3ffaf4",
+        "commit_id": "afc09d8a9e6af7a1a8c37fa89496909796701eca",
         "revisions": [
           {
             "revision": "1.0",
-            "commit_id": "d20f17ee8b4300e1de215dc2123cfdb5fa3ffaf4",
-            "date": "01-12-2020:17:47:42",
+            "commit_id": "afc09d8a9e6af7a1a8c37fa89496909796701eca",
+            "date": "18-01-2021:17:37:30",
             "history": "Added board AXI DMA v1.0"
           }
         ],
         "config": {
-          "root": "ced/Xilinx/IPI/VCK190-Examples-master",
+          "root": "ced/Xilinx/IPI/VCK190-AXIDMA-Example",
           "metadata_file": "xitem.json"
         },
         "company": "xilinx.com"
