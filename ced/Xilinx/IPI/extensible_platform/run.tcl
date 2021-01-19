@@ -704,9 +704,9 @@ set_property -dict [list CONFIG.CONNECTIONS {M01_INI { read_bw {5} write_bw {5}}
   set ch1_lpddr4_c1 [ create_bd_intf_port -mode Master -vlnv xilinx.com:interface:lpddr4_rtl:1.0 ch1_lpddr4_c1 ] 
   
   set lpddr4_sma_clk1 [ create_bd_intf_port -mode Slave -vlnv xilinx.com:interface:diff_clock_rtl:1.0 lpddr4_sma_clk1 ]
-  set_property -dict [ list CONFIG.FREQ_HZ {200000000} ] $lpddr4_sma_clk1
+  set_property -dict [ list CONFIG.FREQ_HZ {200321000} ] $lpddr4_sma_clk1
   set lpddr4_sma_clk2 [ create_bd_intf_port -mode Slave -vlnv xilinx.com:interface:diff_clock_rtl:1.0 lpddr4_sma_clk2 ]
-  set_property -dict [ list CONFIG.FREQ_HZ {200000000} ] $lpddr4_sma_clk2
+  set_property -dict [ list CONFIG.FREQ_HZ {200321000} ] $lpddr4_sma_clk2
 
   set axi_noc_lpddr4 [ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_noc axi_noc_lpddr4 ]
   set_property -dict [ list \
