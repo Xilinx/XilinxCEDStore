@@ -49,7 +49,7 @@ On the board, the design targets the following configuration:
 * Insert SFP28 loopback module into the lower 2x SFP28 connector (SFP0)
 ![image](https://user-images.githubusercontent.com/73725387/100336967-a7605500-2f8b-11eb-8d83-a07fa2970935.png)
 
-## Running the Design on VCK190/VMK180
+## Running the Design on VCK190/VMK180 
 #### 1. Initialization
 Power up and program the pdi. Add all VIO probes to the dashboard. Hardware manager should look like the below post pdi programming.
 * The default line rate is 10G (rate_sel = probe_out1[3:0] = 0x0)
