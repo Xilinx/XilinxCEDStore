@@ -1,6 +1,25 @@
 {
   "catalog": {
     "items": [
+       {
+        "name": "versal_ibert_ced",
+        "display": "Versal IBERT",
+        "latest_revision": "1.0",
+        "commit_id": "012e36e0539f45f2af46bb32fbad5bfd245bd2ad",
+        "revisions": [
+          {
+            "revision": "1.0",
+            "commit_id": "012e36e0539f45f2af46bb32fbad5bfd245bd2ad",
+            "date": "08-01-2021",
+            "history": "Initial checkin 2020.2.1 branch"
+          }
+        ],
+        "config": {
+          "root": "ced/Xilinx/IPI/versal_ibert_ced",
+          "metadata_file": "xitem.json"
+        },
+        "company": "xilinx.com"
+      },
       {
         "name": "ext_platform", 
         "display": "Extensible Platform Design", 
