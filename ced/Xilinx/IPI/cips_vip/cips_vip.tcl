@@ -3,7 +3,7 @@ proc createDesign {design_name options} {
 variable currentDir
 set_property target_language Verilog [current_project]
 set_property "simulator_language" "Mixed" [current_project]
-
+set_param cips.enablePSVIPsimulation  1
 # Hierarchical cell: microblaze_0_local_memory
 proc create_hier_cell_microblaze_0_local_memory { parentCell nameHier } {
 
