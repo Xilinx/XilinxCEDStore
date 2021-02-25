@@ -14,7 +14,7 @@ No hardware is required.
 
 ## Block Diagram
 
-![Block Diagram](./Icons/block_diagram.PNG)
+![Block Diagram](./Icons/Application.JPG)
 
 
 Running the Simulation
