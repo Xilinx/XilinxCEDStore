@@ -1,7 +1,8 @@
 
 set currentFile [file normalize [info script]]
 variable currentDir [file dirname $currentFile]
-
+set_param ips.useCIPSv3 1
+set_param cips.enablePSVIPsimulation  1
 source -notrace "$currentDir/cips_vip.tcl"
 
 proc getSupportedParts {} {
