@@ -41,21 +41,36 @@ INFO: [VERSAL_CIPS_PS_VIP] (tb.DUT.soc_vip_wrapper_i.soc_vip_i.versal_cips_0.ins
 : [read_burst] [83170] ::: [R5_API] Done AXI Read with Starting Address(0x10001fc0) with Response 'OKAY'
 
 CDMA data compare PASS
+
 Testbench complete
+
 trace_performance.txt has been created for both NA and DC!
+
 trace_performance.txt has been created for both NA and DC!
+
 trace_performance.txt has been created for both NA and DC!
+
 trace_performance.txt has been created for both NA and DC!
+
 ADEC checks are passing!
-Executing Axi4 End Of Simulation checks
-Executing Axi4 End Of Simulation checks
-Executing Axi4 End Of Simulation checks
-Executing Axi4 End Of Simulation checks
-Executing Axi4 End Of Simulation checks
-Executing Axi4 End Of Simulation checks
+
 Executing Axi4 End Of Simulation checks
 
+Executing Axi4 End Of Simulation checks
+
+Executing Axi4 End Of Simulation checks
+
+Executing Axi4 End Of Simulation checks
+
+Executing Axi4 End Of Simulation checks
+
+Executing Axi4 End Of Simulation checks
+
+Executing Axi4 End Of Simulation checks
+
+
 $finish called at time : 83169732 ps : File "/project_1/project_1.srcs/sim_1/imports/soc_vip/system.sv" Line 176
+
 run: Time (s): cpu = 00:02:08 ; elapsed = 00:03:30 . Memory (MB): peak = 11352.809 ; gain = 124.215 ; free physical = 414206 ; free virtual = 470358
 
 5. There is a known issue in 2020.2 with NoC simulation where the sim_wrapper is not always generated with a port list. Refer to AR# 76085 for details. https://www.xilinx.com/support/answers/76085.html
