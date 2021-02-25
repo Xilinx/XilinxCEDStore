@@ -12,9 +12,10 @@ Required Hardware and Tools
 2020.2 Vivado
 No hardware is required.
 
-Block Diagram
+## Block Diagram
 
-<./Icons/block_diagram.png>
+![Block Diagram](./Icons/block_diagram.PNG)
+
 
 Running the Simulation
 1. The CIPs VIP simulation output products are not generated in 2020.2 Before generating output products, run the following TCL command:
@@ -23,11 +24,11 @@ Running the Simulation
 	
 2. Generate output products for the block design. Select global for a quick turnaround.
    
-   <./Icons/generateOutputProductsHighlight.png>
+   <./Icons/generateOutputProductsHighlight.PNG>
 
 3. Run the simulation.
 
-	<./Icons/runBehaviorialSimulationHighlight.png>
+	<./Icons/runBehaviorialSimulationHighlight.PNG>
 
 4. A successful run completes with the following messages.
 
