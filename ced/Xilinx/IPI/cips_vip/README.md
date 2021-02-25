@@ -24,11 +24,11 @@ Running the Simulation
 	
 2. Generate output products for the block design. Select global for a quick turnaround.
    
-   <./Icons/generateOutputProductsHighlight.PNG>
+   <./Icons/generateOutputProductsHighlight.JPG>
 
 3. Run the simulation.
 
-	<./Icons/runBehaviorialSimulationHighlight.PNG>
+	<./Icons/runBehaviorialSimulationHighlight.JPG>
 
 4. A successful run completes with the following messages.
 
