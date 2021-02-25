@@ -23,12 +23,15 @@ Running the Simulation
 	set_param cips.enablePSVIPsimulation 1
 	
 2. Generate output products for the block design. Select global for a quick turnaround.
-   
-   (./Icons/generateOutputProductsHighlight.JPG)
+
+## Output Products
+
+![Output Products](./Icons/generateOutputProductsHighlight.JPG)
 
 3. Run the simulation.
 
-	(./Icons/runBehaviorialSimulationHighlight.JPG)
+## Behaviorial Simulatio
+![Behaviorial Simulatio](./Icons/runBehaviorialSimulationHighlight.JPG)
 
 4. A successful run completes with the following messages.
 
