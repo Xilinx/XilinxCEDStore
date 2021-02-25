@@ -35,10 +35,9 @@ Running the Simulation
 
 4. A successful run completes with the following messages.
 
-INFO: [VERSAL_CIPS_PS_VIP] (tb.DUT.soc_vip_wrapper_i.soc_vip_i.versal_cips_0.inst.PS9_VIP_inst.inst.read_burst) :
-: [read_burst] [83044] ::: [R5_API] AXI Read with Starting Address(0x10001fc0) is initiated
-INFO: [VERSAL_CIPS_PS_VIP] (tb.DUT.soc_vip_wrapper_i.soc_vip_i.versal_cips_0.inst.PS9_VIP_inst.inst.read_burst) :
-: [read_burst] [83170] ::: [R5_API] Done AXI Read with Starting Address(0x10001fc0) with Response 'OKAY'
+INFO: [VERSAL_CIPS_PS_VIP] (tb.DUT.soc_vip_wrapper_i.soc_vip_i.versal_cips_0.inst.PS9_VIP_inst.inst.read_burst) :: [read_burst] [83044] ::: [R5_API] AXI Read with Starting Address(0x10001fc0) is initiated
+
+INFO: [VERSAL_CIPS_PS_VIP] (tb.DUT.soc_vip_wrapper_i.soc_vip_i.versal_cips_0.inst.PS9_VIP_inst.inst.read_burst) :: [read_burst] [83170] ::: [R5_API] Done AXI Read with Starting Address(0x10001fc0) with Response 'OKAY'
 
 CDMA data compare PASS
 
