@@ -16,7 +16,7 @@
 
 set currentFile [file normalize [info script]]
 variable currentDir [file dirname $currentFile]
-
+set_param ips.useCIPSv3 1
 source -notrace "$currentDir/run.tcl"
 
 
@@ -50,10 +50,3 @@ proc addGUILayout {DESIGNOBJ PROJECT_PARAM.BOARD_PART} {
 	 }
 }
 
-gui_updater {PROJECT_PARAM.BOARD_PART Include_LPDDR.VALUE} {Image.IMAGE_PATH} {
- if { ${Include_LPDDR.VALUE} == true } {
-   set Image.IMAGE_PATH "" 
-   } else {
-	 set Image.IMAGE_PATH ""
-	 }
-}
