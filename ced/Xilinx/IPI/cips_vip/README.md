@@ -14,7 +14,7 @@ No hardware is required.
 
 ## Block Diagram
 
-![Block Diagram](./Icons/Application.JPG)
+![Block Diagram](./Icons/blockDiagram.JPG)
 
 
 Running the Simulation
@@ -24,11 +24,11 @@ Running the Simulation
 	
 2. Generate output products for the block design. Select global for a quick turnaround.
    
-   <./Icons/generateOutputProductsHighlight.JPG>
+   (./Icons/generateOutputProductsHighlight.JPG)
 
 3. Run the simulation.
 
-	<./Icons/runBehaviorialSimulationHighlight.JPG>
+	(./Icons/runBehaviorialSimulationHighlight.JPG)
 
 4. A successful run completes with the following messages.
 
