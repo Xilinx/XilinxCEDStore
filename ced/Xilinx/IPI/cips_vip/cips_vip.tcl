@@ -93,7 +93,13 @@ set_property -dict [ list CONFIG.NUM_SI {1} ] $axi_smc_2
 create_bd_cell -type ip -vlnv xilinx.com:ip:microblaze:* microblaze_0
 
 apply_bd_automation -rule xilinx.com:bd_rule:microblaze -config { axi_intc {0} axi_periph {Enabled} cache {None} clk {/versal_cips_0/pl0_ref_clk (333 MHz)} cores {1} debug_module {Debug Only} ecc {None} local_mem {8KB} preset {None}}  [get_bd_cells microblaze_0]
-apply_bd_automation -rule xilinx.com:bd_rule:axi4 -config { Clk_master {/versal_cips_0/pl0_ref_clk (333 MHz)} Clk_slave {Auto} Clk_xbar {Auto} Master {/microblaze_0 (Periph)} Slave {/versal_cips_0/S_AXI_LPD} ddr_seg {Auto} intc_ip {/axi_smc_2} master_apm {0}}  [get_bd_intf_pins versal_cips_0/S_AXI_LPD]
+#apply_bd_automation -rule xilinx.com:bd_rule:axi4 -config { Clk_master {/versal_cips_0/pl0_ref_clk (333 MHz)} Clk_slave {Auto} Clk_xbar {Auto} Master {/microblaze_0 (Periph)} Slave {/versal_cips_0/S_AXI_LPD} ddr_seg {Auto} intc_ip {/axi_smc_2} master_apm {0}}  [get_bd_intf_pins versal_cips_0/S_AXI_LPD]
+
+connect_bd_intf_net [get_bd_intf_pins axi_smc_2/M00_AXI] [get_bd_intf_pins versal_cips_0/S_AXI_LPD]
+connect_bd_intf_net [get_bd_intf_pins microblaze_0/M_AXI_DP] [get_bd_intf_pins axi_smc_2/S00_AXI]
+connect_bd_net [get_bd_pins axi_smc_2/aclk] [get_bd_pins versal_cips_0/pl0_ref_clk]
+connect_bd_net [get_bd_pins rst_versal_cips_0_333M/peripheral_aresetn] [get_bd_pins axi_smc_2/aresetn]
+connect_bd_net [get_bd_pins versal_cips_0/s_axi_lpd_aclk] [get_bd_pins versal_cips_0/pl0_ref_clk]
 
 apply_bd_automation -rule xilinx.com:bd_rule:bram_cntlr -config {BRAM "Auto" }  [get_bd_intf_pins axi_bram_ctrl_0/BRAM_PORTA]
 apply_bd_automation -rule xilinx.com:bd_rule:bram_cntlr -config {BRAM "Auto" }  [get_bd_intf_pins axi_bram_ctrl_0/BRAM_PORTB]
