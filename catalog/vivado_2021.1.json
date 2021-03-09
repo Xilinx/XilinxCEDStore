@@ -5,11 +5,11 @@
         "name": "ext_platform",
         "display": "Extensible Platform Design",
         "latest_revision": "1.0",
-        "commit_id": "63a3e9ef6c0d9456c1c7bb48e486eb31016ea8f7",
+        "commit_id": "aa968f427ec12b2dc722065cab01f8d0acf1c1ab",
         "revisions": [
           {
             "revision": "1.0",
-            "commit_id": "63a3e9ef6c0d9456c1c7bb48e486eb31016ea8f7",
+            "commit_id": "aa968f427ec12b2dc722065cab01f8d0acf1c1ab",
             "date": "22-10-2020",
             "history": "Updated dont touch param"
           }
@@ -119,17 +119,36 @@
         "name": "soc_vip",
         "display": "Versal ACAP CIPS PS VIP",
         "latest_revision": "1.0",
-        "commit_id": "cf0803a9cb7114572d92aa895dddd5faaa89afaa",
+        "commit_id": "aa968f427ec12b2dc722065cab01f8d0acf1c1ab",
         "revisions": [
           {
             "revision": "1.0",
-            "commit_id": "cf0803a9cb7114572d92aa895dddd5faaa89afaa",
+            "commit_id": "aa968f427ec12b2dc722065cab01f8d0acf1c1ab",
             "date": "08-02-2021:05:11:54",
             "history": "Added board Versal ACAP CIPS PS VIP v1.0"
           }
         ],
         "config": {
           "root": "ced/Xilinx/IPI/cips_vip",
+          "metadata_file": "xitem.json"
+        },
+        "company": "xilinx.com"
+      },
+      {
+        "name": "versal_mb_preset",
+        "display": "Versal MicroBlaze Design Presets",
+        "latest_revision": "1.0",
+        "commit_id": "aa968f427ec12b2dc722065cab01f8d0acf1c1ab",
+        "revisions": [
+          {
+            "revision": "1.0",
+            "commit_id": "aa968f427ec12b2dc722065cab01f8d0acf1c1ab",
+            "date": "09-03-2021:09:51:31",
+            "history": "Added board Versal MicroBlaze Design Presets v1.0"
+          }
+        ],
+        "config": {
+          "root": "ced/Xilinx/IPI/versal_mb_preset",
           "metadata_file": "xitem.json"
         },
         "company": "xilinx.com"
