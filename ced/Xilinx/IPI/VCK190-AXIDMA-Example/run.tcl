@@ -186,64 +186,53 @@ puts "INFO: $fpga_part is selected"
 
   # Create instance: versal_cips_0, and set properties
   set versal_cips_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:versal_cips versal_cips_0 ]
-  set_property -dict [ list \
-   CONFIG.PMC_GPIO0_MIO_PERIPHERAL_ENABLE {1} \
-   CONFIG.PMC_GPIO1_MIO_PERIPHERAL_ENABLE {1} \
-   CONFIG.PMC_I2CPMC_PERIPHERAL_ENABLE {1} \
-   CONFIG.PMC_I2CPMC_PERIPHERAL_IO {PMC_MIO 46 .. 47} \
-   CONFIG.PMC_MIO_37_DIRECTION {out} \
-   CONFIG.PMC_MIO_37_OUTPUT_DATA {high} \
-   CONFIG.PMC_MIO_37_USAGE {GPIO} \
-   CONFIG.PMC_OSPI_PERIPHERAL_ENABLE {0} \
-   CONFIG.PMC_QSPI_GRP_FBCLK_ENABLE {1} \
-   CONFIG.PMC_QSPI_PERIPHERAL_DATA_MODE {x4} \
-   CONFIG.PMC_QSPI_PERIPHERAL_ENABLE {1} \
-   CONFIG.PMC_QSPI_PERIPHERAL_MODE {Dual Parallel} \
-   CONFIG.PMC_SD1_GRP_CD_ENABLE {1} \
-   CONFIG.PMC_SD1_GRP_POW_ENABLE {0} \
-   CONFIG.PMC_SD1_GRP_WP_ENABLE {0} \
-   CONFIG.PMC_SD1_PERIPHERAL_ENABLE {1} \
-   CONFIG.PMC_SD1_PERIPHERAL_IO {PMC_MIO 26 .. 36} \
-   CONFIG.PMC_SD1_SLOT_TYPE {SD 3.0} \
-   CONFIG.PMC_USE_PMC_NOC_AXI0 {1} \
-   CONFIG.PS_CAN1_PERIPHERAL_ENABLE {1} \
-   CONFIG.PS_CAN1_PERIPHERAL_IO {PMC_MIO 40 .. 41} \
-   CONFIG.PS_ENET0_GRP_MDIO_ENABLE {1} \
-   CONFIG.PS_ENET0_GRP_MDIO_IO {PS_MIO 24 .. 25} \
-   CONFIG.PS_ENET0_PERIPHERAL_ENABLE {1} \
-   CONFIG.PS_ENET0_PERIPHERAL_IO {PS_MIO 0 .. 11} \
-   CONFIG.PS_ENET1_PERIPHERAL_ENABLE {1} \
-   CONFIG.PS_ENET1_PERIPHERAL_IO {PS_MIO 12 .. 23} \
-   CONFIG.PS_GEN_IPI_0_ENABLE {1} \
-   CONFIG.PS_GEN_IPI_1_ENABLE {1} \
-   CONFIG.PS_GEN_IPI_2_ENABLE {1} \
-   CONFIG.PS_GEN_IPI_3_ENABLE {1} \
-   CONFIG.PS_GEN_IPI_4_ENABLE {1} \
-   CONFIG.PS_GEN_IPI_5_ENABLE {1} \
-   CONFIG.PS_GEN_IPI_6_ENABLE {1} \
-   CONFIG.PS_GEN_IPI_PMCNOBUF_ENABLE {1} \
-   CONFIG.PS_GEN_IPI_PMC_ENABLE {1} \
-   CONFIG.PS_GEN_IPI_PSM_ENABLE {1} \
-   CONFIG.PS_GPIO2_MIO_PERIPHERAL_ENABLE {0} \
-   CONFIG.PS_I2C1_PERIPHERAL_ENABLE {1} \
-   CONFIG.PS_I2C1_PERIPHERAL_IO {PMC_MIO 44 .. 45} \
-   CONFIG.PS_NUM_FABRIC_RESETS {1} \
-   CONFIG.PS_PCIE_RESET_ENABLE {1} \
-   CONFIG.PS_PCIE_RESET_IO {PS_MIO 18 .. 19} \
-   CONFIG.PS_TTC0_PERIPHERAL_ENABLE {1} \
-   CONFIG.PS_TTC3_PERIPHERAL_ENABLE {0} \
-   CONFIG.PS_UART0_PERIPHERAL_ENABLE {1} \
-   CONFIG.PS_UART0_PERIPHERAL_IO {PMC_MIO 42 .. 43} \
-   CONFIG.PS_USB3_PERIPHERAL_ENABLE {1} \
-   CONFIG.PS_USE_M_AXI_GP0 {0} \
-   CONFIG.PS_USE_M_AXI_GP2 {0} \
-   CONFIG.PS_USE_PMCPL_CLK0 {1} \
-   CONFIG.PS_USE_PS_NOC_CCI {1} \
-   CONFIG.PS_USE_PS_NOC_RPU_0 {1} \
-   CONFIG.PS_USE_S_AXI_GP0 {0} \
-   CONFIG.PS_USE_S_AXI_GP2 {0} \
-   CONFIG.PS_USE_S_AXI_GP4 {0} \
- ] $versal_cips_0
+  set_property -dict [list \
+    CONFIG.PS_PMC_CONFIG [dict create \
+      PMC_GPIO0_MIO_PERIPHERAL {{ENABLE 1}} \
+      PMC_GPIO1_MIO_PERIPHERAL {{ENABLE 1}} \
+      PMC_I2CPMC_PERIPHERAL {{ENABLE 1} {IO {PMC_MIO 46 .. 47}}} \
+      PMC_MIO37 {{DIRECTION out} {OUTPUT_DATA high} {USAGE GPIO}} \
+      PMC_OSPI_PERIPHERAL {{ENABLE 0}} \
+      PMC_QSPI_FBCLK {{ENABLE 1}} \
+      PMC_QSPI_PERIPHERAL_DATA_MODE {x4} \
+      PMC_QSPI_PERIPHERAL_ENABLE {1} \
+      PMC_QSPI_PERIPHERAL_MODE {{Dual Parallel}} \
+      PMC_SD1 {{CD_ENABLE 1} {POW_ENABLE 0} {WP_ENABLE 0}} \
+      PMC_SD1_PERIPHERAL {{ENABLE 1} {IO {PMC_MIO 26 .. 36}}} \
+      PMC_SD1_SLOT_TYPE {{SD 3.0}} \
+      PMC_USE_PMC_NOC_AXI0 {1} \
+      PS_CAN1_PERIPHERAL {{ENABLE 1} {IO {PMC_MIO 40 .. 41}}} \
+      PS_ENET0_MDIO {{ENABLE 1} {IO {PS_MIO 24 .. 25}}} \
+      PS_ENET0_PERIPHERAL {{ENABLE 1} {IO {PS_MIO 0 .. 11}}} \
+      PS_ENET1_PERIPHERAL {{ENABLE 1} {IO {PS_MIO 12 .. 23}}} \
+      PS_GEN_IPI0_ENABLE {1} \
+      PS_GEN_IPI1_ENABLE {1} \
+      PS_GEN_IPI2_ENABLE {1} \
+      PS_GEN_IPI3_ENABLE {1} \
+      PS_GEN_IPI4_ENABLE {1} \
+      PS_GEN_IPI5_ENABLE {1} \
+      PS_GEN_IPI6_ENABLE {1} \
+      PS_GEN_IPI_PMCNOBUF_ENABLE {1} \
+      PS_GEN_IPI_PMC_ENABLE {1} \
+      PS_GEN_IPI_PSM_ENABLE {1} \
+      PS_GPIO2_MIO_PERIPHERAL {{ENABLE 0}} \
+      PS_I2C1_PERIPHERAL {{ENABLE 1} {IO {PMC_MIO 44 .. 45}}} \
+      PS_NUM_FABRIC_RESETS {1} \
+      PS_PCIE_RESET {{ENABLE 1} {IO {PS_MIO 18 .. 19}}} \
+      PS_TTC0_PERIPHERAL_ENABLE {1} \
+      PS_TTC3_PERIPHERAL_ENABLE {0} \
+      PS_UART0_PERIPHERAL {{ENABLE 1} {IO {PMC_MIO 42 .. 43}}} \
+      PS_USB3_PERIPHERAL {{ENABLE 1}} \
+      PS_USE_M_AXI_FPD {0} \
+      PS_USE_M_AXI_LPD {0} \
+      PS_USE_PMCPL_CLK0 {1} \
+      PS_USE_FPD_CCI_NOC {1} \
+      PS_USE_NOC_LPD_AXI0 {1} \
+      PS_USE_S_AXI_FPD {0} \
+      PS_USE_S_AXI_GP2 {0} \
+      PS_USE_S_AXI_LPD {0} \
+    ] \
+  ] $versal_cips_0
 
   # Create interface connections
   connect_bd_intf_net -intf_net axi_dma_0_M_AXIS_MM2S [get_bd_intf_pins axi_dma_0/M_AXIS_MM2S] [get_bd_intf_pins axi_dma_0/S_AXIS_S2MM]
@@ -257,7 +246,7 @@ puts "INFO: $fpga_part is selected"
   connect_bd_intf_net -intf_net versal_cips_0_FPD_CCI_NOC_1 [get_bd_intf_pins axi_noc_0/S03_AXI] [get_bd_intf_pins versal_cips_0/FPD_CCI_NOC_1]
   connect_bd_intf_net -intf_net versal_cips_0_FPD_CCI_NOC_2 [get_bd_intf_pins axi_noc_0/S04_AXI] [get_bd_intf_pins versal_cips_0/FPD_CCI_NOC_2]
   connect_bd_intf_net -intf_net versal_cips_0_FPD_CCI_NOC_3 [get_bd_intf_pins axi_noc_0/S05_AXI] [get_bd_intf_pins versal_cips_0/FPD_CCI_NOC_3]
-  connect_bd_intf_net -intf_net versal_cips_0_NOC_LPD_AXI_0 [get_bd_intf_pins axi_noc_0/S01_AXI] [get_bd_intf_pins versal_cips_0/NOC_LPD_AXI_0]
+  connect_bd_intf_net -intf_net versal_cips_0_LPD_AXI_NOC_0 [get_bd_intf_pins axi_noc_0/S01_AXI] [get_bd_intf_pins versal_cips_0/LPD_AXI_NOC_0]
   connect_bd_intf_net -intf_net versal_cips_0_PMC_NOC_AXI_0 [get_bd_intf_pins axi_noc_0/S00_AXI] [get_bd_intf_pins versal_cips_0/PMC_NOC_AXI_0]
 
   # Create port connections
