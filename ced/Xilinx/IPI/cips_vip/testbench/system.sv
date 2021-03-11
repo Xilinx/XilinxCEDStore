@@ -19,7 +19,7 @@
 // 
 //////////////////////////////////////////////////////////////////////////////////
 `timescale 1ns/1ps
-`define CIPS_VIP tb.DUT.design_1_wrapper_i.design_1_i.versal_cips_0.inst.PS9_VIP_inst.inst
+`define CIPS_VIP tb.DUT.design_1_wrapper_i.design_1_i.versal_cips_0.inst.pspmc_0.inst.PS9_VIP_inst.inst
 `default_nettype wire
 module tb( );
   bit sysclk_p;
