@@ -27,7 +27,7 @@ set_property "simulator_language" "Mixed" [current_project]
 
 proc create_root_design {currentDir design_name temp_options } {
 
-puts "creat_root_desing"
+puts "create_root_design"
 set board_part [get_property NAME [current_board_part]]
 set board_name [get_property BOARD_NAME [current_board]]
 set fpga_part [get_property PART_NAME [current_board_part]]
