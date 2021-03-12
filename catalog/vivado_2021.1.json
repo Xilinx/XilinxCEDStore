@@ -5,11 +5,11 @@
         "name": "ext_platform",
         "display": "Extensible Platform Design",
         "latest_revision": "1.0",
-        "commit_id": "aa968f427ec12b2dc722065cab01f8d0acf1c1ab",
+        "commit_id": "811c151ced10df37c416bb2079241306ef60a0b2",
         "revisions": [
           {
             "revision": "1.0",
-            "commit_id": "aa968f427ec12b2dc722065cab01f8d0acf1c1ab",
+            "commit_id": "811c151ced10df37c416bb2079241306ef60a0b2",
             "date": "22-10-2020",
             "history": "Updated dont touch param"
           }
@@ -24,11 +24,11 @@
         "name": "cips_ddr_pl_debug",
         "display": "Versal CIPS Design",
         "latest_revision": "1.0",
-        "commit_id": "8aa2fa77003639a00168ae3199c0eac9458955e4",
+        "commit_id": "811c151ced10df37c416bb2079241306ef60a0b2",
         "revisions": [
           {
             "revision": "1.0",
-            "commit_id": "8aa2fa77003639a00168ae3199c0eac9458955e4",
+            "commit_id": "811c151ced10df37c416bb2079241306ef60a0b2",
             "date": "27-08-2020",
             "history": "Updated description and picture"
           }
@@ -119,11 +119,11 @@
         "name": "soc_vip",
         "display": "Versal ACAP CIPS PS VIP",
         "latest_revision": "1.0",
-        "commit_id": "8aa2fa77003639a00168ae3199c0eac9458955e4",
+        "commit_id": "811c151ced10df37c416bb2079241306ef60a0b2",
         "revisions": [
           {
             "revision": "1.0",
-            "commit_id": "8aa2fa77003639a00168ae3199c0eac9458955e4",
+            "commit_id": "811c151ced10df37c416bb2079241306ef60a0b2",
             "date": "08-02-2021:05:11:54",
             "history": "Added board Versal ACAP CIPS PS VIP v1.0"
           }
@@ -138,11 +138,11 @@
         "name": "versal_mb_preset",
         "display": "Versal MicroBlaze Design Presets",
         "latest_revision": "1.0",
-        "commit_id": "aa968f427ec12b2dc722065cab01f8d0acf1c1ab",
+        "commit_id": "811c151ced10df37c416bb2079241306ef60a0b2",
         "revisions": [
           {
             "revision": "1.0",
-            "commit_id": "aa968f427ec12b2dc722065cab01f8d0acf1c1ab",
+            "commit_id": "811c151ced10df37c416bb2079241306ef60a0b2",
             "date": "09-03-2021:09:51:31",
             "history": "Added board Versal MicroBlaze Design Presets v1.0"
           }
