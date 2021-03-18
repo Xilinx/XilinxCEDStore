@@ -1,0 +1,33 @@
+{
+    "config": {
+      "items": [
+        {
+          "infra": {
+            "name": "combinwitinquad",
+            "display": "Combine Within GT Quad",
+            "revision": "1.0",
+            "description": "A Versal example design that demonstrates how to combine multiple IP within a GT Quad",
+            "company": "xilinx.com",
+            "company_display": "Xilinx",
+            "author": "simon",
+            "contributors": [
+              {
+                "group": "Xilinx",
+                "url": "www.xilinx.com"
+              }
+            ],
+            "category": "Versal",
+            "website": "www.xilinx.com",
+            "is_active" : true, 
+            "search-keywords": [
+              "VCK190 GTY",
+              "xilinx.com",
+              "example"        
+            ]
+          }
+        }
+      ]
+    },
+    "_major" : 1,
+    "_minor" : 0
+}

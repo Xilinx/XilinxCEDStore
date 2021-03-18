@@ -1,0 +1,22 @@
+﻿<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+
+<ExampleDesign>
+
+  <Vendor>xilinx.com</Vendor>
+
+  <Library>design</Library>
+
+  <Name>combine_within_gt_quad</Name>
+  
+  <DisplayName>Combine Within GT Quad</DisplayName>
+  
+  <Description>This design demonstrates how to combine multple IP within one GT Quad on VCK190. The design implements pcie gen2x1 and jesd204c IP.</Description>
+
+  <Version>1.0</Version>
+
+  <Design>init.tcl</Design>
+  
+  <Image>combine_within_gt_quad.png</Image>
+
+</ExampleDesign>
+
