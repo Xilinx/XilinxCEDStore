@@ -190,6 +190,25 @@
           "metadata_file": "xitem.json"
         },
         "company": "xilinx.com"
+      },
+      {
+        "name": "combinwitinquad",
+        "display": "Combine Within GT Quad",
+        "latest_revision": "1.0",
+        "commit_id": "8c5df895540d3dd2e4e69eaf0763a63713cb233b",
+        "revisions": [
+          {
+            "revision": "1.0",
+            "commit_id": "8c5df895540d3dd2e4e69eaf0763a63713cb233b",
+            "date": "19-03-2021:18:05:29",
+            "history": "Added board Combine Within GT Quad v1.0"
+          }
+        ],
+        "config": {
+          "root": "ced/Xilinx/IPI/Versal Combine_within_GT_quad",
+          "metadata_file": "xitem.json"
+        },
+        "company": "xilinx.com"
       }
     ],
     "categories": [
