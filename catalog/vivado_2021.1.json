@@ -100,11 +100,11 @@
         "name": "axidma",
         "display": "AXI DMA",
         "latest_revision": "1.0",
-        "commit_id": "dfee6ace78e255a787217d0d6c37519a5a41d6f3",
+        "commit_id": "63eaee1146757502c55b31da836645ca9e2c86dc",
         "revisions": [
           {
             "revision": "1.0",
-            "commit_id": "dfee6ace78e255a787217d0d6c37519a5a41d6f3",
+            "commit_id": "63eaee1146757502c55b31da836645ca9e2c86dc",
             "date": "18-01-2021:17:37:30",
             "history": "Added board AXI DMA v1.0"
           }
