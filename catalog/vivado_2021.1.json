@@ -5,11 +5,11 @@
         "name": "ext_platform",
         "display": "Extensible Platform Design",
         "latest_revision": "1.0",
-        "commit_id": "811c151ced10df37c416bb2079241306ef60a0b2",
+        "commit_id": "6c8126351a5885a47d1d73ef1e5e868510b4e001",
         "revisions": [
           {
             "revision": "1.0",
-            "commit_id": "811c151ced10df37c416bb2079241306ef60a0b2",
+            "commit_id": "6c8126351a5885a47d1d73ef1e5e868510b4e001",
             "date": "22-10-2020",
             "history": "Updated dont touch param"
           }
@@ -138,11 +138,11 @@
         "name": "versal_mb_preset",
         "display": "Versal MicroBlaze Design Presets",
         "latest_revision": "1.0",
-        "commit_id": "811c151ced10df37c416bb2079241306ef60a0b2",
+        "commit_id": "6c8126351a5885a47d1d73ef1e5e868510b4e001",
         "revisions": [
           {
             "revision": "1.0",
-            "commit_id": "811c151ced10df37c416bb2079241306ef60a0b2",
+            "commit_id": "6c8126351a5885a47d1d73ef1e5e868510b4e001",
             "date": "09-03-2021:09:51:31",
             "history": "Added board Versal MicroBlaze Design Presets v1.0"
           }
