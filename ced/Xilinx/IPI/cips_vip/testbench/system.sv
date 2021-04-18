@@ -107,6 +107,7 @@ module tb( );
     // Write 8kB to DDR
     // Set routing configuration
     `CIPS_VIP.set_routing_config("A72_API","FPD_CCI_NOC",1);
+	`CIPS_VIP.select_cci_boundary(2);
     `CIPS_VIP.get_routing_config();
     
     // Write cache lines from A72
