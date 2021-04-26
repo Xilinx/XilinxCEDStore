@@ -4,9 +4,9 @@
         {
           "infra": {
             "name": "ext_platform",
-            "display": "Extensible Embedded Platform",
+            "display": "Versal Extensible Embedded Platform",
             "revision": "1.0",
-            "description": "An example extendable platform design",
+            "description": "An example extendable platform design for Versal devices",
             "company": "xilinx.com",
             "company_display": "Xilinx",
             "author": "vanitha",
