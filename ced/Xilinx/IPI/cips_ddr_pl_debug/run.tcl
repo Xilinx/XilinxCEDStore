@@ -37,6 +37,8 @@ apply_board_connection -board_interface "cips_fixed_io" -ip_intf "versal_cips_0/
 
 set_property -dict [list CONFIG.PS_PMC_CONFIG { CLOCK_MODE Custom DDR_MEMORY_MODE Custom PMC_USE_PMC_NOC_AXI0 1 PS_NUM_FABRIC_RESETS 1 PS_USE_FPD_CCI_NOC 1 PS_USE_NOC_LPD_AXI0 1 PS_USE_PMCPL_CLK0 1} CONFIG.CLOCK_MODE {Custom} CONFIG.DDR_MEMORY_MODE {Custom}] [get_bd_cells versal_cips_0]
 
+set_property -dict [list CONFIG.PS_PMC_CONFIG {PS_GEN_IPI0_ENABLE 1 PS_GEN_IPI0_MASTER A72 PS_GEN_IPI1_ENABLE 1 PS_GEN_IPI1_MASTER A72 PS_GEN_IPI2_ENABLE 1 PS_GEN_IPI2_MASTER A72 PS_GEN_IPI3_ENABLE 1 PS_GEN_IPI3_MASTER A72 PS_GEN_IPI4_ENABLE 1 PS_GEN_IPI4_MASTER A72 PS_GEN_IPI5_ENABLE 1 PS_GEN_IPI5_MASTER A72 PS_GEN_IPI6_ENABLE 1 PS_GEN_IPI6_MASTER A72} ] [get_bd_cells versal_cips_0]
+
 # Create instance: axi_noc_0, and set properties
 create_bd_cell -type ip -vlnv xilinx.com:ip:axi_noc:* axi_noc_0
 if {[regexp vpk120 $board_name] } {
