@@ -5,11 +5,11 @@
         "name": "ext_platform",
         "display": "Extensible Platform Design",
         "latest_revision": "1.0",
-        "commit_id": "6c8126351a5885a47d1d73ef1e5e868510b4e001",
+        "commit_id": "afe46c1a884bbba7a8f448f74466de67cbe488fd",
         "revisions": [
           {
             "revision": "1.0",
-            "commit_id": "6c8126351a5885a47d1d73ef1e5e868510b4e001",
+            "commit_id": "afe46c1a884bbba7a8f448f74466de67cbe488fd",
             "date": "22-10-2020",
             "history": "Updated dont touch param"
           }
@@ -24,11 +24,11 @@
         "name": "cips_ddr_pl_debug",
         "display": "Versal CIPS Design",
         "latest_revision": "1.0",
-        "commit_id": "de4ed9cb917ce911fbd561ed5dfef4788b546d13",
+        "commit_id": "afe46c1a884bbba7a8f448f74466de67cbe488fd",
         "revisions": [
           {
             "revision": "1.0",
-            "commit_id": "de4ed9cb917ce911fbd561ed5dfef4788b546d13",
+            "commit_id": "afe46c1a884bbba7a8f448f74466de67cbe488fd",
             "date": "27-08-2020",
             "history": "Updated description and picture"
           }
@@ -138,11 +138,11 @@
         "name": "versal_mb_preset",
         "display": "Versal MicroBlaze Design Presets",
         "latest_revision": "1.0",
-        "commit_id": "732dd17e230c04e6a9c6b28d126cf0e6451eccce",
+        "commit_id": "afe46c1a884bbba7a8f448f74466de67cbe488fd",
         "revisions": [
           {
             "revision": "1.0",
-            "commit_id": "732dd17e230c04e6a9c6b28d126cf0e6451eccce",
+            "commit_id": "afe46c1a884bbba7a8f448f74466de67cbe488fd",
             "date": "09-03-2021:09:51:31",
             "history": "Added board Versal MicroBlaze Design Presets v1.0"
           }
