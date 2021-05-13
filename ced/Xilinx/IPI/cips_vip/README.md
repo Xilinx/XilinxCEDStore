@@ -9,7 +9,7 @@ Refer to AR# 75889 for CIPS VIP release notes and known issues. https://www.xili
 
 
 Required Hardware and Tools
-2020.2 Vivado
+2021.1 Vivado
 No hardware is required.
 
 ## Block Diagram
@@ -18,7 +18,7 @@ No hardware is required.
 
 
 Running the Simulation
-1. The CIPs VIP simulation output products are not generated in 2020.2 Before generating output products, run the following TCL command:
+1. The CIPs VIP simulation output products are not generated in 2021.1 Before generating output products, run the following TCL command:
 
 	set_param cips.enablePSVIPsimulation 1
 	
@@ -72,4 +72,4 @@ $finish called at time : 83169732 ps : File "/project_1/project_1.srcs/sim_1/imp
 
 run: Time (s): cpu = 00:02:08 ; elapsed = 00:03:30 . Memory (MB): peak = 11352.809 ; gain = 124.215 ; free physical = 414206 ; free virtual = 470358
 
-5. There is a known issue in 2020.2 with NoC simulation where the sim_wrapper is not always generated with a port list. Refer to AR# 76085 for details. https://www.xilinx.com/support/answers/76085.html
+5. There is a known issue in 2021.1 with NoC simulation where the sim_wrapper is not always generated with a port list. Refer to AR# 76085 for details. https://www.xilinx.com/support/answers/76085.html
