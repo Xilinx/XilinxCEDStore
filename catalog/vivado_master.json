@@ -24,11 +24,11 @@
         "name": "cips_ddr_pl_debug",
         "display": "Versal CIPS Design",
         "latest_revision": "1.0",
-        "commit_id": "afe46c1a884bbba7a8f448f74466de67cbe488fd",
+        "commit_id": "f06edc646eaf41fef22daefc52488ab3897b6892",
         "revisions": [
           {
             "revision": "1.0",
-            "commit_id": "afe46c1a884bbba7a8f448f74466de67cbe488fd",
+            "commit_id": "f06edc646eaf41fef22daefc52488ab3897b6892",
             "date": "27-08-2020",
             "history": "Updated description and picture"
           }
