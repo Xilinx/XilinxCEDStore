@@ -133,6 +133,25 @@
           "metadata_file": "xitem.json"
         },
         "company": "xilinx.com"
+      },
+      {
+        "name": "multirategty",
+        "display": "Multi-Rate GTY",
+        "latest_revision": "1.0",
+        "commit_id": "2f2f735dc9c1ef8420e0edd6d9acf208fb33fc88",
+        "revisions": [
+          {
+            "revision": "1.0",
+            "commit_id": "2f2f735dc9c1ef8420e0edd6d9acf208fb33fc88",
+            "date": "26-05-2021:20:59:24",
+            "history": "Added board Multi-Rate GTY v1.0"
+          }
+        ],
+        "config": {
+          "root": "ced/Xilinx/IPI/Versal Multi-Rate GTY",
+          "metadata_file": "xitem.json"
+        },
+        "company": "xilinx.com"
       }
     ],
     "categories": [
