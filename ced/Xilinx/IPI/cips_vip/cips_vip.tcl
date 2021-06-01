@@ -37,7 +37,8 @@ puts "INFO: $fpga_part is selected"
 
 # Create instance: versal_cips_0, and set properties
 create_bd_cell -type ip -vlnv xilinx.com:ip:versal_cips:* versal_cips_0
-apply_board_connection -board_interface "cips_fixed_io" -ip_intf "versal_cips_0/FIXED_IO" -diagram $design_name 
+#apply_board_connection -board_interface "cips_fixed_io" -ip_intf "versal_cips_0/FIXED_IO" -diagram $design_name
+apply_board_connection -board_interface "ps_pmc_fixed_io" -ip_intf "CIPS_0/FIXED_IO" -diagram $design_name
 
 set_property -dict [list CONFIG.PS_PMC_CONFIG { CLOCK_MODE Custom DDR_MEMORY_MODE Custom PMC_USE_PMC_NOC_AXI0 1 PS_IRQ_USAGE {{CH0 0} {CH1 0} {CH10 0} {CH11 0} {CH12 0} {CH13 0} {CH14 0} {CH15 0} {CH2 0} {CH3 0} {CH4 0} {CH5 0} {CH6 0} {CH7 0} {CH8 1} {CH9 0}} PS_NUM_FABRIC_RESETS 1 PS_PL_CONNECTIVITY_MODE Custom PS_USE_FPD_CCI_NOC 1 PS_USE_M_AXI_FPD 1 PS_USE_M_AXI_LPD 1 PS_USE_NOC_LPD_AXI0 1 PS_USE_PMCPL_CLK0 1 PMC_CRP_PL0_REF_CTRL_FREQMHZ 200 PS_USE_S_AXI_LPD 1 PS_USE_BSCAN_USER2 1} CONFIG.CLOCK_MODE {Custom} CONFIG.DDR_MEMORY_MODE {Custom} CONFIG.PS_PL_CONNECTIVITY_MODE {Custom}] [get_bd_cells versal_cips_0]
 
