@@ -5,11 +5,11 @@
         "name": "ext_platform",
         "display": "Extensible Platform Design",
         "latest_revision": "1.0",
-        "commit_id": "afe46c1a884bbba7a8f448f74466de67cbe488fd",
+        "commit_id": "51ec8b17f6ef6b7a756149787d8c40f0a25949fd",
         "revisions": [
           {
             "revision": "1.0",
-            "commit_id": "afe46c1a884bbba7a8f448f74466de67cbe488fd",
+            "commit_id": "51ec8b17f6ef6b7a756149787d8c40f0a25949fd",
             "date": "22-10-2020",
             "history": "Updated dont touch param"
           }
@@ -24,11 +24,11 @@
         "name": "cips_ddr_pl_debug",
         "display": "Versal CIPS Design",
         "latest_revision": "1.0",
-        "commit_id": "56a6da8d80c3b5c72b63e87c4e6c8571ca1efeff",
+        "commit_id": "51ec8b17f6ef6b7a756149787d8c40f0a25949fd",
         "revisions": [
           {
             "revision": "1.0",
-            "commit_id": "56a6da8d80c3b5c72b63e87c4e6c8571ca1efeff",
+            "commit_id": "51ec8b17f6ef6b7a756149787d8c40f0a25949fd",
             "date": "27-08-2020",
             "history": "Updated description and picture"
           }
@@ -119,11 +119,11 @@
         "name": "soc_vip",
         "display": "Versal ACAP CIPS PS VIP",
         "latest_revision": "1.0",
-        "commit_id": "bddc921c1d7aa89ee27390214efed1be1806b540",
+        "commit_id": "51ec8b17f6ef6b7a756149787d8c40f0a25949fd",
         "revisions": [
           {
             "revision": "1.0",
-            "commit_id": "bddc921c1d7aa89ee27390214efed1be1806b540",
+            "commit_id": "51ec8b17f6ef6b7a756149787d8c40f0a25949fd",
             "date": "08-02-2021:05:11:54",
             "history": "Added board Versal ACAP CIPS PS VIP v1.0"
           }
