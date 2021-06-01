@@ -37,7 +37,7 @@ puts "INFO: $board_part is selected"
 puts "INFO: $fpga_part is selected"
 
 create_bd_cell -type ip -vlnv xilinx.com:ip:versal_cips:* versal_cips_0
-apply_board_connection -board_interface "cips_fixed_io" -ip_intf "versal_cips_0/FIXED_IO" -diagram $design_name
+apply_board_connection -board_interface "ps_pmc_fixed_io" -ip_intf "versal_cips_0/FIXED_IO" -diagram $design_name
 
 set_property -dict [list CONFIG.PS_PMC_CONFIG { CLOCK_MODE Custom PS_NUM_FABRIC_RESETS 1 PS_PL_CONNECTIVITY_MODE Custom PS_USE_PMCPL_CLK0 1 PS_USE_S_AXI_LPD 1 PS_USE_BSCAN_USER2 1} CONFIG.CLOCK_MODE {Custom} CONFIG.PS_PL_CONNECTIVITY_MODE {Custom}] [get_bd_cells versal_cips_0]
 
