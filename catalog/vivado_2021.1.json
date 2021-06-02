@@ -2,25 +2,6 @@
   "catalog": {
     "items": [
       {
-        "name": "ext_platform",
-        "display": "Extensible Platform Design",
-        "latest_revision": "1.0",
-        "commit_id": "51ec8b17f6ef6b7a756149787d8c40f0a25949fd",
-        "revisions": [
-          {
-            "revision": "1.0",
-            "commit_id": "51ec8b17f6ef6b7a756149787d8c40f0a25949fd",
-            "date": "22-10-2020",
-            "history": "Updated dont touch param"
-          }
-        ],
-        "config": {
-          "root": "ced/Xilinx/IPI/extensible_platform",
-          "metadata_file": "xitem.json"
-        },
-        "company": "xilinx.com"
-      },
-      {
         "name": "cips_ddr_pl_debug",
         "display": "Versal CIPS Design",
         "latest_revision": "1.0",
@@ -149,6 +130,25 @@
         ],
         "config": {
           "root": "ced/Xilinx/IPI/Versal Multi-Rate GTY",
+          "metadata_file": "xitem.json"
+        },
+        "company": "xilinx.com"
+      },
+      {
+        "name": "ext_platform",
+        "display": "Versal Extensible Embedded Platform",
+        "latest_revision": "1.0",
+        "commit_id": "9bc5ff6c1fc6bc0646e02a15adbc331d6836535b",
+        "revisions": [
+          {
+            "revision": "1.0",
+            "commit_id": "9bc5ff6c1fc6bc0646e02a15adbc331d6836535b",
+            "date": "02-06-2021:11:39:25",
+            "history": "Added board Versal Extensible Embedded Platform v1.0"
+          }
+        ],
+        "config": {
+          "root": "ced/Xilinx/IPI/Versal Extensible Embedded Platform",
           "metadata_file": "xitem.json"
         },
         "company": "xilinx.com"
