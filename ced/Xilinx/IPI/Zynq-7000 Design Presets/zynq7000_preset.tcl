@@ -22,14 +22,11 @@ proc createDesign {design_name options} {
 
 # set design_name config_zynq7000
 # set temp_options PS7_Only
-
+variable currentDir
+set_property target_language Verilog [current_project]
+set_property "simulator_language" "Mixed" [current_project]
 # Procedure to create entire design; Provide argument to make
-# procedure reusable. If parentCell is "", will use root.
-
-
-
-proc create_root_design { parentCell design_name temp_options} {
-
+proc create_root_design { currentDir design_name temp_options} {
 
 #puts "creat_root_desing"
 set board_part [get_property NAME [current_board_part]]
@@ -60,12 +57,11 @@ connect_bd_net [get_bd_pins processing_system7_0/FCLK_CLK0] [get_bd_pins process
 
 if {([lsearch $temp_options Preset.VALUE] == -1) || ([lsearch $temp_options PS7_Only] != -1)}   {
 	puts "INFO: PS7_Only preset enabled"
-	
 
 } elseif { ([lsearch $temp_options PS7_PL] != -1 )} {
 
 	puts "INFO: PS7_PL preset enabled"
-
+	
 	set led_board_interface [get_property COMPONENT_NAME [lindex [get_board_components -filter {SUB_TYPE==led}] 0]]
 	if { $led_board_interface != "" } {
 	create_bd_cell -type ip -vlnv xilinx.com:ip:axi_gpio axi_gpio_0
@@ -100,14 +96,40 @@ if {([lsearch $temp_options Preset.VALUE] == -1) || ([lsearch $temp_options PS7_
 	
 puts "INFO: End of create_root_design"
 
-
 ##################################################################
 # MAIN FLOW
 ##################################################################
 
-create_root_design "" $design_name $options 
+create_root_design $currentDir $design_name $options 
 
 	# close_bd_design [get_bd_designs $design_name]
-	# set bdDesignPath [file join [get_property directory [current_project]] [current_project].srcs sources_1 bd $design_name]
+	set bdDesignPath [file join [get_property directory [current_project]] [current_project].srcs sources_1 bd $design_name]
+	
+	#Testbench file creation and import
+	set board_name [get_property BOARD_NAME [current_board]]
+	
+	if {([lsearch $options Preset.VALUE] == -1) || ([lsearch $options PS7_Only] != -1)} {
+	set originalTBFile [file join $currentDir testbench PS7_Only zynq_tb.v]
+	} else {
+	if {[regexp zc706 $board_name] } {
+	set originalTBFile [file join $currentDir testbench PS_PL ZC706 zynq_tb.v]
+	} else {
+	set originalTBFile [file join $currentDir testbench PS_PL ZC702 zynq_tb.v] }}
+	set tempTBFile [file join $bdDesignPath zynq_tb.v] 
+
+	#file copy -force $originalTBFile $tempTBFile 
+	set infile [open $originalTBFile]
+	set contents [read $infile]
+	close $infile
+	set contents [string map [list "zynq_design" "$design_name"] $contents]
+
+	set outfile [open $tempTBFile w]
+	puts -nonewline $outfile $contents
+	close $outfile
+
+	import_files -fileset [get_filesets sim_1] -norecurse [list $tempTBFile]
+	file delete -force $tempTBFile 
+	set_property top tb [get_filesets sim_1]
+	
 	open_bd_design [get_bd_files $design_name]
 }
