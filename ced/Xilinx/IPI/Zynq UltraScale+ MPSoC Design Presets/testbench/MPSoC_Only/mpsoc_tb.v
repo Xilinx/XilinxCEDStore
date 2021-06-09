@@ -61,8 +61,8 @@ module tb;
 		#2000 ;  
 		
         //Write into the OCM and read back
-        tb.mpsoc_sys.mpsoc_preset_sim_i.zynq_ultra_ps_e_0.inst.write_mem(32'hDEADBEEF,32'hFFFC0000,4);
-        tb.mpsoc_sys.mpsoc_preset_sim_i.zynq_ultra_ps_e_0.inst.read_mem(32'hFFFC0000,4,read_data);
+        tb.mpsoc_sys.Base_Zynq_MPSoC_i.zynq_ultra_ps_e_0.inst.write_mem(32'hDEADBEEF,32'hFFFC0000,4);
+        tb.mpsoc_sys.Base_Zynq_MPSoC_i.zynq_ultra_ps_e_0.inst.read_mem(32'hFFFC0000,4,read_data);
         $display ("%t, running the testbench, data read from BRAM was 32'h%x",$time, read_data);
 
     if(read_data == 32'hDEADBEEF) begin
