@@ -1,47 +1,18 @@
-//---------------------------------------------------------------------------
-// Testbench  
-//---------------------------------------------------------------------------
-//
-//***************************************************************************
-// DISCLAIMER OF LIABILITY
-//
-// This file contains proprietary and confidential information of
-// Xilinx, Inc. ("Xilinx"), that is distributed under a license
-// from Xilinx, and may be used, copied and/or disclosed only
-// pursuant to the terms of a valid license agreement with Xilinx.
-//
-// XILINX IS PROVIDING THIS DESIGN, CODE, OR INFORMATION
-// ("MATERIALS") "AS IS" WITHOUT WARRANTY OF ANY KIND, EITHER
-// EXPRESSED, IMPLIED, OR STATUTORY, INCLUDING WITHOUT
-// LIMITATION, ANY WARRANTY WITH RESPECT TO NONINFRINGEMENT,
-// MERCHANTABILITY OR FITNESS FOR ANY PARTICULAR PURPOSE. Xilinx
-// does not warrant that functions included in the Materials will
-// meet the requirements of Licensee, or that the operation of the
-// Materials will be uninterrupted or error-free, or that defects
-// in the Materials will be corrected. Furthermore, Xilinx does
-// not warrant or make any representations regarding use, or the
-// results of the use, of the Materials in terms of correctness,
-// accuracy, reliability or otherwise.
-//
-// Xilinx products are not designed or intended to be fail-safe,
-// or for use in any application requiring fail-safe performance,
-// such as life-support or safety devices or systems, Class III
-// medical devices, nuclear facilities, applications related to
-// the deployment of airbags, or any other applications that could
-// lead to death, personal injury or severe property or
-// environmental damage (individually and collectively, "critical
-// applications"). Customer assumes the sole risk and liability
-// of any use of Xilinx products in critical applications,
-// subject only to applicable laws and regulations governing
-// limitations on product liability.
-//
-// Copyright 2009 Xilinx, Inc.
-// All rights reserved.
-//
-// This disclaimer and copyright notice must be retained as part
-// of this file at all times.
-//***************************************************************************
-//
+/* # ########################################################################
+# Copyright (C) 2019, Xilinx Inc - All rights reserved
+
+# Licensed under the Apache License, Version 2.0 (the "License"). You may
+# not use this file except in compliance with the License. A copy of the
+# License is located at
+
+#     http://www.apache.org/licenses/LICENSE-2.0
+
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations
+# under the License.
+# ######################################################################## */
 
 `timescale 1ns / 1ps
 
