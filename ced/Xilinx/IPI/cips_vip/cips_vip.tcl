@@ -174,7 +174,11 @@ create_root_design  $currentDir $design_name ""
    "linktoobj_comment_0":"",
    "linktotype_comment_0":"bd_design" }
    
+	#Bridge control through CONNECTIONS attribute of slave interface
+	set_property CONFIG.CONNECTIONS [list M_AXI_FPD M_AXI_LPD] [get_bd_intf_pins /versal_cips_0/S_AXI_LPD]
+
 	assign_bd_address
+	#Workaround CR-1091929
 	set_property range 512M [get_bd_addr_segs {axi_cdma_0/Data/SEG_axi_noc_0_C0_DDR_LOW0}]
 	set_property offset 0x0000000020000000 [get_bd_addr_segs {axi_cdma_0/Data/SEG_axi_noc_0_C0_DDR_LOW0}]
 	
