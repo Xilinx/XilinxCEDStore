@@ -100,11 +100,11 @@
         "name": "soc_vip",
         "display": "Versal ACAP CIPS PS VIP",
         "latest_revision": "1.0",
-        "commit_id": "51ec8b17f6ef6b7a756149787d8c40f0a25949fd",
+        "commit_id": "ad59bb0d5316e1c159338e722e14f598afeefa46",
         "revisions": [
           {
             "revision": "1.0",
-            "commit_id": "51ec8b17f6ef6b7a756149787d8c40f0a25949fd",
+            "commit_id": "ad59bb0d5316e1c159338e722e14f598afeefa46",
             "date": "08-02-2021:05:11:54",
             "history": "Added board Versal ACAP CIPS PS VIP v1.0"
           }
