@@ -4,15 +4,12 @@ This example describes a Versal GTY multi-rate design using the following config
 * Two rates: 10G and 25G switchable line rates
 * Single GTY lane connected through SFP on VCK190/VMK180 evaluation board
 
-
 ## Required Hardware and Tools
 2021.1 Vivado
-
 VCK190/VMK180
-
 Boot Mode: JTAG
 ## Block Diagram
-![image](https://user-images.githubusercontent.com/73725387/119450158-60f47480-bce8-11eb-931d-4ab3d2cf5c40.png)
+![image](https://user-images.githubusercontent.com/73725387/121118721-34a02400-c7cf-11eb-8b42-f7d82f5d67f5.png)
 
 On the board, the design targets the following configuration:
 * Single lane on Bank 105 GTY2, which connects to SFP0 (lower connector of the 2x SFP28 stack).
@@ -188,10 +185,10 @@ Open gt_quad_base IP to change APB3 clock frequency to 200 MHz. We will be using
 
 #### 5. Add CIPS IP
 The PMC is incorporated into the CIPS IP and must be configured for the Versal device to boot properly. Therefore, all Versal designs must include CIPS IP.
-* In the **Board** tab, drag-and-drop the **CIPS fixed IO** instance onto the block design canvas. This will configure the CIPS IP with board preset.
+* In the **Board** tab, drag-and-drop the **PS-PMC Fixed IO** instance onto the block design canvas.
 * **Run Block Automation** to apply board presets.
-![image](https://user-images.githubusercontent.com/73725387/100336271-d1654780-2f8a-11eb-8a4d-9a56647889e1.png)
-![image](https://user-images.githubusercontent.com/73725387/119452669-75863c00-bceb-11eb-8432-29b0f341ee5a.png)
+![image](https://user-images.githubusercontent.com/73725387/121114525-af197580-c7c8-11eb-847f-2a6ed5bdc6e7.png)
+![image](https://user-images.githubusercontent.com/73725387/121114406-7aa5b980-c7c8-11eb-8b15-7016cc29edaf.png)
 
 #### 6. Create HDL wrapper
 In the **Sources** window, right-click on the block design (design_1.bd) and select **Create HDL Wrapper**. Let Vivado manage.
