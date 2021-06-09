@@ -134,8 +134,10 @@ create_root_design $currentDir $design_name $options
 	} elseif { [regexp zcu1275 $board_name] ||[regexp zcu1285 $board_name]} {
 	 set originalTBFile [file join $currentDir testbench MPSoC_PL ZCU12 mpsoc_tb.v]
 	} elseif {[regexp vermeo $board_name] } {
-	set originalTBFile [file join $currentDir testbench MPSoC_PL Vermeo mpsoc_tb.v] } }
-	
+	set originalTBFile [file join $currentDir testbench MPSoC_PL Vermeo mpsoc_tb.v] 
+	} elseif {[regexp zcu216 $board_name] } {
+	set originalTBFile [file join $currentDir testbench MPSoC_PL ZCU216 mpsoc_tb.v] } }
+
 	set tempTBFile [file join $bdDesignPath mpsoc_tb.v]
 	#file copy -force $originalTBFile $tempTBFile 
 	set infile [open $originalTBFile]
