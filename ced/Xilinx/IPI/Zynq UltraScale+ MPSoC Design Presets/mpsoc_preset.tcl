@@ -22,14 +22,11 @@ proc createDesign {design_name options} {
 
 # set design_name config_zynq7000
 # set temp_options PS7_Only
-
+variable currentDir
+set_property target_language Verilog [current_project]
+set_property "simulator_language" "Mixed" [current_project]
 # Procedure to create entire design; Provide argument to make
-# procedure reusable. If parentCell is "", will use root.
-
-
-
-proc create_root_design { parentCell design_name temp_options} {
-
+proc create_root_design { currentDir design_name temp_options} {
 
 #puts "creat_root_desing"
 set board_part [get_property NAME [current_board_part]]
@@ -119,9 +116,40 @@ puts "INFO: End of create_root_design"
 # MAIN FLOW
 ##################################################################
 
-create_root_design "" $design_name $options 
+create_root_design $currentDir $design_name $options 
 
 	# close_bd_design [get_bd_designs $design_name]
-	# set bdDesignPath [file join [get_property directory [current_project]] [current_project].srcs sources_1 bd $design_name]
+	set bdDesignPath [file join [get_property directory [current_project]] [current_project].srcs sources_1 bd $design_name]
+
+	#Testbench file creation and import
+	set board_name [get_property BOARD_NAME [current_board]]
+	
+	if {([lsearch $options Preset.VALUE] == -1) || ([lsearch $options MPSoC_Only] != -1)} {
+	set originalTBFile [file join $currentDir testbench MPSoC_Only mpsoc_tb.v]
+	} else {
+	if {[regexp zcu104 $board_name] } {
+	set originalTBFile [file join $currentDir testbench MPSoC_PL ZCU4bit mpsoc_tb.v]
+	} elseif { [regexp zcu102 $board_name] ||[regexp zcu106 $board_name]||[regexp zcu111 $board_name]||[regexp zcu208 $board_name] } {
+	set originalTBFile [file join $currentDir testbench MPSoC_PL ZCU8bit mpsoc_tb.v]
+	} elseif { [regexp zcu1275 $board_name] ||[regexp zcu1285 $board_name]} {
+	 set originalTBFile [file join $currentDir testbench MPSoC_PL ZCU12 mpsoc_tb.v]
+	} elseif {[regexp vermeo $board_name] } {
+	set originalTBFile [file join $currentDir testbench MPSoC_PL Vermeo mpsoc_tb.v] } }
+	
+	set tempTBFile [file join $bdDesignPath mpsoc_tb.v]
+	#file copy -force $originalTBFile $tempTBFile 
+	set infile [open $originalTBFile]
+	set contents [read $infile]
+	close $infile
+	set contents [string map [list "Base_Zynq_MPSoC" "$design_name"] $contents]
+
+	set outfile [open $tempTBFile w]
+	puts -nonewline $outfile $contents
+	close $outfile
+
+	import_files -fileset [get_filesets sim_1] -norecurse [list $tempTBFile]
+	file delete -force $tempTBFile 
+	set_property top tb [get_filesets sim_1]
+	
 	open_bd_design [get_bd_files $design_name]
 }
