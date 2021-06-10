@@ -26,7 +26,6 @@ module tb;
     reg [31:0] read_data;
     wire [3:0] leds;
     reg resp;
-    
 
     initial 
     begin       
@@ -51,7 +50,6 @@ module tb;
         
         repeat(5) @(posedge tb_ACLK);
           
-
 	    tb.mpsoc_sys.Base_Zynq_MPSoC_i.zynq_ultra_ps_e_0.inst.por_srstb_reset(1'b1);
         #200;
         tb.mpsoc_sys.Base_Zynq_MPSoC_i.zynq_ultra_ps_e_0.inst.por_srstb_reset(1'b0);
@@ -63,14 +61,17 @@ module tb;
 
         //This drives the LEDs on the GPIO output
         tb.mpsoc_sys.Base_Zynq_MPSoC_i.zynq_ultra_ps_e_0.inst.write_data(32'hA0000000,4, 32'hFFFFFFFF, resp);
+		#200
         tb.mpsoc_sys.Base_Zynq_MPSoC_i.zynq_ultra_ps_e_0.inst.read_data(32'hA0000000,4, read_data, resp);
-        
+		#200        
         
         $display ("LEDs are toggled, observe the waveform");
         
         //Write into the BRAM through GP0 and read back
         tb.mpsoc_sys.Base_Zynq_MPSoC_i.zynq_ultra_ps_e_0.inst.write_data(32'hA0010000,4, 32'hDEADBEEF, resp);
+		#200
         tb.mpsoc_sys.Base_Zynq_MPSoC_i.zynq_ultra_ps_e_0.inst.read_data(32'hA0010000,4,read_data,resp);
+		#200
         $display ("%t, running the testbench, data read from BRAM was 32'h%x",$time, read_data);
 
     if(read_data == 32'hDEADBEEF) begin
@@ -86,14 +87,9 @@ module tb;
     assign temp_clk = tb_ACLK;
     assign temp_rstn = tb_ARESETn;
 	
-	
 Base_Zynq_MPSoC_wrapper mpsoc_sys
  (
  .led_4bits_tri_o(leds)    
 );
-
-  
-
-
 endmodule
 

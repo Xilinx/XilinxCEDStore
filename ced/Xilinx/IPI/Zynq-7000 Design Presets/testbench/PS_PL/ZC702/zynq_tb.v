@@ -27,7 +27,6 @@ module tb;
     wire [3:0] leds;
     reg resp;
     
-
     initial 
     begin       
         tb_ACLK = 1'b0;
@@ -54,13 +53,16 @@ module tb;
         //Reset the PL
         tb.zynq_sys.zynq_design_i.processing_system7_0.inst.fpga_soft_reset(32'h1);
         tb.zynq_sys.zynq_design_i.processing_system7_0.inst.fpga_soft_reset(32'h0);
-
+		#2000
         //This drives the LEDs on the GPIO output
         tb.zynq_sys.zynq_design_i.processing_system7_0.inst.write_data(32'h41200000,4, 32'hFFFFFFFF, resp);
+		#200
         $display ("LEDs are toggled, observe the waveform");
         //Write into the BRAM through GP0 and read back
         tb.zynq_sys.zynq_design_i.processing_system7_0.inst.write_data(32'h40000000,4, 32'hDEADBEEF, resp);
+		#200
         tb.zynq_sys.zynq_design_i.processing_system7_0.inst.read_data(32'h40000000,4,read_data,resp);
+		#200
         $display ("%t, running the testbench, data read from BRAM was 32'h%x",$time, read_data);
         if(read_data == 32'hDEADBEEF) begin
            $display ("AXI VIP Test PASSED");

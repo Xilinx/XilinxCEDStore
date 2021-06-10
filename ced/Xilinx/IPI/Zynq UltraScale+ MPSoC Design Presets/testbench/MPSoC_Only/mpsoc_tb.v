@@ -24,10 +24,7 @@ module tb;
     wire temp_rstn; 
   
     reg [31:0] read_data;
-    wire [3:0] leds;
-    reg resp;
-    
-
+	
     initial 
     begin       
         tb_ACLK = 1'b0;
@@ -62,7 +59,9 @@ module tb;
 		
         //Write into the OCM and read back
         tb.mpsoc_sys.Base_Zynq_MPSoC_i.zynq_ultra_ps_e_0.inst.write_mem(32'hDEADBEEF,32'hFFFC0000,4);
+	#200
         tb.mpsoc_sys.Base_Zynq_MPSoC_i.zynq_ultra_ps_e_0.inst.read_mem(32'hFFFC0000,4,read_data);
+	#200
         $display ("%t, running the testbench, data read from BRAM was 32'h%x",$time, read_data);
 
     if(read_data == 32'hDEADBEEF) begin
@@ -77,14 +76,9 @@ module tb;
 
     assign temp_clk = tb_ACLK;
     assign temp_rstn = tb_ARESETn;
-	
-	
+		
 Base_Zynq_MPSoC_wrapper mpsoc_sys
  (    
 );
-
-  
-
-
 endmodule
 

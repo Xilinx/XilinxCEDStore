@@ -24,8 +24,6 @@ module tb;
     wire temp_rstn; 
    
     reg [31:0] read_data;
-    reg resp;
-    
 
     initial 
     begin       
@@ -51,14 +49,16 @@ module tb;
         repeat(5) @(posedge tb_ACLK);
           
         //Reset the PL
-        tb.zynq_sys.zynq_design_i.processing_system7_0.inst.fpga_soft_reset(32'h1);
-        tb.zynq_sys.zynq_design_i.processing_system7_0.inst.fpga_soft_reset(32'h0);
-
+        //tb.zynq_sys.zynq_design_i.processing_system7_0.inst.fpga_soft_reset(32'h1);
+        //tb.zynq_sys.zynq_design_i.processing_system7_0.inst.fpga_soft_reset(32'h0);
+		#200
         //Write data to OCM through and read back
         tb.zynq_sys.zynq_design_i.processing_system7_0.inst.write_mem(32'hDEADBEEF,32'h00000000,4);
+		#200
         tb.zynq_sys.zynq_design_i.processing_system7_0.inst.read_mem(32'h00000000,4,read_data);
+		#2000
         $display ("%t, running the testbench, data read from OCM was 32'h%x",$time,read_data);
-        
+     
 		if(read_data == 32'hDEADBEEF) begin
            $display ("AXI VIP Test PASSED");
         end
