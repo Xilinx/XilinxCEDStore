@@ -2,25 +2,6 @@
   "catalog": {
     "items": [
       {
-        "name": "ext_platform",
-        "display": "Extensible Platform Design",
-        "latest_revision": "1.0",
-        "commit_id": "4e02d45e2dcfc3c4b99dd7b772cc04d877e93449",
-        "revisions": [
-          {
-            "revision": "1.0",
-            "commit_id": "4e02d45e2dcfc3c4b99dd7b772cc04d877e93449",
-            "date": "22-10-2020",
-            "history": "Updated dont touch param"
-          }
-        ],
-        "config": {
-          "root": "ced/Xilinx/IPI/extensible_platform",
-          "metadata_file": "xitem.json"
-        },
-        "company": "xilinx.com"
-      },
-      {
         "name": "cips_ddr_pl_debug",
         "display": "Versal CIPS Design",
         "latest_revision": "1.0",
@@ -62,11 +43,11 @@
         "name": "mpsoc_preset",
         "display": "Zynq UltraScale+ MPSoC Design Presets",
         "latest_revision": "1.0",
-        "commit_id": "70fb2c7c37e30f1d9f0a87c1b439563a2ea63473",
+        "commit_id": "8e6ba2f4aee6b102e4bed523399e28036090094e",
         "revisions": [
           {
             "revision": "1.0",
-            "commit_id": "70fb2c7c37e30f1d9f0a87c1b439563a2ea63473",
+            "commit_id": "8e6ba2f4aee6b102e4bed523399e28036090094e",
             "date": "06-03-2020",
             "history": "Zynq UltraScale+  based example design for Xilinx Evaluation Boards"
           }
@@ -81,11 +62,11 @@
         "name": "zynq7000_preset",
         "display": "Zynq-7000 Design Presets",
         "latest_revision": "1.0",
-        "commit_id": "70fb2c7c37e30f1d9f0a87c1b439563a2ea63473",
+        "commit_id": "8e6ba2f4aee6b102e4bed523399e28036090094e",
         "revisions": [
           {
             "revision": "1.0",
-            "commit_id": "70fb2c7c37e30f1d9f0a87c1b439563a2ea63473",
+            "commit_id": "8e6ba2f4aee6b102e4bed523399e28036090094e",
             "date": "06-03-2020",
             "history": "Zynq-7000 based example design for Xilinx Evaluation Boards"
           }
@@ -119,11 +100,11 @@
         "name": "soc_vip",
         "display": "Versal ACAP CIPS PS VIP",
         "latest_revision": "1.0",
-        "commit_id": "4e02d45e2dcfc3c4b99dd7b772cc04d877e93449",
+        "commit_id": "8e6ba2f4aee6b102e4bed523399e28036090094e",
         "revisions": [
           {
             "revision": "1.0",
-            "commit_id": "4e02d45e2dcfc3c4b99dd7b772cc04d877e93449",
+            "commit_id": "8e6ba2f4aee6b102e4bed523399e28036090094e",
             "date": "08-02-2021:05:11:54",
             "history": "Added board Versal ACAP CIPS PS VIP v1.0"
           }
@@ -168,6 +149,25 @@
         ],
         "config": {
           "root": "ced/Xilinx/IPI/Versal Multi-Rate GTY",
+          "metadata_file": "xitem.json"
+        },
+        "company": "xilinx.com"
+      },
+      {
+        "name": "ext_platform",
+        "display": "Versal Extensible Embedded Platform",
+        "latest_revision": "1.0",
+        "commit_id": "8e6ba2f4aee6b102e4bed523399e28036090094e",
+        "revisions": [
+          {
+            "revision": "1.0",
+            "commit_id": "8e6ba2f4aee6b102e4bed523399e28036090094e",
+            "date": "24-06-2021:08:47:28",
+            "history": "Added board Versal Extensible Embedded Platform v1.0"
+          }
+        ],
+        "config": {
+          "root": "ced/Xilinx/IPI/Versal_Extensible_Embedded_Platform",
           "metadata_file": "xitem.json"
         },
         "company": "xilinx.com"
