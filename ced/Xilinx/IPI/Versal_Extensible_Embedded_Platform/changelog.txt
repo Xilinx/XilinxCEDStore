@@ -1,3 +1,5 @@
 ######### Extensible Embedded Platform example design change log ##############
+CR-1102697: Include QoR script
+
 2021.1 changes 
 Updated with CIPS 3.0
