@@ -19,10 +19,10 @@ proc createDesign {design_name options} {
 ##################################################################
 # DESIGN PROCs													 
 ##################################################################
-
+variable currentDir
 set_property target_language Verilog [current_project]
 
-proc create_root_design { parentCell design_name use_lpddr clk_options irqs} {
+proc create_root_design { currentDir design_name use_lpddr clk_options irqs} {
 
 puts "create_root_design"
 set board_part [get_property NAME [current_board_part]]
@@ -394,7 +394,18 @@ if { [dict exists $options $irqs_param] } {
 }
 #puts "INFO: selected irqs:: $irqs"
 
-create_root_design "" $design_name $use_lpddr $clk_options $irqs
+create_root_design $currentDir $design_name $use_lpddr $clk_options $irqs
+	
+	#QoR script for vck190 production CED platforms
+	set board_part [get_property NAME [current_board_part]]
+	if [regexp "vck190:part0" $board_part] {
+	#set bdDesignPath [file join [get_property directory [current_project]] [current_project].srcs sources_1 bd $design_name]
+	
+	set script_dir [file join $currentDir qor_scripts prohibit_select_bli_bels_for_hold.tcl]
+	#set tempTBFile [file join $bdDesignPath prohibit_select_bli_bels_for_hold.v] 
+
+	import_files -fileset utils_1 -norecurse $script_dir
+	set_property platform.run.steps.place_design.tcl.pre [get_files prohibit_select_bli_bels_for_hold.tcl] [current_project] }
 	
 	open_bd_design [get_bd_files $design_name]
 	puts "INFO: Block design generation completed, yet to set PFM properties"
