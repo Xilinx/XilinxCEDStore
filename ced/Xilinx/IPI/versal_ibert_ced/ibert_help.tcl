@@ -292,16 +292,18 @@ proc createDesign {design_name options} {
       
     }
     
-    # Re-wire global apb clock connected to all quad IPs
-    delete_bd_objs [get_bd_ports apb3clk_quad]
-    connect_bd_net [get_bd_pins versal_cips_0/pl0_ref_clk] [get_bd_pins gt_quad_base/apb3clk]
-    validate_bd_design
-    save_bd_design
-    
-    puts $f "delete_bd_objs \[get_bd_ports apb3clk_quad\]"
-    puts $f "connect_bd_net \[get_bd_pins versal_cips_0/pl0_ref_clk\] \[get_bd_pins gt_quad_base/apb3clk\]"
-    puts $f "validate_bd_design"
-    puts $f "save_bd_design"
+    if {[dict size $protocols] > 0} {
+      # Re-wire global apb clock connected to all quad IPs
+      delete_bd_objs [get_bd_ports apb3clk_quad]
+      connect_bd_net [get_bd_pins versal_cips_0/pl0_ref_clk] [get_bd_pins gt_quad_base/apb3clk]
+      validate_bd_design
+      save_bd_design
+      
+      puts $f "delete_bd_objs \[get_bd_ports apb3clk_quad\]"
+      puts $f "connect_bd_net \[get_bd_pins versal_cips_0/pl0_ref_clk\] \[get_bd_pins gt_quad_base/apb3clk\]"
+      puts $f "validate_bd_design"
+      puts $f "save_bd_design"
+    }
     close $f
   }
   
