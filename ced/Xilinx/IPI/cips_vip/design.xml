@@ -1,0 +1,11 @@
+<ExampleDesign>
+<Vendor>xilinx.com</Vendor>
+<Library>design</Library>
+<Name>soc_vip</Name>
+<Version>1.0</Version> 
+<Design>init.tcl</Design>
+<DisplayName>Versal ACAP CIPS PS VIP</DisplayName>
+<Description>The Everest SoC VIP example design provides a simulation environment for users intended to simulate the PS functionality and implement their logic in the programmable part.
+This example design exercise few master and slave ports, interrupts, clock and reset modules of SoC VIP.</Description>
+<Image>soc_vip.png</Image>
+</ExampleDesign>
