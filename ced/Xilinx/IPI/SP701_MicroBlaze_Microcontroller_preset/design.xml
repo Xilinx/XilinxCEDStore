@@ -14,20 +14,23 @@
  WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
  License for the specific language governing permissions and limitations
  under the License. -->
-
 <ExampleDesign>
 
   <Vendor>xilinx.com</Vendor>
 
   <Library>design</Library>
 
-  <Name>MicroBlaze_Application_Configuration_for_SP701</Name>
-
-  <Description>An example design for SP701 board. DDR3, QSPI, MB, Ethernet and Interrupts based IPI system </Description>
+  <Name>MicroBlaze_Microcontroller_Preset_SP701</Name>
   
+  <DisplayName>MicroBlaze Microcontroller Preset (SP701)</DisplayName>
+  
+  <Description>An example design for SP701 board. DDR3, QSPI, MB, Ethernet and Interrupts based IPI system </Description>
+
   <Version>1.0</Version>
 
   <Design>init.tcl</Design>
+  
   <Image>MicroBlaze_Platform.png</Image>
+
 </ExampleDesign>
 
