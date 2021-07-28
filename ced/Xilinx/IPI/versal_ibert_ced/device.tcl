@@ -60,11 +60,8 @@ proc xcvc1902 {} {
       -1LP {
         return 25.78125
       }
-      -1LP {
-        return 16.0
-      }
       default {
-        return 16.0
+        return 25.78125
       }
     }
   }
@@ -258,11 +255,8 @@ proc xcvp1202 {} {
           -1LP {
             return 25.78125
           }
-          -1LP {
-            return 16.0
-          }
           default {
-            return 16.0
+            return 25.78125
           }
         }
       }
@@ -416,11 +410,8 @@ proc xcvp1802 {} {
           -1LP {
             return 25.78125
           }
-          -1LP {
-            return 16.0
-          }
           default {
-            return 16.0
+            return 25.78125
           }
         }
       }
@@ -668,11 +659,8 @@ proc xcvp1502 {} {
           -1LP {
             return 25.78125
           }
-          -1LP {
-            return 16.0
-          }
           default {
-            return 16.0
+            return 25.78125
           }
         }
       }
