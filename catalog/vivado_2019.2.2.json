@@ -2,60 +2,117 @@
   "catalog": {
     "items": [
       {
-        "name": "MicroBlaze_Application_Configuration_for_SP701", 
-        "display": "MicroBlaze_Application_Configuration_for_SP701", 
-        "latest_revision": "1.0", 
-        "commit_id": "a39c33856ac6e312a379db77fbe8947eaa887df4", 
+        "name": "MicroBlaze_Application_Preset_AC701",
+        "display": "MicroBlaze Application Preset (AC701)",
+        "latest_revision": "1.0",
+        "commit_id": "76977c7cdf4fd29ebef89b6fb95bcdc78a3caa50",
         "revisions": [
           {
-            "revision": "1.0", 
-            "commit_id": "a39c33856ac6e312a379db77fbe8947eaa887df4", 
-            "date": "30-10-2019", 
-            "history": "An example design for SP701 board. DDR3, QSPI, MB, Ethernet and Interrupts based IPI system"
+            "revision": "1.0",
+            "commit_id": "76977c7cdf4fd29ebef89b6fb95bcdc78a3caa50",
+            "date": "30-07-2021:08:53:30",
+            "history": "Added board MicroBlaze Application Preset (AC701) v1.0"
           }
-        ], 
+        ],
         "config": {
-          "root": "ced/Xilinx/IPI/MicroBlaze_Application_Configuration_for_SP701", 
+          "root": "ced/Xilinx/IPI/AC701_MicroBlaze_Application_preset",
           "metadata_file": "xitem.json"
-        }, 
+        },
         "company": "xilinx.com"
-      }  
-    ], 
+      },
+      {
+        "name": "MicroBlaze_Application_Configuration_for_SP701_design",
+        "display": "MicroBlaze_Application_Configuration_for_SP701_design",
+        "latest_revision": "1.0",
+        "commit_id": "76977c7cdf4fd29ebef89b6fb95bcdc78a3caa50",
+        "revisions": [
+          {
+            "revision": "1.0",
+            "commit_id": "76977c7cdf4fd29ebef89b6fb95bcdc78a3caa50",
+            "date": "30-07-2021:08:53:30",
+            "history": "Added board MicroBlaze_Application_Configuration_for_SP701_design v1.0"
+          }
+        ],
+        "config": {
+          "root": "ced/Xilinx/IPI/SP701_MicroBlaze_Application_preset",
+          "metadata_file": "xitem.json"
+        },
+        "company": "xilinx.com"
+      },
+      {
+        "name": "MicroBlaze_Microcontroller_Preset_SP701",
+        "display": "MicroBlaze Microcontroller Preset (SP701)",
+        "latest_revision": "1.0",
+        "commit_id": "76977c7cdf4fd29ebef89b6fb95bcdc78a3caa50",
+        "revisions": [
+          {
+            "revision": "1.0",
+            "commit_id": "76977c7cdf4fd29ebef89b6fb95bcdc78a3caa50",
+            "date": "30-07-2021:08:53:30",
+            "history": "Added board MicroBlaze Microcontroller Preset (SP701) v1.0"
+          }
+        ],
+        "config": {
+          "root": "ced/Xilinx/IPI/SP701_MicroBlaze_Microcontroller_preset",
+          "metadata_file": "xitem.json"
+        },
+        "company": "xilinx.com"
+      },
+      {
+        "name": "MicroBlaze_Realtime_Preset_SP701",
+        "display": "MicroBlaze Real-time Preset (SP701)",
+        "latest_revision": "1.0",
+        "commit_id": "76977c7cdf4fd29ebef89b6fb95bcdc78a3caa50",
+        "revisions": [
+          {
+            "revision": "1.0",
+            "commit_id": "76977c7cdf4fd29ebef89b6fb95bcdc78a3caa50",
+            "date": "30-07-2021:08:53:30",
+            "history": "Added board MicroBlaze Real-time Preset (SP701) v1.0"
+          }
+        ],
+        "config": {
+          "root": "ced/Xilinx/IPI/SP701_MicroBlaze_Realtime_preset",
+          "metadata_file": "xitem.json"
+        },
+        "company": "xilinx.com"
+      }
+    ],
     "categories": [
       {
-        "name": "single_part", 
-        "display_name": "Single Part", 
-        "description": "This category represents all the boards which have single part", 
+        "name": "single_part",
+        "display_name": "Single Part",
+        "description": "This category represents all the boards which have single part",
         "parent": ""
-      }, 
+      },
       {
-        "name": "multi_part", 
-        "display_name": "Multi Part", 
-        "description": "This category represents all the boards which have multi part", 
+        "name": "multi_part",
+        "display_name": "Multi Part",
+        "description": "This category represents all the boards which have multi part",
         "parent": ""
-      }, 
+      },
       {
-        "name": "daughter_card", 
-        "display_name": "Daughter Card", 
-        "description": "This category represents all the boards which are daughter cards", 
+        "name": "daughter_card",
+        "display_name": "Daughter Card",
+        "description": "This category represents all the boards which are daughter cards",
         "parent": ""
-      }, 
+      },
       {
-        "name": "misc", 
-        "display_name": "Misc", 
-        "description": "This category represents miscellaneous variety of boards", 
-        "default": true, 
+        "name": "misc",
+        "display_name": "Misc",
+        "description": "This category represents miscellaneous variety of boards",
+        "default": true,
         "parent": ""
-      }, 
+      },
       {
-        "name": "examples", 
-        "display_name": "Examples", 
-        "description": "This category represents configurable example designs", 
-        "default": true, 
+        "name": "examples",
+        "display_name": "Examples",
+        "description": "This category represents configurable example designs",
+        "default": true,
         "parent": ""
       }
     ]
-  }, 
-  "_major": 1, 
+  },
+  "_major": 1,
   "_minor": 0
 }
