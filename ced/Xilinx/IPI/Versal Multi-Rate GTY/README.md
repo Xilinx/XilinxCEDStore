@@ -1,3 +1,4 @@
+
 # VCK190/VMK180 Example Design : Multi-Rate GTY
 ## Objective
 This example describes a Versal GTY multi-rate design using the following configuration:
@@ -5,11 +6,11 @@ This example describes a Versal GTY multi-rate design using the following config
 * Single GTY lane connected through SFP on VCK190/VMK180 evaluation board
 
 ## Required Hardware and Tools
-2021.1 Vivado
+2021.2 Vivado
 VCK190/VMK180
 Boot Mode: JTAG
 ## Block Diagram
-![image](https://user-images.githubusercontent.com/73725387/121118721-34a02400-c7cf-11eb-8b42-f7d82f5d67f5.png)
+![image](https://user-images.githubusercontent.com/73725387/130385300-5c8fe56e-b1cf-4689-8d79-fb331f3e9125.png)
 
 On the board, the design targets the following configuration:
 * Single lane on Bank 105 GTY2, which connects to SFP0 (lower connector of the 2x SFP28 stack).
@@ -18,28 +19,8 @@ On the board, the design targets the following configuration:
 
 ## Design Steps
 1. Download the example design from XHub Stores. Open example design and select the targeted Board (VCK190 or VMK180)
-2. Add MGTREFCLK create_clock and vio set_false_path constraints
-    * Create a xdc file
-      File > Add Sources > Add or create constraints > Create file
-![image](https://user-images.githubusercontent.com/73725387/119454889-e9294880-bced-11eb-8e2e-c6565687febd.png)
-    * Add MGTREFCLK create_clock constraint to top level xdc:
-    ```tcl
-    create_clock -period 6.400 -name {gt_bridge_ip_0_diff_gt_ref_clock_clk_p[0]} [get_ports {gt_bridge_ip_0_diff_gt_ref_clock_clk_p[0]}]
-    ```
-
-    * Add false_path constraints for the VIO input/output pins. The VIO is in apb3clk domain and the probed pins are in GT/RXUSRCLK domain. There are clock domain crossings from and to the VIO and these paths can be safely ignored.
-    
-    ```tcl
-    set_false_path -through [get_pins -hier *axis_vio*probe*out*]
-    set_false_path -through [get_pins -hier *axis_vio*probe*in*]
-    ```
-3. Synthesize and open synthesized design
-4. Set GT and REFCLK pin locations
-    * The GT/REFCLK locations are defined during pin planning. After synthesis, set the pin locations as follows in the **I/O Ports** tab. **Note**: It is important to lock GT and REFCLK locations before implementation for optimized placement and routing.
-    * Click **Save**.
-    ![image](https://user-images.githubusercontent.com/73725387/100336581-36b93880-2f8b-11eb-8669-1f4662038feb.png)
-
-5. Run implementation and generate PDI. Make sure timing is clean.
+2. Confirm in the top level **multirate_gty.xdc** that `create_clock` frequencies and LOC constraints match your design. If you have changed REFCLK frequency or the pin locations, modify accordingly.
+3. Run through synthesis, implementation and generate PDI. Make sure timing is clean.
 
 ## Hardware Setup
 
@@ -144,9 +125,6 @@ Add gt_bridge_ip to IPI. Configure the bridge_ip and transceiver through customi
 ![image](https://user-images.githubusercontent.com/73725387/100334954-433c9180-2f89-11eb-9142-41f7739daf0a.png)
 ![image](https://user-images.githubusercontent.com/73725387/100334969-4a639f80-2f89-11eb-94fe-8cd96750cdaa.png)
 ![image](https://user-images.githubusercontent.com/73725387/100335029-59e2e880-2f89-11eb-9d12-6f002a5cfdd2.png)
-Open gt_quad_base IP to change APB3 clock frequency to 200 MHz. We will be using the LPDDR4 SI570 Clock2 on VMK180 to drive APB3CLK and its default frequency is 200 MHz.
-![image](https://user-images.githubusercontent.com/73725387/119452345-19231c80-bceb-11eb-9054-d47b935b100d.png)
-
 
 #### 4. Add VIO for hardware debug visibility
 1. Keep MGTREFCLK and GT_Serial ports. Remove all other external ports which were automatically created by block automation. GTY controls and status monitoring will be done through VIO instead.
@@ -165,36 +143,27 @@ Open gt_quad_base IP to change APB3 clock frequency to 200 MHz. We will be using
 ![image](https://user-images.githubusercontent.com/73725387/100335667-1b99f900-2f8a-11eb-8797-d4e497b1dfa4.png)
 ![image](https://user-images.githubusercontent.com/73725387/100335698-218fda00-2f8a-11eb-8c97-ef760f7085ac.png)
 
-#### 5. Add APB3CLK connections
-1. The LPDDR4 clock input is differential which needs a IBUFDS differential input buffer.
-    * In IPI, instantiate a **Utility Buffer**. Double-click to customize.
-    * In **Board tab**, set to **lpddr4 sma clk2**.
-2. Create a new external port and set clock frequency to 200MHz.
-    * Right-click on the CLK_IN_D port of the utility buffer and select **Make External**.
-    * Select the external port symbol. Change the created port name to apb3clk_gt in the **External Interface Properties** window.
-    * Double-click on the external port and set frequency to 200MHz.
-3. Connect **IBUF_OUT** to gt_bridge_ip_0/**apb3clk**, gt_quad_base_0/**apb3clk**, and axis_vio_0/**clk**.
-
-![image](https://user-images.githubusercontent.com/73725387/100336035-84817100-2f8a-11eb-8c94-6a03395c44ca.png)
-
-![image](https://user-images.githubusercontent.com/73725387/100336061-8d724280-2f8a-11eb-80bd-e900f5d19323.png)
-
-![image](https://user-images.githubusercontent.com/73725387/100336076-93682380-2f8a-11eb-87a1-d6f4418c38b6.png)
-
-![image](https://user-images.githubusercontent.com/73725387/100336090-99f69b00-2f8a-11eb-958d-869ca9536408.png)
-
-#### 5. Add CIPS IP
+#### 5.  Add CIPS IP
 The PMC is incorporated into the CIPS IP and must be configured for the Versal device to boot properly. Therefore, all Versal designs must include CIPS IP.
-* In the **Board** tab, drag-and-drop the **PS-PMC Fixed IO** instance onto the block design canvas.
-* **Run Block Automation** to apply board presets.
+-   In the  **Board**  tab, drag-and-drop the  **PS-PMC Fixed IO**  instance onto the block design canvas.
+-   **Run Block Automation**  to apply board presets.
+![image](https://user-images.githubusercontent.com/73725387/130386107-95360c14-2508-4f43-bcb7-cf1924cfa1b9.png)
 ![image](https://user-images.githubusercontent.com/73725387/121114525-af197580-c7c8-11eb-847f-2a6ed5bdc6e7.png)
 ![image](https://user-images.githubusercontent.com/73725387/121114406-7aa5b980-c7c8-11eb-8b15-7016cc29edaf.png)
 
-#### 6. Create HDL wrapper
+#### 6.  Add APB3CLK connections
+We will drive the APB3CLK and VIO clock using a PL output clock from the CIPS IP.
+1.  Open the CIPS IP and navigate to  **Next** >  **PS PMC**  >  **Clocking** >  **Output Clocks**.
+2.  Set  **PL CLK 0**  to 100 MHz.
+3.  Connect versal_cips_0/**pl0_ref_clk** to gt_bridge_ip_0/**apb3clk**, gt_quad_base_0/**apb3clk**, and axis_vio_0/**clk**.
+![image](https://user-images.githubusercontent.com/73725387/130386307-c9a98d53-c66d-4433-91d0-00b980b59d68.png)
+![image](https://user-images.githubusercontent.com/73725387/130386319-ef72c9a2-6e15-4c87-80fe-3c6206da3699.png)
+
+#### 7. Create HDL wrapper
 In the **Sources** window, right-click on the block design (design_1.bd) and select **Create HDL Wrapper**. Let Vivado manage.
 ![image](https://user-images.githubusercontent.com/73725387/100336397-fc4f9b80-2f8a-11eb-8241-6c0b46c27f70.png)
 
-#### 7. Add REFCLK and VIO set_false_path constraints
+#### 8. Add REFCLK and VIO set_false_path constraints
 * Create a xdc file
 File > Add Sources > Add or create constraints > Create file
 ![image](https://user-images.githubusercontent.com/73725387/119454889-e9294880-bced-11eb-8e2e-c6565687febd.png)
