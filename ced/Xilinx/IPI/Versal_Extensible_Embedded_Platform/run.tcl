@@ -482,8 +482,29 @@ create_root_design $currentDir $design_name $use_lpddr $clk_options $irqs
 	set_property platform.extensible true [current_project]
 	
 	# Add USER_COMMENTS on $design_name
-	set_property USER_COMMENTS.comment0 "An Example Versal Extensible Embedded Platform" [get_bd_designs $design_name]
+	#set_property USER_COMMENTS.comment0 "An Example Versal Extensible Embedded Platform" [get_bd_designs $design_name]
+	set_property USER_COMMENTS.comment0 {An Example Versal Extensible Embedded Platform
+Note:
+BD has VIPs on the accelerator SmartConnect IPs because IPI platform can't handle export with no slaves on SmartConnect IP.
+So VIPs are there to have at least one slave on a smart connect}  [current_bd_design]
 	
+ # Perform GUI Layout
+  regenerate_bd_layout -layout_string {
+   "ActiveEmotionalView":"Default View",
+   "comment_0":"An Example Versal Extensible Embedded Platform
+	Note:
+	BD has VIPs on the accelerator SmartConnect IPs because IPI platform can't handle export with no slaves on SmartConnect IP.
+	So VIPs are there to have at least one slave on a smart connect.",
+   "commentid":"comment_0|",
+   "font_comment_0":"14",
+   "guistr":"# # String gsaved with Nlview 7.0r4  2019-12-20 bk=1.5203 VDI=41 GEI=36 GUI=JA:10.0 TLS
+	#  -string -flagsOSRD
+	preplace cgraphic comment_0 place right -160 608 textcolor 4 linecolor 3
+	",
+   "linktoobj_comment_0":"",
+   "linktotype_comment_0":"bd_design"
+}
+
 	set_property SELECTED_SIM_MODEL tlm [get_bd_cells /CIPS_0]
 	set_property SELECTED_SIM_MODEL tlm [get_bd_cells /cips_noc]
 	#set_property SELECTED_SIM_MODEL tlm [get_bd_cells /noc_lpddr4]
