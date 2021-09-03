@@ -486,7 +486,7 @@ create_root_design $currentDir $design_name $use_lpddr $clk_options $irqs
 	set_property USER_COMMENTS.comment0 {An Example Versal Extensible Embedded Platform
 Note:
 BD has VIPs on the accelerator SmartConnect IPs because IPI platform can't handle export with no slaves on SmartConnect IP.
-So VIPs are there to have at least one slave on a smart connect}  [current_bd_design]
+Hence VIPs are there to have at least one slave on a smart connect}  [current_bd_design]
 	
  # Perform GUI Layout
   regenerate_bd_layout -layout_string {
@@ -494,7 +494,7 @@ So VIPs are there to have at least one slave on a smart connect}  [current_bd_de
    "comment_0":"An Example Versal Extensible Embedded Platform
 	Note:
 	BD has VIPs on the accelerator SmartConnect IPs because IPI platform can't handle export with no slaves on SmartConnect IP.
-	So VIPs are there to have at least one slave on a smart connect.",
+	Hence VIPs are there to have at least one slave on a smart connect.",
    "commentid":"comment_0|",
    "font_comment_0":"14",
    "guistr":"# # String gsaved with Nlview 7.0r4  2019-12-20 bk=1.5203 VDI=41 GEI=36 GUI=JA:10.0 TLS
