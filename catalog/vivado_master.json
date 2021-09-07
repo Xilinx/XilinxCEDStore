@@ -119,11 +119,11 @@
         "name": "versal_mb_preset",
         "display": "Versal MicroBlaze Design Presets",
         "latest_revision": "1.0",
-        "commit_id": "4e02d45e2dcfc3c4b99dd7b772cc04d877e93449",
+        "commit_id": "4357618778c2f3e6f1bde8e3809781764553f3f6",
         "revisions": [
           {
             "revision": "1.0",
-            "commit_id": "4e02d45e2dcfc3c4b99dd7b772cc04d877e93449",
+            "commit_id": "4357618778c2f3e6f1bde8e3809781764553f3f6",
             "date": "09-03-2021:09:51:31",
             "history": "Added board Versal MicroBlaze Design Presets v1.0"
           }
