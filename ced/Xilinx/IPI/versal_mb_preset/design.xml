@@ -25,15 +25,20 @@
 <DisplayName>Versal MicroBlaze Design Presets</DisplayName>
 
 <Description>
+This embedded design offers a MicroBlaze subsystem that can be targeted for the following use cases.
 
+Microcontroller: This is a cache-less processor subsystem optimized for low-latency highly deterministic operations.
 
+Application Class Processor: This is a cache based processor subsystem with an MMU for virtualized memory required by operating systems like Linux.
+
+All designs include basic peripherals such as an I2C controller, UART, GPIOs, Timer and Interrupt Controller.
 </Description>
 
 <Version>1.0</Version>
 
 <Design>init.tcl</Design>
 
-<Image></Image>
+<Image>versal_mb.PNG</Image>
 
 </ExampleDesign>
 
