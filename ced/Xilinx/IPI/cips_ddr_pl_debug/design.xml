@@ -10,7 +10,7 @@
 
 <DisplayName>CIPS DDR PL Debug</DisplayName>
 
-<Description>This design demonstrates the useage of the Versal Control, Interfaces, and Processing System (CIPS) IP on Xilinx VCK190,VMK180 and VPK120 boards. The design connects the processing system to the DDR memory through the Network on Chip (NoC). In Versal, the DDR memory controller is incorporated in the NoC IP. A BRAM controller AXI bus is probed with and ILA and a counter is controlled with a VIO core to showcase the connectivity of the debug cores.</Description>
+<Description>This design demonstrates the usage of the Versal Control, Interfaces, and Processing System (CIPS) IP on Xilinx VCK190,VMK180 and VPK120 boards. The design connects the processing system to the DDR memory through the Network on Chip (NoC). In Versal, the DDR memory controller is incorporated in the NoC IP. A BRAM controller AXI bus is probed with and ILA and a counter is controlled with a VIO core to showcase the connectivity of the debug cores.</Description>
 
 <Version>1.0</Version>
 
