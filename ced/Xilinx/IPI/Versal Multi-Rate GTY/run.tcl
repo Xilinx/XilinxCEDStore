@@ -318,7 +318,8 @@ RESET_SEQUENCE_INTERVAL 0 RX_COMMA_PRESET NONE RX_COMMA_VALID_ONLY 0}\
   #
   proc make_xdc {design_name} {
     load librdi_iptasks[info sharedlibextension]
-    set outputfile [open ${design_name}.xdc w]
+    set filepathdir [file join [get_property DIRECTORY [current_project]] ${design_name}.xdc]
+    set outputfile [open $filepathdir w]
 
     set coord "X0Y5"
     puts $outputfile "#GTY Location Bank 105 QUAD_$coord"
@@ -344,7 +345,7 @@ RESET_SEQUENCE_INTERVAL 0 RX_COMMA_PRESET NONE RX_COMMA_VALID_ONLY 0}\
    
     close $outputfile
 
-    import_files -fileset constrs_1 -norecurse "./${design_name}.xdc"
+    import_files -fileset constrs_1 -norecurse "$filepathdir"
   }
 
 
