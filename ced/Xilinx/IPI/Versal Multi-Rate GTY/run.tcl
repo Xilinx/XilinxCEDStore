@@ -359,12 +359,22 @@ make_xdc $design_name
 	open_bd_design [get_bd_files $design_name]
 	# Add USER_COMMENTS on $design_name
 	set_property USER_COMMENTS.comment_0 {} [current_bd_design]
-	set_property USER_COMMENTS.comment0 {Next Steps:
-1. Refer to README.md in below url:
-https://github.com/Xilinx/XilinxCEDStore/tree/master/ced/Xilinx/IPI/Versal%20Multi-Rate%20GTY
-2. Verify constraints in top level xdc
-3. Synthesize and open synthesized design to verify GTY and REFCLK pin assignments.
-3. Select Generate Device Image in the Flow Navigator to create .pdi image.
-4. Program pdi and refer to README.md for board bringup and enabling IBERT in hardware manager.
- } [current_bd_design]
+
+regenerate_bd_layout -layout_string {
+   "ActiveEmotionalView":"Default View",
+      "comment_0":"1. Refer to README.md in below url:
+      https://github.com/Xilinx/XilinxCEDStore/tree/master/ced/Xilinx/IPI/Versal%20Multi-Rate%20GTY
+      2. Verify constraints in top level xdc
+      3. Synthesize and open synthesized design to verify GTY and REFCLK pin assignments.
+      3. Select Generate Device Image in the Flow Navigator to create .pdi image.
+      4. Program pdi and refer to README.md for board bringup and enabling IBERT in hardware manager.",
+   "commentid":"comment_0|",
+   "font_comment_0":"18",
+   "guistr":"# # String gsaved with Nlview 7.0r4  2019-12-20 bk=1.5203 VDI=41 GEI=36 GUI=JA:10.0 TLS
+               # -string -flagsOSRD
+                preplace cgraphic comment_0 place top 407 -200 textcolor 4 linecolor 3
+	       ",
+   "linktoobj_comment_0":"",
+   "linktotype_comment_0":"bd_design" }
+
 }
