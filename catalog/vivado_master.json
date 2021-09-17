@@ -24,11 +24,11 @@
         "name": "mb_preset",
         "display": "MicroBlaze Design Presets",
         "latest_revision": "1.0",
-        "commit_id": "70fb2c7c37e30f1d9f0a87c1b439563a2ea63473",
+        "commit_id": "cbb860e7262e2c7e5b9d9412a90ad079f90ce26e",
         "revisions": [
           {
             "revision": "1.0",
-            "commit_id": "70fb2c7c37e30f1d9f0a87c1b439563a2ea63473",
+            "commit_id": "cbb860e7262e2c7e5b9d9412a90ad079f90ce26e",
             "date": "29-06-2020",
             "history": "Fixed typo"
           }
