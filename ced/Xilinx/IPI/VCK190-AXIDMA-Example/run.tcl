@@ -304,4 +304,5 @@ create_root_design "" $design_name $options
 3. Refer to README.md in below url for Vitis steps
 https://github.com/abommera/XilinxCEDStore/tree/2020.2/ced/Xilinx/IPI/
 VCK190-AXIDMA-WTS-Example } [current_bd_design]
+save_bd_design
 }

@@ -362,6 +362,7 @@ make_xdc $design_name
 	set_property USER_COMMENTS.comment_0 {} [current_bd_design]
 
 regenerate_bd_layout -layout_string {
+save_bd_design
    "ActiveEmotionalView":"Default View",
       "comment_0":"1. Refer to README.md in below url:
       https://github.com/Xilinx/XilinxCEDStore/tree/master/ced/Xilinx/IPI/Versal%20Multi-Rate%20GTY
