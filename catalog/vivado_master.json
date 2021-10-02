@@ -138,11 +138,11 @@
         "name": "multirategty",
         "display": "Multi-Rate GTY",
         "latest_revision": "1.0",
-        "commit_id": "d1ec67f90f1fc8e68331c4f00d28007f93ce4a8b",
+        "commit_id": "f69f5c26c5c9fb4096174e5962a6319a1fcb6e32",
         "revisions": [
           {
             "revision": "1.0",
-            "commit_id": "d1ec67f90f1fc8e68331c4f00d28007f93ce4a8b",
+            "commit_id": "f69f5c26c5c9fb4096174e5962a6319a1fcb6e32",
             "date": "26-05-2021:06:01:30",
             "history": "Added board Multi-Rate GTY v1.0"
           }
