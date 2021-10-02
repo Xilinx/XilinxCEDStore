@@ -81,11 +81,11 @@
         "name": "axidma",
         "display": "AXI DMA",
         "latest_revision": "1.0",
-        "commit_id": "63eaee1146757502c55b31da836645ca9e2c86dc",
+        "commit_id": "d1ec67f90f1fc8e68331c4f00d28007f93ce4a8b",
         "revisions": [
           {
             "revision": "1.0",
-            "commit_id": "63eaee1146757502c55b31da836645ca9e2c86dc",
+            "commit_id": "d1ec67f90f1fc8e68331c4f00d28007f93ce4a8b",
             "date": "18-01-2021:17:37:30",
             "history": "Added board AXI DMA v1.0"
           }
@@ -138,11 +138,11 @@
         "name": "multirategty",
         "display": "Multi-Rate GTY",
         "latest_revision": "1.0",
-        "commit_id": "51e80deb6bdfb50678b7f52f455cb8dcec0082c0",
+        "commit_id": "d1ec67f90f1fc8e68331c4f00d28007f93ce4a8b",
         "revisions": [
           {
             "revision": "1.0",
-            "commit_id": "51e80deb6bdfb50678b7f52f455cb8dcec0082c0",
+            "commit_id": "d1ec67f90f1fc8e68331c4f00d28007f93ce4a8b",
             "date": "26-05-2021:06:01:30",
             "history": "Added board Multi-Rate GTY v1.0"
           }
