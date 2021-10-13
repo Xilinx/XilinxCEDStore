@@ -157,11 +157,11 @@
         "name": "ext_platform",
         "display": "Versal Extensible Embedded Platform",
         "latest_revision": "1.0",
-        "commit_id": "4db35e49cc8ca0bb1fa87391f7199aca6f730c86",
+        "commit_id": "184701eaa4a6a34dc864c47128cf3c6c4c197bc2",
         "revisions": [
           {
             "revision": "1.0",
-            "commit_id": "4db35e49cc8ca0bb1fa87391f7199aca6f730c86",
+            "commit_id": "184701eaa4a6a34dc864c47128cf3c6c4c197bc2",
             "date": "24-06-2021:08:47:28",
             "history": "Added board Versal Extensible Embedded Platform v1.0"
           }
