@@ -134,9 +134,14 @@ set_property -dict [list CONFIG.CATEGORY {ps_pmc} CONFIG.CONNECTIONS {M00_INI { 
 set_property -dict [list CONFIG.ASSOCIATED_BUSIF {S03_AXI:S02_AXI:S00_AXI:S01_AXI:S04_AXI:S07_AXI:S06_AXI:S05_AXI}] [get_bd_pins /cips_noc/aclk0]
 
 create_bd_cell -type ip -vlnv xilinx.com:ip:axi_noc:* noc_ddr4
+if [regexp "vpk120" $board_name] {
+apply_board_connection -board_interface "ch0_lpddr4_trip1" -ip_intf "noc_ddr4/CH0_LPDDR4_0" -diagram $design_name 
+apply_board_connection -board_interface "ch1_lpddr4_trip1" -ip_intf "noc_ddr4/CH1_LPDDR4_0" -diagram $design_name 
+apply_board_connection -board_interface "lpddr4_clk1" -ip_intf "noc_ddr4/sys_clk0" -diagram $design_name
+} else {
 apply_board_connection -board_interface "ddr4_dimm1" -ip_intf "noc_ddr4/CH0_DDR4_0" -diagram $design_name 
 apply_board_connection -board_interface "ddr4_dimm1_sma_clk" -ip_intf "noc_ddr4/sys_clk0" -diagram $design_name 
-
+}
 set_property -dict [list CONFIG.NUM_SI {0} CONFIG.NUM_MI {0} CONFIG.NUM_NSI {1} CONFIG.NUM_CLKS {0} CONFIG.NUM_MCP {4} CONFIG.MC_CHAN_REGION1 {DDR_LOW1}] [get_bd_cells noc_ddr4]
 set_property -dict [list CONFIG.CONNECTIONS {MC_0 { read_bw {128} write_bw {128} read_avg_burst {4} write_avg_burst {4}} }] [get_bd_intf_pins /noc_ddr4/S00_INI]
 connect_bd_intf_net [get_bd_intf_pins cips_noc/M00_INI] [get_bd_intf_pins noc_ddr4/S00_INI]
@@ -304,7 +309,21 @@ set_property -dict [list CONFIG.CONNECTIONS {M01_INI { read_bw {128} write_bw {1
 set_property -dict [list CONFIG.CONNECTIONS {M01_INI { read_bw {128} write_bw {128}} M00_INI { read_bw {128} write_bw {128}} }] [get_bd_intf_pins /cips_noc/S06_AXI]
 set_property -dict [list CONFIG.CONNECTIONS {M01_INI { read_bw {128} write_bw {128}} M00_INI { read_bw {128} write_bw {128}} }] [get_bd_intf_pins /cips_noc/S07_AXI]
 }
+
 create_bd_cell -type ip -vlnv xilinx.com:ip:axi_noc:* noc_lpddr4
+
+if [regexp "vpk120" $board_name] {
+
+apply_board_connection -board_interface "ch0_lpddr4_trip2" -ip_intf "noc_lpddr4/CH0_LPDDR4_0" -diagram $design_name 
+apply_board_connection -board_interface "ch1_lpddr4_trip2" -ip_intf "noc_lpddr4/CH1_LPDDR4_0" -diagram $design_name 
+apply_board_connection -board_interface "lpddr4_clk2" -ip_intf "noc_lpddr4/sys_clk0" -diagram $design_name 
+
+apply_board_connection -board_interface "ch0_lpddr4_trip3" -ip_intf "/noc_lpddr4/CH0_LPDDR4_1" -diagram $design_name 
+apply_board_connection -board_interface "ch1_lpddr4_trip3" -ip_intf "/noc_lpddr4/CH1_LPDDR4_1" -diagram $design_name 
+apply_board_connection -board_interface "lpddr4_clk3" -ip_intf "/noc_lpddr4/sys_clk1" -diagram $design_name 
+
+} else {
+
 apply_board_connection -board_interface "ch0_lpddr4_c0" -ip_intf "noc_lpddr4/CH0_LPDDR4_0" -diagram $design_name 
 apply_board_connection -board_interface "ch1_lpddr4_c0" -ip_intf "noc_lpddr4/CH1_LPDDR4_0" -diagram $design_name 
 apply_board_connection -board_interface "lpddr4_sma_clk1" -ip_intf "noc_lpddr4/sys_clk0" -diagram $design_name 
@@ -312,6 +331,7 @@ apply_board_connection -board_interface "lpddr4_sma_clk1" -ip_intf "noc_lpddr4/s
 apply_board_connection -board_interface "ch0_lpddr4_c1" -ip_intf "/noc_lpddr4/CH0_LPDDR4_1" -diagram $design_name 
 apply_board_connection -board_interface "ch1_lpddr4_c1" -ip_intf "/noc_lpddr4/CH1_LPDDR4_1" -diagram $design_name 
 apply_board_connection -board_interface "lpddr4_sma_clk2" -ip_intf "/noc_lpddr4/sys_clk1" -diagram $design_name 
+}
 
 set_property -dict [list CONFIG.NUM_SI {0} CONFIG.NUM_MI {0} CONFIG.NUM_NSI {1} CONFIG.NUM_CLKS {0} CONFIG.MC_CHAN_REGION0 {DDR_CH1}] [get_bd_cells noc_lpddr4]
 set_property -dict [list CONFIG.CONNECTIONS {MC_0 { read_bw {1720} write_bw {1720} read_avg_burst {4} write_avg_burst {4}} }] [get_bd_intf_pins /noc_lpddr4/S00_INI]
@@ -345,6 +365,18 @@ assign_bd_address -offset 0x00000000 -range 0x80000000 -target_address_space [ge
 assign_bd_address -offset 0x00000000 -range 0x80000000 -target_address_space [get_bd_addr_spaces CIPS_0/FPD_CCI_NOC_0] [get_bd_addr_segs noc_ddr4/S00_INI/C0_DDR_LOW0] -force
 assign_bd_address -offset 0x00000000 -range 0x80000000 -target_address_space [get_bd_addr_spaces CIPS_0/PMC_NOC_AXI_0] [get_bd_addr_segs noc_ddr4/S00_INI/C0_DDR_LOW0] -force
 
+if [regexp "vpk120" $board_name] {
+
+assign_bd_address -offset 0x000800000000 -range 0x80000000 -target_address_space [get_bd_addr_spaces CIPS_0/FPD_CCI_NOC_1] [get_bd_addr_segs noc_ddr4/S00_INI/C0_DDR_LOW1] -force
+assign_bd_address -offset 0x000800000000 -range 0x80000000 -target_address_space [get_bd_addr_spaces CIPS_0/FPD_CCI_NOC_2] [get_bd_addr_segs noc_ddr4/S00_INI/C0_DDR_LOW1] -force
+assign_bd_address -offset 0x000800000000 -range 0x80000000 -target_address_space [get_bd_addr_spaces CIPS_0/LPD_AXI_NOC_0] [get_bd_addr_segs noc_ddr4/S00_INI/C0_DDR_LOW1] -force
+assign_bd_address -offset 0x000800000000 -range 0x80000000 -target_address_space [get_bd_addr_spaces CIPS_0/FPD_CCI_NOC_3] [get_bd_addr_segs noc_ddr4/S00_INI/C0_DDR_LOW1] -force
+assign_bd_address -offset 0x000800000000 -range 0x80000000 -target_address_space [get_bd_addr_spaces CIPS_0/FPD_CCI_NOC_0] [get_bd_addr_segs noc_ddr4/S00_INI/C0_DDR_LOW1] -force
+assign_bd_address -offset 0x000800000000 -range 0x80000000 -target_address_space [get_bd_addr_spaces CIPS_0/FPD_AXI_NOC_0] [get_bd_addr_segs noc_ddr4/S00_INI/C0_DDR_LOW1] -force
+assign_bd_address -offset 0x000800000000 -range 0x80000000 -target_address_space [get_bd_addr_spaces CIPS_0/PMC_NOC_AXI_0] [get_bd_addr_segs noc_ddr4/S00_INI/C0_DDR_LOW1] -force
+assign_bd_address -offset 0x000800000000 -range 0x80000000 -target_address_space [get_bd_addr_spaces CIPS_0/FPD_AXI_NOC_1] [get_bd_addr_segs noc_ddr4/S00_INI/C0_DDR_LOW1] -force
+
+} else {
 assign_bd_address -offset 0x000800000000 -range 0x180000000 -target_address_space [get_bd_addr_spaces CIPS_0/FPD_CCI_NOC_1] [get_bd_addr_segs noc_ddr4/S00_INI/C0_DDR_LOW1] -force
 assign_bd_address -offset 0x000800000000 -range 0x180000000 -target_address_space [get_bd_addr_spaces CIPS_0/FPD_CCI_NOC_2] [get_bd_addr_segs noc_ddr4/S00_INI/C0_DDR_LOW1] -force
 assign_bd_address -offset 0x000800000000 -range 0x180000000 -target_address_space [get_bd_addr_spaces CIPS_0/LPD_AXI_NOC_0] [get_bd_addr_segs noc_ddr4/S00_INI/C0_DDR_LOW1] -force
@@ -353,7 +385,7 @@ assign_bd_address -offset 0x000800000000 -range 0x180000000 -target_address_spac
 assign_bd_address -offset 0x000800000000 -range 0x180000000 -target_address_space [get_bd_addr_spaces CIPS_0/FPD_AXI_NOC_0] [get_bd_addr_segs noc_ddr4/S00_INI/C0_DDR_LOW1] -force
 assign_bd_address -offset 0x000800000000 -range 0x180000000 -target_address_space [get_bd_addr_spaces CIPS_0/PMC_NOC_AXI_0] [get_bd_addr_segs noc_ddr4/S00_INI/C0_DDR_LOW1] -force
 assign_bd_address -offset 0x000800000000 -range 0x180000000 -target_address_space [get_bd_addr_spaces CIPS_0/FPD_AXI_NOC_1] [get_bd_addr_segs noc_ddr4/S00_INI/C0_DDR_LOW1] -force
-
+}
 set_param project.replaceDontTouchWithKeepHierarchySoft 0
 catch {
 exclude_bd_addr_seg [get_bd_addr_segs to_delete_kernel/S_AXI/Reg] -target_address_space [get_bd_addr_spaces CIPS_0/M_AXI_FPD]
@@ -415,10 +447,13 @@ create_root_design $currentDir $design_name $use_lpddr $clk_options $irqs
 	if [regexp "vmk" $board_name] {
 	puts "INFO: Creating extensible_platform for VMK_180"
 	set_property PFM_NAME {xilinx.com:xd:xilinx_vmk180_base:1.0} [get_files [current_bd_design].bd]
-	} else {
+	} elseif [regexp "vck" $board_name] {
 	puts "INFO: Creating extensible_platform for VCK_190"
 	set_property PFM_NAME {xilinx.com:xd:xilinx_vck190_base:1.0} [get_files [current_bd_design].bd]
-	}
+	} else {
+	puts "INFO: Creating extensible_platform for VPK_120"
+	set_property PFM_NAME {xilinx.com:xd:xilinx_vpk120_base:1.0} [get_files [current_bd_design].bd] }
+	
 	set_property PFM.AXI_PORT {M00_AXI {memport "NOC_MASTER"}} [get_bd_cells /cips_noc]
   	if { $irqs eq "32" } {
 	
@@ -483,6 +518,25 @@ BD has VIPs on the accelerator SmartConnect IPs because IPI platform can't handl
 Hence VIPs are there to have at least one slave on a smart connect}  [current_bd_design]
 	
  # Perform GUI Layout
+ if { $irqs eq "32" } {
+ 
+   regenerate_bd_layout -layout_string {
+   "ActiveEmotionalView":"Default View",
+   "comment_0":"An Example Versal Extensible Embedded Platform
+	Note:
+	BD has VIPs on the accelerator SmartConnect IPs because IPI platform can't handle export with no slaves on SmartConnect IP.
+	Hence VIPs are there to have at least one slave on a smart connect.",
+   "commentid":"comment_0|",
+   "font_comment_0":"14",
+   "guistr":"# # String gsaved with Nlview 7.0r4  2019-12-20 bk=1.5203 VDI=41 GEI=36 GUI=JA:10.0 TLS
+	#  -string -flagsOSRD
+	preplace cgraphic comment_0 place right -149 449 textcolor 4 linecolor 3
+	",
+   "linktoobj_comment_0":"",
+   "linktotype_comment_0":"bd_design"
+}
+ 
+ } else {
   regenerate_bd_layout -layout_string {
    "ActiveEmotionalView":"Default View",
    "comment_0":"An Example Versal Extensible Embedded Platform
@@ -497,8 +551,8 @@ Hence VIPs are there to have at least one slave on a smart connect}  [current_bd
 	",
    "linktoobj_comment_0":"",
    "linktotype_comment_0":"bd_design"
-}
-	
+} }
+
 	set_property SELECTED_SIM_MODEL tlm [get_bd_cells /CIPS_0]
 	set_property SELECTED_SIM_MODEL tlm [get_bd_cells /cips_noc]
 	#set_property SELECTED_SIM_MODEL tlm [get_bd_cells /noc_lpddr4]
