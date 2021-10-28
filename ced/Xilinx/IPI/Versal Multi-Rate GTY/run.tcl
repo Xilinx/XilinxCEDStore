@@ -203,76 +203,10 @@ RESET_SEQUENCE_INTERVAL 0 RX_COMMA_PRESET NONE RX_COMMA_VALID_ONLY 0}\
 	   CONFIG.C_BUF_TYPE {IBUFDSGTE} \
 	 ] $util_ds_buf
 
-	  # Create instance: versal_cips_0, and set properties
-	  set versal_cips_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:versal_cips versal_cips_0 ]
-	  set_property -dict [ list \
-	   CONFIG.CLOCK_MODE {Custom} \
-	   CONFIG.DDR_MEMORY_MODE {Custom} \
-	   CONFIG.DEBUG_MODE {JTAG} \
-	   CONFIG.DESIGN_MODE {1} \
-	   CONFIG.PS_BOARD_INTERFACE {ps_pmc_fixed_io} \
-	   CONFIG.PS_PMC_CONFIG {\
-		 CLOCK_MODE {Custom}\
-		 DEBUG_MODE {JTAG}\
-		 DESIGN_MODE {1}\
-		 PMC_CRP_PL0_REF_CTRL_FREQMHZ {100}\
-		 PMC_GPIO0_MIO_PERIPHERAL {{ENABLE 1} {IO {PMC_MIO 0 .. 25}}}\
-		 PMC_GPIO1_MIO_PERIPHERAL {{ENABLE 1} {IO {PMC_MIO 26 .. 51}}}\
-		 PMC_MIO37 {{AUX_IO 0} {DIRECTION out} {DRIVE_STRENGTH 8mA} {OUTPUT_DATA high}\
-	{PULL pullup} {SCHMITT 0} {SLEW slow} {USAGE GPIO}}\
-		 PMC_OSPI_PERIPHERAL {{ENABLE 0} {IO {PMC_MIO 0 .. 11}} {MODE Single}}\
-		 PMC_QSPI_COHERENCY {0}\
-		 PMC_QSPI_FBCLK {{ENABLE 1} {IO {PMC_MIO 6}}}\
-		 PMC_QSPI_PERIPHERAL_DATA_MODE {x4}\
-		 PMC_QSPI_PERIPHERAL_ENABLE {1}\
-		 PMC_QSPI_PERIPHERAL_MODE {Dual Parallel}\
-		 PMC_REF_CLK_FREQMHZ {33.3333}\
-		 PMC_SD1 {{CD_ENABLE 1} {CD_IO {PMC_MIO 28}} {POW_ENABLE 1} {POW_IO {PMC_MIO 51}}\
-	{RESET_ENABLE 0} {RESET_IO {PMC_MIO 1}} {WP_ENABLE 0} {WP_IO {PMC_MIO 1}}}\
-		 PMC_SD1_COHERENCY {0}\
-		 PMC_SD1_DATA_TRANSFER_MODE {8Bit}\
-		 PMC_SD1_PERIPHERAL {{ENABLE 1} {IO {PMC_MIO 26 .. 36}}}\
-		 PMC_SD1_SLOT_TYPE {SD 3.0}\
-		 PS_BOARD_INTERFACE {ps_pmc_fixed_io}\
-		 PS_CAN1_PERIPHERAL {{ENABLE 1} {IO {PMC_MIO 40 .. 41}}}\
-		 PS_ENET0_MDIO {{ENABLE 1} {IO {PS_MIO 24 .. 25}}}\
-		 PS_ENET0_PERIPHERAL {{ENABLE 1} {IO {PS_MIO 0 .. 11}}}\
-		 PS_ENET1_PERIPHERAL {{ENABLE 1} {IO {PS_MIO 12 .. 23}}}\
-		 PS_GEN_IPI0_ENABLE {1}\
-		 PS_GEN_IPI0_MASTER {A72}\
-		 PS_GEN_IPI1_ENABLE {1}\
-		 PS_GEN_IPI2_ENABLE {1}\
-		 PS_GEN_IPI3_ENABLE {1}\
-		 PS_GEN_IPI4_ENABLE {1}\
-		 PS_GEN_IPI5_ENABLE {1}\
-		 PS_GEN_IPI6_ENABLE {1}\
-		 PS_HSDP_EGRESS_TRAFFIC {JTAG}\
-		 PS_HSDP_INGRESS_TRAFFIC {JTAG}\
-		 PS_HSDP_MODE {None}\
-		 PS_I2C0_PERIPHERAL {{ENABLE 1} {IO {PMC_MIO 46 .. 47}}}\
-		 PS_I2C1_PERIPHERAL {{ENABLE 1} {IO {PMC_MIO 44 .. 45}}}\
-		 PS_MIO19 {{AUX_IO 0} {DIRECTION in} {DRIVE_STRENGTH 8mA} {OUTPUT_DATA default}\
-	{PULL disable} {SCHMITT 0} {SLEW slow} {USAGE Reserved}}\
-		 PS_MIO21 {{AUX_IO 0} {DIRECTION in} {DRIVE_STRENGTH 8mA} {OUTPUT_DATA default}\
-	{PULL disable} {SCHMITT 0} {SLEW slow} {USAGE Reserved}}\
-		 PS_MIO7 {{AUX_IO 0} {DIRECTION in} {DRIVE_STRENGTH 8mA} {OUTPUT_DATA default}\
-	{PULL disable} {SCHMITT 0} {SLEW slow} {USAGE Reserved}}\
-		 PS_MIO9 {{AUX_IO 0} {DIRECTION in} {DRIVE_STRENGTH 8mA} {OUTPUT_DATA default}\
-	{PULL disable} {SCHMITT 0} {SLEW slow} {USAGE Reserved}}\
-		 PS_NUM_FABRIC_RESETS {0}\
-		 PS_PCIE_RESET {{ENABLE 1} {IO {PMC_MIO 38 .. 39}}}\
-		 PS_UART0_PERIPHERAL {{ENABLE 1} {IO {PMC_MIO 42 .. 43}}}\
-		 PS_USB3_PERIPHERAL {{ENABLE 1} {IO {PMC_MIO 13 .. 25}}}\
-		 PS_USE_PMCPL_CLK0 {1}\
-		 PS_USE_PMCPL_CLK1 {0}\
-		 PS_USE_PMCPL_CLK2 {0}\
-		 PS_USE_PMCPL_CLK3 {0}\
-		 SMON_ALARMS {Set_Alarms_On}\
-		 SMON_ENABLE_TEMP_AVERAGING {0}\
-		 SMON_TEMP_AVERAGING_SAMPLES {0}\
-	   } \
-	   CONFIG.PS_PMC_CONFIG_APPLIED {1} \
-	 ] $versal_cips_0
+  # Create instance: versal_cips_0, and set properties
+  set versal_cips_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:versal_cips versal_cips_0 ]
+  apply_bd_automation -rule xilinx.com:bd_rule:cips -config { board_preset {Yes} boot_config {Custom} configure_noc {Add new AXI NoC} debug_config {JTAG} design_flow {Full System} mc_type {None} num_mc {1} pl_clocks {1} pl_resets {None}}  [get_bd_cells versal_cips_0]
+  set_property -dict [list CONFIG.PS_PMC_CONFIG { CLOCK_MODE Custom PMC_CRP_PL0_REF_CTRL_FREQMHZ 100} CONFIG.CLOCK_MODE {Custom}] [get_bd_cells versal_cips_0]
 
 	  # Create instance: xlcp, and set properties
 	  set xlcp [ create_bd_cell -type ip -vlnv xilinx.com:ip:xlconcat xlcp ]
