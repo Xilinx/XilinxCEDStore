@@ -203,76 +203,10 @@ RESET_SEQUENCE_INTERVAL 0 RX_COMMA_PRESET NONE RX_COMMA_VALID_ONLY 0}\
 	   CONFIG.C_BUF_TYPE {IBUFDSGTE} \
 	 ] $util_ds_buf
 
-	  # Create instance: versal_cips_0, and set properties
-	  set versal_cips_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:versal_cips versal_cips_0 ]
-	  set_property -dict [ list \
-	   CONFIG.CLOCK_MODE {Custom} \
-	   CONFIG.DDR_MEMORY_MODE {Custom} \
-	   CONFIG.DEBUG_MODE {JTAG} \
-	   CONFIG.DESIGN_MODE {1} \
-	   CONFIG.PS_BOARD_INTERFACE {ps_pmc_fixed_io} \
-	   CONFIG.PS_PMC_CONFIG {\
-		 CLOCK_MODE {Custom}\
-		 DEBUG_MODE {JTAG}\
-		 DESIGN_MODE {1}\
-		 PMC_CRP_PL0_REF_CTRL_FREQMHZ {100}\
-		 PMC_GPIO0_MIO_PERIPHERAL {{ENABLE 1} {IO {PMC_MIO 0 .. 25}}}\
-		 PMC_GPIO1_MIO_PERIPHERAL {{ENABLE 1} {IO {PMC_MIO 26 .. 51}}}\
-		 PMC_MIO37 {{AUX_IO 0} {DIRECTION out} {DRIVE_STRENGTH 8mA} {OUTPUT_DATA high}\
-	{PULL pullup} {SCHMITT 0} {SLEW slow} {USAGE GPIO}}\
-		 PMC_OSPI_PERIPHERAL {{ENABLE 0} {IO {PMC_MIO 0 .. 11}} {MODE Single}}\
-		 PMC_QSPI_COHERENCY {0}\
-		 PMC_QSPI_FBCLK {{ENABLE 1} {IO {PMC_MIO 6}}}\
-		 PMC_QSPI_PERIPHERAL_DATA_MODE {x4}\
-		 PMC_QSPI_PERIPHERAL_ENABLE {1}\
-		 PMC_QSPI_PERIPHERAL_MODE {Dual Parallel}\
-		 PMC_REF_CLK_FREQMHZ {33.3333}\
-		 PMC_SD1 {{CD_ENABLE 1} {CD_IO {PMC_MIO 28}} {POW_ENABLE 1} {POW_IO {PMC_MIO 51}}\
-	{RESET_ENABLE 0} {RESET_IO {PMC_MIO 1}} {WP_ENABLE 0} {WP_IO {PMC_MIO 1}}}\
-		 PMC_SD1_COHERENCY {0}\
-		 PMC_SD1_DATA_TRANSFER_MODE {8Bit}\
-		 PMC_SD1_PERIPHERAL {{ENABLE 1} {IO {PMC_MIO 26 .. 36}}}\
-		 PMC_SD1_SLOT_TYPE {SD 3.0}\
-		 PS_BOARD_INTERFACE {ps_pmc_fixed_io}\
-		 PS_CAN1_PERIPHERAL {{ENABLE 1} {IO {PMC_MIO 40 .. 41}}}\
-		 PS_ENET0_MDIO {{ENABLE 1} {IO {PS_MIO 24 .. 25}}}\
-		 PS_ENET0_PERIPHERAL {{ENABLE 1} {IO {PS_MIO 0 .. 11}}}\
-		 PS_ENET1_PERIPHERAL {{ENABLE 1} {IO {PS_MIO 12 .. 23}}}\
-		 PS_GEN_IPI0_ENABLE {1}\
-		 PS_GEN_IPI0_MASTER {A72}\
-		 PS_GEN_IPI1_ENABLE {1}\
-		 PS_GEN_IPI2_ENABLE {1}\
-		 PS_GEN_IPI3_ENABLE {1}\
-		 PS_GEN_IPI4_ENABLE {1}\
-		 PS_GEN_IPI5_ENABLE {1}\
-		 PS_GEN_IPI6_ENABLE {1}\
-		 PS_HSDP_EGRESS_TRAFFIC {JTAG}\
-		 PS_HSDP_INGRESS_TRAFFIC {JTAG}\
-		 PS_HSDP_MODE {None}\
-		 PS_I2C0_PERIPHERAL {{ENABLE 1} {IO {PMC_MIO 46 .. 47}}}\
-		 PS_I2C1_PERIPHERAL {{ENABLE 1} {IO {PMC_MIO 44 .. 45}}}\
-		 PS_MIO19 {{AUX_IO 0} {DIRECTION in} {DRIVE_STRENGTH 8mA} {OUTPUT_DATA default}\
-	{PULL disable} {SCHMITT 0} {SLEW slow} {USAGE Reserved}}\
-		 PS_MIO21 {{AUX_IO 0} {DIRECTION in} {DRIVE_STRENGTH 8mA} {OUTPUT_DATA default}\
-	{PULL disable} {SCHMITT 0} {SLEW slow} {USAGE Reserved}}\
-		 PS_MIO7 {{AUX_IO 0} {DIRECTION in} {DRIVE_STRENGTH 8mA} {OUTPUT_DATA default}\
-	{PULL disable} {SCHMITT 0} {SLEW slow} {USAGE Reserved}}\
-		 PS_MIO9 {{AUX_IO 0} {DIRECTION in} {DRIVE_STRENGTH 8mA} {OUTPUT_DATA default}\
-	{PULL disable} {SCHMITT 0} {SLEW slow} {USAGE Reserved}}\
-		 PS_NUM_FABRIC_RESETS {0}\
-		 PS_PCIE_RESET {{ENABLE 1} {IO {PMC_MIO 38 .. 39}}}\
-		 PS_UART0_PERIPHERAL {{ENABLE 1} {IO {PMC_MIO 42 .. 43}}}\
-		 PS_USB3_PERIPHERAL {{ENABLE 1} {IO {PMC_MIO 13 .. 25}}}\
-		 PS_USE_PMCPL_CLK0 {1}\
-		 PS_USE_PMCPL_CLK1 {0}\
-		 PS_USE_PMCPL_CLK2 {0}\
-		 PS_USE_PMCPL_CLK3 {0}\
-		 SMON_ALARMS {Set_Alarms_On}\
-		 SMON_ENABLE_TEMP_AVERAGING {0}\
-		 SMON_TEMP_AVERAGING_SAMPLES {0}\
-	   } \
-	   CONFIG.PS_PMC_CONFIG_APPLIED {1} \
-	 ] $versal_cips_0
+  # Create instance: versal_cips_0, and set properties
+  set versal_cips_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:versal_cips versal_cips_0 ]
+  apply_bd_automation -rule xilinx.com:bd_rule:cips -config { board_preset {Yes} boot_config {Custom} configure_noc {Add new AXI NoC} debug_config {JTAG} design_flow {Full System} mc_type {None} num_mc {1} pl_clocks {1} pl_resets {None}}  [get_bd_cells versal_cips_0]
+  set_property -dict [list CONFIG.PS_PMC_CONFIG { CLOCK_MODE Custom PMC_CRP_PL0_REF_CTRL_FREQMHZ 100} CONFIG.CLOCK_MODE {Custom}] [get_bd_cells versal_cips_0]
 
 	  # Create instance: xlcp, and set properties
 	  set xlcp [ create_bd_cell -type ip -vlnv xilinx.com:ip:xlconcat xlcp ]
@@ -318,8 +252,7 @@ RESET_SEQUENCE_INTERVAL 0 RX_COMMA_PRESET NONE RX_COMMA_VALID_ONLY 0}\
   #
   proc make_xdc {design_name} {
     load librdi_iptasks[info sharedlibextension]
-    set filepathdir [file join [get_property DIRECTORY [current_project]] ${design_name}.xdc]
-    set outputfile [open $filepathdir w]
+    set outputfile [open ${design_name}.xdc w]
 
     set coord "X0Y5"
     puts $outputfile "#GTY Location Bank 105 QUAD_$coord"
@@ -345,7 +278,7 @@ RESET_SEQUENCE_INTERVAL 0 RX_COMMA_PRESET NONE RX_COMMA_VALID_ONLY 0}\
    
     close $outputfile
 
-    import_files -fileset constrs_1 -norecurse "$filepathdir"
+    import_files -fileset constrs_1 -norecurse "./${design_name}.xdc"
   }
 
 
@@ -360,22 +293,12 @@ make_xdc $design_name
 	open_bd_design [get_bd_files $design_name]
 	# Add USER_COMMENTS on $design_name
 	set_property USER_COMMENTS.comment_0 {} [current_bd_design]
-
-regenerate_bd_layout -layout_string {
-   "ActiveEmotionalView":"Default View",
-      "comment_0":"1. Refer to README.md in below url:
-      https://github.com/Xilinx/XilinxCEDStore/tree/master/ced/Xilinx/IPI/Versal%20Multi-Rate%20GTY
-      2. Verify constraints in top level xdc
-      3. Synthesize and open synthesized design to verify GTY and REFCLK pin assignments.
-      3. Select Generate Device Image in the Flow Navigator to create .pdi image.
-      4. Program pdi and refer to README.md for board bringup and enabling IBERT in hardware manager.",
-   "commentid":"comment_0|",
-   "font_comment_0":"18",
-   "guistr":"# # String gsaved with Nlview 7.0r4  2019-12-20 bk=1.5203 VDI=41 GEI=36 GUI=JA:10.0 TLS
-               # -string -flagsOSRD
-                preplace cgraphic comment_0 place top 407 -200 textcolor 4 linecolor 3
-	       ",
-   "linktoobj_comment_0":"",
-   "linktotype_comment_0":"bd_design" }
-   save_bd_design
+	set_property USER_COMMENTS.comment0 {Next Steps:
+1. Refer to README.md in below url:
+https://github.com/Xilinx/XilinxCEDStore/tree/master/ced/Xilinx/IPI/Versal%20Multi-Rate%20GTY
+2. Verify constraints in top level xdc
+3. Synthesize and open synthesized design to verify GTY and REFCLK pin assignments.
+3. Select Generate Device Image in the Flow Navigator to create .pdi image.
+4. Program pdi and refer to README.md for board bringup and enabling IBERT in hardware manager.
+ } [current_bd_design]
 }
