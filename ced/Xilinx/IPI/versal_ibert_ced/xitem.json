@@ -5,7 +5,7 @@
           "infra": {
             "name": "versal_ibert_ced",
             "display": "Versal IBERT",
-            "revision": "1.1",
+            "revision": "1.0",
             "description": "A Versal example design for IBERT testing.",
             "company": "xilinx.com",
             "company_display": "Xilinx",
@@ -29,5 +29,5 @@
       ]
     },
     "_major" : 1,
-    "_minor" : 1
+    "_minor" : 0
 }
