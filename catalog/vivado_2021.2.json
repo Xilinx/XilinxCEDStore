@@ -171,6 +171,25 @@
           "metadata_file": "xitem.json"
         },
         "company": "xilinx.com"
+      },
+      {
+        "name": "versal_ibert_ced",
+        "display": "Versal IBERT",
+        "latest_revision": "1.0",
+        "commit_id": "5f05a7bfbe6202234225d5f70c3df58293a0a586",
+        "revisions": [
+          {
+            "revision": "1.0",
+            "commit_id": "5f05a7bfbe6202234225d5f70c3df58293a0a586",
+            "date": "08-11-2021:17:49:29",
+            "history": "Added board Versal IBERT v1.0"
+          }
+        ],
+        "config": {
+          "root": "ced/Xilinx/IPI/versal_ibert_ced",
+          "metadata_file": "xitem.json"
+        },
+        "company": "xilinx.com"
       }
     ],
     "categories": [
