@@ -1,0 +1,33 @@
+{
+    "config": {
+      "items": [
+        {
+          "infra": {
+            "name": "design_rc",
+            "display": "CPM4 PCIE RP Design",
+            "revision": "1.0",
+            "description": "CPM4 PCIE RP Example Design",
+            "company": "xilinx.com",
+            "company_display": "Xilinx",
+            "author": "Sindhura",
+            "contributors": [
+              {
+                "group": "Xilinx",
+                "url": "www.xilinx.com"
+              }
+            ],
+            "category": "PCIe",
+            "website": "www.xilinx.com",
+            "is_active" : true, 
+            "search-keywords": [
+              "CPM4 PCIE RP Design",
+              "xilinx.com",
+              "example"             
+            ]
+          }
+        }
+      ]
+    },
+    "_major" : 1,
+    "_minor" : 0
+}

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<ExampleDesign>
+  <Vendor>xilinx.com</Vendor>
+  <Library>design</Library>
+  <Name>cpm_pcie_qdma</Name>
+   <DisplayName>CPM4 PCIE GEN4x8 QDMA Design</DisplayName>
+  <Description>CPM4 PCIE GEN4x8 QDMA Example Design</Description>
+   <Version>1.0</Version>
+  <Design>init.tcl</Design>
+  <Image>qdma_gen4x8.PNG</Image>
+   <DesignType>IPI</DesignType>
+</ExampleDesign>
