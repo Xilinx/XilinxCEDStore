@@ -190,6 +190,63 @@
           "metadata_file": "xitem.json"
         },
         "company": "xilinx.com"
+      },
+      {
+        "name": "design_rc",
+        "display": "CPM4 PCIE RP Design",
+        "latest_revision": "1.0",
+        "commit_id": "8acad18aea83f134eed3a0a62bc38abed4d7e46e",
+        "revisions": [
+          {
+            "revision": "1.0",
+            "commit_id": "8acad18aea83f134eed3a0a62bc38abed4d7e46e",
+            "date": "15-11-2021:19:03:24",
+            "history": "Added board CPM4 PCIE RP Design v1.0"
+          }
+        ],
+        "config": {
+          "root": "ced/Xilinx/IPI/cpm4_rp_2021_1",
+          "metadata_file": "xitem.json"
+        },
+        "company": "xilinx.com"
+      },
+      {
+        "name": "pcie_pio_gen4x8",
+        "display": "CPM4 PCIE GEN4x8 PIO Design",
+        "latest_revision": "1.0",
+        "commit_id": "8acad18aea83f134eed3a0a62bc38abed4d7e46e",
+        "revisions": [
+          {
+            "revision": "1.0",
+            "commit_id": "8acad18aea83f134eed3a0a62bc38abed4d7e46e",
+            "date": "15-11-2021:19:03:24",
+            "history": "Added board CPM4 PCIE GEN4x8 PIO Design v1.0"
+          }
+        ],
+        "config": {
+          "root": "ced/Xilinx/IPI/pcie_gen4x8_pio_2021",
+          "metadata_file": "xitem.json"
+        },
+        "company": "xilinx.com"
+      },
+      {
+        "name": "cpm_pcie_qdma",
+        "display": "CPM4 PCIE GEN4x8 QDMA Design",
+        "latest_revision": "1.0",
+        "commit_id": "8acad18aea83f134eed3a0a62bc38abed4d7e46e",
+        "revisions": [
+          {
+            "revision": "1.0",
+            "commit_id": "8acad18aea83f134eed3a0a62bc38abed4d7e46e",
+            "date": "15-11-2021:19:03:24",
+            "history": "Added board CPM4 PCIE GEN4x8 QDMA Design v1.0"
+          }
+        ],
+        "config": {
+          "root": "ced/Xilinx/IPI/qdma_mm_st_gen4x8",
+          "metadata_file": "xitem.json"
+        },
+        "company": "xilinx.com"
       }
     ],
     "categories": [
