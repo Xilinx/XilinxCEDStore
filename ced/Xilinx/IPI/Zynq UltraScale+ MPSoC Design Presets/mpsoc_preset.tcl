@@ -127,7 +127,7 @@ create_root_design $currentDir $design_name $options
 	if {([lsearch $options Preset.VALUE] == -1) || ([lsearch $options MPSoC_Only] != -1)} {
 	set originalTBFile [file join $currentDir testbench MPSoC_Only mpsoc_tb.v]
 	} else {
-	if {[regexp zcu104 $board_name] } {
+	if {[regexp zcu104 $board_name] || [regexp zcu670 $board_name]} {
 	set originalTBFile [file join $currentDir testbench MPSoC_PL ZCU4bit mpsoc_tb.v]
 	} elseif { [regexp zcu102 $board_name] ||[regexp zcu106 $board_name]||[regexp zcu111 $board_name]||[regexp zcu208 $board_name] } {
 	set originalTBFile [file join $currentDir testbench MPSoC_PL ZCU8bit mpsoc_tb.v]
