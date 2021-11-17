@@ -157,17 +157,55 @@
         "name": "ext_platform",
         "display": "Versal Extensible Embedded Platform",
         "latest_revision": "1.0",
-        "commit_id": "4dc95f2f82639516b7870ded57cd559a960e190f",
+        "commit_id": "519f45c43c915e6d84aa15a17f91a6da286e59ea",
         "revisions": [
           {
             "revision": "1.0",
-            "commit_id": "4dc95f2f82639516b7870ded57cd559a960e190f",
+            "commit_id": "519f45c43c915e6d84aa15a17f91a6da286e59ea",
             "date": "24-06-2021:08:47:28",
             "history": "Added board Versal Extensible Embedded Platform v1.0"
           }
         ],
         "config": {
           "root": "ced/Xilinx/IPI/Versal_Extensible_Embedded_Platform",
+          "metadata_file": "xitem.json"
+        },
+        "company": "xilinx.com"
+      },
+      {
+        "name": "cips_ddr_pl_debug",
+        "display": "CIPS DDR PL Debug",
+        "latest_revision": "1.0",
+        "commit_id": "519f45c43c915e6d84aa15a17f91a6da286e59ea",
+        "revisions": [
+          {
+            "revision": "1.0",
+            "commit_id": "519f45c43c915e6d84aa15a17f91a6da286e59ea",
+            "date": "17-11-2021:08:57:40",
+            "history": "Added board CIPS DDR PL Debug v1.0"
+          }
+        ],
+        "config": {
+          "root": "ced/Xilinx/IPI/TMR_Microblaze",
+          "metadata_file": "xitem.json"
+        },
+        "company": "xilinx.com"
+      },
+      {
+        "name": "ext_platform_part",
+        "display": "Versal Extensible Embedded Platform part_support",
+        "latest_revision": "1.0",
+        "commit_id": "519f45c43c915e6d84aa15a17f91a6da286e59ea",
+        "revisions": [
+          {
+            "revision": "1.0",
+            "commit_id": "519f45c43c915e6d84aa15a17f91a6da286e59ea",
+            "date": "17-11-2021:08:57:40",
+            "history": "Added board Versal Extensible Embedded Platform part_support v1.0"
+          }
+        ],
+        "config": {
+          "root": "ced/Xilinx/IPI/Versal_Extensible_Embedded_Platform_Part",
           "metadata_file": "xitem.json"
         },
         "company": "xilinx.com"
