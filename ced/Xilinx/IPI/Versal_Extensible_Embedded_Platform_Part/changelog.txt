@@ -1,0 +1,6 @@
+######### Extensible Embedded Platform example design change log ##############
+2021.2 changes 
+versal part_support
+
+2021.1 changes 
+Updated with CIPS 3.0
