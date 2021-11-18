@@ -10,7 +10,7 @@
 
 <DisplayName>TMR Microblaze Example Design</DisplayName>
 
-<Description></Description>
+<Description>TMR (Triple Modular Redundancy) MicroBlaze Support for Space DPU Applications.</Description>
 
 <Version>1.0</Version>
 

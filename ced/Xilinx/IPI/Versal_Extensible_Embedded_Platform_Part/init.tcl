@@ -19,7 +19,7 @@ set currentDir [file dirname $currentFile]
 
 source -notrace "$currentDir/run.tcl"
 proc getSupportedParts {} {
-set mylist [get_parts -filter {DEVICE =~ xcvc* || DEVICE =~ xcvm* || DEVICE =~ xcvp*}]
+set mylist [get_parts -filter {DEVICE =~ xcvc* || DEVICE =~ xcvm* || DEVICE =~ xcvp* || DEVICE =~ xcve* || DEVICE =~ xcvh*}]
     foreach item $mylist {
       set newitem versal{$item}
       lappend newlist $newitem
