@@ -3,10 +3,10 @@
       "items": [
         {
           "infra": {
-            "name": "TMR_Microblaze",
-            "display": "TMR Microblaze Example Design",
+            "name": "Versal CPM PCIe Debug",
+            "display": "Versal CPM PCIe Debug",
             "revision": "1.0",
-            "description": "TMR (Triple Modular Redundancy) MicroBlaze Support for Space DPU Applications.",
+            "description": "",
             "company": "xilinx.com",
             "company_display": "Xilinx",
             "author": "vanitha",
@@ -16,11 +16,11 @@
                 "url": "www.xilinx.com"
               }
             ],
-            "category": "Soft Processors",
+            "category": "Versal",
             "website": "www.xilinx.com",
             "is_active" : true, 
             "search-keywords": [
-              "TMR Microblaze Example Design",
+              "Versal CPM PCIe Debug",
               "xilinx.com",
               "example"             
             ]

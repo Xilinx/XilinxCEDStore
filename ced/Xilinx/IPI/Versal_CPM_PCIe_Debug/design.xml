@@ -1,0 +1,22 @@
+﻿<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+
+<ExampleDesign>
+
+<Vendor>xilinx.com</Vendor>
+
+<Library>design</Library>
+
+<Name>Versal_CPM_PCIe_Debug</Name>
+
+<DisplayName>Versal CPM PCIe Debug</DisplayName>
+
+<Description></Description>
+
+<Version>1.0</Version>
+
+<Design>init.tcl</Design>
+
+<Image>pcie.PNG</Image>
+
+</ExampleDesign>
+
