@@ -1,6 +1,6 @@
 
 ################################################################
-# This is a generated script based on design: config_mb
+# This is a generated script based on design: TMR_Microblaze
 #
 # Though there are limitations about the generated script,
 # the main purpose of this utility is to make learning
@@ -11,7 +11,6 @@ proc createDesign {design_name options} {
 ##################################################################
 # DESIGN PROCs
 ##################################################################
-
 
 # Hierarchical cell: microblaze_0_local_memory
 proc create_hier_cell_microblaze_0_local_memory_2 { parentCell nameHier } {
@@ -373,6 +372,8 @@ proc create_hier_cell_MB3 { parentCell nameHier } {
 
   create_bd_intf_pin -mode Master -vlnv xilinx.com:interface:aximm_rtl:1.0 M08_AXI
 
+  create_bd_intf_pin -mode Master -vlnv xilinx.com:interface:gpio_rtl:1.0 MB3_led_8bits
+
   create_bd_intf_pin -mode Monitor -vlnv xilinx.com:interface:aximm_rtl:1.0 M_AXI
 
   create_bd_intf_pin -mode Master -vlnv xilinx.com:interface:aximm_rtl:1.0 M_AXI_DC
@@ -425,8 +426,6 @@ proc create_hier_cell_MB3 { parentCell nameHier } {
 
   create_bd_intf_pin -mode Monitor -vlnv xilinx.com:interface:uart_rtl:1.0 UART2
 
-  create_bd_intf_pin -mode Master -vlnv xilinx.com:interface:gpio_rtl:1.0 led_8bits
-
   create_bd_intf_pin -mode Monitor -vlnv xilinx.com:interface:gpio_rtl:1.0 led_8bits1
 
   create_bd_intf_pin -mode Master -vlnv xilinx.com:interface:uart_rtl:1.0 rs232_uart
@@ -464,7 +463,7 @@ proc create_hier_cell_MB3 { parentCell nameHier } {
   # Create instance: axi_gpio_0, and set properties
   set axi_gpio_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_gpio axi_gpio_0 ]
   set_property -dict [ list \
-   CONFIG.GPIO_BOARD_INTERFACE {led_8bits} \
+   CONFIG.GPIO_BOARD_INTERFACE {Custom} \
    CONFIG.USE_BOARD_FLOW {true} \
  ] $axi_gpio_0
 
@@ -684,8 +683,8 @@ proc create_hier_cell_MB3 { parentCell nameHier } {
   connect_bd_intf_net -intf_net Conn30 [get_bd_intf_pins M_AXI] [get_bd_intf_pins tmr_comparator_AXI4LITE_8/M_AXI]
   connect_bd_intf_net -intf_net MB3_tmr_sem [get_bd_intf_pins M08_AXI] [get_bd_intf_pins microblaze_0_axi_periph/M08_AXI]
   connect_bd_intf_net -intf_net [get_bd_intf_nets MB3_tmr_sem] [get_bd_intf_pins M08_AXI] [get_bd_intf_pins tmr_comparator_AXI4LITE_8/S_AXI3]
-  connect_bd_intf_net -intf_net axi_gpio_0_GPIO [get_bd_intf_pins led_8bits] [get_bd_intf_pins axi_gpio_0/GPIO]
-  connect_bd_intf_net -intf_net [get_bd_intf_nets axi_gpio_0_GPIO] [get_bd_intf_pins led_8bits] [get_bd_intf_pins tmr_comparator_GPIO_5/GPIO3]
+  connect_bd_intf_net -intf_net axi_gpio_0_GPIO [get_bd_intf_pins MB3_led_8bits] [get_bd_intf_pins axi_gpio_0/GPIO]
+  connect_bd_intf_net -intf_net [get_bd_intf_nets axi_gpio_0_GPIO] [get_bd_intf_pins MB3_led_8bits] [get_bd_intf_pins tmr_comparator_GPIO_5/GPIO3]
   connect_bd_intf_net -intf_net axi_uartlite_0_UART [get_bd_intf_pins rs232_uart] [get_bd_intf_pins axi_uartlite_0/UART]
   connect_bd_intf_net -intf_net [get_bd_intf_nets axi_uartlite_0_UART] [get_bd_intf_pins rs232_uart] [get_bd_intf_pins tmr_comparator_UART_6/UART3]
   connect_bd_intf_net -intf_net microblaze_0_M_AXI_DC [get_bd_intf_pins M_AXI_DC] [get_bd_intf_pins microblaze_0/M_AXI_DC]
@@ -915,7 +914,7 @@ proc create_hier_cell_MB2 { parentCell nameHier } {
   # Create instance: axi_gpio_0, and set properties
   set axi_gpio_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_gpio axi_gpio_0 ]
   set_property -dict [ list \
-   CONFIG.GPIO_BOARD_INTERFACE {led_8bits} \
+   CONFIG.GPIO_BOARD_INTERFACE {Custom} \
    CONFIG.USE_BOARD_FLOW {true} \
  ] $axi_gpio_0
 
@@ -1370,7 +1369,7 @@ proc create_hier_cell_MB1 { parentCell nameHier } {
   # Create instance: axi_gpio_0, and set properties
   set axi_gpio_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_gpio axi_gpio_0 ]
   set_property -dict [ list \
-   CONFIG.GPIO_BOARD_INTERFACE {led_8bits} \
+   CONFIG.GPIO_BOARD_INTERFACE {Custom} \
    CONFIG.USE_BOARD_FLOW {true} \
  ] $axi_gpio_0
 
@@ -1806,6 +1805,7 @@ proc create_hier_cell_tmr_0 { parentCell nameHier } {
   set tmr_voter_GPIO_5 [ create_bd_cell -type ip -vlnv xilinx.com:ip:tmr_voter tmr_voter_GPIO_5 ]
   set_property -dict [ list \
    CONFIG.C_INTERFACE {11} \
+   CONFIG.GPIO_BOARD_INTERFACE {led_8bits} \
  ] $tmr_voter_GPIO_5
 
   # Create instance: tmr_voter_UART_6, and set properties
@@ -1898,7 +1898,7 @@ proc create_hier_cell_tmr_0 { parentCell nameHier } {
   connect_bd_intf_net -intf_net [get_bd_intf_nets MB3_M_AXI_IC] [get_bd_intf_pins MB2/S_AXI10] [get_bd_intf_pins MB3/M_AXI_IC]
   connect_bd_intf_net -intf_net MB3_TRACE [get_bd_intf_pins MB1/TraceSlave3] [get_bd_intf_pins MB3/TRACE]
   connect_bd_intf_net -intf_net [get_bd_intf_nets MB3_TRACE] [get_bd_intf_pins MB2/Trace3] [get_bd_intf_pins MB3/TRACE]
-  connect_bd_intf_net -intf_net MB3_led_8bits [get_bd_intf_pins MB3/led_8bits] [get_bd_intf_pins tmr_voter_GPIO_5/GPIO3]
+  connect_bd_intf_net -intf_net MB3_led_8bits [get_bd_intf_pins MB3/MB3_led_8bits] [get_bd_intf_pins tmr_voter_GPIO_5/GPIO3]
   connect_bd_intf_net -intf_net [get_bd_intf_nets MB3_led_8bits] [get_bd_intf_pins MB1/GPIO3] [get_bd_intf_pins tmr_voter_GPIO_5/GPIO3]
   connect_bd_intf_net -intf_net [get_bd_intf_nets MB3_led_8bits] [get_bd_intf_pins MB2/GPIO3] [get_bd_intf_pins tmr_voter_GPIO_5/GPIO3]
   connect_bd_intf_net -intf_net MB3_rs232_uart [get_bd_intf_pins MB3/rs232_uart] [get_bd_intf_pins tmr_voter_UART_6/UART3]
@@ -2092,7 +2092,7 @@ proc create_root_design { parentCell } {
    CONFIG.C0.DDR4_CLKFBOUT_MULT {4} \
    CONFIG.C0.DDR4_DataWidth {64} \
    CONFIG.C0.DDR4_InputClockPeriod {3332} \
-   CONFIG.C0.DDR4_MemoryPart {EDY4016AABG-DR-F} \
+   CONFIG.C0.DDR4_MemoryPart {MT40A256M16LY-062E} \
    CONFIG.C0_CLOCK_BOARD_INTERFACE {default_sysclk_300} \
    CONFIG.C0_DDR4_BOARD_INTERFACE {ddr4_sdram_062} \
    CONFIG.RESET_BOARD_INTERFACE {reset} \
