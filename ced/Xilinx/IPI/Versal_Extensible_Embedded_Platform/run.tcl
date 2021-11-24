@@ -22,7 +22,7 @@ proc createDesign {design_name options} {
 variable currentDir
 set_property target_language Verilog [current_project]
 
-proc create_root_design { currentDir design_name use_lpddr clk_options irqs} {
+proc create_root_design {currentDir design_name use_lpddr clk_options irqs use_aie} {
 
 puts "create_root_design"
 set board_part [get_property NAME [current_board_part]]
@@ -36,6 +36,7 @@ puts "INFO: selected irqs:: $irqs"
 puts "INFO: selected design_name:: $design_name"
 puts "INFO: selected use_lpddr:: $use_lpddr"
 puts "INFO: selected clk_options:: $clk_options"
+puts "INFO: selected use_aie:: $use_aie"
 
 set use_intc [set use_cascaded_irqs [set no_irqs ""]]
 set use_intc [ expr $irqs eq "32" ]
@@ -248,7 +249,8 @@ for {set i 0} {$i < $num_clks} {incr i} {
     connect_bd_net -net proc_sys_reset_${default_clk_num}_peripheral_aresetn [get_bd_pins axi_intc_parent/s_axi_aresetn]
   }
 
-if [regexp "vck" $board_name] {
+#if [regexp "vck" $board_name]
+if { $use_aie } {
 set_property -dict [list CONFIG.NUM_MI {1} CONFIG.NUM_CLKS {10}] [get_bd_cells cips_noc]
 set_property -dict [list CONFIG.CATEGORY {aie}] [get_bd_intf_pins /cips_noc/M00_AXI]
 set_property -dict [list CONFIG.CONNECTIONS {M00_AXI { read_bw {5} write_bw {5} read_avg_burst {4} write_avg_burst {4}} M00_INI { read_bw {128} write_bw {128}} }] [get_bd_intf_pins /cips_noc/S00_AXI]
@@ -287,7 +289,7 @@ assign_bd_address -offset 0x020000000000 -range 0x000100000000 -target_address_s
 
 if { $use_lpddr } {
 puts "INFO: lpddr4 selected"
-if [regexp "vck" $board_name] {
+if {$use_aie } {
 set_property -dict [list CONFIG.NUM_NMI {2}] [get_bd_cells cips_noc]
 set_property -dict [list CONFIG.CONNECTIONS {M01_INI { read_bw {128} write_bw {128}} M00_AXI { read_bw {5} write_bw {5} read_avg_burst {4} write_avg_burst {4}} M00_INI { read_bw {128} write_bw {128}} }] [get_bd_intf_pins /cips_noc/S00_AXI]
 set_property -dict [list CONFIG.CONNECTIONS {M01_INI { read_bw {128} write_bw {128}} M00_AXI { read_bw {5} write_bw {5} read_avg_burst {4} write_avg_burst {4}} M00_INI { read_bw {128} write_bw {128}} }] [get_bd_intf_pins /cips_noc/S01_AXI]
@@ -417,6 +419,13 @@ if { [dict exists $options $lpddr] } {
 }
 
 #puts "INFO: selected use_lpddr:: $use_lpddr"
+
+set aie "Include_AIE.VALUE"
+set use_aie 0
+if { [dict exists $options $aie] } {
+    set use_aie [dict get $options $aie ] }
+puts "INFO: selected use_aie:: $use_aie"
+
 # 0 (no interrupts) / 32 (interrupt controller) / 63 (interrupt controller + cascade block)
 set irqs_param "IRQS.VALUE"
 set irqs 32
@@ -426,7 +435,7 @@ if { [dict exists $options $irqs_param] } {
 }
 #puts "INFO: selected irqs:: $irqs"
 
-create_root_design $currentDir $design_name $use_lpddr $clk_options $irqs
+create_root_design $currentDir $design_name $use_lpddr $clk_options $irqs $use_aie
 	
 	#QoR script for vck190 production CED platforms
 	set board_part [get_property NAME [current_board_part]]

@@ -15,7 +15,7 @@
 # ########################################################################
 
 set currentFile [file normalize [info script]]
-variable currentDir [file dirname $currentFile]
+set currentDir [file dirname $currentFile]
 
 source -notrace "$currentDir/run.tcl"
 proc getSupportedParts {} {
@@ -28,6 +28,8 @@ proc getSupportedBoards {} {
 
 proc addOptions {DESIGNOBJ PROJECT_PARAM.BOARD_PART} {
     lappend x [dict create name "Include_LPDDR" type "bool" value "false" enabled true]
+	lappend x [dict create name "Include_DDR" type "bool" value "true" enabled true]
+	lappend x [dict create name "Include_AIE" type "bool" value "false" enabled true]
     lappend x [dict create name "Clock_Options" type "string" value "clk_out1 200.000 0 true clk_out2 100.000 1 false clk_out3 300.000 2 false" enabled true]
     lappend x [dict create name "IRQS" type "string" value "32" value_list {"32 32_Interrupts,_single_interrupt_controller" "63 63_interrupts,_cascaded_interrupt_controller"} enabled true]
     return $x
@@ -42,8 +44,12 @@ proc addGUILayout {DESIGNOBJ PROJECT_PARAM.BOARD_PART} {
 
     ced::add_param -name IRQS -display_name "Interrupts" -parent $page -designObject $designObj -widget radioGroup
 
-    set ddr [ced::add_group -name "Versal LPDDR Configurations" -display_name "Memory"  -parent $page -visible true -designObject $designObj ]
-    ced::add_param -name Include_LPDDR -display_name "Include LPDDR interfaces" -parent $ddr -designObject $designObj -widget checkbox
+    set ddr [ced::add_group -name "Versal Memory Configurations" -display_name "Memory"  -parent $page -visible true -designObject $designObj ]
+    ced::add_param -name Include_DDR -display_name "DDR4(default)" -parent $ddr -designObject $designObj -widget checkbox
+	ced::add_param -name Include_LPDDR -display_name "LPDDR4" -parent $ddr -designObject $designObj -widget checkbox
+	
+	set aie [ced::add_group -name "AIE Block" -display_name "AIE Block"  -parent $page -visible true -designObject $designObj ]
+	ced::add_param -name Include_AIE -display_name "AIE" -parent $aie -designObject $designObj -widget checkbox
 }
 
 # validater { parameters_used } { parameters_modified} { functionality }
@@ -111,10 +117,37 @@ validater { Clock_Options.VALUE } { Clock_Options.ERRMSG } {
     }
 }
 
-updater {Include_LPDDR.VALUE} {Include_LPDDR.ENABLEMENT} {
-  if { ${Include_LPDDR.VALUE} == true } {
-     set Include_LPDDR.ENABLEMENT true
-  } else {
-	 set Include_LPDDR.ENABLEMENT true
-	 }
+# updater {Include_LPDDR.VALUE} {Include_LPDDR.ENABLEMENT} {
+  # if { ${Include_LPDDR.VALUE} == true } {
+    # set Include_LPDDR.ENABLEMENT true
+  # } else {
+    # set Include_LPDDR.ENABLEMENT false
+  # }
+# }
+
+# updater {Include_AIE.VALUE} {Include_AIE.ENABLEMENT} {
+  # if { ${Include_AIE.VALUE} == true } {
+    # set Include_AIE.ENABLEMENT true
+  # } else {
+    # set Include_AIE.ENABLEMENT false
+  # }
+# }
+
+gui_updater {PROJECT_PARAM.PART} {Include_AIE.VISIBLE Include_AIE.ENABLEMENT Include_AIE.VALUE} {
+if { [regexp "xcvc" ${PROJECT_PARAM.PART}]} {
+      #set Include_AIE.VISIBLE true
+	  set Include_AIE.ENABLEMENT true
+	  set Include_AIE.VALUE true
+    } else {
+      #set Include_AIE.VISIBLE false	 
+	  set Include_AIE.ENABLEMENT false
+	  set Include_AIE.VALUE false
+    }
+}
+
+gui_updater {PROJECT_PARAM.PART} {Include_DDR.VALUE Include_DDR.ENABLEMENT} {
+  if { ${Include_DDR.VALUE} == true } {
+    set Include_DDR.ENABLEMENT false
+	set Include_DDR.VALUE true
+  }
 }
