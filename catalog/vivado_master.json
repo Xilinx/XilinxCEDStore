@@ -157,11 +157,11 @@
         "name": "ext_platform",
         "display": "Versal Extensible Embedded Platform",
         "latest_revision": "1.0",
-        "commit_id": "cc46c54dd20af694145c1e97d435a67f63202341",
+        "commit_id": "61ed8320b70fe130110ce49ae9a2b00baad9b522",
         "revisions": [
           {
             "revision": "1.0",
-            "commit_id": "cc46c54dd20af694145c1e97d435a67f63202341",
+            "commit_id": "61ed8320b70fe130110ce49ae9a2b00baad9b522",
             "date": "24-06-2021:08:47:28",
             "history": "Added board Versal Extensible Embedded Platform v1.0"
           }
@@ -206,6 +206,44 @@
         ],
         "config": {
           "root": "ced/Xilinx/IPI/Versal_Extensible_Embedded_Platform_Part",
+          "metadata_file": "xitem.json"
+        },
+        "company": "xilinx.com"
+      },
+      {
+        "name": "TMR_Microblaze",
+        "display": "TMR Microblaze Example Design",
+        "latest_revision": "1.0",
+        "commit_id": "61ed8320b70fe130110ce49ae9a2b00baad9b522",
+        "revisions": [
+          {
+            "revision": "1.0",
+            "commit_id": "61ed8320b70fe130110ce49ae9a2b00baad9b522",
+            "date": "24-11-2021:10:43:37",
+            "history": "Added board TMR Microblaze Example Design v1.0"
+          }
+        ],
+        "config": {
+          "root": "ced/Xilinx/IPI/TMR_Microblaze",
+          "metadata_file": "xitem.json"
+        },
+        "company": "xilinx.com"
+      },
+      {
+        "name": "Versal CPM PCIe Debug",
+        "display": "Versal CPM PCIe Debug",
+        "latest_revision": "1.0",
+        "commit_id": "61ed8320b70fe130110ce49ae9a2b00baad9b522",
+        "revisions": [
+          {
+            "revision": "1.0",
+            "commit_id": "61ed8320b70fe130110ce49ae9a2b00baad9b522",
+            "date": "24-11-2021:10:43:37",
+            "history": "Added board Versal CPM PCIe Debug v1.0"
+          }
+        ],
+        "config": {
+          "root": "ced/Xilinx/IPI/Versal_CPM_PCIe_Debug",
           "metadata_file": "xitem.json"
         },
         "company": "xilinx.com"
