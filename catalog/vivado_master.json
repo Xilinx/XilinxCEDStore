@@ -173,8 +173,8 @@
         "company": "xilinx.com"
       },
       {
-        "name": "cips_ddr_pl_debug",
-        "display": "CIPS DDR PL Debug",
+        "name": "TMR_Microblaze",
+        "display": "TMR Microblaze Example Design",
         "latest_revision": "1.0",
         "commit_id": "cc46c54dd20af694145c1e97d435a67f63202341",
         "revisions": [
