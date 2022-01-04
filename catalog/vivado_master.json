@@ -247,6 +247,25 @@
           "metadata_file": "xitem.json"
         },
         "company": "xilinx.com"
+      },
+      {
+        "name": "MPSoC_ext_platform",
+        "display": "Extensible Platform ExampleDesign for MPSoC",
+        "latest_revision": "1.0",
+        "commit_id": "bd49ea868b99caf8a58ddedd912c093f0874293f",
+        "revisions": [
+          {
+            "revision": "1.0",
+            "commit_id": "bd49ea868b99caf8a58ddedd912c093f0874293f",
+            "date": "04-01-2022:06:35:23",
+            "history": "Added board Extensible Platform ExampleDesign for MPSoC v1.0"
+          }
+        ],
+        "config": {
+          "root": "ced/Xilinx/IPI/MPSoC_Ext_Platform",
+          "metadata_file": "xitem.json"
+        },
+        "company": "xilinx.com"
       }
     ],
     "categories": [
