@@ -122,7 +122,7 @@ if {$irqs_GIC} {
 set_property -dict [list CONFIG.PSU__USE__IRQ1 {1}] [get_bd_cells ps_e] }
 
 # Cclocks optins, and set properties
-set clk_freqs [ list 75.000 150.000 300.000 100.000 100.000 100.000 100.000 ]
+set clk_freqs [ list 100.000 200.000 300.000 100.000 100.000 100.000 100.000 ]
 set clk_used [list true false false false false false false ]
 set clk_ports [list clk_out1 clk_out2 clk_out3 clk_out4 clk_out5 clk_out6 clk_out7 ]
 set default_clk_port clk_out1
@@ -194,6 +194,9 @@ for {set i 0} {$i < $num_clks} {incr i} {
   connect_bd_net -net Net [get_bd_pins clk_wiz_0/resetn] [get_bd_pins ps_e/pl_resetn0] [get_bd_pins proc_sys_reset_$i/ext_reset_in]
   connect_bd_net [get_bd_pins clk_wiz_0/locked] [get_bd_pins proc_sys_reset_$i/dcm_locked] }
 
+#create default clock connection
+set default_clock_net clk_wiz_0_$default_clk_port
+
 # Create instance: interconnect_axifull, and set properties
 set interconnect_axifull [ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_interconnect interconnect_axifull ]
 set_property -dict [ list CONFIG.NUM_MI {1} ] $interconnect_axifull
@@ -221,8 +224,17 @@ set_property -dict [list CONFIG.NUM_MI {2} CONFIG.NUM_SI {1} CONFIG.NUM_CLKS {2}
 create_bd_cell -type ip -vlnv xilinx.com:ip:ddr4:* pl_ddr4
 apply_board_connection -board_interface "$ddr4_board_interface_1" -ip_intf "pl_ddr4/C0_DDR4" -diagram $design_name
 
-apply_bd_automation -rule xilinx.com:bd_rule:axi4 -config { Clk_master {/clk_wiz_0/clk_out3 (300 MHz)} Clk_slave {/pl_ddr4/c0_ddr4_ui_clk (300 MHz)} Clk_xbar {/clk_wiz_0/clk_out3 (300 MHz)} Master {/ps_e/M_AXI_HPM0_FPD} Slave {/pl_ddr4/C0_DDR4_S_AXI} ddr_seg {Auto} intc_ip {/axi_smc} master_apm {0}}  [get_bd_intf_pins pl_ddr4/C0_DDR4_S_AXI]
-#apply_bd_automation -rule xilinx.com:bd_rule:board -config { Board_Interface {user_si570_sysclk ( User Programmable differential clock ) } Manual_Source {Auto}}  [get_bd_intf_pins pl_ddr4/C0_SYS_CLK]
+set rst_pl_ddr4_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:proc_sys_reset rst_pl_ddr4_0 ]
+connect_bd_net -net pl_ddr4_c0_ddr4_ui_clk [get_bd_pins axi_smc/aclk1] [get_bd_pins pl_ddr4/c0_ddr4_ui_clk] [get_bd_pins rst_pl_ddr4_0/slowest_sync_clk]
+connect_bd_net -net pl_ddr4_c0_ddr4_ui_clk_sync_rst [get_bd_pins pl_ddr4/c0_ddr4_ui_clk_sync_rst] [get_bd_pins rst_pl_ddr4_0/ext_reset_in]
+connect_bd_net -net rst_pl_ddr4_0_peripheral_aresetn [get_bd_pins pl_ddr4/c0_ddr4_aresetn] [get_bd_pins rst_pl_ddr4_0/peripheral_aresetn]
+
+connect_bd_intf_net -intf_net axi_smc_M00_AXI [get_bd_intf_pins axi_smc/M00_AXI] [get_bd_intf_pins pl_ddr4/C0_DDR4_S_AXI]
+connect_bd_intf_net -intf_net ps_e_M_AXI_HPM0_FPD [get_bd_intf_pins axi_smc/S00_AXI] [get_bd_intf_pins ps_e/M_AXI_HPM0_FPD]
+#apply_bd_automation -rule xilinx.com:bd_rule:axi4 -config { Clk_master {/clk_wiz_0/${default_clk_port} } Clk_slave {/pl_ddr4/c0_ddr4_ui_clk (300 MHz)} Clk_xbar {/clk_wiz_0/${default_clk_port} } Master {/ps_e/M_AXI_HPM0_FPD} Slave {/pl_ddr4/C0_DDR4_S_AXI} ddr_seg {Auto} intc_ip {/axi_smc} master_apm {0}}  [get_bd_intf_pins pl_ddr4/C0_DDR4_S_AXI]
+
+connect_bd_net -net $default_clock_net [get_bd_pins ps_e/maxihpm0_fpd_aclk] [get_bd_pins axi_smc/aclk]
+connect_bd_net [get_bd_pins proc_sys_reset_${default_clk_num}/interconnect_aresetn] [get_bd_pins axi_smc/aresetn] 
 
 set board_name [get_property BOARD_NAME [current_board]]
 if {($board_name == "zcu104")||[regexp "vermeo" $board_name] } {
@@ -237,7 +249,7 @@ connect_bd_intf_net [get_bd_intf_pins axi_register_slice_0/S_AXI] [get_bd_intf_p
 catch {set S_AXI_CTRL [get_bd_intf_pins pl_ddr4/C0_DDR4_S_AXI_CTRL]}
 
 if [regexp "C0_DDR4_S_AXI_CTRL" $S_AXI_CTRL] {
-apply_bd_automation -rule xilinx.com:bd_rule:axi4 -config { Clk_master {/clk_wiz_0/clk_out3 (300 MHz)} Clk_slave {/pl_ddr4/c0_ddr4_ui_clk (333 MHz)} Clk_xbar {/clk_wiz_0/clk_out3 (300 MHz)} Master {/ps_e/M_AXI_HPM0_FPD} Slave {/pl_ddr4/C0_DDR4_S_AXI_CTRL} ddr_seg {Auto} intc_ip {/axi_smc} master_apm {0}}  [get_bd_intf_pins pl_ddr4/C0_DDR4_S_AXI_CTRL]
+apply_bd_automation -rule xilinx.com:bd_rule:axi4 -config { Clk_master {/clk_wiz_0/$default_clk_port (300 MHz)} Clk_slave {/pl_ddr4/c0_ddr4_ui_clk (333 MHz)} Clk_xbar {/clk_wiz_0/$default_clk_port (300 MHz)} Master {/ps_e/M_AXI_HPM0_FPD} Slave {/pl_ddr4/C0_DDR4_S_AXI_CTRL} ddr_seg {Auto} intc_ip {/axi_smc} master_apm {0}}  [get_bd_intf_pins pl_ddr4/C0_DDR4_S_AXI_CTRL]
 } }
 
   # Create interface connections
@@ -247,28 +259,23 @@ apply_bd_automation -rule xilinx.com:bd_rule:axi4 -config { Clk_master {/clk_wiz
   connect_bd_intf_net -intf_net axi_interconnect_1_M00_AXI [get_bd_intf_pins interconnect_axifull/M00_AXI] [get_bd_intf_pins ps_e/S_AXI_HP3_FPD]
   connect_bd_intf_net -intf_net axi_vip_0_M_AXI [get_bd_intf_pins axi_vip_0/M_AXI] [get_bd_intf_pins interconnect_axifull/S00_AXI]
   connect_bd_intf_net -intf_net axi_vip_1_M_AXI [get_bd_intf_pins axi_interconnect_lpd/S00_AXI] [get_bd_intf_pins axi_vip_1/M_AXI]
-  #connect_bd_intf_net -intf_net interconnect_axihpm0fpd_M00_AXI [get_bd_intf_pins axi_register_slice_0/S_AXI] [get_bd_intf_pins interconnect_axihpm0fpd/M00_AXI]
-  #connect_bd_intf_net -intf_net ps_e_M_AXI_HPM0_FPD [get_bd_intf_pins interconnect_axihpm0fpd/S00_AXI] [get_bd_intf_pins ps_e/M_AXI_HPM0_FPD]
   connect_bd_intf_net -intf_net ps_e_M_AXI_HPM0_LPD [get_bd_intf_pins interconnect_axilite/S00_AXI] [get_bd_intf_pins ps_e/M_AXI_HPM0_LPD]
 
   # Create port connections
-  #connect_bd_net -net axi_intc_0_irq [get_bd_pins axi_intc_0/irq] [get_bd_pins ps_e/pl_ps_irq0]
   connect_bd_net -net ps_e_pl_clk0 [get_bd_pins clk_wiz_0/clk_in1] [get_bd_pins ps_e/pl_clk0]
-
-  connect_bd_net -net clk_wiz_0_clk_out1 [get_bd_pins axi_intc_0/s_axi_aclk] [get_bd_pins clk_wiz_0/clk_out1] [get_bd_pins interconnect_axilite/ACLK] [get_bd_pins interconnect_axilite/M00_ACLK] [get_bd_pins interconnect_axilite/S00_ACLK] [get_bd_pins proc_sys_reset_0/slowest_sync_clk] [get_bd_pins ps_e/maxihpm0_lpd_aclk]
- # connect_bd_net -net clk_wiz_0_clk_out3 [get_bd_pins axi_interconnect_lpd/ACLK] [get_bd_pins axi_interconnect_lpd/M00_ACLK] [get_bd_pins axi_interconnect_lpd/S00_ACLK] [get_bd_pins axi_register_slice_0/aclk] [get_bd_pins axi_vip_0/aclk] [get_bd_pins axi_vip_1/aclk] [get_bd_pins clk_wiz_0/clk_out3] [get_bd_pins interconnect_axifull/ACLK] [get_bd_pins interconnect_axifull/M00_ACLK] [get_bd_pins interconnect_axifull/S00_ACLK] [get_bd_pins interconnect_axihpm0fpd/ACLK] [get_bd_pins interconnect_axihpm0fpd/M00_ACLK] [get_bd_pins interconnect_axihpm0fpd/S00_ACLK] [get_bd_pins proc_sys_reset_2/slowest_sync_clk] [get_bd_pins ps_e/maxihpm0_fpd_aclk] [get_bd_pins ps_e/saxi_lpd_aclk] [get_bd_pins ps_e/saxihp3_fpd_aclk]
-  connect_bd_net -net proc_sys_reset_0_interconnect_aresetn [get_bd_pins axi_intc_0/s_axi_aresetn] [get_bd_pins interconnect_axilite/ARESETN] [get_bd_pins interconnect_axilite/M00_ARESETN] [get_bd_pins interconnect_axilite/S00_ARESETN] [get_bd_pins proc_sys_reset_0/interconnect_aresetn]
-  #connect_bd_net -net proc_sys_reset_2_interconnect_aresetn [get_bd_pins axi_interconnect_lpd/ARESETN] [get_bd_pins axi_interconnect_lpd/M00_ARESETN] [get_bd_pins axi_interconnect_lpd/S00_ARESETN] [get_bd_pins axi_vip_1/aresetn] [get_bd_pins interconnect_axifull/ARESETN] [get_bd_pins interconnect_axifull/M00_ARESETN] [get_bd_pins interconnect_axifull/S00_ARESETN] [get_bd_pins interconnect_axihpm0fpd/ARESETN] [get_bd_pins interconnect_axihpm0fpd/M00_ARESETN] [get_bd_pins interconnect_axihpm0fpd/S00_ARESETN] [get_bd_pins proc_sys_reset_2/interconnect_aresetn]
-  connect_bd_net -net proc_sys_reset_2_peripheral_aresetn [get_bd_pins axi_register_slice_0/aresetn] [get_bd_pins axi_vip_0/aresetn] [get_bd_pins proc_sys_reset_2/peripheral_aresetn]
-  connect_bd_net -net clk_wiz_0_clk_out3 [get_bd_pins axi_interconnect_lpd/ACLK] [get_bd_pins axi_interconnect_lpd/M00_ACLK] [get_bd_pins axi_interconnect_lpd/S00_ACLK] [get_bd_pins axi_register_slice_0/aclk] [get_bd_pins axi_vip_0/aclk] [get_bd_pins axi_vip_1/aclk] [get_bd_pins clk_wiz_0/clk_out3] [get_bd_pins interconnect_axifull/ACLK] [get_bd_pins interconnect_axifull/M00_ACLK] [get_bd_pins interconnect_axifull/S00_ACLK] [get_bd_pins ps_e/saxi_lpd_aclk] [get_bd_pins ps_e/saxihp3_fpd_aclk]
-  connect_bd_net -net proc_sys_reset_2_interconnect_aresetn [get_bd_pins axi_interconnect_lpd/ARESETN] [get_bd_pins axi_interconnect_lpd/M00_ARESETN] [get_bd_pins axi_interconnect_lpd/S00_ARESETN] [get_bd_pins axi_vip_1/aresetn] [get_bd_pins interconnect_axifull/ARESETN] [get_bd_pins interconnect_axifull/M00_ARESETN] [get_bd_pins interconnect_axifull/S00_ARESETN] [get_bd_pins proc_sys_reset_2/interconnect_aresetn]
+  connect_bd_net -net $default_clock_net [get_bd_pins axi_intc_0/s_axi_aclk] [get_bd_pins axi_interconnect_lpd/ACLK] [get_bd_pins axi_interconnect_lpd/M00_ACLK] [get_bd_pins axi_interconnect_lpd/S00_ACLK] [get_bd_pins axi_register_slice_0/aclk] [get_bd_pins axi_vip_0/aclk] [get_bd_pins axi_vip_1/aclk] [get_bd_pins interconnect_axifull/ACLK] [get_bd_pins interconnect_axifull/M00_ACLK] [get_bd_pins interconnect_axifull/S00_ACLK] [get_bd_pins interconnect_axilite/ACLK] [get_bd_pins interconnect_axilite/M00_ACLK] [get_bd_pins interconnect_axilite/S00_ACLK] [get_bd_pins ps_e/maxihpm0_fpd_aclk] [get_bd_pins ps_e/maxihpm0_lpd_aclk] [get_bd_pins ps_e/saxi_lpd_aclk] [get_bd_pins ps_e/saxihp3_fpd_aclk]
+  connect_bd_net -net proc_sys_reset_1_interconnect_aresetn [get_bd_pins axi_intc_0/s_axi_aresetn] [get_bd_pins axi_interconnect_lpd/ARESETN] [get_bd_pins axi_interconnect_lpd/M00_ARESETN] [get_bd_pins axi_interconnect_lpd/S00_ARESETN] [get_bd_pins axi_vip_1/aresetn] [get_bd_pins interconnect_axifull/ARESETN] [get_bd_pins interconnect_axifull/M00_ARESETN] [get_bd_pins interconnect_axifull/S00_ARESETN] [get_bd_pins interconnect_axilite/ARESETN] [get_bd_pins interconnect_axilite/M00_ARESETN] [get_bd_pins interconnect_axilite/S00_ARESETN] 
+  connect_bd_net [get_bd_pins proc_sys_reset_${default_clk_num}/interconnect_aresetn] [get_bd_pins axi_vip_1/aresetn]
+  connect_bd_net -net proc_sys_reset_2_peripheral_aresetn [get_bd_pins axi_register_slice_0/aresetn] [get_bd_pins axi_vip_0/aresetn] 
+  connect_bd_net [get_bd_pins proc_sys_reset_${default_clk_num}/peripheral_aresetn] [get_bd_pins axi_vip_0/aresetn] 
+  
 
   if {!$use_ddr } { 
   connect_bd_intf_net -intf_net interconnect_axihpm0fpd_M00_AXI [get_bd_intf_pins axi_register_slice_0/S_AXI] [get_bd_intf_pins interconnect_axihpm0fpd/M00_AXI]
   connect_bd_intf_net -intf_net ps_e_M_AXI_HPM0_FPD [get_bd_intf_pins interconnect_axihpm0fpd/S00_AXI] [get_bd_intf_pins ps_e/M_AXI_HPM0_FPD]
   
-  connect_bd_net -net clk_wiz_0_clk_out3 [get_bd_pins interconnect_axihpm0fpd/ACLK] [get_bd_pins interconnect_axihpm0fpd/M00_ACLK] [get_bd_pins interconnect_axihpm0fpd/S00_ACLK] [get_bd_pins ps_e/maxihpm0_fpd_aclk]
-  connect_bd_net -net proc_sys_reset_2_interconnect_aresetn [get_bd_pins interconnect_axihpm0fpd/ARESETN] [get_bd_pins interconnect_axihpm0fpd/M00_ARESETN] [get_bd_pins interconnect_axihpm0fpd/S00_ARESETN] [get_bd_pins proc_sys_reset_2/interconnect_aresetn]
+  connect_bd_net -net $default_clock_net [get_bd_pins interconnect_axihpm0fpd/ACLK] [get_bd_pins interconnect_axihpm0fpd/M00_ACLK] [get_bd_pins interconnect_axihpm0fpd/S00_ACLK] [get_bd_pins ps_e/maxihpm0_fpd_aclk]
+  connect_bd_net [get_bd_pins proc_sys_reset_${default_clk_num}/interconnect_aresetn] [get_bd_pins interconnect_axihpm0fpd/ARESETN] [get_bd_pins interconnect_axihpm0fpd/M00_ARESETN] [get_bd_pins interconnect_axihpm0fpd/S00_ARESETN]
 }
   # Create address segments
   assign_bd_address -offset 0x00000000 -range 0x80000000 -target_address_space [get_bd_addr_spaces axi_vip_0/Master_AXI] [get_bd_addr_segs ps_e/SAXIGP5/HP3_DDR_LOW] -force
