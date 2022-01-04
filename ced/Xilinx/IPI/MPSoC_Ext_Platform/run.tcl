@@ -145,6 +145,7 @@ set num_clks $i
 
 # Create instance: clk_wiz_0, and set properties
 set clk_wiz_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:clk_wiz clk_wiz_0 ]
+set_property -dict [list CONFIG.PRIM_SOURCE {No_buffer}] [get_bd_cells clk_wiz_0]
 
 # Creating clk frequenices  to instance: clk_wiz_0.
 for {set i 0} {$i < $num_clks} {incr i} {  
