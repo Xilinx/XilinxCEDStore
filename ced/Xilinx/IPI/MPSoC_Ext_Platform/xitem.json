@@ -1,0 +1,33 @@
+{
+    "config": {
+      "items": [
+        {
+          "infra": {
+            "name": "MPSoC_ext_platform",
+            "display": "Extensible Platform ExampleDesign for MPSoC",
+            "revision": "1.0",
+            "description": "An example extendable platform design for Zynq UltraScale+ MPSoC devices",
+            "company": "xilinx.com",
+            "company_display": "Xilinx",
+            "author": "vanitha",
+            "contributors": [
+              {
+                "group": "Xilinx",
+                "url": "www.xilinx.com"
+              }
+            ],
+            "category": "Platforms",
+            "website": "www.xilinx.com",
+            "is_active" : true, 
+            "search-keywords": [
+              "Extensible Platform ExampleDesign for MPSoC",
+              "xilinx.com",
+              "example"             
+            ]
+          }
+        }
+      ]
+    },
+    "_major" : 1,
+    "_minor" : 0
+}
