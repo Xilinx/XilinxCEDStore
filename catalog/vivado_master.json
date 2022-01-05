@@ -233,17 +233,93 @@
         "name": "MPSoC_ext_platform",
         "display": "Extensible Platform ExampleDesign for MPSoC",
         "latest_revision": "1.0",
-        "commit_id": "bd49ea868b99caf8a58ddedd912c093f0874293f",
+        "commit_id": "1026d92cb8e4cf9a0d6d7078e917c66d0e563981",
         "revisions": [
           {
             "revision": "1.0",
-            "commit_id": "bd49ea868b99caf8a58ddedd912c093f0874293f",
+            "commit_id": "1026d92cb8e4cf9a0d6d7078e917c66d0e563981",
             "date": "04-01-2022:06:35:23",
             "history": "Added board Extensible Platform ExampleDesign for MPSoC v1.0"
           }
         ],
         "config": {
           "root": "ced/Xilinx/IPI/MPSoC_Ext_Platform",
+          "metadata_file": "xitem.json"
+        },
+        "company": "xilinx.com"
+      },
+      {
+        "name": "BFT",
+        "display": "BFT",
+        "latest_revision": "1.0",
+        "commit_id": "1026d92cb8e4cf9a0d6d7078e917c66d0e563981",
+        "revisions": [
+          {
+            "revision": "1.0",
+            "commit_id": "1026d92cb8e4cf9a0d6d7078e917c66d0e563981",
+            "date": "05-01-2022:04:15:30",
+            "history": "Added board BFT v1.0"
+          }
+        ],
+        "config": {
+          "root": "ced/Xilinx/nonIPI/bft",
+          "metadata_file": "xitem.json"
+        },
+        "company": "xilinx.com"
+      },
+      {
+        "name": "cpu_hdl",
+        "display": "CPU (HDL)",
+        "latest_revision": "1.0",
+        "commit_id": "1026d92cb8e4cf9a0d6d7078e917c66d0e563981",
+        "revisions": [
+          {
+            "revision": "1.0",
+            "commit_id": "1026d92cb8e4cf9a0d6d7078e917c66d0e563981",
+            "date": "05-01-2022:04:15:30",
+            "history": "Added board CPU (HDL) v1.0"
+          }
+        ],
+        "config": {
+          "root": "ced/Xilinx/nonIPI/cpu_hdl",
+          "metadata_file": "xitem.json"
+        },
+        "company": "xilinx.com"
+      },
+      {
+        "name": "cpu_netlist",
+        "display": "CPU (Synthesized)",
+        "latest_revision": "1.0",
+        "commit_id": "1026d92cb8e4cf9a0d6d7078e917c66d0e563981",
+        "revisions": [
+          {
+            "revision": "1.0",
+            "commit_id": "1026d92cb8e4cf9a0d6d7078e917c66d0e563981",
+            "date": "05-01-2022:04:15:30",
+            "history": "Added board CPU (Synthesized) v1.0"
+          }
+        ],
+        "config": {
+          "root": "ced/Xilinx/nonIPI/cpu_netlist",
+          "metadata_file": "xitem.json"
+        },
+        "company": "xilinx.com"
+      },
+      {
+        "name": "wave_gen",
+        "display": "Wavegen (HDL)",
+        "latest_revision": "1.0",
+        "commit_id": "1026d92cb8e4cf9a0d6d7078e917c66d0e563981",
+        "revisions": [
+          {
+            "revision": "1.0",
+            "commit_id": "1026d92cb8e4cf9a0d6d7078e917c66d0e563981",
+            "date": "05-01-2022:04:15:30",
+            "history": "Added board Wavegen (HDL) v1.0"
+          }
+        ],
+        "config": {
+          "root": "ced/Xilinx/nonIPI/wave_gen",
           "metadata_file": "xitem.json"
         },
         "company": "xilinx.com"
