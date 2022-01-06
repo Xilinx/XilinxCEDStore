@@ -32,7 +32,7 @@ proc addOptions {DESIGNOBJ PROJECT_PARAM.BOARD_PART} {
 	lappend x [dict create name "Include_IRQS16" type "bool" value "false" enabled true]
 	lappend x [dict create name "Include_DDR" type "bool" value "false" enabled true]
 	#lappend x [dict create name "Include_AIE" type "bool" value "false" enabled true]
-    lappend x [dict create name "Clock_Options" type "string" value "clk_out1 75.000 0 true clk_out2 150.000 1 false clk_out3 300.000 2 false" enabled true]
+    lappend x [dict create name "Clock_Options" type "string" value "clk_out1 100.000 0 true clk_out2 200.000 1 false clk_out3 300.000 2 false" enabled true]
     #lappend x [dict create name "IRQS" type "string" value "32" value_list {"32 32_Interrupts,_using_INTC" "16 16_interrupts,_using_GIC"} enabled true]
     return $x
 }
