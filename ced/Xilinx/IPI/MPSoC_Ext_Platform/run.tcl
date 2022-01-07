@@ -264,8 +264,8 @@ apply_bd_automation -rule xilinx.com:bd_rule:axi4 -config { Clk_master {/clk_wiz
   # Create port connections
   connect_bd_net -net ps_e_pl_clk0 [get_bd_pins clk_wiz_0/clk_in1] [get_bd_pins ps_e/pl_clk0]
   connect_bd_net -net $default_clock_net [get_bd_pins axi_intc_0/s_axi_aclk] [get_bd_pins axi_interconnect_lpd/ACLK] [get_bd_pins axi_interconnect_lpd/M00_ACLK] [get_bd_pins axi_interconnect_lpd/S00_ACLK] [get_bd_pins axi_register_slice_0/aclk] [get_bd_pins axi_vip_0/aclk] [get_bd_pins axi_vip_1/aclk] [get_bd_pins interconnect_axifull/ACLK] [get_bd_pins interconnect_axifull/M00_ACLK] [get_bd_pins interconnect_axifull/S00_ACLK] [get_bd_pins interconnect_axilite/ACLK] [get_bd_pins interconnect_axilite/M00_ACLK] [get_bd_pins interconnect_axilite/S00_ACLK] [get_bd_pins ps_e/maxihpm0_fpd_aclk] [get_bd_pins ps_e/maxihpm0_lpd_aclk] [get_bd_pins ps_e/saxi_lpd_aclk] [get_bd_pins ps_e/saxihp3_fpd_aclk]
-  connect_bd_net -net proc_sys_reset_1_interconnect_aresetn [get_bd_pins axi_intc_0/s_axi_aresetn] [get_bd_pins axi_interconnect_lpd/ARESETN] [get_bd_pins axi_interconnect_lpd/M00_ARESETN] [get_bd_pins axi_interconnect_lpd/S00_ARESETN] [get_bd_pins axi_vip_1/aresetn] [get_bd_pins interconnect_axifull/ARESETN] [get_bd_pins interconnect_axifull/M00_ARESETN] [get_bd_pins interconnect_axifull/S00_ARESETN] [get_bd_pins interconnect_axilite/ARESETN] [get_bd_pins interconnect_axilite/M00_ARESETN] [get_bd_pins interconnect_axilite/S00_ARESETN] 
-  connect_bd_net [get_bd_pins proc_sys_reset_${default_clk_num}/interconnect_aresetn] [get_bd_pins axi_vip_1/aresetn]
+  #connect_bd_net -net proc_sys_reset_1_interconnect_aresetn [get_bd_pins axi_intc_0/s_axi_aresetn] [get_bd_pins axi_interconnect_lpd/ARESETN] [get_bd_pins axi_interconnect_lpd/M00_ARESETN] [get_bd_pins axi_interconnect_lpd/S00_ARESETN] [get_bd_pins axi_vip_1/aresetn] [get_bd_pins interconnect_axifull/ARESETN] [get_bd_pins interconnect_axifull/M00_ARESETN] [get_bd_pins interconnect_axifull/S00_ARESETN] [get_bd_pins interconnect_axilite/ARESETN] [get_bd_pins interconnect_axilite/M00_ARESETN] [get_bd_pins interconnect_axilite/S00_ARESETN] 
+  connect_bd_net [get_bd_pins proc_sys_reset_${default_clk_num}/interconnect_aresetn] [get_bd_pins axi_intc_0/s_axi_aresetn] [get_bd_pins axi_interconnect_lpd/ARESETN] [get_bd_pins axi_interconnect_lpd/M00_ARESETN] [get_bd_pins axi_interconnect_lpd/S00_ARESETN] [get_bd_pins axi_vip_1/aresetn] [get_bd_pins interconnect_axifull/ARESETN] [get_bd_pins interconnect_axifull/M00_ARESETN] [get_bd_pins interconnect_axifull/S00_ARESETN] [get_bd_pins interconnect_axilite/ARESETN] [get_bd_pins interconnect_axilite/M00_ARESETN] [get_bd_pins interconnect_axilite/S00_ARESETN] 
   connect_bd_net -net proc_sys_reset_2_peripheral_aresetn [get_bd_pins axi_register_slice_0/aresetn] [get_bd_pins axi_vip_0/aresetn] 
   connect_bd_net [get_bd_pins proc_sys_reset_${default_clk_num}/peripheral_aresetn] [get_bd_pins axi_vip_0/aresetn] 
   
@@ -276,7 +276,8 @@ apply_bd_automation -rule xilinx.com:bd_rule:axi4 -config { Clk_master {/clk_wiz
   
   connect_bd_net -net $default_clock_net [get_bd_pins interconnect_axihpm0fpd/ACLK] [get_bd_pins interconnect_axihpm0fpd/M00_ACLK] [get_bd_pins interconnect_axihpm0fpd/S00_ACLK] [get_bd_pins ps_e/maxihpm0_fpd_aclk]
   connect_bd_net [get_bd_pins proc_sys_reset_${default_clk_num}/interconnect_aresetn] [get_bd_pins interconnect_axihpm0fpd/ARESETN] [get_bd_pins interconnect_axihpm0fpd/M00_ARESETN] [get_bd_pins interconnect_axihpm0fpd/S00_ARESETN]
-}
+  }
+  
   # Create address segments
   assign_bd_address -offset 0x00000000 -range 0x80000000 -target_address_space [get_bd_addr_spaces axi_vip_0/Master_AXI] [get_bd_addr_segs ps_e/SAXIGP5/HP3_DDR_LOW] -force
   assign_bd_address -offset 0xFF000000 -range 0x01000000 -target_address_space [get_bd_addr_spaces axi_vip_0/Master_AXI] [get_bd_addr_segs ps_e/SAXIGP5/HP3_LPS_OCM] -force
@@ -302,7 +303,7 @@ apply_bd_automation -rule xilinx.com:bd_rule:axi4 -config { Clk_master {/clk_wiz
 # get the clock options
 
 set clk_options_param "Clock_Options.VALUE"
-set clk_options { clk_out1 75.000 0 true clk_out2 150.000 1 false clk_out3 300.000 2 false }
+set clk_options { clk_out1 100.000 0 true clk_out2 200.000 1 false clk_out3 300.000 2 false }
 if { [dict exists $options $clk_options_param] } {
 #puts "INFO: selected clk_options:: $clk_options from IF"
     set clk_options [ dict get $options $clk_options_param ]
