@@ -164,7 +164,10 @@ connect_bd_net [get_bd_pins axi_uart16550_0/ip2intc_irpt] [get_bd_pins microblaz
 # connect_bd_net [get_bd_pins axi_gpio_1/ip2intc_irpt] [get_bd_pins microblaze_0_xlconcat/In3]
 # connect_bd_net [get_bd_pins axi_gpio_2/ip2intc_irpt] [get_bd_pins microblaze_0_xlconcat/In4]
 
+delete_bd_objs [get_bd_addr_segs] [get_bd_addr_segs -excluded]
 assign_bd_address
+set_property range 64K [get_bd_addr_segs {microblaze_0/Instruction/SEG_ilmb_bram_if_cntlr_Mem}]
+set_property range 64K [get_bd_addr_segs {microblaze_0/Data/SEG_dlmb_bram_if_cntlr_Mem}]
 save_bd_design
 validate_bd_design
 }
