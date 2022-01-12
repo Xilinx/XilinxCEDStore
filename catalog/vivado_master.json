@@ -195,11 +195,11 @@
         "name": "TMR_Microblaze",
         "display": "TMR Microblaze Example Design",
         "latest_revision": "1.0",
-        "commit_id": "61ed8320b70fe130110ce49ae9a2b00baad9b522",
+        "commit_id": "65ed8a8b9e0830fd41e6bb7f034671e98fe00e06",
         "revisions": [
           {
             "revision": "1.0",
-            "commit_id": "61ed8320b70fe130110ce49ae9a2b00baad9b522",
+            "commit_id": "65ed8a8b9e0830fd41e6bb7f034671e98fe00e06",
             "date": "24-11-2021:10:43:37",
             "history": "Added board TMR Microblaze Example Design v1.0"
           }
