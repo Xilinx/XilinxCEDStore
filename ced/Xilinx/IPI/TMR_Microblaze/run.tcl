@@ -6,7 +6,7 @@
 # the main purpose of this utility is to make learning
 # IP Integrator Tcl commands easier.
 ################################################################
-proc createDesign {design_name options} {  
+proc createDesign {design_name options} {
 
 ##################################################################
 # DESIGN PROCs
@@ -496,18 +496,35 @@ proc create_hier_cell_MB3 { parentCell nameHier } {
   # Create instance: axi_gpio_0, and set properties
   set axi_gpio_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_gpio axi_gpio_0 ]
   set_property -dict [ list \
+   CONFIG.C_ALL_OUTPUTS {1} \
+   CONFIG.C_GPIO_WIDTH {8} \
    CONFIG.GPIO_BOARD_INTERFACE {Custom} \
    CONFIG.USE_BOARD_FLOW {true} \
  ] $axi_gpio_0
 
   # Create instance: axi_gpio_mb3_ds, and set properties
   set axi_gpio_mb3_ds [ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_gpio axi_gpio_mb3_ds ]
+  set_property -dict [ list \
+   CONFIG.C_ALL_INPUTS {1} \
+   CONFIG.C_GPIO_WIDTH {4} \
+   CONFIG.GPIO_BOARD_INTERFACE {Custom} \
+ ] $axi_gpio_mb3_ds
 
   # Create instance: axi_gpio_mb3_pb, and set properties
   set axi_gpio_mb3_pb [ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_gpio axi_gpio_mb3_pb ]
+  set_property -dict [ list \
+   CONFIG.C_ALL_INPUTS {1} \
+   CONFIG.C_GPIO_WIDTH {5} \
+   CONFIG.GPIO_BOARD_INTERFACE {Custom} \
+ ] $axi_gpio_mb3_pb
 
   # Create instance: axi_gpio_mb3_rs, and set properties
   set axi_gpio_mb3_rs [ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_gpio axi_gpio_mb3_rs ]
+  set_property -dict [ list \
+   CONFIG.C_ALL_INPUTS {1} \
+   CONFIG.C_GPIO_WIDTH {3} \
+   CONFIG.GPIO_BOARD_INTERFACE {Custom} \
+ ] $axi_gpio_mb3_rs
 
   # Create instance: axi_iic_0, and set properties
   set axi_iic_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_iic axi_iic_0 ]
@@ -1040,18 +1057,35 @@ proc create_hier_cell_MB2 { parentCell nameHier } {
   # Create instance: axi_gpio_0, and set properties
   set axi_gpio_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_gpio axi_gpio_0 ]
   set_property -dict [ list \
+   CONFIG.C_ALL_OUTPUTS {1} \
+   CONFIG.C_GPIO_WIDTH {8} \
    CONFIG.GPIO_BOARD_INTERFACE {Custom} \
    CONFIG.USE_BOARD_FLOW {true} \
  ] $axi_gpio_0
 
   # Create instance: axi_gpio_mb2_ds, and set properties
   set axi_gpio_mb2_ds [ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_gpio axi_gpio_mb2_ds ]
+  set_property -dict [ list \
+   CONFIG.C_ALL_INPUTS {1} \
+   CONFIG.C_GPIO_WIDTH {4} \
+   CONFIG.GPIO_BOARD_INTERFACE {Custom} \
+ ] $axi_gpio_mb2_ds
 
   # Create instance: axi_gpio_mb2_pb, and set properties
   set axi_gpio_mb2_pb [ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_gpio axi_gpio_mb2_pb ]
+  set_property -dict [ list \
+   CONFIG.C_ALL_INPUTS {1} \
+   CONFIG.C_GPIO_WIDTH {5} \
+   CONFIG.GPIO_BOARD_INTERFACE {Custom} \
+ ] $axi_gpio_mb2_pb
 
   # Create instance: axi_gpio_mb2_rs, and set properties
   set axi_gpio_mb2_rs [ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_gpio axi_gpio_mb2_rs ]
+  set_property -dict [ list \
+   CONFIG.C_ALL_INPUTS {1} \
+   CONFIG.C_GPIO_WIDTH {3} \
+   CONFIG.GPIO_BOARD_INTERFACE {Custom} \
+ ] $axi_gpio_mb2_rs
 
   # Create instance: axi_iic_0, and set properties
   set axi_iic_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_iic axi_iic_0 ]
@@ -1586,18 +1620,35 @@ proc create_hier_cell_MB1 { parentCell nameHier } {
   # Create instance: axi_gpio_0, and set properties
   set axi_gpio_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_gpio axi_gpio_0 ]
   set_property -dict [ list \
+   CONFIG.C_ALL_OUTPUTS {1} \
+   CONFIG.C_GPIO_WIDTH {8} \
    CONFIG.GPIO_BOARD_INTERFACE {Custom} \
    CONFIG.USE_BOARD_FLOW {true} \
  ] $axi_gpio_0
 
   # Create instance: axi_gpio_ds, and set properties
   set axi_gpio_ds [ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_gpio axi_gpio_ds ]
+  set_property -dict [ list \
+   CONFIG.C_ALL_INPUTS {1} \
+   CONFIG.C_GPIO_WIDTH {4} \
+   CONFIG.GPIO_BOARD_INTERFACE {Custom} \
+ ] $axi_gpio_ds
 
   # Create instance: axi_gpio_pb, and set properties
   set axi_gpio_pb [ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_gpio axi_gpio_pb ]
+  set_property -dict [ list \
+   CONFIG.C_ALL_INPUTS {1} \
+   CONFIG.C_GPIO_WIDTH {5} \
+   CONFIG.GPIO_BOARD_INTERFACE {Custom} \
+ ] $axi_gpio_pb
 
   # Create instance: axi_gpio_rs, and set properties
   set axi_gpio_rs [ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_gpio axi_gpio_rs ]
+  set_property -dict [ list \
+   CONFIG.C_ALL_INPUTS {1} \
+   CONFIG.C_GPIO_WIDTH {3} \
+   CONFIG.GPIO_BOARD_INTERFACE {Custom} \
+ ] $axi_gpio_rs
 
   # Create instance: axi_iic_0, and set properties
   set axi_iic_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_iic axi_iic_0 ]
@@ -2544,12 +2595,12 @@ proc create_root_design { parentCell } {
   connect_bd_net -net xlconstant_0_dout [get_bd_pins axi_ethernet_0/signal_detect] [get_bd_pins xlconstant_0/dout]
 
   # Create address segments
-  assign_bd_address
-  
+  assign_bd_address 
+
   # Restore current instance
   current_bd_instance $oldCurInst
-  
-  
+
+
   validate_bd_design
   save_bd_design
 }
@@ -2569,3 +2620,4 @@ open_bd_design [get_bd_files $design_name]
 	regenerate_bd_layout
 	puts "INFO: End of create_root_design"
 }
+
