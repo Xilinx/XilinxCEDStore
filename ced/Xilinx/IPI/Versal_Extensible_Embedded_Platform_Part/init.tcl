@@ -19,21 +19,8 @@ set currentDir [file dirname $currentFile]
 
 source -notrace "$currentDir/run.tcl"
 proc getSupportedParts {} {
-set mylist [get_parts -filter {DEVICE =~ xcvc* || DEVICE =~ xcvm* || DEVICE =~ xcvp* || DEVICE =~ xcve* || DEVICE =~ xcvh*}]
-    foreach item $mylist {
-      set newitem versal{$item}
-      lappend newlist $newitem
-    }
-    return $newlist
-	
-	#return [get_parts -filter {FAMILY =~ ver* } ]
-	#return [get_parts -filter {DEVICE =~ xcvc* || DEVICE =~ xcvm* || DEVICE =~ xcvp*}]
-	  #return [get_parts -filter {C_FAMILY =~ *versal*}]
-	  #return [list virtex7{xc7v585tffg1157-2} kintex7{xc7k70tfbg676-2} ]
+return [get_parts -filter {C_FAMILY =~ *versal*}]
 }
-# proc getSupportedParts {} {
-# return [get_parts -filter {FAMILY =~ ver*} ]
-# }
 
 proc getSupportedBoards {} {
   #return [get_board_parts -filter {(BOARD_NAME =~"*vck190*" && VENDOR_NAME=="xilinx.com" ) || (BOARD_NAME =~"*vmk180*" && VENDOR_NAME=="xilinx.com" )}  -latest_file_version]

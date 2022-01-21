@@ -32,7 +32,7 @@ proc addOptions {DESIGNOBJ PROJECT_PARAM.BOARD_PART} {
 	lappend x [dict create name "Include_IRQS16" type "bool" value "false" enabled true]
 	lappend x [dict create name "Include_DDR" type "bool" value "false" enabled true]
 	#lappend x [dict create name "Include_AIE" type "bool" value "false" enabled true]
-    lappend x [dict create name "Clock_Options" type "string" value "clk_out1 100.000 0 true clk_out2 200.000 1 false clk_out3 300.000 2 false" enabled true]
+    lappend x [dict create name "Clock_Options" type "string" value "clk_out1 100.000 0 false clk_out2 200.000 1 true clk_out3 400.000 2 false" enabled true]
     #lappend x [dict create name "IRQS" type "string" value "32" value_list {"32 32_Interrupts,_using_INTC" "16 16_interrupts,_using_GIC"} enabled true]
     return $x
 }
@@ -51,7 +51,7 @@ proc addGUILayout {DESIGNOBJ PROJECT_PARAM.BOARD_PART} {
 
 
     set ddr [ced::add_group -name "Zynq Memory Configurations" -display_name "Memory"  -parent $page -visible true -designObject $designObj ]
-    ced::add_param -name Include_DDR -display_name "PL_DDR4" -parent $ddr -designObject $designObj -widget checkbox
+    ced::add_param -name Include_DDR -display_name "Additional PL DDR4" -parent $ddr -designObject $designObj -widget checkbox
 }
 
 # validater { parameters_used } { parameters_modified} { functionality }
