@@ -122,8 +122,8 @@ if {$irqs_GIC} {
 set_property -dict [list CONFIG.PSU__USE__IRQ1 {1}] [get_bd_cells ps_e] }
 
 # Cclocks optins, and set properties
-set clk_freqs [ list 100.000 200.000 300.000 100.000 100.000 100.000 100.000 ]
-set clk_used [list true false false false false false false ]
+set clk_freqs [ list 100.000 200.000 400.000 100.000 100.000 100.000 100.000 ]
+set clk_used [list false true false false false false false ]
 set clk_ports [list clk_out1 clk_out2 clk_out3 clk_out4 clk_out5 clk_out6 clk_out7 ]
 set default_clk_port clk_out1
 set default_clk_num 0
@@ -295,6 +295,9 @@ apply_bd_automation -rule xilinx.com:bd_rule:axi4 -config { Clk_master {/clk_wiz
   # Exclude Address Segments
   exclude_bd_addr_seg -target_address_space [get_bd_addr_spaces axi_vip_0/Master_AXI] [get_bd_addr_segs ps_e/SAXIGP5/HP3_DDR_HIGH]
   exclude_bd_addr_seg -target_address_space [get_bd_addr_spaces axi_vip_1/Master_AXI] [get_bd_addr_segs ps_e/SAXIGP6/LPD_DDR_HIGH]
+
+set_param project.replaceDontTouchWithKeepHierarchySoft 0
+
 }
 ##################################################################
 # MAIN FLOW
@@ -303,7 +306,7 @@ apply_bd_automation -rule xilinx.com:bd_rule:axi4 -config { Clk_master {/clk_wiz
 # get the clock options
 
 set clk_options_param "Clock_Options.VALUE"
-set clk_options { clk_out1 100.000 0 true clk_out2 200.000 1 false clk_out3 300.000 2 false }
+set clk_options { clk_out1 100.000 0 false clk_out2 200.000 1 true clk_out3 400.000 2 false }
 if { [dict exists $options $clk_options_param] } {
 #puts "INFO: selected clk_options:: $clk_options from IF"
     set clk_options [ dict get $options $clk_options_param ]
