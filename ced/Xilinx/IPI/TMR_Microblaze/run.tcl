@@ -2595,7 +2595,61 @@ proc create_root_design { parentCell } {
   connect_bd_net -net xlconstant_0_dout [get_bd_pins axi_ethernet_0/signal_detect] [get_bd_pins xlconstant_0/dout]
 
   # Create address segments
-  assign_bd_address 
+  assign_bd_address -offset 0x80000000 -range 0x80000000 -target_address_space [get_bd_addr_spaces axi_ethernet_0_dma/Data_SG] [get_bd_addr_segs ddr4_0/C0_DDR4_MEMORY_MAP/C0_DDR4_ADDRESS_BLOCK] -force
+  assign_bd_address -offset 0x80000000 -range 0x80000000 -target_address_space [get_bd_addr_spaces axi_ethernet_0_dma/Data_MM2S] [get_bd_addr_segs ddr4_0/C0_DDR4_MEMORY_MAP/C0_DDR4_ADDRESS_BLOCK] -force
+  assign_bd_address -offset 0x80000000 -range 0x80000000 -target_address_space [get_bd_addr_spaces axi_ethernet_0_dma/Data_S2MM] [get_bd_addr_segs ddr4_0/C0_DDR4_MEMORY_MAP/C0_DDR4_ADDRESS_BLOCK] -force
+  assign_bd_address -offset 0x40C00000 -range 0x00040000 -target_address_space [get_bd_addr_spaces tmr_0/MB1/microblaze_0/Data] [get_bd_addr_segs axi_ethernet_0/s_axi/Reg0] -force
+  assign_bd_address -offset 0x41E00000 -range 0x00010000 -target_address_space [get_bd_addr_spaces tmr_0/MB1/microblaze_0/Data] [get_bd_addr_segs axi_ethernet_0_dma/S_AXI_LITE/Reg] -force
+  assign_bd_address -offset 0x40000000 -range 0x00010000 -target_address_space [get_bd_addr_spaces tmr_0/MB1/microblaze_0/Data] [get_bd_addr_segs tmr_0/MB1/axi_gpio_0/S_AXI/Reg] -force
+  assign_bd_address -offset 0x40010000 -range 0x00010000 -target_address_space [get_bd_addr_spaces tmr_0/MB1/microblaze_0/Data] [get_bd_addr_segs tmr_0/MB1/axi_gpio_ds/S_AXI/Reg] -force
+  assign_bd_address -offset 0x40020000 -range 0x00010000 -target_address_space [get_bd_addr_spaces tmr_0/MB1/microblaze_0/Data] [get_bd_addr_segs tmr_0/MB1/axi_gpio_pb/S_AXI/Reg] -force
+  assign_bd_address -offset 0x40030000 -range 0x00010000 -target_address_space [get_bd_addr_spaces tmr_0/MB1/microblaze_0/Data] [get_bd_addr_segs tmr_0/MB1/axi_gpio_rs/S_AXI/Reg] -force
+  assign_bd_address -offset 0x40800000 -range 0x00010000 -target_address_space [get_bd_addr_spaces tmr_0/MB1/microblaze_0/Data] [get_bd_addr_segs tmr_0/MB1/axi_iic_0/S_AXI/Reg] -force
+  assign_bd_address -offset 0x44A00000 -range 0x00010000 -target_address_space [get_bd_addr_spaces tmr_0/MB1/microblaze_0/Data] [get_bd_addr_segs axi_quad_spi_0/AXI_LITE/Reg] -force
+  assign_bd_address -offset 0x41C00000 -range 0x00010000 -target_address_space [get_bd_addr_spaces tmr_0/MB1/microblaze_0/Data] [get_bd_addr_segs tmr_0/MB1/axi_timer_0/S_AXI/Reg] -force
+  assign_bd_address -offset 0x40600000 -range 0x00010000 -target_address_space [get_bd_addr_spaces tmr_0/MB1/microblaze_0/Data] [get_bd_addr_segs tmr_0/MB1/axi_uartlite_0/S_AXI/Reg] -force
+  assign_bd_address -offset 0x80000000 -range 0x80000000 -target_address_space [get_bd_addr_spaces tmr_0/MB1/microblaze_0/Data] [get_bd_addr_segs ddr4_0/C0_DDR4_MEMORY_MAP/C0_DDR4_ADDRESS_BLOCK] -force
+  assign_bd_address -offset 0x80000000 -range 0x80000000 -target_address_space [get_bd_addr_spaces tmr_0/MB1/microblaze_0/Instruction] [get_bd_addr_segs ddr4_0/C0_DDR4_MEMORY_MAP/C0_DDR4_ADDRESS_BLOCK] -force
+  assign_bd_address -offset 0x00000000 -range 0x00002000 -target_address_space [get_bd_addr_spaces tmr_0/MB1/microblaze_0/Data] [get_bd_addr_segs tmr_0/MB1/microblaze_0_local_memory/dlmb_bram_if_cntlr/SLMB/Mem] -force
+  assign_bd_address -offset 0x00000000 -range 0x00002000 -target_address_space [get_bd_addr_spaces tmr_0/MB1/microblaze_0/Instruction] [get_bd_addr_segs tmr_0/MB1/microblaze_0_local_memory/ilmb_bram_if_cntlr/SLMB/Mem] -force
+  assign_bd_address -offset 0x41200000 -range 0x00010000 -target_address_space [get_bd_addr_spaces tmr_0/MB1/microblaze_0/Data] [get_bd_addr_segs tmr_0/MB1/microblaze_0_axi_intc/S_AXI/Reg] -force
+  assign_bd_address -offset 0x44A10000 -range 0x00010000 -target_address_space [get_bd_addr_spaces tmr_0/MB1/microblaze_0/Data] [get_bd_addr_segs tmr_0/MB1/tmr_manager_0/SLMB/Reg] -force
+  assign_bd_address -offset 0x44A40000 -range 0x00010000 -target_address_space [get_bd_addr_spaces tmr_0/MB1/microblaze_0/Data] [get_bd_addr_segs tmr_0/tmr_sem_0/S_AXI/Reg] -force
+  assign_bd_address -offset 0x40C00000 -range 0x00040000 -target_address_space [get_bd_addr_spaces tmr_0/MB2/microblaze_0/Data] [get_bd_addr_segs axi_ethernet_0/s_axi/Reg0] -force
+  assign_bd_address -offset 0x41E00000 -range 0x00010000 -target_address_space [get_bd_addr_spaces tmr_0/MB2/microblaze_0/Data] [get_bd_addr_segs axi_ethernet_0_dma/S_AXI_LITE/Reg] -force
+  assign_bd_address -offset 0x40000000 -range 0x00010000 -target_address_space [get_bd_addr_spaces tmr_0/MB2/microblaze_0/Data] [get_bd_addr_segs tmr_0/MB2/axi_gpio_0/S_AXI/Reg] -force
+  assign_bd_address -offset 0x40010000 -range 0x00010000 -target_address_space [get_bd_addr_spaces tmr_0/MB2/microblaze_0/Data] [get_bd_addr_segs tmr_0/MB2/axi_gpio_mb2_ds/S_AXI/Reg] -force
+  assign_bd_address -offset 0x40020000 -range 0x00010000 -target_address_space [get_bd_addr_spaces tmr_0/MB2/microblaze_0/Data] [get_bd_addr_segs tmr_0/MB2/axi_gpio_mb2_pb/S_AXI/Reg] -force
+  assign_bd_address -offset 0x40030000 -range 0x00010000 -target_address_space [get_bd_addr_spaces tmr_0/MB2/microblaze_0/Data] [get_bd_addr_segs tmr_0/MB2/axi_gpio_mb2_rs/S_AXI/Reg] -force
+  assign_bd_address -offset 0x40800000 -range 0x00010000 -target_address_space [get_bd_addr_spaces tmr_0/MB2/microblaze_0/Data] [get_bd_addr_segs tmr_0/MB2/axi_iic_0/S_AXI/Reg] -force
+  assign_bd_address -offset 0x44A00000 -range 0x00010000 -target_address_space [get_bd_addr_spaces tmr_0/MB2/microblaze_0/Data] [get_bd_addr_segs axi_quad_spi_0/AXI_LITE/Reg] -force
+  assign_bd_address -offset 0x41C00000 -range 0x00010000 -target_address_space [get_bd_addr_spaces tmr_0/MB2/microblaze_0/Data] [get_bd_addr_segs tmr_0/MB2/axi_timer_0/S_AXI/Reg] -force
+  assign_bd_address -offset 0x40600000 -range 0x00010000 -target_address_space [get_bd_addr_spaces tmr_0/MB2/microblaze_0/Data] [get_bd_addr_segs tmr_0/MB2/axi_uartlite_0/S_AXI/Reg] -force
+  assign_bd_address -offset 0x80000000 -range 0x80000000 -target_address_space [get_bd_addr_spaces tmr_0/MB2/microblaze_0/Data] [get_bd_addr_segs ddr4_0/C0_DDR4_MEMORY_MAP/C0_DDR4_ADDRESS_BLOCK] -force
+  assign_bd_address -offset 0x80000000 -range 0x80000000 -target_address_space [get_bd_addr_spaces tmr_0/MB2/microblaze_0/Instruction] [get_bd_addr_segs ddr4_0/C0_DDR4_MEMORY_MAP/C0_DDR4_ADDRESS_BLOCK] -force
+  assign_bd_address -offset 0x00000000 -range 0x00002000 -target_address_space [get_bd_addr_spaces tmr_0/MB2/microblaze_0/Data] [get_bd_addr_segs tmr_0/MB2/microblaze_0_local_memory/dlmb_bram_if_cntlr/SLMB/Mem] -force
+  assign_bd_address -offset 0x00000000 -range 0x00002000 -target_address_space [get_bd_addr_spaces tmr_0/MB2/microblaze_0/Instruction] [get_bd_addr_segs tmr_0/MB2/microblaze_0_local_memory/ilmb_bram_if_cntlr/SLMB/Mem] -force
+  assign_bd_address -offset 0x41200000 -range 0x00010000 -target_address_space [get_bd_addr_spaces tmr_0/MB2/microblaze_0/Data] [get_bd_addr_segs tmr_0/MB2/microblaze_0_axi_intc/S_AXI/Reg] -force
+  assign_bd_address -offset 0x44A10000 -range 0x00010000 -target_address_space [get_bd_addr_spaces tmr_0/MB2/microblaze_0/Data] [get_bd_addr_segs tmr_0/MB2/tmr_manager_0/SLMB/Reg] -force
+  assign_bd_address -offset 0x44A40000 -range 0x00010000 -target_address_space [get_bd_addr_spaces tmr_0/MB2/microblaze_0/Data] [get_bd_addr_segs tmr_0/tmr_sem_0/S_AXI/Reg] -force
+  assign_bd_address -offset 0x40C00000 -range 0x00040000 -target_address_space [get_bd_addr_spaces tmr_0/MB3/microblaze_0/Data] [get_bd_addr_segs axi_ethernet_0/s_axi/Reg0] -force
+  assign_bd_address -offset 0x41E00000 -range 0x00010000 -target_address_space [get_bd_addr_spaces tmr_0/MB3/microblaze_0/Data] [get_bd_addr_segs axi_ethernet_0_dma/S_AXI_LITE/Reg] -force
+  assign_bd_address -offset 0x40000000 -range 0x00010000 -target_address_space [get_bd_addr_spaces tmr_0/MB3/microblaze_0/Data] [get_bd_addr_segs tmr_0/MB3/axi_gpio_0/S_AXI/Reg] -force
+  assign_bd_address -offset 0x40010000 -range 0x00010000 -target_address_space [get_bd_addr_spaces tmr_0/MB3/microblaze_0/Data] [get_bd_addr_segs tmr_0/MB3/axi_gpio_mb3_ds/S_AXI/Reg] -force
+  assign_bd_address -offset 0x40020000 -range 0x00010000 -target_address_space [get_bd_addr_spaces tmr_0/MB3/microblaze_0/Data] [get_bd_addr_segs tmr_0/MB3/axi_gpio_mb3_pb/S_AXI/Reg] -force
+  assign_bd_address -offset 0x40030000 -range 0x00010000 -target_address_space [get_bd_addr_spaces tmr_0/MB3/microblaze_0/Data] [get_bd_addr_segs tmr_0/MB3/axi_gpio_mb3_rs/S_AXI/Reg] -force
+  assign_bd_address -offset 0x40800000 -range 0x00010000 -target_address_space [get_bd_addr_spaces tmr_0/MB3/microblaze_0/Data] [get_bd_addr_segs tmr_0/MB3/axi_iic_0/S_AXI/Reg] -force
+  assign_bd_address -offset 0x44A00000 -range 0x00010000 -target_address_space [get_bd_addr_spaces tmr_0/MB3/microblaze_0/Data] [get_bd_addr_segs axi_quad_spi_0/AXI_LITE/Reg] -force
+  assign_bd_address -offset 0x41C00000 -range 0x00010000 -target_address_space [get_bd_addr_spaces tmr_0/MB3/microblaze_0/Data] [get_bd_addr_segs tmr_0/MB3/axi_timer_0/S_AXI/Reg] -force
+  assign_bd_address -offset 0x40600000 -range 0x00010000 -target_address_space [get_bd_addr_spaces tmr_0/MB3/microblaze_0/Data] [get_bd_addr_segs tmr_0/MB3/axi_uartlite_0/S_AXI/Reg] -force
+  assign_bd_address -offset 0x80000000 -range 0x80000000 -target_address_space [get_bd_addr_spaces tmr_0/MB3/microblaze_0/Data] [get_bd_addr_segs ddr4_0/C0_DDR4_MEMORY_MAP/C0_DDR4_ADDRESS_BLOCK] -force
+  assign_bd_address -offset 0x80000000 -range 0x80000000 -target_address_space [get_bd_addr_spaces tmr_0/MB3/microblaze_0/Instruction] [get_bd_addr_segs ddr4_0/C0_DDR4_MEMORY_MAP/C0_DDR4_ADDRESS_BLOCK] -force
+  assign_bd_address -offset 0x00000000 -range 0x00002000 -target_address_space [get_bd_addr_spaces tmr_0/MB3/microblaze_0/Data] [get_bd_addr_segs tmr_0/MB3/microblaze_0_local_memory/dlmb_bram_if_cntlr/SLMB/Mem] -force
+  assign_bd_address -offset 0x00000000 -range 0x00002000 -target_address_space [get_bd_addr_spaces tmr_0/MB3/microblaze_0/Instruction] [get_bd_addr_segs tmr_0/MB3/microblaze_0_local_memory/ilmb_bram_if_cntlr/SLMB/Mem] -force
+  assign_bd_address -offset 0x41200000 -range 0x00010000 -target_address_space [get_bd_addr_spaces tmr_0/MB3/microblaze_0/Data] [get_bd_addr_segs tmr_0/MB3/microblaze_0_axi_intc/S_AXI/Reg] -force
+  assign_bd_address -offset 0x44A10000 -range 0x00010000 -target_address_space [get_bd_addr_spaces tmr_0/MB3/microblaze_0/Data] [get_bd_addr_segs tmr_0/MB3/tmr_manager_0/SLMB/Reg] -force
+  assign_bd_address -offset 0x44A40000 -range 0x00010000 -target_address_space [get_bd_addr_spaces tmr_0/MB3/microblaze_0/Data] [get_bd_addr_segs tmr_0/tmr_sem_0/S_AXI/Reg] -force
+ 
 
   # Restore current instance
   current_bd_instance $oldCurInst
