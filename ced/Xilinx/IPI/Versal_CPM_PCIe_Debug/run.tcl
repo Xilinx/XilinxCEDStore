@@ -157,6 +157,68 @@ puts "INFO: $fpga_part is selected"
 
   # Create instance: versal_cips_0, and set properties
   set versal_cips_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:versal_cips versal_cips_0 ]
+if [regexp "vpk120" $board_name]  {
+  
+  set_property -dict [ list \
+   CONFIG.CLOCK_MODE {Custom} \
+   CONFIG.CPM_CONFIG {\
+     CPM_PCIE0_AXIBAR2PCIE_BASEADDR_0_L {0xE8000000}\
+     CPM_PCIE0_AXIBAR2PCIE_BASEADDR_1_H {0x00000007}\
+     CPM_PCIE0_BRIDGE_AXI_SLAVE_IF {1}\
+     CPM_PCIE0_MAX_LINK_SPEED {16.0_GT/s}\
+     CPM_PCIE0_MODES {DMA}\
+     CPM_PCIE0_MODE_SELECTION {Advanced}\
+     CPM_PCIE0_PCIE_REGION_0_EN {1}\
+     CPM_PCIE0_PCIE_REGION_0_NUM_WINDOW {1}\
+     CPM_PCIE0_PCIE_REGION_0_SCALE {Kilobytes}\
+     CPM_PCIE0_PCIE_REGION_1_EN {1}\
+     CPM_PCIE0_PCIE_REGION_2_EN {0}\
+     CPM_PCIE0_PF0_BAR0_QDMA_64BIT {1}\
+     CPM_PCIE0_PF0_BAR0_QDMA_AXCACHE {0}\
+     CPM_PCIE0_PF0_BAR0_QDMA_TYPE {DMA}\
+     CPM_PCIE0_PF0_BAR1_QDMA_AXCACHE {0}\
+     CPM_PCIE0_PF0_BAR2_QDMA_64BIT {1}\
+     CPM_PCIE0_PF0_BAR2_QDMA_AXCACHE {0}\
+     CPM_PCIE0_PF0_BAR2_QDMA_ENABLED {1}\
+     CPM_PCIE0_PF0_BAR2_QDMA_PREFETCHABLE {1}\
+     CPM_PCIE0_PF0_BAR2_QDMA_SCALE {Megabytes}\
+     CPM_PCIE0_PF0_BAR2_QDMA_SIZE {512}\
+     CPM_PCIE0_PF0_BAR3_QDMA_AXCACHE {0}\
+     CPM_PCIE0_PF0_BAR4_QDMA_64BIT {1}\
+     CPM_PCIE0_PF0_BAR4_QDMA_AXCACHE {0}\
+     CPM_PCIE0_PF0_BAR4_QDMA_ENABLED {1}\
+     CPM_PCIE0_PF0_BAR4_QDMA_PREFETCHABLE {1}\
+     CPM_PCIE0_PF0_BAR4_QDMA_SCALE {Megabytes}\
+     CPM_PCIE0_PF0_BAR4_QDMA_SIZE {512}\
+     CPM_PCIE0_PF0_BAR5_QDMA_AXCACHE {0}\
+     CPM_PCIE0_PF0_PCIEBAR2AXIBAR_QDMA_2 {0xE0000000}\
+     CPM_PCIE0_PF0_PCIEBAR2AXIBAR_QDMA_4 {0x0000000600000000}\
+     CPM_PCIE0_PL_LINK_CAP_MAX_LINK_WIDTH {X8}\
+   } \
+   CONFIG.DDR_MEMORY_MODE {Custom} \
+   CONFIG.PS_PMC_CONFIG {\
+   CLOCK_MODE {Custom}\
+     DDR_MEMORY_MODE {Custom}\
+     DESIGN_MODE {1}\
+     PCIE_APERTURES_DUAL_ENABLE {0}\
+     PCIE_APERTURES_SINGLE_ENABLE {1}\
+     PMC_CRP_PL0_REF_CTRL_FREQMHZ {150}\
+     PMC_OSPI_PERIPHERAL {{ENABLE 1} {IO {PMC_MIO 0 .. 11}} {MODE Single}}\
+     PMC_USE_PMC_NOC_AXI0 {1}\
+     PS_BOARD_INTERFACE {Custom}\
+     PS_NUM_FABRIC_RESETS {1}\
+     PS_PCIE1_PERIPHERAL_ENABLE {1}\
+     PS_PCIE2_PERIPHERAL_ENABLE {0}\
+     PS_PCIE_RESET {{ENABLE 1}}\
+     PS_USE_PMCPL_CLK0 {1}\
+     SMON_ALARMS {Set_Alarms_On}\
+     SMON_ENABLE_TEMP_AVERAGING {0}\
+     SMON_TEMP_AVERAGING_SAMPLES {0}\
+   } \
+   CONFIG.PS_PMC_CONFIG_APPLIED {1} \
+ ] $versal_cips_0
+  
+  } else {
   set_property -dict [ list \
    CONFIG.BOOT_MODE {Custom} \
    CONFIG.CLOCK_MODE {Custom} \
@@ -1353,6 +1415,8 @@ SMON_ALARMS Set_Alarms_On SMON_ENABLE_TEMP_AVERAGING 0\
 SMON_TEMP_AVERAGING_SAMPLES 0}\
    CONFIG.PS_PMC_CONFIG_APPLIED {1} \
  ] $versal_cips_0
+}
+
 
   # Create instance: vio_inst, and set properties
   set vio_inst [ create_bd_cell -type ip -vlnv xilinx.com:ip:axis_vio vio_inst ]
@@ -1385,7 +1449,6 @@ SMON_TEMP_AVERAGING_SAMPLES 0}\
   connect_bd_net -net cpm_axi_noc_aclk0 [get_bd_pins axi_noc_0/aclk0] [get_bd_pins versal_cips_0/cpm_pcie_noc_axi0_clk]
   connect_bd_net -net cpm_axi_noc_aclk1 [get_bd_pins axi_noc_0/aclk1] [get_bd_pins versal_cips_0/cpm_pcie_noc_axi1_clk]
   connect_bd_net -net logic0 [get_bd_pins logic0/dout] [get_bd_pins versal_cips_0/cpm_irq0] [get_bd_pins versal_cips_0/cpm_irq1] [get_bd_pins versal_cips_0/xdma0_usr_irq_req]
-  connect_bd_net -net logic1 [get_bd_pins logic1/dout] [get_bd_pins versal_cips_0/dma0_soft_resetn]
   connect_bd_net -net mb_reset [get_bd_pins axis_ila_0/probe0] [get_bd_pins proc_sys_reset_0/mb_reset]
   connect_bd_net -net mgmt_cnt_ce [get_bd_pins mgmt_cntr/CE] [get_bd_pins vio_inst/probe_out0]
   connect_bd_net -net mgmt_cnt_in [get_bd_pins mgmt_cntr/L] [get_bd_pins vio_inst/probe_out3]
@@ -1397,6 +1460,12 @@ SMON_TEMP_AVERAGING_SAMPLES 0}\
   connect_bd_net -net pl_aresetn [get_bd_pins axi_dbg_hub_0/aresetn] [get_bd_pins axis_ila_0/aresetn] [get_bd_pins bram_ctrl_inst/s_axi_aresetn] [get_bd_pins proc_sys_reset_0/peripheral_aresetn] [get_bd_pins vio_inst/aresetn]
   connect_bd_net -net pl_resetn [get_bd_pins proc_sys_reset_0/ext_reset_in] [get_bd_pins versal_cips_0/pl0_resetn]
   connect_bd_net -net versal_cips_0_pmc_axi_noc_axi0_clk [get_bd_pins axi_noc_0/aclk4] [get_bd_pins versal_cips_0/pmc_axi_noc_axi0_clk]
+
+if [regexp "vpk120" $board_name]  {
+  connect_bd_net [get_bd_pins logic1/dout] [get_bd_pins versal_cips_0/dma0_intrfc_resetn]
+  connect_bd_net [get_bd_pins versal_cips_0/pl0_ref_clk] [get_bd_pins versal_cips_0/dma0_intrfc_clk]
+  } else {
+  connect_bd_net -net logic1 [get_bd_pins logic1/dout] [get_bd_pins versal_cips_0/dma0_soft_resetn] }
 
   # Create address segments
   assign_bd_address -offset 0x020100000000 -range 0x00200000 -target_address_space [get_bd_addr_spaces versal_cips_0/PMC_NOC_AXI_0] [get_bd_addr_segs axi_dbg_hub_0/S_AXI_DBG_HUB/Mem0] -force
