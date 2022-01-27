@@ -21,6 +21,25 @@
         "company": "xilinx.com"
       },
       {
+        "name": "chipscopy",
+        "display": "ChipScoPy Design",
+        "latest_revision": "1.0",
+        "commit_id": "9a1b78e6eb5c83bd8d89e640a8f1480b9252f9c7",
+        "revisions": [
+          {
+            "revision": "1.0",
+            "commit_id": "9a1b78e6eb5c83bd8d89e640a8f1480b9252f9c7",
+            "date": "27-01-2022",
+            "history": "Initial Release"
+          }
+        ],
+        "config": {
+          "root": "ced/Xilinx/IPI/chipscopy",
+          "metadata_file": "xitem.json"
+        },
+        "company": "xilinx.com"
+      },      
+      {
         "name": "mb_preset",
         "display": "MicroBlaze Design Presets",
         "latest_revision": "1.0",
