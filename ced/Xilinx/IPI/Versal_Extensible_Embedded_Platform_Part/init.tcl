@@ -19,7 +19,7 @@ set currentDir [file dirname $currentFile]
 
 source -notrace "$currentDir/run.tcl"
 proc getSupportedParts {} {
-return [get_parts -filter {C_FAMILY =~ *versal*}]
+return "versal"
 }
 
 proc getSupportedBoards {} {
