@@ -22,7 +22,7 @@ proc createDesign {design_name options} {
 variable currentDir
 set_property target_language Verilog [current_project]
 
-proc create_root_design {currentDir design_name use_ddr clk_options irqs_GIC} {
+proc create_root_design {currentDir design_name use_ddr clk_options irqs} {
 
 puts "create_root_design"
 set board_part [get_property NAME [current_board_part]]
@@ -32,19 +32,10 @@ puts "INFO: $board_name is selected"
 puts "INFO: $board_part is selected"
 puts "INFO: $fpga_part is selected"
 
-puts "INFO: selected irqs_GIC:: $irqs_GIC"
+puts "INFO: selected irqs:: $irqs"
 puts "INFO: selected design_name:: $design_name"
 puts "INFO: selected use_ddr:: $use_ddr"
 puts "INFO: selected clk_options:: $clk_options"
-
-# set use_intc [set use_cascaded_irqs [set no_irqs ""]]
-# set use_intc [ expr $irqs eq "16" ]
-# set use_cascaded_irqs [ expr $irqs eq "32" ]
-# set no_irqs [ expr $irqs eq "0" ]
-
-# Create instance: axi_intc_0, and set properties
-set axi_intc_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_intc axi_intc_0 ]
-set_property -dict [ list CONFIG.C_ASYNC_INTR {0xFFFFFFFF} CONFIG.C_IRQ_CONNECTION {1} CONFIG.C_IRQ_IS_LEVEL {1} ] $axi_intc_0 
 
 # Create instance: axi_interconnect_lpd, and set properties
 set axi_interconnect_lpd [ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_interconnect axi_interconnect_lpd ]
@@ -114,12 +105,11 @@ set_property -dict [ list \
 # Create instance: ps_e, and set properties
 set ps_e [ create_bd_cell -type ip -vlnv xilinx.com:ip:zynq_ultra_ps_e ps_e ]
 apply_bd_automation -rule xilinx.com:bd_rule:zynq_ultra_ps_e -config {apply_board_preset "1" }  [get_bd_cells ps_e]
+if {$irqs == "32"} {
 set_property -dict [list CONFIG.PSU__USE__S_AXI_GP5 {1} CONFIG.PSU__USE__S_AXI_GP6 {1} CONFIG.PSU__SAXIGP6__DATA_WIDTH {32} CONFIG.PSU__USE__M_AXI_GP1 {0} CONFIG.PSU__USE__M_AXI_GP2 {1} CONFIG.PSU__PSS_REF_CLK__FREQMHZ {33.333333} ] [get_bd_cells ps_e]
-#set_property -dict [list CONFIG.PSU__PSS_REF_CLK__FREQMHZ {33.333333}] [get_bd_cells ps_e]
-#set_property -dict [list CONFIG.PSU__USE__M_AXI_GP1 {0} CONFIG.PSU__USE__M_AXI_GP2 {1}] [get_bd_cells ps_e]
+} else {
+set_property -dict [list CONFIG.PSU__USE__S_AXI_GP5 {1} CONFIG.PSU__USE__S_AXI_GP6 {1} CONFIG.PSU__SAXIGP6__DATA_WIDTH {32} CONFIG.PSU__USE__M_AXI_GP1 {0} CONFIG.PSU__PSS_REF_CLK__FREQMHZ {33.333333} ] [get_bd_cells ps_e]  }
 
-if {$irqs_GIC} {
-set_property -dict [list CONFIG.PSU__USE__IRQ1 {1}] [get_bd_cells ps_e] }
 
 # Cclocks optins, and set properties
 set clk_freqs [ list 100.000 200.000 400.000 100.000 100.000 100.000 100.000 ]
@@ -194,9 +184,6 @@ for {set i 0} {$i < $num_clks} {incr i} {
   connect_bd_net -net Net [get_bd_pins clk_wiz_0/resetn] [get_bd_pins ps_e/pl_resetn0] [get_bd_pins proc_sys_reset_$i/ext_reset_in]
   connect_bd_net [get_bd_pins clk_wiz_0/locked] [get_bd_pins proc_sys_reset_$i/dcm_locked] }
 
-#create default clock connection
-set default_clock_net clk_wiz_0_$default_clk_port
-
 # Create instance: interconnect_axifull, and set properties
 set interconnect_axifull [ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_interconnect interconnect_axifull ]
 set_property -dict [ list CONFIG.NUM_MI {1} ] $interconnect_axifull
@@ -208,10 +195,17 @@ set interconnect_axihpm0fpd [ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_in
 set_property -dict [ list CONFIG.NUM_MI {1} ] $interconnect_axihpm0fpd
 set_property HDL_ATTRIBUTE.DPA_TRACE_MASTER {true} [get_bd_cells interconnect_axihpm0fpd] }
 
+
+if {$irqs == "32"} {
 # Create instance: interconnect_axilite, and set properties
 set interconnect_axilite [ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_interconnect interconnect_axilite ]
 set_property -dict [ list CONFIG.NUM_MI {1} ] $interconnect_axilite
 set_property HDL_ATTRIBUTE.DPA_AXILITE_MASTER {fallback} [get_bd_cells interconnect_axilite]
+
+# Create instance: axi_intc_0, and set properties
+set axi_intc_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_intc axi_intc_0 ]
+set_property -dict [ list CONFIG.C_ASYNC_INTR {0xFFFFFFFF} CONFIG.C_IRQ_CONNECTION {1} CONFIG.C_IRQ_IS_LEVEL {1} ] $axi_intc_0  }
+
 
 if {$use_ddr } {
 set ddr4_board_interface [board::get_board_part_interfaces *ddr4*]
@@ -233,7 +227,7 @@ connect_bd_intf_net -intf_net axi_smc_M00_AXI [get_bd_intf_pins axi_smc/M00_AXI]
 connect_bd_intf_net -intf_net ps_e_M_AXI_HPM0_FPD [get_bd_intf_pins axi_smc/S00_AXI] [get_bd_intf_pins ps_e/M_AXI_HPM0_FPD]
 #apply_bd_automation -rule xilinx.com:bd_rule:axi4 -config { Clk_master {/clk_wiz_0/${default_clk_port} } Clk_slave {/pl_ddr4/c0_ddr4_ui_clk (300 MHz)} Clk_xbar {/clk_wiz_0/${default_clk_port} } Master {/ps_e/M_AXI_HPM0_FPD} Slave {/pl_ddr4/C0_DDR4_S_AXI} ddr_seg {Auto} intc_ip {/axi_smc} master_apm {0}}  [get_bd_intf_pins pl_ddr4/C0_DDR4_S_AXI]
 
-connect_bd_net -net $default_clock_net [get_bd_pins ps_e/maxihpm0_fpd_aclk] [get_bd_pins axi_smc/aclk]
+connect_bd_net [get_bd_pins clk_wiz_0/$default_clk_port] [get_bd_pins ps_e/maxihpm0_fpd_aclk] [get_bd_pins axi_smc/aclk]
 connect_bd_net [get_bd_pins proc_sys_reset_${default_clk_num}/interconnect_aresetn] [get_bd_pins axi_smc/aresetn] 
 
 set board_name [get_property BOARD_NAME [current_board]]
@@ -245,7 +239,7 @@ apply_board_connection -board_interface "$def_clk" -ip_intf "pl_ddr4/C0_SYS_CLK"
 
 apply_bd_automation -rule xilinx.com:bd_rule:board -config { Board_Interface {reset ( FPGA Reset ) } Manual_Source {Auto}}  [get_bd_pins pl_ddr4/sys_rst]
 connect_bd_intf_net [get_bd_intf_pins axi_register_slice_0/S_AXI] [get_bd_intf_pins axi_smc/M01_AXI]
-#connect_bd_net [get_bd_pins clk_wiz_0/resetn] [get_bd_pins ps_e/pl_resetn0]
+
 catch {set S_AXI_CTRL [get_bd_intf_pins pl_ddr4/C0_DDR4_S_AXI_CTRL]}
 
 if [regexp "C0_DDR4_S_AXI_CTRL" $S_AXI_CTRL] {
@@ -253,19 +247,27 @@ apply_bd_automation -rule xilinx.com:bd_rule:axi4 -config { Clk_master {/clk_wiz
 } }
 
   # Create interface connections
+if {$irqs == "32"} {
   connect_bd_intf_net -intf_net axi_interconnect_0_M00_AXI [get_bd_intf_pins axi_intc_0/s_axi] [get_bd_intf_pins interconnect_axilite/M00_AXI]
+  connect_bd_intf_net -intf_net ps_e_M_AXI_HPM0_LPD [get_bd_intf_pins interconnect_axilite/S00_AXI] [get_bd_intf_pins ps_e/M_AXI_HPM0_LPD] 
   connect_bd_net -net axi_intc_0_irq [get_bd_pins axi_intc_0/irq] [get_bd_pins ps_e/pl_ps_irq0] 
+  
+  connect_bd_net [get_bd_pins clk_wiz_0/$default_clk_port] [get_bd_pins interconnect_axilite/ACLK] [get_bd_pins interconnect_axilite/S00_ACLK] [get_bd_pins interconnect_axilite/M00_ACLK] [get_bd_pins axi_intc_0/s_axi_aclk]
+
+  connect_bd_net [get_bd_pins proc_sys_reset_${default_clk_num}/interconnect_aresetn] [get_bd_pins interconnect_axilite/ARESETN] [get_bd_pins interconnect_axilite/S00_ARESETN] [get_bd_pins interconnect_axilite/M00_ARESETN] [get_bd_pins axi_intc_0/s_axi_aresetn] }
+  
   connect_bd_intf_net -intf_net axi_interconnect_0_M00_AXI1 [get_bd_intf_pins axi_interconnect_lpd/M00_AXI] [get_bd_intf_pins ps_e/S_AXI_LPD]
   connect_bd_intf_net -intf_net axi_interconnect_1_M00_AXI [get_bd_intf_pins interconnect_axifull/M00_AXI] [get_bd_intf_pins ps_e/S_AXI_HP3_FPD]
   connect_bd_intf_net -intf_net axi_vip_0_M_AXI [get_bd_intf_pins axi_vip_0/M_AXI] [get_bd_intf_pins interconnect_axifull/S00_AXI]
   connect_bd_intf_net -intf_net axi_vip_1_M_AXI [get_bd_intf_pins axi_interconnect_lpd/S00_AXI] [get_bd_intf_pins axi_vip_1/M_AXI]
-  connect_bd_intf_net -intf_net ps_e_M_AXI_HPM0_LPD [get_bd_intf_pins interconnect_axilite/S00_AXI] [get_bd_intf_pins ps_e/M_AXI_HPM0_LPD]
+  
 
   # Create port connections
   connect_bd_net -net ps_e_pl_clk0 [get_bd_pins clk_wiz_0/clk_in1] [get_bd_pins ps_e/pl_clk0]
-  connect_bd_net -net $default_clock_net [get_bd_pins axi_intc_0/s_axi_aclk] [get_bd_pins axi_interconnect_lpd/ACLK] [get_bd_pins axi_interconnect_lpd/M00_ACLK] [get_bd_pins axi_interconnect_lpd/S00_ACLK] [get_bd_pins axi_register_slice_0/aclk] [get_bd_pins axi_vip_0/aclk] [get_bd_pins axi_vip_1/aclk] [get_bd_pins interconnect_axifull/ACLK] [get_bd_pins interconnect_axifull/M00_ACLK] [get_bd_pins interconnect_axifull/S00_ACLK] [get_bd_pins interconnect_axilite/ACLK] [get_bd_pins interconnect_axilite/M00_ACLK] [get_bd_pins interconnect_axilite/S00_ACLK] [get_bd_pins ps_e/maxihpm0_fpd_aclk] [get_bd_pins ps_e/maxihpm0_lpd_aclk] [get_bd_pins ps_e/saxi_lpd_aclk] [get_bd_pins ps_e/saxihp3_fpd_aclk]
-  #connect_bd_net -net proc_sys_reset_1_interconnect_aresetn [get_bd_pins axi_intc_0/s_axi_aresetn] [get_bd_pins axi_interconnect_lpd/ARESETN] [get_bd_pins axi_interconnect_lpd/M00_ARESETN] [get_bd_pins axi_interconnect_lpd/S00_ARESETN] [get_bd_pins axi_vip_1/aresetn] [get_bd_pins interconnect_axifull/ARESETN] [get_bd_pins interconnect_axifull/M00_ARESETN] [get_bd_pins interconnect_axifull/S00_ARESETN] [get_bd_pins interconnect_axilite/ARESETN] [get_bd_pins interconnect_axilite/M00_ARESETN] [get_bd_pins interconnect_axilite/S00_ARESETN] 
-  connect_bd_net [get_bd_pins proc_sys_reset_${default_clk_num}/interconnect_aresetn] [get_bd_pins axi_intc_0/s_axi_aresetn] [get_bd_pins axi_interconnect_lpd/ARESETN] [get_bd_pins axi_interconnect_lpd/M00_ARESETN] [get_bd_pins axi_interconnect_lpd/S00_ARESETN] [get_bd_pins axi_vip_1/aresetn] [get_bd_pins interconnect_axifull/ARESETN] [get_bd_pins interconnect_axifull/M00_ARESETN] [get_bd_pins interconnect_axifull/S00_ARESETN] [get_bd_pins interconnect_axilite/ARESETN] [get_bd_pins interconnect_axilite/M00_ARESETN] [get_bd_pins interconnect_axilite/S00_ARESETN] 
+  connect_bd_net [get_bd_pins clk_wiz_0/$default_clk_port]  [get_bd_pins axi_interconnect_lpd/ACLK] [get_bd_pins axi_interconnect_lpd/M00_ACLK] [get_bd_pins axi_interconnect_lpd/S00_ACLK] [get_bd_pins axi_register_slice_0/aclk] [get_bd_pins axi_vip_0/aclk] [get_bd_pins axi_vip_1/aclk] [get_bd_pins interconnect_axifull/ACLK] [get_bd_pins interconnect_axifull/M00_ACLK] [get_bd_pins interconnect_axifull/S00_ACLK] [get_bd_pins ps_e/maxihpm0_fpd_aclk] [get_bd_pins ps_e/maxihpm0_lpd_aclk] [get_bd_pins ps_e/saxi_lpd_aclk] [get_bd_pins ps_e/saxihp3_fpd_aclk]
+ 
+  connect_bd_net [get_bd_pins proc_sys_reset_${default_clk_num}/interconnect_aresetn] [get_bd_pins axi_interconnect_lpd/ARESETN] [get_bd_pins axi_interconnect_lpd/M00_ARESETN] [get_bd_pins axi_interconnect_lpd/S00_ARESETN] [get_bd_pins axi_vip_1/aresetn] [get_bd_pins interconnect_axifull/ARESETN] [get_bd_pins interconnect_axifull/M00_ARESETN] [get_bd_pins interconnect_axifull/S00_ARESETN]
+  
   connect_bd_net -net proc_sys_reset_2_peripheral_aresetn [get_bd_pins axi_register_slice_0/aresetn] [get_bd_pins axi_vip_0/aresetn] 
   connect_bd_net [get_bd_pins proc_sys_reset_${default_clk_num}/peripheral_aresetn] [get_bd_pins axi_vip_0/aresetn] 
   
@@ -274,9 +276,8 @@ apply_bd_automation -rule xilinx.com:bd_rule:axi4 -config { Clk_master {/clk_wiz
   connect_bd_intf_net -intf_net interconnect_axihpm0fpd_M00_AXI [get_bd_intf_pins axi_register_slice_0/S_AXI] [get_bd_intf_pins interconnect_axihpm0fpd/M00_AXI]
   connect_bd_intf_net -intf_net ps_e_M_AXI_HPM0_FPD [get_bd_intf_pins interconnect_axihpm0fpd/S00_AXI] [get_bd_intf_pins ps_e/M_AXI_HPM0_FPD]
   
-  connect_bd_net -net $default_clock_net [get_bd_pins interconnect_axihpm0fpd/ACLK] [get_bd_pins interconnect_axihpm0fpd/M00_ACLK] [get_bd_pins interconnect_axihpm0fpd/S00_ACLK] [get_bd_pins ps_e/maxihpm0_fpd_aclk]
-  connect_bd_net [get_bd_pins proc_sys_reset_${default_clk_num}/interconnect_aresetn] [get_bd_pins interconnect_axihpm0fpd/ARESETN] [get_bd_pins interconnect_axihpm0fpd/M00_ARESETN] [get_bd_pins interconnect_axihpm0fpd/S00_ARESETN]
-  }
+   connect_bd_net [get_bd_pins clk_wiz_0/$default_clk_port] [get_bd_pins interconnect_axihpm0fpd/ACLK] [get_bd_pins interconnect_axihpm0fpd/M00_ACLK] [get_bd_pins interconnect_axihpm0fpd/S00_ACLK] [get_bd_pins ps_e/maxihpm0_fpd_aclk]
+  connect_bd_net [get_bd_pins proc_sys_reset_${default_clk_num}/interconnect_aresetn] [get_bd_pins interconnect_axihpm0fpd/ARESETN] [get_bd_pins interconnect_axihpm0fpd/M00_ARESETN] [get_bd_pins interconnect_axihpm0fpd/S00_ARESETN] }
   
   # Create address segments
   assign_bd_address -offset 0x00000000 -range 0x80000000 -target_address_space [get_bd_addr_spaces axi_vip_0/Master_AXI] [get_bd_addr_segs ps_e/SAXIGP5/HP3_DDR_LOW] -force
@@ -285,7 +286,8 @@ apply_bd_automation -rule xilinx.com:bd_rule:axi4 -config { Clk_master {/clk_wiz
   assign_bd_address -offset 0x00000000 -range 0x80000000 -target_address_space [get_bd_addr_spaces axi_vip_1/Master_AXI] [get_bd_addr_segs ps_e/SAXIGP6/LPD_DDR_LOW] -force
   assign_bd_address -offset 0xFF000000 -range 0x01000000 -target_address_space [get_bd_addr_spaces axi_vip_1/Master_AXI] [get_bd_addr_segs ps_e/SAXIGP6/LPD_LPS_OCM] -force
   assign_bd_address -offset 0xC0000000 -range 0x20000000 -target_address_space [get_bd_addr_spaces axi_vip_1/Master_AXI] [get_bd_addr_segs ps_e/SAXIGP6/LPD_QSPI] -force
-  assign_bd_address -offset 0x80020000 -range 0x00001000 -target_address_space [get_bd_addr_spaces ps_e/Data] [get_bd_addr_segs axi_intc_0/S_AXI/Reg] -force
+  if {$irqs == "32"} {
+  assign_bd_address -offset 0x80020000 -range 0x00001000 -target_address_space [get_bd_addr_spaces ps_e/Data] [get_bd_addr_segs axi_intc_0/S_AXI/Reg] -force }
 
   if {$use_ddr } {
   assign_bd_address -offset 0x000400000000 -range 0x80000000 -target_address_space [get_bd_addr_spaces ps_e/Data] [get_bd_addr_segs pl_ddr4/C0_DDR4_MEMORY_MAP/C0_DDR4_ADDRESS_BLOCK] -force
@@ -321,15 +323,16 @@ if { [dict exists $options $pl_ddr] } {
 }
 
 #  32 (interrupt controller) / 16 (interrupt controller)
-set irqs_param "Include_IRQS16.VALUE"
-set irqs_GIC 0
+set irqs_param "IRQS.VALUE"
+set irqs 32
+
 if { [dict exists $options $irqs_param] } {
 #puts "INFO: selected irqs:: $irqs FROM IF"
-    set irqs_GIC [dict get $options $irqs_param ]
+    set irqs [dict get $options $irqs_param ]
 }
 #puts "INFO: selected irqs:: $irqs"
 
-create_root_design $currentDir $design_name $use_ddr $clk_options $irqs_GIC
+create_root_design $currentDir $design_name $use_ddr $clk_options $irqs
 	
 open_bd_design [get_bd_files $design_name]
 puts "INFO: Block design generation completed, yet to set PFM properties"
@@ -338,9 +341,11 @@ set board_name [get_property BOARD_NAME [current_board]]
 # Create PFM attributes
 set_property PFM_NAME "xilinx.com:xd:${board_name}:1.0" [get_files [current_bd_design].bd]
 
+if {$irqs == "32"} {
 set_property PFM.IRQ {intr {id 0 range 32}} [get_bd_cells /axi_intc_0]
-if {$irqs_GIC} {
-set_property PFM.IRQ {pl_ps_irq1 {id 1 range 7}} [get_bd_cells /ps_e] }
+} else {
+set_property PFM.IRQ {pl_ps_irq0 {id 0 range 16}} [get_bd_cells /ps_e] }
+
 
 set clocks {}
        set i 0
@@ -356,7 +361,8 @@ set parVal []
 for {set i 1} {$i < 64} {incr i} {
   lappend parVal M[format %02d $i]_AXI {memport "M_AXI_GP"}
 }
-set_property PFM.AXI_PORT $parVal [get_bd_cells /interconnect_axilite]
+if {$irqs == "32"} {
+set_property PFM.AXI_PORT $parVal [get_bd_cells /interconnect_axilite] }
 
 set hp3Val []
 for {set i 1} {$i < 16} {incr i} {

@@ -28,12 +28,12 @@ proc getSupportedBoards {} {
 }
 
 proc addOptions {DESIGNOBJ PROJECT_PARAM.BOARD_PART} {
-    lappend x [dict create name "Include_IRQS32" type "bool" value "true" enabled true]
-	lappend x [dict create name "Include_IRQS16" type "bool" value "false" enabled true]
+    #lappend x [dict create name "Include_IRQS32" type "bool" value "true" enabled true]
+	#lappend x [dict create name "Include_IRQS16" type "bool" value "false" enabled true]
 	lappend x [dict create name "Include_DDR" type "bool" value "false" enabled true]
 	#lappend x [dict create name "Include_AIE" type "bool" value "false" enabled true]
     lappend x [dict create name "Clock_Options" type "string" value "clk_out1 100.000 0 false clk_out2 200.000 1 true clk_out3 400.000 2 false" enabled true]
-    #lappend x [dict create name "IRQS" type "string" value "32" value_list {"32 32_Interrupts,_using_INTC" "16 16_interrupts,_using_GIC"} enabled true]
+    lappend x [dict create name "IRQS" type "string" value "32" value_list {"32 32_Interrupts,_using_INTC(default)" "16 16_interrupts,_using_GIC"} enabled true]
     return $x
 }
 
@@ -44,10 +44,10 @@ proc addGUILayout {DESIGNOBJ PROJECT_PARAM.BOARD_PART} {
     set clocks [ced::add_group -name "Clocks" -display_name "Clocks"  -parent $page -visible true -designObject $designObj ]
     ced::add_custom_widget -name widget_Clocks -hierParam Clock_Options -class_name PlatformClocksWidget -parent $clocks $designObj
 
-    #ced::add_param -name IRQS -display_name "Interrupts" -parent $page -designObject $designObj -widget radioGroup
-    set irqs [ced::add_group -name "Interrupts" -display_name "Interrupts"  -parent $page -visible true -designObject $designObj ]
-    ced::add_param -name Include_IRQS32 -display_name "32 Interrupts using INTC(default)" -parent $irqs -designObject $designObj -widget checkbox
-	ced::add_param -name Include_IRQS16 -display_name "16 Interrupts using GIC" -parent $irqs -designObject $designObj -widget checkbox
+    ced::add_param -name IRQS -display_name "Interrupts" -parent $page -designObject $designObj -widget radioGroup
+    #set irqs [ced::add_group -name "Interrupts" -display_name "Interrupts"  -parent $page -visible true -designObject $designObj ]
+    #ced::add_param -name Include_IRQS32 -display_name "32 Interrupts using INTC(default)" -parent $irqs -designObject $designObj -widget checkbox
+	#ced::add_param -name Include_IRQS16 -display_name "16 Interrupts using GIC" -parent $irqs -designObject $designObj -widget checkbox
 
 
     set ddr [ced::add_group -name "Zynq Memory Configurations" -display_name "Memory"  -parent $page -visible true -designObject $designObj ]
@@ -140,9 +140,9 @@ if {${PROJECT_PARAM.BOARD_PART} != "" } {
 }
 
 
-gui_updater {PROJECT_PARAM.PART} {Include_IRQS32.VALUE Include_IRQS32.ENABLEMENT} {
-  if { ${Include_IRQS32.VALUE} == true } {
-    set Include_IRQS32.ENABLEMENT false
-	set Include_IRQS32.VALUE true
-  }
-}
+# gui_updater {PROJECT_PARAM.PART} {Include_IRQS32.VALUE Include_IRQS32.ENABLEMENT} {
+  # if { ${Include_IRQS32.VALUE} == true } {
+    # set Include_IRQS32.ENABLEMENT false
+	# set Include_IRQS32.VALUE true
+  # }
+# }
