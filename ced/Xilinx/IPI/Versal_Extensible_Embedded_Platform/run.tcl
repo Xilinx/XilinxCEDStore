@@ -135,7 +135,7 @@ set_property -dict [list CONFIG.CATEGORY {ps_pmc} CONFIG.CONNECTIONS {M00_INI { 
 set_property -dict [list CONFIG.ASSOCIATED_BUSIF {S03_AXI:S02_AXI:S00_AXI:S01_AXI:S04_AXI:S07_AXI:S06_AXI:S05_AXI}] [get_bd_pins /cips_noc/aclk0]
 
 create_bd_cell -type ip -vlnv xilinx.com:ip:axi_noc:* noc_ddr4
-if [regexp "vpk120" $board_name] {
+if {[regexp "vpk120" $board_name]||[regexp "vpk180" $board_name]} {
 apply_board_connection -board_interface "ch0_lpddr4_trip1" -ip_intf "noc_ddr4/CH0_LPDDR4_0" -diagram $design_name 
 apply_board_connection -board_interface "ch1_lpddr4_trip1" -ip_intf "noc_ddr4/CH1_LPDDR4_0" -diagram $design_name 
 apply_board_connection -board_interface "lpddr4_clk1" -ip_intf "noc_ddr4/sys_clk0" -diagram $design_name
@@ -314,7 +314,7 @@ set_property -dict [list CONFIG.CONNECTIONS {M01_INI { read_bw {128} write_bw {1
 
 create_bd_cell -type ip -vlnv xilinx.com:ip:axi_noc:* noc_lpddr4
 
-if [regexp "vpk120" $board_name] {
+if {[regexp "vpk120" $board_name]||[regexp "vpk180" $board_name]} {
 
 apply_board_connection -board_interface "ch0_lpddr4_trip2" -ip_intf "noc_lpddr4/CH0_LPDDR4_0" -diagram $design_name 
 apply_board_connection -board_interface "ch1_lpddr4_trip2" -ip_intf "noc_lpddr4/CH1_LPDDR4_0" -diagram $design_name 
@@ -367,7 +367,7 @@ assign_bd_address -offset 0x00000000 -range 0x80000000 -target_address_space [ge
 assign_bd_address -offset 0x00000000 -range 0x80000000 -target_address_space [get_bd_addr_spaces CIPS_0/FPD_CCI_NOC_0] [get_bd_addr_segs noc_ddr4/S00_INI/C0_DDR_LOW0] -force
 assign_bd_address -offset 0x00000000 -range 0x80000000 -target_address_space [get_bd_addr_spaces CIPS_0/PMC_NOC_AXI_0] [get_bd_addr_segs noc_ddr4/S00_INI/C0_DDR_LOW0] -force
 
-if [regexp "vpk120" $board_name] {
+if {[regexp "vpk120" $board_name]||[regexp "vpk180" $board_name]} {
 
 assign_bd_address -offset 0x000800000000 -range 0x80000000 -target_address_space [get_bd_addr_spaces CIPS_0/FPD_CCI_NOC_1] [get_bd_addr_segs noc_ddr4/S00_INI/C0_DDR_LOW1] -force
 assign_bd_address -offset 0x000800000000 -range 0x80000000 -target_address_space [get_bd_addr_spaces CIPS_0/FPD_CCI_NOC_2] [get_bd_addr_segs noc_ddr4/S00_INI/C0_DDR_LOW1] -force
@@ -439,7 +439,7 @@ create_root_design $currentDir $design_name $use_lpddr $clk_options $irqs $use_a
 	
 	#QoR script for vck190 production CED platforms
 	set board_part [get_property NAME [current_board_part]]
-	if [regexp "vck190:part0" $board_part] {
+	if [regexp "vck190" $board_part] {
 	#set bdDesignPath [file join [get_property directory [current_project]] [current_project].srcs sources_1 bd $design_name]
 	
 	set script_dir [file join $currentDir qor_scripts prohibit_select_bli_bels_for_hold.tcl]
@@ -459,9 +459,12 @@ create_root_design $currentDir $design_name $use_lpddr $clk_options $irqs $use_a
 	} elseif [regexp "vck" $board_name] {
 	puts "INFO: Creating extensible_platform for VCK_190"
 	set_property PFM_NAME {xilinx.com:xd:xilinx_vck190_base:1.0} [get_files [current_bd_design].bd]
-	} else {
+	} elseif [regexp "vpk120" $board_name] {
 	puts "INFO: Creating extensible_platform for VPK_120"
-	set_property PFM_NAME {xilinx.com:xd:xilinx_vpk120_base:1.0} [get_files [current_bd_design].bd] }
+	set_property PFM_NAME {xilinx.com:xd:xilinx_vpk120_base:1.0} [get_files [current_bd_design].bd] 
+	} else {
+	puts "INFO: Creating extensible_platform for VPK_180"
+	set_property PFM_NAME {xilinx.com:xd:xilinx_vpk180_base:1.0} [get_files [current_bd_design].bd] }
 	
 	set_property PFM.AXI_PORT {M00_AXI {memport "NOC_MASTER"}} [get_bd_cells /cips_noc]
   	if { $irqs eq "32" } {
