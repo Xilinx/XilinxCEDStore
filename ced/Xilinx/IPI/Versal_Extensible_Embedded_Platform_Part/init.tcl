@@ -136,7 +136,7 @@ validater { Clock_Options.VALUE } { Clock_Options.ERRMSG } {
 
 gui_updater {PROJECT_PARAM.PART} {Include_AIE.VISIBLE Include_AIE.ENABLEMENT Include_AIE.VALUE} {
 set aie [get_property FAMILY [get_parts ${PROJECT_PARAM.PART}]]
-if {(${aie} == "qrversalaicore")||(${aie} == "versalaicore")||(${aie} == "versalaiedge")||(${aie} == "qversalaicore")} {
+if { [regexp "qrversalaicore" ${aie}]||[regexp "versalaicore" ${aie}]||[regexp "versalaiedge" ${aie}]||[regexp "qversalaicore" ${aie}]} {
       #set Include_AIE.VISIBLE true
 	  set Include_AIE.ENABLEMENT true
 	  set Include_AIE.VALUE true
