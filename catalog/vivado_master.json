@@ -323,6 +323,25 @@
           "metadata_file": "xitem.json"
         },
         "company": "xilinx.com"
+      },
+      {
+        "name": "ver_ps_perf",
+        "display": "Versal ACAP Processor Performance",
+        "latest_revision": "1.0",
+        "commit_id": "4ef60af7a38260ce01823513534206f76dc3ecfd",
+        "revisions": [
+          {
+            "revision": "1.0",
+            "commit_id": "4ef60af7a38260ce01823513534206f76dc3ecfd",
+            "date": "22-02-2022:06:19:23",
+            "history": "Added board Versal ACAP Processor Performance v1.0"
+          }
+        ],
+        "config": {
+          "root": "ced/Xilinx/IPI/Versal_ACAP_Processor_Performance",
+          "metadata_file": "xitem.json"
+        },
+        "company": "xilinx.com"
       }
     ],
     "categories": [
