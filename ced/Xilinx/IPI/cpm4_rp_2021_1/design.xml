@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<ExampleDesign>
+  <Vendor>xilinx.com</Vendor>
+  <Library>design</Library>
+  <Name>design_rc</Name>
+   <DisplayName>CPM4 PCIE RP Design</DisplayName>
+  <Description>CPM4 PCIE RP Example Design</Description>
+   <Version>1.0</Version>
+  <Design>init.tcl</Design>
+  <Image>cpm4_pcie_rp.PNG</Image>
+   <DesignType>IPI</DesignType>
+</ExampleDesign>
