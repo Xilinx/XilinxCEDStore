@@ -214,11 +214,11 @@
         "name": "Versal CPM PCIe Debug",
         "display": "Versal CPM PCIe Debug",
         "latest_revision": "1.0",
-        "commit_id": "8aecb50090426eb34e721f93797ed854553850b2",
+        "commit_id": "659977f2ee320534fd03b544590ff56eec93e256",
         "revisions": [
           {
             "revision": "1.0",
-            "commit_id": "8aecb50090426eb34e721f93797ed854553850b2",
+            "commit_id": "659977f2ee320534fd03b544590ff56eec93e256",
             "date": "24-11-2021:10:43:37",
             "history": "Added board Versal CPM PCIe Debug v1.0"
           }
