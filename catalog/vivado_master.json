@@ -342,6 +342,25 @@
           "metadata_file": "xitem.json"
         },
         "company": "xilinx.com"
+      },
+      {
+        "name": "cpm_pcie_pio",
+        "display": "CPM PCIE PIO Design",
+        "latest_revision": "1.0",
+        "commit_id": "7a25fdbec74bf1efa1b75272a2ff48f25505809f",
+        "revisions": [
+          {
+            "revision": "1.0",
+            "commit_id": "7a25fdbec74bf1efa1b75272a2ff48f25505809f",
+            "date": "28-02-2022:19:59:39",
+            "history": "Added board CPM PCIE PIO Design v1.0"
+          }
+        ],
+        "config": {
+          "root": "ced/Xilinx/IPI/cpm_pcie_pio",
+          "metadata_file": "xitem.json"
+        },
+        "company": "xilinx.com"
       }
     ],
     "categories": [
