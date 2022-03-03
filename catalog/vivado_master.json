@@ -5,11 +5,11 @@
         "name": "cips_ddr_pl_debug",
         "display": "Versal CIPS Design",
         "latest_revision": "1.0",
-        "commit_id": "ff8d7024decaa46e2378e5b1b65645f691b5acac",
+        "commit_id": "b8d83fa31cc7c3e1a144f03a5745704221419e0a",
         "revisions": [
           {
             "revision": "1.0",
-            "commit_id": "ff8d7024decaa46e2378e5b1b65645f691b5acac",
+            "commit_id": "b8d83fa31cc7c3e1a144f03a5745704221419e0a",
             "date": "27-08-2020",
             "history": "Updated description and picture"
           }
@@ -100,11 +100,11 @@
         "name": "soc_vip",
         "display": "Versal ACAP CIPS PS VIP",
         "latest_revision": "1.0",
-        "commit_id": "8e6ba2f4aee6b102e4bed523399e28036090094e",
+        "commit_id": "b8d83fa31cc7c3e1a144f03a5745704221419e0a",
         "revisions": [
           {
             "revision": "1.0",
-            "commit_id": "8e6ba2f4aee6b102e4bed523399e28036090094e",
+            "commit_id": "b8d83fa31cc7c3e1a144f03a5745704221419e0a",
             "date": "08-02-2021:05:11:54",
             "history": "Added board Versal ACAP CIPS PS VIP v1.0"
           }
