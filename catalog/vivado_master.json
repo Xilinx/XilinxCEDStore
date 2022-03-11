@@ -347,11 +347,11 @@
         "name": "cpm_pcie_pio",
         "display": "CPM PCIE PIO Design",
         "latest_revision": "1.0",
-        "commit_id": "7a25fdbec74bf1efa1b75272a2ff48f25505809f",
+        "commit_id": "5daaf6974ecbc1a6628fead13c6a1ea1abe9c296",
         "revisions": [
           {
             "revision": "1.0",
-            "commit_id": "7a25fdbec74bf1efa1b75272a2ff48f25505809f",
+            "commit_id": "5daaf6974ecbc1a6628fead13c6a1ea1abe9c296",
             "date": "28-02-2022:19:59:39",
             "history": "Added board CPM PCIE PIO Design v1.0"
           }
