@@ -4,7 +4,7 @@
   <Library>design</Library>
   <Name>cpm_pcie_pio</Name>
    <DisplayName>CPM PCIE PIO Design</DisplayName>
-  <Description>CPM5 PCIE PIO Example Design</Description>
+  <Description>The design is PIO and covers both CPM4 and CPM5. Respective design is generated based on which board is selected i.e. CPM4 PIO design if VCK190 is selected and CPM5 PIO design if VPK120 is selected.</Description>
    <Version>1.0</Version>
   <Design>init.tcl</Design>
   <Image>cpm_pcie_pio.PNG</Image>
