@@ -8,9 +8,9 @@
 
 <Name>Versal_CPM_PCIe_Debug</Name>
 
-<DisplayName>Versal CPM PCIe Debug</DisplayName>
+<DisplayName>Versal CPM Debug-over-PCIE</DisplayName>
 
-<Description></Description>
+<Description>This example design provides users the capability to debug designs without requiring a JTAG connection; they can use the PCIe link to the host directly.</Description>
 
 <Version>1.0</Version>
 
