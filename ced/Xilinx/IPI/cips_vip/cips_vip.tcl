@@ -156,14 +156,14 @@ create_root_design  $currentDir $design_name ""
 	set_property USER_COMMENTS.comment0 {Next Steps:
 	1. Generate Block Design (Choose global for quick turnaround).
 	2. Run Simulation.
-	3. Refer to README.md https://github.com/Xilinx/XilinxCEDStore/tree/2021.2/ced/Xilinx/IPI/cips_vip/README.md} [current_bd_design]
+	3. Refer to README.md https://github.com/Xilinx/XilinxCEDStore/tree/2022.1/ced/Xilinx/IPI/cips_vip/README.md} [current_bd_design]
 	
 	regenerate_bd_layout -layout_string {
    "ActiveEmotionalView":"Default View",
    "comment_0":"Next Steps:
 	1. Generate Block Design (Choose global for quick turnaround).
 	2. Run Simulation.
-	3. Refer to README.md https://github.com/Xilinx/XilinxCEDStore/tree/2021.2/ced/Xilinx/IPI/cips_vip/README.md",
+	3. Refer to README.md https://github.com/Xilinx/XilinxCEDStore/tree/2022.1/ced/Xilinx/IPI/cips_vip/README.md",
    "commentid":"comment_0|",
    "font_comment_0":"18",
    "guistr":"# # String gsaved with Nlview 7.0r4  2019-12-20 bk=1.5203 VDI=41 GEI=36 GUI=JA:10.0 TLS
