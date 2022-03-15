@@ -4,7 +4,7 @@
         {
           "infra": {
             "name": "Versal CPM PCIe Debug",
-            "display": "Versal CPM PCIe Debug",
+            "display": "Versal CPM Debug-over-PCIE",
             "revision": "1.0",
             "description": "",
             "company": "xilinx.com",
