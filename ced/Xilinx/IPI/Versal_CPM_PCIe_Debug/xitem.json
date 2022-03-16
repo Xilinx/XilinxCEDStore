@@ -3,7 +3,7 @@
       "items": [
         {
           "infra": {
-            "name": "Versal CPM PCIe Debug",
+            "name": "Versal_CPM_PCIe_Debug",
             "display": "Versal CPM Debug-over-PCIE",
             "revision": "1.0",
             "description": "",
