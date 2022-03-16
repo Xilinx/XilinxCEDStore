@@ -455,16 +455,16 @@ create_root_design $currentDir $design_name $use_lpddr $clk_options $irqs $use_a
 	# Create PFM attributes
 	if [regexp "vmk" $board_name] {
 	puts "INFO: Creating extensible_platform for VMK_180"
-	set_property PFM_NAME {xilinx.com:xd:xilinx_vmk180_base:1.0} [get_files [current_bd_design].bd]
+	set_property PFM_NAME {xilinx.com:vmk180:versal_extensible_platform_base:1.0} [get_files [current_bd_design].bd]
 	} elseif [regexp "vck" $board_name] {
 	puts "INFO: Creating extensible_platform for VCK_190"
-	set_property PFM_NAME {xilinx.com:xd:xilinx_vck190_base:1.0} [get_files [current_bd_design].bd]
+	set_property PFM_NAME {xilinx.com:vck190:versal_extensible_platform_base:1.0} [get_files [current_bd_design].bd]
 	} elseif [regexp "vpk120" $board_name] {
 	puts "INFO: Creating extensible_platform for VPK_120"
-	set_property PFM_NAME {xilinx.com:xd:xilinx_vpk120_base:1.0} [get_files [current_bd_design].bd] 
+	set_property PFM_NAME {xilinx.com:vpk120:versal_extensible_platform_base:1.0} [get_files [current_bd_design].bd] 
 	} else {
 	puts "INFO: Creating extensible_platform for VPK_180"
-	set_property PFM_NAME {xilinx.com:xd:xilinx_vpk180_base:1.0} [get_files [current_bd_design].bd] }
+	set_property PFM_NAME {xilinx.com:vpk180:versal_extensible_platform_base:1.0} [get_files [current_bd_design].bd] }
 	
 	set_property PFM.AXI_PORT {M00_AXI {memport "NOC_MASTER"}} [get_bd_cells /cips_noc]
   	if { $irqs eq "32" } {
