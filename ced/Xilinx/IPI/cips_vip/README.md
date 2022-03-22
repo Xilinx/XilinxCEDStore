@@ -18,22 +18,18 @@ No hardware is required.
 
 
 Running the Simulation
-1. The CIPs VIP simulation output products are not generated in 2021.1 Before generating output products, run the following TCL command:
-
-	set_param cips.enablePSVIPsimulation 1
-	
-2. Generate output products for the block design. Select global for a quick turnaround.
+1. IP output products are not included as part of the example design and need to bee generated. Generate output products for the block design. Select global for a quick turnaround and then run the simulation
 
 ## Output Products
 
 ![Output Products](./Icons/generateOutputProductsHighlight.JPG)
 
-3. Run the simulation.
+2. Run the simulation.
 
 ## Behaviorial Simulatio
 ![Behaviorial Simulatio](./Icons/runBehaviorialSimulationHighlight.JPG)
 
-4. A successful run completes with the following messages.
+3. A successful run completes with the following messages.
 
 INFO: [VERSAL_CIPS_PS_VIP] (tb.DUT.soc_vip_wrapper_i.soc_vip_i.versal_cips_0.inst.PS9_VIP_inst.inst.read_burst) :: [read_burst] [83044] ::: [R5_API] AXI Read with Starting Address(0x10001fc0) is initiated
 
@@ -72,4 +68,4 @@ $finish called at time : 83169732 ps : File "/project_1/project_1.srcs/sim_1/imp
 
 run: Time (s): cpu = 00:02:08 ; elapsed = 00:03:30 . Memory (MB): peak = 11352.809 ; gain = 124.215 ; free physical = 414206 ; free virtual = 470358
 
-5. There is a known issue in 2021.1 with NoC simulation where the sim_wrapper is not always generated with a port list. Refer to AR# 76085 for details. https://www.xilinx.com/support/answers/76085.html
+4. There is a known issue in 2021.1 with NoC simulation where the sim_wrapper is not always generated with a port list. Refer to AR# 76085 for details. https://www.xilinx.com/support/answers/76085.html
