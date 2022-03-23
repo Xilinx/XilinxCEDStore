@@ -32,11 +32,11 @@ puts "INFO: $board_name is selected"
 puts "INFO: $board_part is selected"
 puts "INFO: $fpga_part is selected"
 
-puts "INFO: selected irqs:: $irqs"
+puts "INFO: selected Interrupts:: $irqs"
 puts "INFO: selected design_name:: $design_name"
-puts "INFO: selected use_lpddr:: $use_lpddr"
-puts "INFO: selected clk_options:: $clk_options"
-puts "INFO: selected use_aie:: $use_aie"
+puts "INFO: selected Include_LPDDR:: $use_lpddr"
+puts "INFO: selected Clock_Options:: $clk_options"
+puts "INFO: selected Include_AIE:: $use_aie"
 
 set use_intc [set use_cascaded_irqs [set no_irqs ""]]
 set use_intc [ expr $irqs eq "32" ]
