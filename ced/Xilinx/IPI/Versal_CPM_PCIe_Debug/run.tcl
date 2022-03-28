@@ -15,6 +15,8 @@
 # ########################################################################
 proc createDesign {design_name options} {  
 
+  variable currentDir
+
 ##################################################################
 # DESIGN PROCs													 
 ##################################################################
@@ -3952,7 +3954,7 @@ default} {PULL pullup} {SCHMITT 1} {SLEW fast} {USAGE Unassigned}}\
 	puts $fd "# Set bitstream properties"
     puts $fd "set_property CONFIG_VOLTAGE 1.8 \[current_design\]"
 	close $fd
-	add_files  -fileset constrs_1 [ list "$proj_dir/$proj_name.srcs/constrs_1/constrs/top.xdc" ]
+	add_files -fileset constrs_1 [ list "$proj_dir/$proj_name.srcs/constrs_1/constrs/top.xdc" ]
 }
 ##################################################################
 # MAIN FLOW
@@ -3960,11 +3962,12 @@ default} {PULL pullup} {SCHMITT 1} {SLEW fast} {USAGE Unassigned}}\
 
 create_root_design "" $design_name $options 
 
-#assign_bd_address
 save_bd_design
 validate_bd_design
 regenerate_bd_layout
 open_bd_design [get_bd_files $design_name]
 make_wrapper -files [get_files $design_name.bd] -top -import
+import_files -fileset utils_1 -flat $currentDir/README.txt
 puts "INFO: End of create_root_design"
+puts "INFO: Refer to the README.txt file inside the util_1 fileset for information"
 }
