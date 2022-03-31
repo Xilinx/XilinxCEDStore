@@ -200,7 +200,7 @@ proc createDesign {design_name options} {
     set f [open "create_design_bd.tcl" w]
     puts $f "# in create_root_design"
     puts $f "# options: $protocols"
-    create_bd_cell -type ip -vlnv xilinx.com:ip:versal_cips:3.1 versal_cips_0
+    create_bd_cell -type ip -vlnv xilinx.com:ip:versal_cips:3.2 versal_cips_0
     
     # CIPS v3.0 with automation build 0529
     #apply_bd_automation -rule xilinx.com:bd_rule:cips -config { board_preset {No} boot_config {Custom} configure_noc {Add new AXI NoC} debug_config {Custom} design_flow {PL Flow (no PS)} mc_type {None} num_mc {1} pl_clocks {1} pl_resets {None}}  [get_bd_cells versal_cips_0]
