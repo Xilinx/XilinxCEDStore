@@ -47,7 +47,7 @@ set_property -dict [list CONFIG.PS_PMC_CONFIG {PS_GEN_IPI0_ENABLE 1 PS_GEN_IPI0_
 # Create instance: axi_noc_0, and set properties
 create_bd_cell -type ip -vlnv xilinx.com:ip:axi_noc:* axi_noc_0
 
-if {[regexp vpk120 $board_name] } {
+if {[regexp "vpk120" $board_name]||[regexp "vpk180" $board_name] } {
 	apply_board_connection -board_interface "ch0_lpddr4_trip1" -ip_intf "axi_noc_0/CH0_LPDDR4_0" -diagram $design_name 
 	apply_board_connection -board_interface "ch1_lpddr4_trip1" -ip_intf "axi_noc_0/CH1_LPDDR4_0" -diagram $design_name 
 	apply_board_connection -board_interface "lpddr4_clk1" -ip_intf "axi_noc_0/sys_clk0" -diagram $design_name 
@@ -190,12 +190,15 @@ create_root_design  $currentDir $design_name ""
 	#Testbench file creation and import
 	set board_name [get_property BOARD_NAME [current_board]]
 	
-	if {[regexp vpk120 $board_name] } {
-	set originalTBFile [file join $currentDir vpk_testbench system.sv]
-	set xdc [file join $currentDir vpk_constrs_1 top.xdc]
+	if {[regexp "vpk120" $board_name]||[regexp "vpk180" $board_name] } {
+	set originalTBFile [file join $currentDir test_bench lpddr system.sv]
+	if {[regexp "vpk120" $board_name]} {
+	set xdc [file join $currentDir xdc H10 top.xdc]
 	} else {
-	set originalTBFile [file join $currentDir testbench system.sv]
-	set xdc [file join $currentDir constrs_1 top.xdc] }
+	set xdc [file join $currentDir xdc vpk180 top.xdc] }
+	} else {
+	set originalTBFile [file join $currentDir test_bench ddr system.sv]
+	set xdc [file join $currentDir xdc S80 top.xdc] }
 	set mb_elf [file join $currentDir design_files mb_hello.elf]
 	set tempTBFile [file join $bdDesignPath system.sv] 
 	import_files -fileset constrs_1 -norecurse $xdc

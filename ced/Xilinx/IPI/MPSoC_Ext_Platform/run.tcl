@@ -32,10 +32,10 @@ puts "INFO: $board_name is selected"
 puts "INFO: $board_part is selected"
 puts "INFO: $fpga_part is selected"
 
-puts "INFO: selected irqs:: $irqs"
+puts "INFO: selected Interrupts:: $irqs"
 puts "INFO: selected design_name:: $design_name"
-puts "INFO: selected use_ddr:: $use_ddr"
-puts "INFO: selected clk_options:: $clk_options"
+puts "INFO: selected Include_DDR:: $use_ddr"
+puts "INFO: selected Clock_Options:: $clk_options"
 
 # Create instance: axi_interconnect_lpd, and set properties
 set axi_interconnect_lpd [ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_interconnect axi_interconnect_lpd ]

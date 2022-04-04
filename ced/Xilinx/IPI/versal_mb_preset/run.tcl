@@ -78,7 +78,7 @@ set gpios_list [ get_board_component_interfaces -filter {BUSDEF_NAME == gpio_rtl
 
 create_bd_cell -type ip -vlnv xilinx.com:ip:axi_uart16550:* axi_uart16550_0
 
-if {[regexp vpk120 $board_name] } {
+if {[regexp "vpk120" $board_name]||[regexp "vpk180" $board_name]} {
 apply_board_connection -board_interface "uart2_bank712" -ip_intf "axi_uart16550_0/UART" -diagram $design_name 
 } else {
 apply_board_connection -board_interface "uart2_bank306" -ip_intf "axi_uart16550_0/UART" -diagram $design_name }
@@ -98,7 +98,7 @@ if {([lsearch $temp_options Preset.VALUE] == -1) || ([lsearch $temp_options "Mic
 	
 	create_bd_cell -type ip -vlnv xilinx.com:ip:axi_noc:* axi_noc_0
 		
-	if {[regexp vpk120 $board_name] } {
+	if {[regexp "vpk120" $board_name]||[regexp "vpk180" $board_name]} {
 	apply_board_connection -board_interface "ch0_lpddr4_trip1" -ip_intf "axi_noc_0/CH0_LPDDR4_0" -diagram $design_name 
 	apply_board_connection -board_interface "ch1_lpddr4_trip1" -ip_intf "axi_noc_0/CH1_LPDDR4_0" -diagram $design_name 
 	apply_board_connection -board_interface "lpddr4_clk1" -ip_intf "axi_noc_0/sys_clk0" -diagram $design_name 
@@ -129,7 +129,7 @@ if {([lsearch $temp_options Preset.VALUE] == -1) || ([lsearch $temp_options "Mic
 	 
 } else {
 	puts "ERROR: INVALID PRESET OPTION SELECTED" }
-if {[regexp vpk120 $board_name] } {
+if {[regexp "vpk120" $board_name]||[regexp "vpk180" $board_name]} {
 set_property -dict [list CONFIG.NUM_PORTS {4}] [get_bd_cells microblaze_0_xlconcat] 
 } else {
 set_property -dict [list CONFIG.NUM_PORTS {5}] [get_bd_cells microblaze_0_xlconcat] }
