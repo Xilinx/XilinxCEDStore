@@ -42,7 +42,7 @@ set_property -dict [list CONFIG.PS_PMC_CONFIG {PS_GEN_IPI0_ENABLE 1 PS_GEN_IPI0_
 
 # Create instance: axi_noc_0, and set properties
 create_bd_cell -type ip -vlnv xilinx.com:ip:axi_noc:* axi_noc_0
-if {[regexp vpk120 $board_name] } {
+if {[regexp "vpk120" $board_name]||[regexp "vpk180" $board_name]} {
 	
 	apply_board_connection -board_interface "ch0_lpddr4_trip1" -ip_intf "axi_noc_0/CH0_LPDDR4_0" -diagram $design_name 
 	apply_board_connection -board_interface "ch1_lpddr4_trip1" -ip_intf "axi_noc_0/CH1_LPDDR4_0" -diagram $design_name 

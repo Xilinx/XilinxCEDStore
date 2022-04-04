@@ -33,10 +33,10 @@ set fpga_part [get_property PART [current_project ]]
 puts "INFO: $fpga_part is selected"
 
 puts "INFO: selected design_name:: $design_name"
-puts "INFO: selected irqs:: $irqs"
-puts "INFO: selected use_lpddr:: $use_lpddr"
-puts "INFO: selected clk_options:: $clk_options"
-puts "INFO: selected use_aie:: $use_aie"
+puts "INFO: selected Interrupts:: $irqs"
+puts "INFO: selected Include_LPDDR:: $use_lpddr"
+puts "INFO: selected Clock_Options:: $clk_options"
+puts "INFO: selected Include_AIE:: $use_aie"
 
 set use_intc [set use_cascaded_irqs [set no_irqs ""]]
 set use_intc [ expr $irqs eq "32" ]
@@ -441,7 +441,7 @@ create_root_design $currentDir $design_name $use_lpddr $clk_options $irqs $use_a
 	#set_property PFM_NAME {xilinx.com:xd:extensible_platform_base:1.0} [get_files ${design_name}.bd]
 	#set_property platform.board_id {$part} [current_project]
 	
-	set_property PFM.AXI_PORT {M00_AXI {memport "NOC_MASTER"}} [get_bd_cells /cips_noc]
+	#set_property PFM.AXI_PORT {M00_AXI {memport "NOC_MASTER"}} [get_bd_cells /cips_noc]
   	if { $irqs eq "32" } {
 	#set_property PFM.IRQ {intr {id 0 range 31}}  [get_bd_cells /xlconcat_0]
 	set_property PFM.IRQ {intr {id 0 range 31}}  [get_bd_cells /axi_intc_0]
