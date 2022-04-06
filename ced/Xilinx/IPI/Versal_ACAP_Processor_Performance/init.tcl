@@ -24,32 +24,19 @@ proc getSupportedParts {} {
 	 }
 
 proc getSupportedBoards {} {
-# return [get_board_parts -filter {(BOARD_NAME =~"*vck190*" && VENDOR_NAME=="xilinx.com") || (BOARD_NAME =~"*vmk180*" && VENDOR_NAME=="xilinx.com")}  -latest_file_version]
- 
- return [get_board_parts -filter {(BOARD_NAME =~"*vck190*" && VENDOR_NAME=="xilinx.com" && PART_NAME=~"xcvc1902-vsva2197-2MP-e-S") || (BOARD_NAME =~"*vmk180*" && VENDOR_NAME=="xilinx.com" && PART_NAME=~"xcvm1802-vsva2197-2MP-e-S")}  -latest_file_version]
+return [get_board_parts -filter {(NAME =~"*vck190:part0*" && VENDOR_NAME=="xilinx.com" ) || (NAME =~"*vmk180:part0*" && VENDOR_NAME=="xilinx.com" )} -latest_file_version]
 }
 
-proc addOptions {DESIGNOBJ} {
-	lappend x [dict create name "Preset" type "string" value "DDR Subsystem" value_list {"DDR4_______Design_will_use_DDR4_controller" "LPDDR4___Design_will_use_LPDDR4_controller"} enabled true]
+proc addOptions {DESIGNOBJ PROJECT_PARAM.BOARD_PART} {
+	lappend x [dict create name "Preset" type "string" value "DDR4" value_list {"DDR4 DDR4_______Design_will_use_DDR4_controller" "LPDDR4 LPDDR4___Design_will_use_LPDDR4_controller"} enabled true]
 	return $x
 	}
 
-proc addGUILayout {DESIGNOBJ} {
+proc addGUILayout {DESIGNOBJ PROJECT_PARAM.BOARD_PART} {
 	set designObj $DESIGNOBJ
 	#place to define GUI layout for options
 	set page [ced::add_page -name "Page1" -display_name "Memory Configuration" -designObject $designObj -layout vertical]	
 	ced::add_param -name Preset -parent $page -designObject $designObj  -widget radioGroup 
         set imageVar [ced::add_image -name Image -parent $page -designObject $designObj -width 500 -height 300 -layout vertical]
 }
-
-
- updater {} {Image.IMAGE_PATH Preset.ENABLEMENT Preset.DISPLAYNAME} {
-  set Preset.DISPLAYNAME "Memory Configuration"
-  if { ${Preset.VALUE} == "DDR4"} {
-     set Preset.ENABLEMENT true
-  } elseif { ${Preset.VALUE} == "LPDDR4"} {
-	 set Preset.ENABLEMENT true
-  }
-}
-
 
