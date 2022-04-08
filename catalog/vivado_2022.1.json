@@ -309,11 +309,11 @@
         "name": "ver_ps_perf",
         "display": "Versal ACAP Processor Performance",
         "latest_revision": "1.0",
-        "commit_id": "4ef60af7a38260ce01823513534206f76dc3ecfd",
+        "commit_id": "8107c92747880341970c97d072a62503d2189e9a",
         "revisions": [
           {
             "revision": "1.0",
-            "commit_id": "4ef60af7a38260ce01823513534206f76dc3ecfd",
+            "commit_id": "8107c92747880341970c97d072a62503d2189e9a",
             "date": "22-02-2022:06:19:23",
             "history": "Added board Versal ACAP Processor Performance v1.0"
           }
