@@ -23,8 +23,8 @@ proc addGUILayout {DESIGNOBJ PROJECT_PARAM.BOARD_PART} {
     set imageVar [ced::add_image -name Image -parent $page -designObject $designObj -width 500 -height 300 -layout vertical]
 }
 
-gui_updater {PROJECT_PARAM.BOARD_PART} {Preset.VISIBLE Preset.ENABLEMENT Preset.VALUE} {
-set Preset.DISPLAYNAME "CIPS CPM Configurations"
+gui_updater {PROJECT_PARAM.BOARD_PART} {Preset.VISIBLE Preset.ENABLEMENT Preset.VALUE Preset.DISPLAYNAME} {
+  set Preset.DISPLAYNAME "CIPS CPM Configurations"
 if { [regexp "vck190" ${PROJECT_PARAM.BOARD_PART}]} {
 #set Preset.VISIBLE true
 set Preset.ENABLEMENT false
@@ -35,4 +35,6 @@ set Preset.ENABLEMENT false
 set Preset.VALUE CPM5
 }
 }
+
+
 

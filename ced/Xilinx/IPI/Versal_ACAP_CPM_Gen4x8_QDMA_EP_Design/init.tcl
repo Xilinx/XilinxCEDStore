@@ -23,6 +23,18 @@ proc addGUILayout {DESIGNOBJ PROJECT_PARAM.BOARD_PART} {
     set imageVar [ced::add_image -name Image -parent $page -designObject $designObj -width 500 -height 300 -layout vertical]
 }
 
+
+#updater {PROJECT_PARAM.BOARD_PART Preset.VALUE} {Image.IMAGE_PATH Preset.ENABLEMENT Preset.DISPLAYNAME} {
+#  set Preset.DISPLAYNAME "CIPS CPM Configurations"
+#  if { ${Preset.VALUE} == "CPM4"} {
+#     set Preset.ENABLEMENT true
+#     #set Image.IMAGE_PATH "microblaze-application-processor.png"
+#  } elseif { ${Preset.VALUE} == "CPM5"} {
+#	 set Preset.ENABLEMENT true
+#	 #set Image.IMAGE_PATH "microblaze-microcontroller.png"
+#  }
+#}
+
 gui_updater {PROJECT_PARAM.BOARD_PART} {Preset.VISIBLE Preset.ENABLEMENT Preset.VALUE} {
 set Preset.DISPLAYNAME "CIPS CPM Configurations"
 if { [regexp "vck190" ${PROJECT_PARAM.BOARD_PART}]} {
@@ -35,4 +47,6 @@ set Preset.ENABLEMENT false
 set Preset.VALUE CPM5
 }
 }
+
+
 

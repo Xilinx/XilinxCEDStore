@@ -3,10 +3,10 @@
       "items": [
         {
           "infra": {
-            "name": "cpm_pcie_pio",
-            "display": "Versal ACAP CPM PCIE PIO Design",
+            "name": "cpm_pcie_qdma",
+            "display": "Versal ACAP CPM Gen4x8 QDMA EP Design",
             "revision": "1.0",
-            "description": "The design is PIO and covers both CPM4 and CPM5. Respective design is generated based on which board is selected i.e. CPM4 PIO design if VCK190 is selected and CPM5 PIO design if VPK120 is selected.",
+            "description": "This is Versal ACAP CPM Gen4x8 QDMA Endpoint Design with both Memory Map and Streaming options enabled. It allows generating CPM4 and CPM5 versions for VCK190 and VPK120 respectively based on the board selected. The associated drivers can be downloaded from: https://github.com/Xilinx/dma_ip_drivers",
             "company": "xilinx.com",
             "company_display": "Xilinx",
             "author": "Sindhura",
@@ -20,7 +20,7 @@
             "website": "www.xilinx.com",
             "is_active" : true, 
             "search-keywords": [
-              "Versal ACAP CPM PCIE PIO Design",
+              "Versal ACAP CPM Gen4x8 QDMA EP Design",
               "xilinx.com",
               "example"             
             ]

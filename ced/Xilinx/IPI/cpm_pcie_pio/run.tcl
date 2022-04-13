@@ -178,10 +178,25 @@ set obj [get_filesets utils_1]
 ##################################################################
 #variable currentDir
 #
-if [regexp "CPM4" $options] {
+#default option is CPM4
+set cpm "Preset.VALUE"
+set board_name [get_property BOARD_NAME [current_board]]
+if [regexp "vck190" $board_name] {
+puts "INFO: vck190 board selected"
+set use_cpm "CPM4"
+} else {
+puts "INFO: vpk120 board selected"
+set use_cpm "CPM5"
+}
 
+if { [dict exists $options $cpm] } {
+set use_cpm [dict get $options $cpm ]
+}
+if [regexp "CPM4" $use_cpm] {
+puts "INFO: CPM4 preset is selected."
 source -notrace "$currentDir/create_cpm4_pio.tcl"
 } else {
+puts "INFO: CPM5 preset is selected."
 source -notrace "$currentDir/create_cpm5_pio.tcl"
 }
 open_bd_design [get_files $design_name.bd]
