@@ -71,6 +71,9 @@ set_property -dict [list CONFIG.ASSOCIATED_BUSIF {S04_AXI}] [get_bd_pins /axi_no
 set_property -dict [list CONFIG.ASSOCIATED_BUSIF {S05_AXI}] [get_bd_pins /axi_noc_0/aclk5]
 set_property -dict [list CONFIG.ASSOCIATED_BUSIF {S06_AXI}] [get_bd_pins /axi_noc_0/aclk6]
 
+#Enabled DDR Internal Responder
+set_property -dict [list CONFIG.MC_EN_INTR_RESP {TRUE}] [get_bd_cells axi_noc_0]
+
 # Create ports
 set pl0_ref_clk [ create_bd_port -dir O -type clk pl0_ref_clk ]
 set pl_gen_reset [ create_bd_port -dir O pl_gen_reset ]
@@ -156,14 +159,14 @@ create_root_design  $currentDir $design_name ""
 	set_property USER_COMMENTS.comment0 {Next Steps:
 	1. Generate Block Design (Choose global for quick turnaround).
 	2. Run Simulation.
-	3. Refer to README.md https://github.com/Xilinx/XilinxCEDStore/tree/2022.1/ced/Xilinx/IPI/cips_vip/README.md} [current_bd_design]
+	3. Refer to README.md https://github.com/Xilinx/XilinxCEDStore/tree/2022.2/ced/Xilinx/IPI/cips_vip/README.md} [current_bd_design]
 	
 	regenerate_bd_layout -layout_string {
    "ActiveEmotionalView":"Default View",
    "comment_0":"Next Steps:
 	1. Generate Block Design (Choose global for quick turnaround).
 	2. Run Simulation.
-	3. Refer to README.md https://github.com/Xilinx/XilinxCEDStore/tree/2022.1/ced/Xilinx/IPI/cips_vip/README.md",
+	3. Refer to README.md https://github.com/Xilinx/XilinxCEDStore/tree/2022.2/ced/Xilinx/IPI/cips_vip/README.md",
    "commentid":"comment_0|",
    "font_comment_0":"18",
    "guistr":"# # String gsaved with Nlview 7.0r4  2019-12-20 bk=1.5203 VDI=41 GEI=36 GUI=JA:10.0 TLS
