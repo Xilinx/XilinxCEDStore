@@ -24,7 +24,7 @@ proc getSupportedParts {} {
 }
 
 proc getSupportedBoards {} {
-   return [get_board_parts -filter {(PART_NAME =~"*xczu*" && VENDOR_NAME=="xilinx.com") } -latest_file_version]
+   return [get_board_parts -filter {(PART_NAME =~"*xczu*" && VENDOR_NAME=="xilinx.com")||(PART_NAME =~"*xck26*"&& VENDOR_NAME=="xilinx.com") } -latest_file_version]
 }
 
 proc addOptions {DESIGNOBJ PROJECT_PARAM.BOARD_PART} {

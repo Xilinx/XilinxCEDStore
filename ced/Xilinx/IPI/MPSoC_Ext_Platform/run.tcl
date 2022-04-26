@@ -106,9 +106,18 @@ set_property -dict [ list \
 set ps_e [ create_bd_cell -type ip -vlnv xilinx.com:ip:zynq_ultra_ps_e ps_e ]
 apply_bd_automation -rule xilinx.com:bd_rule:zynq_ultra_ps_e -config {apply_board_preset "1" }  [get_bd_cells ps_e]
 if {$irqs == "32"} {
-set_property -dict [list CONFIG.PSU__USE__S_AXI_GP5 {1} CONFIG.PSU__USE__S_AXI_GP6 {1} CONFIG.PSU__SAXIGP6__DATA_WIDTH {32} CONFIG.PSU__USE__M_AXI_GP1 {0} CONFIG.PSU__USE__M_AXI_GP2 {1} CONFIG.PSU__PSS_REF_CLK__FREQMHZ {33.333333} ] [get_bd_cells ps_e]
+if {[regexp "som" $board_name]||[regexp "k26" $board_name]} {
+set_property -dict [list CONFIG.PSU__FPGA_PL1_ENABLE {0} CONFIG.PSU__USE__M_AXI_GP1 {0} CONFIG.PSU__USE__M_AXI_GP2 {1} CONFIG.PSU__USE__S_AXI_GP5 {1} CONFIG.PSU__USE__S_AXI_GP6 {1}] [get_bd_cells ps_e]
+
 } else {
-set_property -dict [list CONFIG.PSU__USE__S_AXI_GP5 {1} CONFIG.PSU__USE__S_AXI_GP6 {1} CONFIG.PSU__SAXIGP6__DATA_WIDTH {32} CONFIG.PSU__USE__M_AXI_GP1 {0} CONFIG.PSU__PSS_REF_CLK__FREQMHZ {33.333333} ] [get_bd_cells ps_e]  }
+set_property -dict [list CONFIG.PSU__USE__S_AXI_GP5 {1} CONFIG.PSU__USE__S_AXI_GP6 {1} CONFIG.PSU__SAXIGP6__DATA_WIDTH {32} CONFIG.PSU__USE__M_AXI_GP1 {0} CONFIG.PSU__USE__M_AXI_GP2 {1} CONFIG.PSU__PSS_REF_CLK__FREQMHZ {33.333333} ] [get_bd_cells ps_e] }
+
+} else {
+if {[regexp "som" $board_name]||[regexp "k26" $board_name]} {
+set_property -dict [list CONFIG.PSU__FPGA_PL1_ENABLE {0} CONFIG.PSU__USE__M_AXI_GP1 {0} CONFIG.PSU__USE__S_AXI_GP5 {1} CONFIG.PSU__USE__S_AXI_GP6 {1}] [get_bd_cells ps_e]
+
+} else {
+set_property -dict [list CONFIG.PSU__USE__S_AXI_GP5 {1} CONFIG.PSU__USE__S_AXI_GP6 {1} CONFIG.PSU__SAXIGP6__DATA_WIDTH {32} CONFIG.PSU__USE__M_AXI_GP1 {0} CONFIG.PSU__PSS_REF_CLK__FREQMHZ {33.333333} ] [get_bd_cells ps_e]  } }
 
 
 # Cclocks optins, and set properties
@@ -208,8 +217,12 @@ set_property -dict [ list CONFIG.C_ASYNC_INTR {0xFFFFFFFF} CONFIG.C_IRQ_CONNECTI
 
 
 if {$use_ddr } {
-set ddr4_board_interface [board::get_board_part_interfaces *ddr4*]
-set ddr4_board_interface_1 [lindex [split $ddr4_board_interface { }] 0]
+set ddr4_board_interface [set ddr4_board_interface_1 ""]
+catch {set ddr4_board_interface [board::get_board_part_interfaces *ddr4*]}
+catch {set ddr4_board_interface_1 [lindex [split $ddr4_board_interface { }] 0]}
+
+if {$ddr4_board_interface_1 == ""} {
+puts "$board_name does'nt have pl ddr support! "}
 
 create_bd_cell -type ip -vlnv xilinx.com:ip:smartconnect axi_smc
 set_property -dict [list CONFIG.NUM_MI {2} CONFIG.NUM_SI {1} CONFIG.NUM_CLKS {2}] [get_bd_cells axi_smc]
