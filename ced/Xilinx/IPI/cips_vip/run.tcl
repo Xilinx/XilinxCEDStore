@@ -199,6 +199,9 @@ create_root_design  $currentDir $design_name ""
 	set xdc [file join $currentDir xdc H10 top.xdc]
 	} else {
 	set xdc [file join $currentDir xdc vpk180 top.xdc] }
+	} elseif {[regexp "vhk158" $board_name]} {
+	set originalTBFile [file join $currentDir test_bench ddr system.sv]
+	set xdc [file join $currentDir xdc vhk158 top.xdc]
 	} else {
 	set originalTBFile [file join $currentDir test_bench ddr system.sv]
 	set xdc [file join $currentDir xdc S80 top.xdc] }

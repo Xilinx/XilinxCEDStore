@@ -1,6 +1,6 @@
 ######### Versal ACAP CIPS PS VIP example design change log ##############
 2022.2 changes 
-Enabled DDR Internal Responder
+Enabled DDR Internal Responder and added vhk158 support
 
 2021.1 changes 
 Updated with CIPS 3.0

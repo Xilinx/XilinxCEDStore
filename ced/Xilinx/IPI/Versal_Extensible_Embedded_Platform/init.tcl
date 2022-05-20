@@ -18,12 +18,28 @@ set currentFile [file normalize [info script]]
 set currentDir [file dirname $currentFile]
 
 source -notrace "$currentDir/run.tcl"
+# *******************User defined proc (filter versal latest board parts )****************************
+proc get_latest_board_parts {} {
+set Versal_board [get_property BOARD_NAME [get_boards -filter {(DISPLAY_NAME =~"*Versal*" && VENDOR_NAME=="xilinx.com" )}]]
+set Versal_board_unique [lsort -unique $Versal_board]
+set Versal_boardparts ""
+
+
+
+foreach v_part $Versal_board_unique {
+lappend Versal_boardparts [get_board_parts *${v_part}:part0* -latest_file_version]
+}
+set V_board_unique [lsort -unique $Versal_boardparts]
+return $V_board_unique
+}
+# ****************************************************************************************************
+
 proc getSupportedParts {} {
 	 return ""
 }
 
 proc getSupportedBoards {} {
-  return [get_board_parts -filter {(BOARD_NAME =~"*vck190*" && VENDOR_NAME=="xilinx.com" ) || (BOARD_NAME =~"*vmk180*" && VENDOR_NAME=="xilinx.com" )||(BOARD_NAME =~"*vpk120*" && VENDOR_NAME=="xilinx.com" )||(BOARD_NAME =~"*vpk180*" && VENDOR_NAME=="xilinx.com")}  -latest_file_version]
+  return [get_latest_board_parts]
 }
 
 proc addOptions {DESIGNOBJ PROJECT_PARAM.BOARD_PART} {
@@ -45,8 +61,8 @@ proc addGUILayout {DESIGNOBJ PROJECT_PARAM.BOARD_PART} {
     ced::add_param -name IRQS -display_name "Interrupts" -parent $page -designObject $designObj -widget radioGroup
 
     set ddr [ced::add_group -name "Versal Memory Configurations" -display_name "Memory"  -parent $page -visible true -designObject $designObj ]
-    ced::add_param -name Include_DDR -display_name "DDR4(default)" -parent $ddr -designObject $designObj -widget checkbox
-	ced::add_param -name Include_LPDDR -display_name "LPDDR4" -parent $ddr -designObject $designObj -widget checkbox
+    ced::add_param -name Include_DDR -display_name "Memory (Includes DDR4/LPDDR4 available on the board)" -parent $ddr -designObject $designObj -widget checkbox
+	ced::add_param -name Include_LPDDR -display_name "Additional Memory (Includes remaining DDR4/LPDDR4 available on the board)" -parent $ddr -designObject $designObj -widget checkbox
 	
 	set aie [ced::add_group -name "AIE Block" -display_name "AIE Block"  -parent $page -visible true -designObject $designObj ]
 	ced::add_param -name Include_AIE -display_name "AIE" -parent $aie -designObject $designObj -widget checkbox
@@ -134,7 +150,8 @@ validater { Clock_Options.VALUE } { Clock_Options.ERRMSG } {
 # }
 
 gui_updater {PROJECT_PARAM.PART} {Include_AIE.VISIBLE Include_AIE.ENABLEMENT Include_AIE.VALUE} {
-if { [regexp "xcvc" ${PROJECT_PARAM.PART}]} {
+set aie [get_property FAMILY [get_parts ${PROJECT_PARAM.PART}]]
+if { [regexp "qrversalaicore" ${aie}]||[regexp "versalaicore" ${aie}]||[regexp "versalaiedge" ${aie}]||[regexp "qversalaicore" ${aie}]} {
       #set Include_AIE.VISIBLE true
 	  set Include_AIE.ENABLEMENT true
 	  set Include_AIE.VALUE true
