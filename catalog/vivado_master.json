@@ -5,11 +5,11 @@
         "name": "cips_ddr_pl_debug",
         "display": "Versal CIPS Design",
         "latest_revision": "1.0",
-        "commit_id": "e2ab6de2bd8edb9c0dff53ffab2a4066a8735fae",
+        "commit_id": "610721822a55defd8377940390fb39d772991056",
         "revisions": [
           {
             "revision": "1.0",
-            "commit_id": "e2ab6de2bd8edb9c0dff53ffab2a4066a8735fae",
+            "commit_id": "610721822a55defd8377940390fb39d772991056",
             "date": "27-08-2020",
             "history": "Updated description and picture"
           }
@@ -100,11 +100,11 @@
         "name": "soc_vip",
         "display": "Versal ACAP CIPS PS VIP",
         "latest_revision": "1.0",
-        "commit_id": "92cf7d70d081567c9599bbf419b37cf0e7bfe8c1",
+        "commit_id": "610721822a55defd8377940390fb39d772991056",
         "revisions": [
           {
             "revision": "1.0",
-            "commit_id": "92cf7d70d081567c9599bbf419b37cf0e7bfe8c1",
+            "commit_id": "610721822a55defd8377940390fb39d772991056",
             "date": "08-02-2021:05:11:54",
             "history": "Added board Versal ACAP CIPS PS VIP v1.0"
           }
@@ -119,11 +119,11 @@
         "name": "versal_mb_preset",
         "display": "Versal MicroBlaze Design Presets",
         "latest_revision": "1.0",
-        "commit_id": "e2ab6de2bd8edb9c0dff53ffab2a4066a8735fae",
+        "commit_id": "610721822a55defd8377940390fb39d772991056",
         "revisions": [
           {
             "revision": "1.0",
-            "commit_id": "e2ab6de2bd8edb9c0dff53ffab2a4066a8735fae",
+            "commit_id": "610721822a55defd8377940390fb39d772991056",
             "date": "09-03-2021:09:51:31",
             "history": "Added board Versal MicroBlaze Design Presets v1.0"
           }
@@ -157,11 +157,11 @@
         "name": "ext_platform",
         "display": "Versal Extensible Embedded Platform",
         "latest_revision": "1.0",
-        "commit_id": "e2ab6de2bd8edb9c0dff53ffab2a4066a8735fae",
+        "commit_id": "610721822a55defd8377940390fb39d772991056",
         "revisions": [
           {
             "revision": "1.0",
-            "commit_id": "e2ab6de2bd8edb9c0dff53ffab2a4066a8735fae",
+            "commit_id": "610721822a55defd8377940390fb39d772991056",
             "date": "24-06-2021:08:47:28",
             "history": "Added board Versal Extensible Embedded Platform v1.0"
           }
