@@ -21,14 +21,26 @@ source -notrace "$currentDir/run.tcl"
 # proc getConfigDesignInfo {} {
   # return [dict create name {CED 7_series} description {MicroBlaze system with peripherals including UART and DDR4}]
 # }
+# *******************User defined proc (filter versal latest board parts )****************************
+proc get_latest_board_parts {} {
+set Versal_board [get_property BOARD_NAME [get_boards -filter {(DISPLAY_NAME =~"*Versal*" && VENDOR_NAME=="xilinx.com" )}]]
+set Versal_board_unique [lsort -unique $Versal_board]
+set Versal_boardparts ""
+
+foreach v_part $Versal_board_unique {
+lappend Versal_boardparts [get_board_parts *${v_part}:part0* -latest_file_version]
+}
+set V_board_unique [lsort -unique $Versal_boardparts]
+return $V_board_unique
+}
+# ****************************************************************************************************
 
 proc getSupportedParts {} {
 	 return ""
 }
 
 proc getSupportedBoards {} {
-   return [get_board_parts -filter {(BOARD_NAME =~"*vck190*" && VENDOR_NAME=="xilinx.com" ) || (BOARD_NAME =~"*vmk180*" && VENDOR_NAME=="xilinx.com" )||(BOARD_NAME =~"*vpk120*" && VENDOR_NAME=="xilinx.com")||(BOARD_NAME =~"*vpk180*" && VENDOR_NAME=="xilinx.com")} -latest_file_version]
-  #return [get_board_parts -filter {(PART_NAME!~"*xc7z*" && PART_NAME!~"*xcvc*" && PART_NAME!~"*xcvm*" && PART_NAME!~"*xczu*" && VENDOR_NAME=="xilinx.com")} -latest_file_version]
+  return [get_latest_board_parts]
 }
 
 
@@ -42,7 +54,7 @@ proc addGUILayout {DESIGNOBJ PROJECT_PARAM.BOARD_PART} {
 	#place to define GUI layout for options
 	set page [ced::add_page -name "Page1" -display_name "Configuration" -designObject $designObj -layout vertical]	
 	ced::add_param -name Preset -parent $page -designObject $designObj  -widget radioGroup 
-    set imageVar [ced::add_image -name Image -parent $page -designObject $designObj -width 500 -height 300 -layout vertical]
+    set imageVar [ced::add_image -name Image -parent $page -designObject $designObj -width 780 -height 400 -layout vertical ]
 }
 
 
@@ -50,10 +62,10 @@ proc addGUILayout {DESIGNOBJ PROJECT_PARAM.BOARD_PART} {
   set Preset.DISPLAYNAME "Microblaze Versal Preset Configurations"
   if { ${Preset.VALUE} == "Application"} {
      set Preset.ENABLEMENT true
-     #set Image.IMAGE_PATH "microblaze-real-time-processor.png"
+     set Image.IMAGE_PATH "versal_mb_app.png"
   } elseif { ${Preset.VALUE} == "Microcontroller"} {
 	 set Preset.ENABLEMENT true
-	# set Image.IMAGE_PATH "microblaze-microcontroller.png"
+	set Image.IMAGE_PATH "versal_mb_micro.png"
   # } elseif { ${Preset.VALUE} == "Real-time/Application" } {
 	 # set preset.ENABLEMENT true
 	 # set Image.IMAGE_PATH "microblaze-real-time-processor.png"

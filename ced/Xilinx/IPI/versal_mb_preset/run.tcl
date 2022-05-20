@@ -80,6 +80,8 @@ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_uart16550:* axi_uart16550_0
 
 if {[regexp "vpk120" $board_name]||[regexp "vpk180" $board_name]} {
 apply_board_connection -board_interface "uart2_bank712" -ip_intf "axi_uart16550_0/UART" -diagram $design_name 
+} elseif {[regexp "vhk158" $board_name]} {
+apply_board_connection -board_interface "uart1_bank706" -ip_intf "axi_uart16550_0/UART" -diagram $design_name
 } else {
 apply_board_connection -board_interface "uart2_bank306" -ip_intf "axi_uart16550_0/UART" -diagram $design_name }
 

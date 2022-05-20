@@ -31,14 +31,14 @@ Microcontroller: This is a cache-less processor subsystem optimized for low-late
 
 Application Class Processor: This is a cache based processor subsystem with an MMU for virtualized memory required by operating systems like Linux.
 
-All designs include basic peripherals such as an I2C controller, UART, GPIOs, Timer and Interrupt Controller.
+All designs include basic peripherals such as CIPS I2C controller, UART, GPIOs, Timer and Interrupt Controller .
 </Description>
 
 <Version>1.0</Version>
 
 <Design>init.tcl</Design>
 
-<Image>versal_mb.PNG</Image>
+<Image></Image>
 
 </ExampleDesign>
 
