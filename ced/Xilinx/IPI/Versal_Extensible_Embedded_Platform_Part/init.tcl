@@ -19,7 +19,14 @@ set currentDir [file dirname $currentFile]
 
 source -notrace "$currentDir/run.tcl"
 proc getSupportedParts {} {
-return "versal"
+	#return "versal"
+	set mylist [get_parts -filter {C_FAMILY =~ versal}]
+	set newitem ""
+foreach item $mylist {
+if {![regexp "xcvp1402-vsvd2197" $item]} {
+    lappend newitem $item }
+  }
+  return $newitem
 }
 
 proc getSupportedBoards {} {
