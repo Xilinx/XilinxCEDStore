@@ -214,11 +214,11 @@
         "name": "MPSoC_ext_platform",
         "display": "Extensible Platform ExampleDesign for MPSoC",
         "latest_revision": "1.0",
-        "commit_id": "42d206a64db8fc63d28001d3c58932ba19a490f4",
+        "commit_id": "41c55a04a2584821da09a5699c63073cd7b3029a",
         "revisions": [
           {
             "revision": "1.0",
-            "commit_id": "42d206a64db8fc63d28001d3c58932ba19a490f4",
+            "commit_id": "41c55a04a2584821da09a5699c63073cd7b3029a",
             "date": "04-01-2022:06:35:23",
             "history": "Added board Extensible Platform ExampleDesign for MPSoC v1.0"
           }
