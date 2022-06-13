@@ -10,7 +10,10 @@
 
 <DisplayName>MPSoC Extensible Embedded Platform</DisplayName>
 
-<Description>An extensible platform is the foundation of the Vitis software acceleration flow. This platform enables Vitis to create PL kernels. It gives the kernels access to PS (MPSoC), DDR memory, an interrupt controller and clocking resources. Extensible interfaces are marked with PFM properties and the platform is exported to Vitis using write_hw_platform to create an XSA.</Description>
+<Description>An extensible platform is the foundation of the Vitis software acceleration flow. This platform enables Vitis to create PL kernels. It gives the kernels access to PS (MPSoC), DDR memory, an interrupt controller and clocking resources. 
+
+Extensible interfaces are marked with PFM properties and the platform is exported to Vitis using write_hw_platform to create an XSA.
+</Description>
 
 <Version>1.0</Version>
 
