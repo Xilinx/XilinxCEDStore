@@ -1,6 +1,10 @@
 ######### Extensible Embedded Platform example design change log ##############
+2022.2
+Added user note to clock gui options 
+
 2021.2 changes 
 versal part_support
+
 
 2021.1 changes 
 Updated with CIPS 3.0

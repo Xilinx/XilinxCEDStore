@@ -1,6 +1,7 @@
 ######### Extensible Embedded Platform example design change log ##############
 2022.2 changes
 added vhk158 support and Memory display names changed 
+Added user note to clock gui options 
 
 2022.1 changes
 configuration options changed.
