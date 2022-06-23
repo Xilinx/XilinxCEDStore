@@ -157,11 +157,11 @@
         "name": "ext_platform",
         "display": "Versal Extensible Embedded Platform",
         "latest_revision": "1.0",
-        "commit_id": "25c6766ff4a9373e30665d295844bab368ed4e60",
+        "commit_id": "57efdcdc12696b801e61a9bf79996b8474d45c9e",
         "revisions": [
           {
             "revision": "1.0",
-            "commit_id": "25c6766ff4a9373e30665d295844bab368ed4e60",
+            "commit_id": "57efdcdc12696b801e61a9bf79996b8474d45c9e",
             "date": "24-06-2021:08:47:28",
             "history": "Added board Versal Extensible Embedded Platform v1.0"
           }
@@ -176,11 +176,11 @@
         "name": "ext_platform_part",
         "display": "Versal Extensible Embedded Platform part_support",
         "latest_revision": "1.0",
-        "commit_id": "25c6766ff4a9373e30665d295844bab368ed4e60",
+        "commit_id": "57efdcdc12696b801e61a9bf79996b8474d45c9e",
         "revisions": [
           {
             "revision": "1.0",
-            "commit_id": "25c6766ff4a9373e30665d295844bab368ed4e60",
+            "commit_id": "57efdcdc12696b801e61a9bf79996b8474d45c9e",
             "date": "17-11-2021:08:57:40",
             "history": "Added board Versal Extensible Embedded Platform part_support v1.0"
           }
@@ -214,11 +214,11 @@
         "name": "MPSoC_ext_platform",
         "display": "Extensible Platform ExampleDesign for MPSoC",
         "latest_revision": "1.0",
-        "commit_id": "41c55a04a2584821da09a5699c63073cd7b3029a",
+        "commit_id": "57efdcdc12696b801e61a9bf79996b8474d45c9e",
         "revisions": [
           {
             "revision": "1.0",
-            "commit_id": "41c55a04a2584821da09a5699c63073cd7b3029a",
+            "commit_id": "57efdcdc12696b801e61a9bf79996b8474d45c9e",
             "date": "04-01-2022:06:35:23",
             "history": "Added board Extensible Platform ExampleDesign for MPSoC v1.0"
           }
@@ -385,11 +385,11 @@
         "name": "MPSoC_ext_platform_part",
         "display": "MPSoC Extensible Embedded Platform (Part based)",
         "latest_revision": "1.0",
-        "commit_id": "42d206a64db8fc63d28001d3c58932ba19a490f4",
+        "commit_id": "57efdcdc12696b801e61a9bf79996b8474d45c9e",
         "revisions": [
           {
             "revision": "1.0",
-            "commit_id": "42d206a64db8fc63d28001d3c58932ba19a490f4",
+            "commit_id": "57efdcdc12696b801e61a9bf79996b8474d45c9e",
             "date": "07-06-2022:02:41:29",
             "history": "Added board MPSoC Extensible Embedded Platform (Part based) v1.0"
           }
