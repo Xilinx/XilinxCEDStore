@@ -41,6 +41,9 @@ proc addGUILayout {DESIGNOBJ PROJECT_PARAM.PART} {
 
     set clocks [ced::add_group -name "Clocks" -display_name "Clocks"  -parent $page -visible true -designObject $designObj ]
     ced::add_custom_widget -name widget_Clocks -hierParam Clock_Options -class_name PlatformClocksWidget -parent $clocks $designObj
+	set text "Note : The requested clock frequecies are not verified until the design is generated. Clocking wizard restrictions will be applied.
+	User should check the 'Messages' window once the design is created to ensure that the selected clock frequencies are derived."
+    ced::add_text -designObject $designObj -name Note -tclproc $text  -parent $clocks
 
     ced::add_param -name IRQS -display_name "Interrupts" -parent $page -designObject $designObj -widget radioGroup
 

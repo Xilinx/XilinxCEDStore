@@ -1,6 +1,7 @@
 ######### MPSoC Extensible Platform ExampleDesign example design change log ##############
 2022.2 Changes
 Enabled support for som boards
+Added user note to clock gui options  
 
 2022.1 Changes 
 Initial version
