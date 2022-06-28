@@ -1,3 +1,0 @@
-######### TMR Microblaze Example Design change log ##############
-2022.1 :
-initial design 

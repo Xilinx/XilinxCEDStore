@@ -1,6 +1,0 @@
-######### Versal CPM PCIe Debug example design change log ##############
-2022.1 Changes
-vpk120 support added.
-
-2021.2 Changes 
-Initial version

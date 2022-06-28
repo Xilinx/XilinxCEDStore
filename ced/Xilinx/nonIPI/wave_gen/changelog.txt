@@ -1,3 +1,0 @@
-######### Wavegen (HDL) change log ##############
-2022.1 changes:
-No changes
