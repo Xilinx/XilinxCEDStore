@@ -347,11 +347,11 @@
         "name": "Versal_CPM_PCIe_Debug",
         "display": "Versal CPM Debug-over-PCIE",
         "latest_revision": "1.0",
-        "commit_id": "a9303adac328b549377003807031788e09816738",
+        "commit_id": "4389e4175f4e6a8dce322768f2ba82f52eef3a52",
         "revisions": [
           {
             "revision": "1.0",
-            "commit_id": "a9303adac328b549377003807031788e09816738",
+            "commit_id": "4389e4175f4e6a8dce322768f2ba82f52eef3a52",
             "date": "17-03-2022:06:08:02",
             "history": "Added board Versal CPM Debug-over-PCIE v1.0"
           }
