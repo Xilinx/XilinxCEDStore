@@ -1,6 +1,7 @@
 ######### Extensible Embedded Platform example design change log ##############
 2022.1 changes
-configuration options changed.
+Configuration options changed.
+Added vhk158 support.
 
 2021.2 changes
 QoR script is included for VCK190

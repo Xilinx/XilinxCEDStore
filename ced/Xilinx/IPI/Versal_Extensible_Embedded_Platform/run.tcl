@@ -139,6 +139,9 @@ if {[regexp "vpk120" $board_name]||[regexp "vpk180" $board_name]} {
 apply_board_connection -board_interface "ch0_lpddr4_trip1" -ip_intf "noc_ddr4/CH0_LPDDR4_0" -diagram $design_name 
 apply_board_connection -board_interface "ch1_lpddr4_trip1" -ip_intf "noc_ddr4/CH1_LPDDR4_0" -diagram $design_name 
 apply_board_connection -board_interface "lpddr4_clk1" -ip_intf "noc_ddr4/sys_clk0" -diagram $design_name
+} elseif {[regexp "vhk158" $board_name]} {
+apply_board_connection -board_interface "ddr4_dimm0" -ip_intf "noc_ddr4/CH0_DDR4_0" -diagram $design_name 
+apply_board_connection -board_interface "ddr4_dimm0_sma_clk" -ip_intf "noc_ddr4/sys_clk0" -diagram $design_name 
 } else {
 apply_board_connection -board_interface "ddr4_dimm1" -ip_intf "noc_ddr4/CH0_DDR4_0" -diagram $design_name 
 apply_board_connection -board_interface "ddr4_dimm1_sma_clk" -ip_intf "noc_ddr4/sys_clk0" -diagram $design_name 
@@ -324,6 +327,9 @@ apply_board_connection -board_interface "ch0_lpddr4_trip3" -ip_intf "/noc_lpddr4
 apply_board_connection -board_interface "ch1_lpddr4_trip3" -ip_intf "/noc_lpddr4/CH1_LPDDR4_1" -diagram $design_name 
 apply_board_connection -board_interface "lpddr4_clk3" -ip_intf "/noc_lpddr4/sys_clk1" -diagram $design_name 
 
+} elseif {[regexp "vhk158" $board_name]} {
+apply_board_connection -board_interface "ddr4_dimm1" -ip_intf "noc_lpddr4/CH0_DDR4_0" -diagram $design_name 
+apply_board_connection -board_interface "ddr4_dimm1_sma_clk" -ip_intf "noc_lpddr4/sys_clk0" -diagram $design_name 
 } else {
 
 apply_board_connection -board_interface "ch0_lpddr4_c0" -ip_intf "noc_lpddr4/CH0_LPDDR4_0" -diagram $design_name 
@@ -339,6 +345,17 @@ set_property -dict [list CONFIG.NUM_SI {0} CONFIG.NUM_MI {0} CONFIG.NUM_NSI {1} 
 set_property -dict [list CONFIG.CONNECTIONS {MC_0 { read_bw {1720} write_bw {1720} read_avg_burst {4} write_avg_burst {4}} }] [get_bd_intf_pins /noc_lpddr4/S00_INI]
 
 connect_bd_intf_net [get_bd_intf_pins cips_noc/M01_INI] [get_bd_intf_pins noc_lpddr4/S00_INI] 
+if {[regexp "vhk158" $board_name]} {
+assign_bd_address -offset 0x050000000000 -range 0x000200000000 -target_address_space [get_bd_addr_spaces CIPS_0/PMC_NOC_AXI_0] [get_bd_addr_segs noc_lpddr4/S00_INI/C0_DDR_CH1] -force
+assign_bd_address -offset 0x050000000000 -range 0x000200000000 -target_address_space [get_bd_addr_spaces CIPS_0/LPD_AXI_NOC_0] [get_bd_addr_segs noc_lpddr4/S00_INI/C0_DDR_CH1] -force
+assign_bd_address -offset 0x050000000000 -range 0x000200000000 -target_address_space [get_bd_addr_spaces CIPS_0/FPD_AXI_NOC_1] [get_bd_addr_segs noc_lpddr4/S00_INI/C0_DDR_CH1] -force
+assign_bd_address -offset 0x050000000000 -range 0x000200000000 -target_address_space [get_bd_addr_spaces CIPS_0/FPD_AXI_NOC_0] [get_bd_addr_segs noc_lpddr4/S00_INI/C0_DDR_CH1] -force
+assign_bd_address -offset 0x050000000000 -range 0x000200000000 -target_address_space [get_bd_addr_spaces CIPS_0/FPD_CCI_NOC_3] [get_bd_addr_segs noc_lpddr4/S00_INI/C0_DDR_CH1] -force
+assign_bd_address -offset 0x050000000000 -range 0x000200000000 -target_address_space [get_bd_addr_spaces CIPS_0/FPD_CCI_NOC_2] [get_bd_addr_segs noc_lpddr4/S00_INI/C0_DDR_CH1] -force
+assign_bd_address -offset 0x050000000000 -range 0x000200000000 -target_address_space [get_bd_addr_spaces CIPS_0/FPD_CCI_NOC_1] [get_bd_addr_segs noc_lpddr4/S00_INI/C0_DDR_CH1] -force
+assign_bd_address -offset 0x050000000000 -range 0x000200000000 -target_address_space [get_bd_addr_spaces CIPS_0/FPD_CCI_NOC_0] [get_bd_addr_segs noc_lpddr4/S00_INI/C0_DDR_CH1] -force
+
+} else {
 
 assign_bd_address -offset 0x050000000000 -range 0x000200000000 -target_address_space [get_bd_addr_spaces CIPS_0/PMC_NOC_AXI_0] [get_bd_addr_segs noc_lpddr4/S00_INI/C0_DDR_CH1x2] -force
 assign_bd_address -offset 0x050000000000 -range 0x000200000000 -target_address_space [get_bd_addr_spaces CIPS_0/LPD_AXI_NOC_0] [get_bd_addr_segs noc_lpddr4/S00_INI/C0_DDR_CH1x2] -force
@@ -348,6 +365,7 @@ assign_bd_address -offset 0x050000000000 -range 0x000200000000 -target_address_s
 assign_bd_address -offset 0x050000000000 -range 0x000200000000 -target_address_space [get_bd_addr_spaces CIPS_0/FPD_CCI_NOC_2] [get_bd_addr_segs noc_lpddr4/S00_INI/C0_DDR_CH1x2] -force
 assign_bd_address -offset 0x050000000000 -range 0x000200000000 -target_address_space [get_bd_addr_spaces CIPS_0/FPD_CCI_NOC_1] [get_bd_addr_segs noc_lpddr4/S00_INI/C0_DDR_CH1x2] -force
 assign_bd_address -offset 0x050000000000 -range 0x000200000000 -target_address_space [get_bd_addr_spaces CIPS_0/FPD_CCI_NOC_0] [get_bd_addr_segs noc_lpddr4/S00_INI/C0_DDR_CH1x2] -force
+}
 }
 
 if { $use_intc } {
@@ -462,6 +480,9 @@ create_root_design $currentDir $design_name $use_lpddr $clk_options $irqs $use_a
 	} elseif [regexp "vpk120" $board_name] {
 	puts "INFO: Creating extensible_platform for VPK_120"
 	set_property PFM_NAME {xilinx.com:vpk120:versal_extensible_platform_base:1.0} [get_files [current_bd_design].bd] 
+	} elseif [regexp "vhk158" $board_name] {
+	puts "INFO: Creating extensible_platform for VHK_158"
+	set_property PFM_NAME {xilinx.com:vhk158:versal_extensible_platform_base:1.0} [get_files [current_bd_design].bd] 
 	} else {
 	puts "INFO: Creating extensible_platform for VPK_180"
 	set_property PFM_NAME {xilinx.com:vpk180:versal_extensible_platform_base:1.0} [get_files [current_bd_design].bd] }
