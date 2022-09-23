@@ -28,9 +28,8 @@ set Versal_board_unique [lsort -unique $Versal_board]
 set Versal_boardparts ""
 
 foreach v_part $Versal_board_unique {
-if {$v_part != "vek280_es" } {
 lappend Versal_boardparts [get_board_parts *${v_part}:part0* -latest_file_version]
-} }
+}
 set V_board_unique [lsort -unique $Versal_boardparts]
 return $V_board_unique
 }
