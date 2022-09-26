@@ -494,6 +494,44 @@
           "metadata_file": "xitem.json"
         },
         "company": "xilinx.com"
+      },
+      {
+        "name": "chipscopy",
+        "display": "ChipScoPy Example Design",
+        "latest_revision": "1.0",
+        "commit_id": "bcc386c556793f3bfcf39a7e07fff6f83e9d09a5",
+        "revisions": [
+          {
+            "revision": "1.0",
+            "commit_id": "bcc386c556793f3bfcf39a7e07fff6f83e9d09a5",
+            "date": "26-09-2022:15:33:39",
+            "history": "Added board ChipScoPy Example Design v1.0"
+          }
+        ],
+        "config": {
+          "root": "ced/Xilinx/IPI/chipscopy",
+          "metadata_file": "xitem.json"
+        },
+        "company": "xilinx.com"
+      },
+      {
+        "name": "versal_ibert_ced",
+        "display": "Versal IBERT",
+        "latest_revision": "1.0",
+        "commit_id": "bcc386c556793f3bfcf39a7e07fff6f83e9d09a5",
+        "revisions": [
+          {
+            "revision": "1.0",
+            "commit_id": "bcc386c556793f3bfcf39a7e07fff6f83e9d09a5",
+            "date": "26-09-2022:15:33:39",
+            "history": "Added board Versal IBERT v1.0"
+          }
+        ],
+        "config": {
+          "root": "ced/Xilinx/IPI/versal_ibert_ced",
+          "metadata_file": "xitem.json"
+        },
+        "company": "xilinx.com"
       }
     ],
     "categories": [
