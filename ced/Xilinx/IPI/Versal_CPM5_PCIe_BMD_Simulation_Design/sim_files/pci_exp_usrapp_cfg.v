@@ -164,7 +164,7 @@ module pci_exp_usrapp_cfg (
   input                                 cfg_phy_link_down;
   input                       [1:0]     cfg_phy_link_status;
   input                       [2:0]     cfg_negotiated_width;
-  input                       [1:0]     cfg_current_speed;
+  input                       [2:0]     cfg_current_speed;
   input                       [1:0]     cfg_max_payload;
   input                       [2:0]     cfg_max_read_req;
   input                      [15:0]     cfg_function_status;

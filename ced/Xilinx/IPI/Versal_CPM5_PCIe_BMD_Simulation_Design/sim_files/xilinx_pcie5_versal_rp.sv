@@ -115,7 +115,7 @@ module design_rp_wrapper # (
   wire         cfg_phy_link_down;
   wire  [1:0]  cfg_phy_link_status;
   wire  [2:0]  cfg_negotiated_width;
-  wire  [1:0]  cfg_current_speed;
+  wire  [2:0]  cfg_current_speed;
   wire  [1:0]  cfg_max_payload;
   wire  [2:0]  cfg_max_read_req;
   wire [15:0]  cfg_function_status;
