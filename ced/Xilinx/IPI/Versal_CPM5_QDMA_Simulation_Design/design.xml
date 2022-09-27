@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<ExampleDesign>
+  <Vendor>xilinx.com</Vendor>
+  <Library>design</Library>
+  <Name>cpm5_qdma</Name>
+   <DisplayName>Versal CPM5 QDMA Simulation Design</DisplayName>
+  <Description>This is CPM5 Gen5x8 QDMA Design. Simulation only design.</Description>
+   <Version>1.0</Version>
+  <Design>init.tcl</Design>
+  <Image>cpm5_qdma.PNG</Image>
+   <DesignType>IPI</DesignType>
+</ExampleDesign>
