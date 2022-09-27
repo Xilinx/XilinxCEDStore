@@ -3,24 +3,24 @@
       "items": [
         {
           "infra": {
-            "name": "versal_dfx_platform",
-            "display": "Versal DFX Extensible Embedded Platform",
+            "name": "chipscopy",
+            "display": "ChipScoPy Example Design",
             "revision": "1.0",
-            "description": "An example extendable DFX platform design for Versal devices",
+            "description": "A Versal example design for ChipScoPy and ChipScope.",
             "company": "xilinx.com",
             "company_display": "Xilinx",
-            "author": "skemidi",
+            "author": "mep_xilinx",
             "contributors": [
               {
                 "group": "Xilinx",
                 "url": "www.xilinx.com"
               }
             ],
-            "category": "Platforms",
+            "category": "Versal",
             "website": "www.xilinx.com",
             "is_active" : true, 
             "search-keywords": [
-              "versal_dfx_platform",
+              "ChipScoPy",
               "xilinx.com",
               "example"             
             ]
