@@ -480,11 +480,11 @@
         "name": "versal_dfx_platform",
         "display": "Versal DFX Platform",
         "latest_revision": "1.0",
-        "commit_id": "3c5b652e43a9a83f24bcee679a7538ffe9f51155",
+        "commit_id": "085632c9debb86e57c2fcdc6e83027c13bef4d30",
         "revisions": [
           {
             "revision": "1.0",
-            "commit_id": "3c5b652e43a9a83f24bcee679a7538ffe9f51155",
+            "commit_id": "085632c9debb86e57c2fcdc6e83027c13bef4d30",
             "date": "23-09-2022:15:41:35",
             "history": "Added board Versal DFX Platform v1.0"
           }
