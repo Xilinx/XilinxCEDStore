@@ -4,7 +4,7 @@
         {
           "infra": {
             "name": "versal_dfx_platform",
-            "display": "Versal DFX Platform",
+            "display": "Versal DFX Extensible Embedded Platform",
             "revision": "1.0",
             "description": "An example extendable DFX platform design for Versal devices",
             "company": "xilinx.com",

@@ -70,7 +70,31 @@ upgrade_bd_cells [get_bd_cells VitisRegion]
 make_wrapper -files [get_files $design_name.bd] -top -import
 set_property top ${design_name}_wrapper [current_fileset]
 open_bd_design [get_bd_files $design_name]
+
+set_property USER_COMMENTS.comment0 {An Example Versal DFX Extensible Embedded Platform
+	Note:
+	--> Board preset applied to CIPS and memory controller settings
+	--> BD has VIPs on the accelerator SmartConnect IPs because IPI platform can't handle export with no slaves on SmartConnect IP.
+			Hence VIPs are there to have at least one slave on a smart connect.
+	--> For Next steps, Refer to README.md https://github.com/Xilinx/XilinxCEDStore/tree/2022.2/ced/Xilinx/IPI/versal_dfx/README.md}  [current_bd_design] 
+regenerate_bd_layout -layout_string {
+		   "ActiveEmotionalView":"Default View",
+		   "comment_0":"An Example Versal DFX Extensible Embedded Platform
+			Note:
+			--> Board preset applied to CIPS and memory controller.
+			--> BD has VIPs on the accelerator SmartConnect IPs because IPI platform can't handle export with no slaves on SmartConnect IP.
+					Hence VIPs are there to have at least one slave on a smart connect.
+			--> For Next steps, Refer to README.md https://github.com/Xilinx/XilinxCEDStore/tree/2022.2/ced/Xilinx/IPI/versal_dfx/README.md ",
+		   "commentid":"comment_0|",
+		   "font_comment_0":"14",
+		   "guistr":"# # String gsaved with Nlview 7.0r4  2019-12-20 bk=1.5203 VDI=41 GEI=36 GUI=JA:10.0 TLS
+			#  -string -flagsOSRD
+			preplace cgraphic comment_0 place top -154 -166 textcolor 4 linecolor 3
+			",
+		   "linktoobj_comment_0":"",
+		   "linktotype_comment_0":"bd_design" }
 regenerate_bd_layout
+validate_bd_design
 save_bd_design
 puts "INFO: End of create_root_design"
 

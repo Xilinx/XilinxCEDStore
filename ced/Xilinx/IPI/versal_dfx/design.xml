@@ -8,9 +8,9 @@
 
 <Name>versal_dfx_platform</Name>
 
-<DisplayName>Versal DFX Platform</DisplayName>
+<DisplayName>Versal DFX Extensible Embedded Platform</DisplayName>
 
-<Description>This platform comes with common hardware features on the VCK190 board like AI Engine, GEM, DDR and LPDDR. The platform software includes OpenCV in PetaLinux. It is useful as a base platform for exercising Vitis capabilities and topologies on the VCK190 board.
+<Description>This platform comes with common hardware features on the VCK190 board like AI Engine, GEM, DDR and LPDDR. It is useful as a base platform for exercising Vitis capabilities and topologies on the VCK190 board.
 
 This platform supports Dynamic Function eXchange feature. Users can switch xclbin (acceleration kernel container for AI Engine and PL) without rebooting the system</Description>
 
@@ -18,7 +18,7 @@ This platform supports Dynamic Function eXchange feature. Users can switch xclbi
 
 <Design>init.tcl</Design>
 
-<Image></Image>
+<Image>extensible.png</Image>
 
 </ExampleDesign>
 
