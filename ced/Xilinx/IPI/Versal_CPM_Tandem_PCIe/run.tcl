@@ -6001,19 +6001,35 @@ create_root_design "" $design_name $options
 
 if {[regexp "vpk120" [get_property BOARD_NAME [current_board]]]} { 
   import_files $currentDir/src/cpm5/
+  set cpmN cpm5
 } else {
   import_files $currentDir/src/cpm4/
+  set cpmN cpm4
 }
  
 # The top RTL file has a string "<?BD_NAME>" in it that needs to be changed to what was used when
 # create_bd_design "<var>" was called. In the GUI, this defaults to the project name, but the 
 # Jenkins build hardcodes to "design_1".  So, we're doing a basic find and replace to handle this. 
 set bdname [get_property NAME [current_bd_design]]
-exec find . -name "Versal_CPM_Tandem_PCIe_top.sv" -exec sed -i -e "s/<?BD_NAME>/$bdname/g" \{\} \;
+set topRtlFile [file join [get_property directory [current_project]] [current_project].srcs sources_1 imports $cpmN Versal_CPM_Tandem_PCIe_top.sv]
+# Read in whole file
+set infile [open $topRtlFile]
+set contents [read $infile]
+close $infile
+# Perform find and replace
+set contents [string map [list "<?BD_NAME>" $bdname] $contents]
+# Write to new file
+set outfile [open $topRtlFile.tmp w]
+puts -nonewline $outfile $contents
+close $outfile
+# Overwrite
+file rename -force $topRtlFile.tmp $topRtlFile
 
-save_bd_design
-validate_bd_design
+open_bd_design [current_bd_design]
 regenerate_bd_layout
+validate_bd_design
+save_bd_design
+
 set_property top Versal_CPM_Tandem_PCIe_top [current_fileset]
 import_files -fileset utils_1 -flat $currentDir/README.txt
 import_files -fileset utils_1 -flat $currentDir/scripts.tar
