@@ -1,0 +1,34 @@
+{
+"items": [
+      {
+        "name": "ext_platform_S50",
+        "repo_path": "Xilinx/IPI/Versal_Extensible_Embedded_Platform_sfva784_AFX",
+        "Exclude_from_REL": "true"
+      },
+	 {
+        "name": "ext_platform_SV60",
+        "repo_path": "Xilinx/IPI/Versal_Extensible_Embedded_Platform_vsva2197_tenzing",
+		"Exclude_from_REL": "true"	
+      },
+	 {
+        "name": "ext_platform_flexml",
+        "repo_path": "Xilinx/IPI/Versal_Extensible_Embedded_Platform_vsva2785_AFX",
+		"Exclude_from_REL": "true"
+      },
+	 {
+        "name": "ext_platform_SV20",
+        "repo_path": "Xilinx/IPI/Versal_Extensible_Embedded_Platform_vsva3340_AFX",
+		"Exclude_from_REL": "true"
+      },
+	  {
+        "name": "ext_platform_LSVC4072",
+        "repo_path": "Xilinx/IPI/Versal_Extensible_Embedded_Platform_lsvc4072_AFX",
+		"Exclude_from_REL": "true"
+      },
+	 {
+        "name": "ext_platform_H20",
+        "repo_path": "Xilinx/IPI/Versal_Extensible_Embedded_Platform_vsvh1760_Jamling_A",
+		"Exclude_from_REL": "true"
+      }	  
+    ]
+}
