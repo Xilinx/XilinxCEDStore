@@ -3,7 +3,7 @@
       "items": [
         {
           "infra": {
-            "name": "design_1",
+            "name": "cpm4_bmd",
             "display": "VCK190 CPM PCIE BMD Design",
             "revision": "1.0",
             "description": "VCK190 CPM PCIE BMD Example Design",

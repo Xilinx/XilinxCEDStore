@@ -2,7 +2,7 @@
 <ExampleDesign>
   <Vendor>xilinx.com</Vendor>
   <Library>design</Library>
-  <Name>design_1</Name>
+  <Name>cpm4_bmd</Name>
    <DisplayName>VCK190 CPM PCIE BMD Design</DisplayName>
   <Description>VCK190 CPM PCIE BMD Example Design</Description>
    <Version>1.0</Version>
