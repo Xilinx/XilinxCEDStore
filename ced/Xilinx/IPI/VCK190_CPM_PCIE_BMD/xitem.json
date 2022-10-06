@@ -1,0 +1,33 @@
+{
+    "config": {
+      "items": [
+        {
+          "infra": {
+            "name": "cpm4_bmd",
+            "display": "VCK190 CPM PCIE BMD Design",
+            "revision": "1.0",
+            "description": "VCK190 CPM PCIE BMD Example Design",
+            "company": "xilinx.com",
+            "company_display": "Xilinx",
+            "author": "Sindhura",
+            "contributors": [
+              {
+                "group": "Xilinx",
+                "url": "www.xilinx.com"
+              }
+            ],
+            "category": "PCIe",
+            "website": "www.xilinx.com",
+            "is_active" : true, 
+            "search-keywords": [
+              "VCK190 CPM PCIE BMD Design",
+              "xilinx.com",
+              "example"             
+            ]
+          }
+        }
+      ]
+    },
+    "_major" : 1,
+    "_minor" : 0
+}

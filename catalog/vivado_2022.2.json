@@ -1,0 +1,612 @@
+{
+  "catalog": {
+    "items": [
+      {
+        "name": "MPSoC_ext_platform",
+        "display": "MPSoC Extensible Embedded Platform",
+        "latest_revision": "1.0",
+        "commit_id": "8ef4594426c2cfd03f7d349e1fe1a16e56190d09",
+        "revisions": [
+          {
+            "revision": "1.0",
+            "commit_id": "8ef4594426c2cfd03f7d349e1fe1a16e56190d09",
+            "date": "20-09-2022:08:07:07",
+            "history": "Added board MPSoC Extensible Embedded Platform v1.0"
+          }
+        ],
+        "config": {
+          "root": "ced/Xilinx/IPI/MPSoC_Ext_Platform",
+          "metadata_file": "xitem.json"
+        },
+        "company": "xilinx.com"
+      },
+      {
+        "name": "MPSoC_ext_platform_part",
+        "display": "MPSoC Extensible Embedded Platform (Part based)",
+        "latest_revision": "1.0",
+        "commit_id": "8ef4594426c2cfd03f7d349e1fe1a16e56190d09",
+        "revisions": [
+          {
+            "revision": "1.0",
+            "commit_id": "8ef4594426c2cfd03f7d349e1fe1a16e56190d09",
+            "date": "20-09-2022:08:07:07",
+            "history": "Added board MPSoC Extensible Embedded Platform (Part based) v1.0"
+          }
+        ],
+        "config": {
+          "root": "ced/Xilinx/IPI/MPSoC_Ext_Platform_PartBased",
+          "metadata_file": "xitem.json"
+        },
+        "company": "xilinx.com"
+      },
+      {
+        "name": "mb_preset",
+        "display": "MicroBlaze Design Presets",
+        "latest_revision": "1.0",
+        "commit_id": "8ef4594426c2cfd03f7d349e1fe1a16e56190d09",
+        "revisions": [
+          {
+            "revision": "1.0",
+            "commit_id": "8ef4594426c2cfd03f7d349e1fe1a16e56190d09",
+            "date": "20-09-2022:08:07:07",
+            "history": "Added board MicroBlaze Design Presets v1.0"
+          }
+        ],
+        "config": {
+          "root": "ced/Xilinx/IPI/MicroBlaze Design Presets",
+          "metadata_file": "xitem.json"
+        },
+        "company": "xilinx.com"
+      },
+      {
+        "name": "TMR_Microblaze",
+        "display": "TMR Microblaze Example Design",
+        "latest_revision": "1.0",
+        "commit_id": "8ef4594426c2cfd03f7d349e1fe1a16e56190d09",
+        "revisions": [
+          {
+            "revision": "1.0",
+            "commit_id": "8ef4594426c2cfd03f7d349e1fe1a16e56190d09",
+            "date": "20-09-2022:08:07:07",
+            "history": "Added board TMR Microblaze Example Design v1.0"
+          }
+        ],
+        "config": {
+          "root": "ced/Xilinx/IPI/TMR_Microblaze",
+          "metadata_file": "xitem.json"
+        },
+        "company": "xilinx.com"
+      },
+      {
+        "name": "axidma",
+        "display": "AXI DMA",
+        "latest_revision": "1.0",
+        "commit_id": "8ef4594426c2cfd03f7d349e1fe1a16e56190d09",
+        "revisions": [
+          {
+            "revision": "1.0",
+            "commit_id": "8ef4594426c2cfd03f7d349e1fe1a16e56190d09",
+            "date": "20-09-2022:08:07:07",
+            "history": "Added board AXI DMA v1.0"
+          }
+        ],
+        "config": {
+          "root": "ced/Xilinx/IPI/VCK190-AXIDMA-Example",
+          "metadata_file": "xitem.json"
+        },
+        "company": "xilinx.com"
+      },
+      {
+        "name": "multirategty",
+        "display": "Multi-Rate GTY",
+        "latest_revision": "1.0",
+        "commit_id": "8ef4594426c2cfd03f7d349e1fe1a16e56190d09",
+        "revisions": [
+          {
+            "revision": "1.0",
+            "commit_id": "8ef4594426c2cfd03f7d349e1fe1a16e56190d09",
+            "date": "20-09-2022:08:07:07",
+            "history": "Added board Multi-Rate GTY v1.0"
+          }
+        ],
+        "config": {
+          "root": "ced/Xilinx/IPI/Versal Multi-Rate GTY",
+          "metadata_file": "xitem.json"
+        },
+        "company": "xilinx.com"
+      },
+      {
+        "name": "cpm_rp",
+        "display": "Versal ACAP CPM4/CPM5 AXI Bridge Root Port Design",
+        "latest_revision": "1.0",
+        "commit_id": "8ef4594426c2cfd03f7d349e1fe1a16e56190d09",
+        "revisions": [
+          {
+            "revision": "1.0",
+            "commit_id": "8ef4594426c2cfd03f7d349e1fe1a16e56190d09",
+            "date": "20-09-2022:08:07:07",
+            "history": "Added board Versal ACAP CPM4/CPM5 AXI Bridge Root Port Design v1.0"
+          }
+        ],
+        "config": {
+          "root": "ced/Xilinx/IPI/Versal_ACAP_CPM_AXI_Bridge_RootPort_Design",
+          "metadata_file": "xitem.json"
+        },
+        "company": "xilinx.com"
+      },
+      {
+        "name": "cpm_pcie_pio",
+        "display": "Versal ACAP CPM PCIE PIO Design",
+        "latest_revision": "1.0",
+        "commit_id": "8ef4594426c2cfd03f7d349e1fe1a16e56190d09",
+        "revisions": [
+          {
+            "revision": "1.0",
+            "commit_id": "8ef4594426c2cfd03f7d349e1fe1a16e56190d09",
+            "date": "20-09-2022:08:07:07",
+            "history": "Added board Versal ACAP CPM PCIE PIO Design v1.0"
+          }
+        ],
+        "config": {
+          "root": "ced/Xilinx/IPI/Versal_ACAP_CPM_PCIE_PIO_Design",
+          "metadata_file": "xitem.json"
+        },
+        "company": "xilinx.com"
+      },
+      {
+        "name": "ver_ps_perf",
+        "display": "Versal ACAP Processor Performance",
+        "latest_revision": "1.0",
+        "commit_id": "8ef4594426c2cfd03f7d349e1fe1a16e56190d09",
+        "revisions": [
+          {
+            "revision": "1.0",
+            "commit_id": "8ef4594426c2cfd03f7d349e1fe1a16e56190d09",
+            "date": "20-09-2022:08:07:07",
+            "history": "Added board Versal ACAP Processor Performance v1.0"
+          }
+        ],
+        "config": {
+          "root": "ced/Xilinx/IPI/Versal_ACAP_Processor_Performance",
+          "metadata_file": "xitem.json"
+        },
+        "company": "xilinx.com"
+      },
+      {
+        "name": "cpm5_pcie_bmd",
+        "display": "Versal CPM5 PCIe BMD Simulation Design",
+        "latest_revision": "1.0",
+        "commit_id": "814acc8f382bc2d0f44c547408f497c04920da51",
+        "revisions": [
+          {
+            "revision": "1.0",
+            "commit_id": "814acc8f382bc2d0f44c547408f497c04920da51",
+            "date": "20-09-2022:08:07:07",
+            "history": "Added board Versal CPM5 PCIe BMD Simulation Design v1.0"
+          }
+        ],
+        "config": {
+          "root": "ced/Xilinx/IPI/Versal_CPM5_PCIe_BMD_Simulation_Design",
+          "metadata_file": "xitem.json"
+        },
+        "company": "xilinx.com"
+      },
+      {
+        "name": "Versal_CPM_PCIe_Debug",
+        "display": "Versal CPM Debug-over-PCIe",
+        "latest_revision": "1.0",
+        "commit_id": "8ef4594426c2cfd03f7d349e1fe1a16e56190d09",
+        "revisions": [
+          {
+            "revision": "1.0",
+            "commit_id": "8ef4594426c2cfd03f7d349e1fe1a16e56190d09",
+            "date": "20-09-2022:08:07:07",
+            "history": "Added board Versal CPM Debug-over-PCIe v1.0"
+          }
+        ],
+        "config": {
+          "root": "ced/Xilinx/IPI/Versal_CPM_PCIe_Debug",
+          "metadata_file": "xitem.json"
+        },
+        "company": "xilinx.com"
+      },
+      {
+        "name": "Versal_CPM_Tandem PCIe",
+        "display": "Versal CPM Tandem PCIe",
+        "latest_revision": "1.0",
+        "commit_id": "8ef4594426c2cfd03f7d349e1fe1a16e56190d09",
+        "revisions": [
+          {
+            "revision": "1.0",
+            "commit_id": "8ef4594426c2cfd03f7d349e1fe1a16e56190d09",
+            "date": "20-09-2022:08:07:07",
+            "history": "Added board Versal CPM Tandem PCIe v1.0"
+          }
+        ],
+        "config": {
+          "root": "ced/Xilinx/IPI/Versal_CPM_Tandem_PCIe",
+          "metadata_file": "xitem.json"
+        },
+        "company": "xilinx.com"
+      },
+      {
+        "name": "ext_platform",
+        "display": "Versal Extensible Embedded Platform",
+        "latest_revision": "1.0",
+        "commit_id": "8ef4594426c2cfd03f7d349e1fe1a16e56190d09",
+        "revisions": [
+          {
+            "revision": "1.0",
+            "commit_id": "8ef4594426c2cfd03f7d349e1fe1a16e56190d09",
+            "date": "20-09-2022:08:07:07",
+            "history": "Added board Versal Extensible Embedded Platform v1.0"
+          }
+        ],
+        "config": {
+          "root": "ced/Xilinx/IPI/Versal_Extensible_Embedded_Platform",
+          "metadata_file": "xitem.json"
+        },
+        "company": "xilinx.com"
+      },
+      {
+        "name": "ext_platform_part",
+        "display": "Versal Extensible Embedded Platform part_support",
+        "latest_revision": "1.0",
+        "commit_id": "8ef4594426c2cfd03f7d349e1fe1a16e56190d09",
+        "revisions": [
+          {
+            "revision": "1.0",
+            "commit_id": "8ef4594426c2cfd03f7d349e1fe1a16e56190d09",
+            "date": "20-09-2022:08:07:07",
+            "history": "Added board Versal Extensible Embedded Platform part_support v1.0"
+          }
+        ],
+        "config": {
+          "root": "ced/Xilinx/IPI/Versal_Extensible_Embedded_Platform_Part",
+          "metadata_file": "xitem.json"
+        },
+        "company": "xilinx.com"
+      },
+      {
+        "name": "mpsoc_preset",
+        "display": "Zynq UltraScale+ MPSoC Design Presets",
+        "latest_revision": "1.0",
+        "commit_id": "8ef4594426c2cfd03f7d349e1fe1a16e56190d09",
+        "revisions": [
+          {
+            "revision": "1.0",
+            "commit_id": "8ef4594426c2cfd03f7d349e1fe1a16e56190d09",
+            "date": "20-09-2022:08:07:07",
+            "history": "Added board Zynq UltraScale+ MPSoC Design Presets v1.0"
+          }
+        ],
+        "config": {
+          "root": "ced/Xilinx/IPI/Zynq UltraScale+ MPSoC Design Presets",
+          "metadata_file": "xitem.json"
+        },
+        "company": "xilinx.com"
+      },
+      {
+        "name": "zynq7000_preset",
+        "display": "Zynq-7000 Design Presets",
+        "latest_revision": "1.0",
+        "commit_id": "8ef4594426c2cfd03f7d349e1fe1a16e56190d09",
+        "revisions": [
+          {
+            "revision": "1.0",
+            "commit_id": "8ef4594426c2cfd03f7d349e1fe1a16e56190d09",
+            "date": "20-09-2022:08:07:07",
+            "history": "Added board Zynq-7000 Design Presets v1.0"
+          }
+        ],
+        "config": {
+          "root": "ced/Xilinx/IPI/Zynq-7000 Design Presets",
+          "metadata_file": "xitem.json"
+        },
+        "company": "xilinx.com"
+      },
+      {
+        "name": "cips_ddr_pl_debug",
+        "display": "CIPS DDR PL Debug",
+        "latest_revision": "1.0",
+        "commit_id": "8ef4594426c2cfd03f7d349e1fe1a16e56190d09",
+        "revisions": [
+          {
+            "revision": "1.0",
+            "commit_id": "8ef4594426c2cfd03f7d349e1fe1a16e56190d09",
+            "date": "20-09-2022:08:07:07",
+            "history": "Added board CIPS DDR PL Debug v1.0"
+          }
+        ],
+        "config": {
+          "root": "ced/Xilinx/IPI/cips_ddr_pl_debug",
+          "metadata_file": "xitem.json"
+        },
+        "company": "xilinx.com"
+      },
+      {
+        "name": "soc_vip",
+        "display": "Versal ACAP CIPS PS VIP",
+        "latest_revision": "1.0",
+        "commit_id": "8ef4594426c2cfd03f7d349e1fe1a16e56190d09",
+        "revisions": [
+          {
+            "revision": "1.0",
+            "commit_id": "8ef4594426c2cfd03f7d349e1fe1a16e56190d09",
+            "date": "20-09-2022:08:07:07",
+            "history": "Added board Versal ACAP CIPS PS VIP v1.0"
+          }
+        ],
+        "config": {
+          "root": "ced/Xilinx/IPI/cips_vip",
+          "metadata_file": "xitem.json"
+        },
+        "company": "xilinx.com"
+      },
+      {
+        "name": "versal_mb_preset",
+        "display": "Versal MicroBlaze Design Presets",
+        "latest_revision": "1.0",
+        "commit_id": "3c5b652e43a9a83f24bcee679a7538ffe9f51155",
+        "revisions": [
+          {
+            "revision": "1.0",
+            "commit_id": "3c5b652e43a9a83f24bcee679a7538ffe9f51155",
+            "date": "20-09-2022:08:07:07",
+            "history": "Added board Versal MicroBlaze Design Presets v1.0"
+          }
+        ],
+        "config": {
+          "root": "ced/Xilinx/IPI/versal_mb_preset",
+          "metadata_file": "xitem.json"
+        },
+        "company": "xilinx.com"
+      },
+      {
+        "name": "BFT",
+        "display": "BFT",
+        "latest_revision": "1.0",
+        "commit_id": "8ef4594426c2cfd03f7d349e1fe1a16e56190d09",
+        "revisions": [
+          {
+            "revision": "1.0",
+            "commit_id": "8ef4594426c2cfd03f7d349e1fe1a16e56190d09",
+            "date": "20-09-2022:08:07:07",
+            "history": "Added board BFT v1.0"
+          }
+        ],
+        "config": {
+          "root": "ced/Xilinx/nonIPI/bft",
+          "metadata_file": "xitem.json"
+        },
+        "company": "xilinx.com"
+      },
+      {
+        "name": "cpu_hdl",
+        "display": "CPU (HDL)",
+        "latest_revision": "1.0",
+        "commit_id": "8ef4594426c2cfd03f7d349e1fe1a16e56190d09",
+        "revisions": [
+          {
+            "revision": "1.0",
+            "commit_id": "8ef4594426c2cfd03f7d349e1fe1a16e56190d09",
+            "date": "20-09-2022:08:07:07",
+            "history": "Added board CPU (HDL) v1.0"
+          }
+        ],
+        "config": {
+          "root": "ced/Xilinx/nonIPI/cpu_hdl",
+          "metadata_file": "xitem.json"
+        },
+        "company": "xilinx.com"
+      },
+      {
+        "name": "cpu_netlist",
+        "display": "CPU (Synthesized)",
+        "latest_revision": "1.0",
+        "commit_id": "8ef4594426c2cfd03f7d349e1fe1a16e56190d09",
+        "revisions": [
+          {
+            "revision": "1.0",
+            "commit_id": "8ef4594426c2cfd03f7d349e1fe1a16e56190d09",
+            "date": "20-09-2022:08:07:07",
+            "history": "Added board CPU (Synthesized) v1.0"
+          }
+        ],
+        "config": {
+          "root": "ced/Xilinx/nonIPI/cpu_netlist",
+          "metadata_file": "xitem.json"
+        },
+        "company": "xilinx.com"
+      },
+      {
+        "name": "wave_gen",
+        "display": "Wavegen (HDL)",
+        "latest_revision": "1.0",
+        "commit_id": "8ef4594426c2cfd03f7d349e1fe1a16e56190d09",
+        "revisions": [
+          {
+            "revision": "1.0",
+            "commit_id": "8ef4594426c2cfd03f7d349e1fe1a16e56190d09",
+            "date": "20-09-2022:08:07:07",
+            "history": "Added board Wavegen (HDL) v1.0"
+          }
+        ],
+        "config": {
+          "root": "ced/Xilinx/nonIPI/wave_gen",
+          "metadata_file": "xitem.json"
+        },
+        "company": "xilinx.com"
+      },
+      {
+        "name": "versal_dfx_platform",
+        "display": "Versal DFX Platform",
+        "latest_revision": "1.0",
+        "commit_id": "085632c9debb86e57c2fcdc6e83027c13bef4d30",
+        "revisions": [
+          {
+            "revision": "1.0",
+            "commit_id": "085632c9debb86e57c2fcdc6e83027c13bef4d30",
+            "date": "23-09-2022:15:41:35",
+            "history": "Added board Versal DFX Platform v1.0"
+          }
+        ],
+        "config": {
+          "root": "ced/Xilinx/IPI/versal_dfx",
+          "metadata_file": "xitem.json"
+        },
+        "company": "xilinx.com"
+      },
+      {
+        "name": "chipscopy",
+        "display": "ChipScoPy Example Design",
+        "latest_revision": "1.0",
+        "commit_id": "bcc386c556793f3bfcf39a7e07fff6f83e9d09a5",
+        "revisions": [
+          {
+            "revision": "1.0",
+            "commit_id": "bcc386c556793f3bfcf39a7e07fff6f83e9d09a5",
+            "date": "26-09-2022:15:33:39",
+            "history": "Added board ChipScoPy Example Design v1.0"
+          }
+        ],
+        "config": {
+          "root": "ced/Xilinx/IPI/chipscopy",
+          "metadata_file": "xitem.json"
+        },
+        "company": "xilinx.com"
+      },
+      {
+        "name": "versal_ibert_ced",
+        "display": "Versal IBERT",
+        "latest_revision": "1.0",
+        "commit_id": "bcc386c556793f3bfcf39a7e07fff6f83e9d09a5",
+        "revisions": [
+          {
+            "revision": "1.0",
+            "commit_id": "bcc386c556793f3bfcf39a7e07fff6f83e9d09a5",
+            "date": "26-09-2022:15:33:39",
+            "history": "Added board Versal IBERT v1.0"
+          }
+        ],
+        "config": {
+          "root": "ced/Xilinx/IPI/versal_ibert_ced",
+          "metadata_file": "xitem.json"
+        },
+        "company": "xilinx.com"
+      },
+      {
+        "name": "design_1",
+        "display": "VCK190 CPM PCIE BMD Design",
+        "latest_revision": "1.0",
+        "commit_id": "814acc8f382bc2d0f44c547408f497c04920da51",
+        "revisions": [
+          {
+            "revision": "1.0",
+            "commit_id": "814acc8f382bc2d0f44c547408f497c04920da51",
+            "date": "27-09-2022:14:23:35",
+            "history": "Added board VCK190 CPM PCIE BMD Design v1.0"
+          }
+        ],
+        "config": {
+          "root": "ced/Xilinx/IPI/VCK190_CPM_PCIE_BMD",
+          "metadata_file": "xitem.json"
+        },
+        "company": "xilinx.com"
+      },
+      {
+        "name": "cpm_pcie_qdma",
+        "display": "Versal ACAP CPM Gen4x8 QDMA EP Design",
+        "latest_revision": "1.0",
+        "commit_id": "814acc8f382bc2d0f44c547408f497c04920da51",
+        "revisions": [
+          {
+            "revision": "1.0",
+            "commit_id": "814acc8f382bc2d0f44c547408f497c04920da51",
+            "date": "27-09-2022:14:23:35",
+            "history": "Added board Versal ACAP CPM Gen4x8 QDMA EP Design v1.0"
+          }
+        ],
+        "config": {
+          "root": "ced/Xilinx/IPI/Versal_ACAP_CPM_Gen4x8_QDMA_EP_Design",
+          "metadata_file": "xitem.json"
+        },
+        "company": "xilinx.com"
+      },
+      {
+        "name": "cpm5_qdma",
+        "display": "Versal CPM5 QDMA Simulation Design",
+        "latest_revision": "1.0",
+        "commit_id": "814acc8f382bc2d0f44c547408f497c04920da51",
+        "revisions": [
+          {
+            "revision": "1.0",
+            "commit_id": "814acc8f382bc2d0f44c547408f497c04920da51",
+            "date": "27-09-2022:14:23:35",
+            "history": "Added board Versal CPM5 QDMA Simulation Design v1.0"
+          }
+        ],
+        "config": {
+          "root": "ced/Xilinx/IPI/Versal_CPM5_QDMA_Simulation_Design",
+          "metadata_file": "xitem.json"
+        },
+        "company": "xilinx.com"
+      },
+      {
+        "name": "cpm4_bmd",
+        "display": "VCK190 CPM PCIE BMD Design",
+        "latest_revision": "1.0",
+        "commit_id": "d43112b5bbd7ed542b4c2af80395a0392590f57a",
+        "revisions": [
+          {
+            "revision": "1.0",
+            "commit_id": "d43112b5bbd7ed542b4c2af80395a0392590f57a",
+            "date": "04-10-2022:19:21:39",
+            "history": "Added board VCK190 CPM PCIE BMD Design v1.0"
+          }
+        ],
+        "config": {
+          "root": "ced/Xilinx/IPI/VCK190_CPM_PCIE_BMD",
+          "metadata_file": "xitem.json"
+        },
+        "company": "xilinx.com"
+      }
+    ],
+    "categories": [
+      {
+        "name": "single_part",
+        "display_name": "Single Part",
+        "description": "This category represents all the boards which have single part",
+        "parent": ""
+      },
+      {
+        "name": "multi_part",
+        "display_name": "Multi Part",
+        "description": "This category represents all the boards which have multi part",
+        "parent": ""
+      },
+      {
+        "name": "daughter_card",
+        "display_name": "Daughter Card",
+        "description": "This category represents all the boards which are daughter cards",
+        "parent": ""
+      },
+      {
+        "name": "misc",
+        "display_name": "Misc",
+        "description": "This category represents miscellaneous variety of boards",
+        "default": true,
+        "parent": ""
+      },
+      {
+        "name": "examples",
+        "display_name": "Examples",
+        "description": "This category represents configurable example designs",
+        "default": true,
+        "parent": ""
+      }
+    ]
+  },
+  "_major": 1,
+  "_minor": 0
+}
