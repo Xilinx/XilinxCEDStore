@@ -10,7 +10,7 @@ source -notrace "$currentDir/device.tcl"
 #  required for CED, return all versal parts
 #
 proc getSupportedParts {} {
-    set mylist [get_parts -filter {DEVICE =~ xcvc* || DEVICE =~ xcvm* || DEVICE =~ xcvp*}]
+	set mylist [get_parts -filter {C_FAMILY =~ versal}]
     foreach item $mylist {
       set newitem versal{$item}
       lappend newlist $newitem
