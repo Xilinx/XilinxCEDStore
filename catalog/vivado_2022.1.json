@@ -437,6 +437,25 @@
           "metadata_file": "xitem.json"
         },
         "company": "xilinx.com"
+      },
+      {
+        "name": "hsdp_ced",
+        "display": "Versal HSDP with Soft Aurora",
+        "latest_revision": "1.0",
+        "commit_id": "2833e61a1c09cb67daaa9c5dc13f287bc6cd23c3",
+        "revisions": [
+          {
+            "revision": "1.0",
+            "commit_id": "2833e61a1c09cb67daaa9c5dc13f287bc6cd23c3",
+            "date": "11-10-2022:03:19:32",
+            "history": "Added board Versal HSDP with Soft Aurora v1.0"
+          }
+        ],
+        "config": {
+          "root": "ced/Xilinx/IPI/hsdp_ced",
+          "metadata_file": "xitem.json"
+        },
+        "company": "xilinx.com"
       }
     ],
     "categories": [
