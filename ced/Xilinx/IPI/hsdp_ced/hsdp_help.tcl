@@ -307,11 +307,11 @@ proc createDesign {design_name options} {
     set ref_coord [lindex [get_reflocs $quad] $ref_idx]
     puts $f "ref_coord: $ref_coord"
     
-    puts $outputfile "set_property LOC GTY_QUAD_${quad_loc} \[get_cells $inst\]"
+    puts $outputfile "set_property LOC ${quad_loc} \[get_cells $inst\]"
     puts $outputfile "create_clock -period ${period} \[get_pins -hierarchical -regexp ${inst}/CH0_TXOUTCLK\]"
     puts $outputfile "create_clock -period ${period} \[get_pins -hierarchical -regexp ${inst}/CH0_RXOUTCLK\]"
     set inst "${design_name}_i/util_ds_buf/U0/USE_IBUFDS_GTE5.GEN_IBUFDS_GTE5\[0\].IBUFDS_GTE5_I"
-    puts $outputfile "set_property LOC GTY_REFCLK_${ref_coord} \[get_cells  $inst\]"
+    puts $outputfile "set_property LOC ${ref_coord} \[get_cells  $inst\]"
     puts $outputfile ""
     #puts $outputfile "############ FILL IN CLOCK CONSTRAINTS BELOW #################"
     #puts $outputfile "# set_property PACKAGE_PIN A1 \[get_ports pl_hsdp_clk_0\]"
