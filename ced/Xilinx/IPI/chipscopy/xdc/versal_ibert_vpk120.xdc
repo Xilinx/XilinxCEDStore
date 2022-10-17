@@ -4,7 +4,7 @@ set_property LOC GTYP_REFCLK_X1Y0 [get_cells -hier -regexp -filter {LIB_CELL==IB
 create_clock -period 10.0 [get_ports bridge_refclkX1Y0_diff_gt_ref_clock_clk_p[0]]
 
 # refclkX1Y2 : 16.0 Gbps with 100.00 MHz
-set_property LOC GTYP_QUAD_X1Y1 [get_cells chipscopy_i/gtyp_quad_201/gt_quad_base_1/inst/quad_inst]
+set_property LOC GTYP_QUAD_X1Y1 [get_cells chipscopy_i/gtyp_quad_201/gt_quad_base/inst/quad_inst]
 set_property LOC GTYP_REFCLK_X1Y2 [get_cells -hier -regexp -filter {LIB_CELL==IBUFDS_GTE5} .*gtyp_quad_201.*]
 create_clock -period 10.0 [get_ports bridge_refclkX1Y2_diff_gt_ref_clock_clk_p[0]]
 

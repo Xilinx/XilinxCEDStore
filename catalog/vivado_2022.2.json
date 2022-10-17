@@ -173,44 +173,6 @@
         "company": "xilinx.com"
       },
       {
-        "name": "cpm5n_bmd",
-        "display": "Versal CPM5N BMD Design",
-        "latest_revision": "1.0",
-        "commit_id": "814acc8f382bc2d0f44c547408f497c04920da51",
-        "revisions": [
-          {
-            "revision": "1.0",
-            "commit_id": "814acc8f382bc2d0f44c547408f497c04920da51",
-            "date": "20-09-2022:08:07:07",
-            "history": "Added board Versal CPM5N BMD Design v1.0"
-          }
-        ],
-        "config": {
-          "root": "ced/Xilinx/IPI/Versal_CPM5N_BMD_Design",
-          "metadata_file": "xitem.json"
-        },
-        "company": "xilinx.com"
-      },
-      {
-        "name": "cpm5n_csi_uport",
-        "display": "Versal CPM5N CSI Uport Design",
-        "latest_revision": "1.0",
-        "commit_id": "814acc8f382bc2d0f44c547408f497c04920da51",
-        "revisions": [
-          {
-            "revision": "1.0",
-            "commit_id": "814acc8f382bc2d0f44c547408f497c04920da51",
-            "date": "20-09-2022:08:07:07",
-            "history": "Added board Versal CPM5N CSI Uport Design v1.0"
-          }
-        ],
-        "config": {
-          "root": "ced/Xilinx/IPI/Versal_CPM5N_CSI_Uport_Design",
-          "metadata_file": "xitem.json"
-        },
-        "company": "xilinx.com"
-      },
-      {
         "name": "cpm5_pcie_bmd",
         "display": "Versal CPM5 PCIe BMD Simulation Design",
         "latest_revision": "1.0",
@@ -499,11 +461,11 @@
         "name": "chipscopy",
         "display": "ChipScoPy Example Design",
         "latest_revision": "1.0",
-        "commit_id": "bcc386c556793f3bfcf39a7e07fff6f83e9d09a5",
+        "commit_id": "d341a627b3d22dff71f9a7a0c494cb273c404521",
         "revisions": [
           {
             "revision": "1.0",
-            "commit_id": "bcc386c556793f3bfcf39a7e07fff6f83e9d09a5",
+            "commit_id": "d341a627b3d22dff71f9a7a0c494cb273c404521",
             "date": "26-09-2022:15:33:39",
             "history": "Added board ChipScoPy Example Design v1.0"
           }
@@ -586,6 +548,25 @@
         ],
         "config": {
           "root": "ced/Xilinx/IPI/Versal_CPM5_QDMA_Simulation_Design",
+          "metadata_file": "xitem.json"
+        },
+        "company": "xilinx.com"
+      },
+      {
+        "name": "cpm4_bmd",
+        "display": "VCK190 CPM PCIE BMD Design",
+        "latest_revision": "1.0",
+        "commit_id": "d43112b5bbd7ed542b4c2af80395a0392590f57a",
+        "revisions": [
+          {
+            "revision": "1.0",
+            "commit_id": "d43112b5bbd7ed542b4c2af80395a0392590f57a",
+            "date": "04-10-2022:19:21:39",
+            "history": "Added board VCK190 CPM PCIE BMD Design v1.0"
+          }
+        ],
+        "config": {
+          "root": "ced/Xilinx/IPI/VCK190_CPM_PCIE_BMD",
           "metadata_file": "xitem.json"
         },
         "company": "xilinx.com"

@@ -7,7 +7,7 @@ set_property LOC GTY_REFCLK_X0Y10 [get_cells  chipscopy_i/gty_quad_105/util_ds_b
 create_clock -period 6.4 [get_ports bridge_refclkX0Y10_diff_gt_ref_clock_clk_p[0]]
 
 # refclkX1Y2 : 10.3125 Gbps with 100.00 MHz
-set_property LOC GTY_QUAD_X1Y1 [get_cells chipscopy_i/gty_quad_201/gt_quad_base_1/inst/quad_inst]
+set_property LOC GTY_QUAD_X1Y1 [get_cells chipscopy_i/gty_quad_201/gt_quad_base/inst/quad_inst]
 create_clock -period 7.757575757575758 [get_pins -hierarchical -regexp chipscopy_i/gty_quad_201/gt_quad_base/inst/quad_inst/CH0_TXOUTCLK]
 create_clock -period 7.757575757575758 [get_pins -hierarchical -regexp chipscopy_i/gty_quad_201/gt_quad_base/inst/quad_inst/CH0_RXOUTCLK]
 

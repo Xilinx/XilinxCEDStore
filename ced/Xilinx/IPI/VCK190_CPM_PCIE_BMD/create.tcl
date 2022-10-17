@@ -28,76 +28,25 @@ proc createDesign {design_name options} {
         [file normalize "${currentDir}/imports/pcie_app_versal_bmd.sv"] \
         [file normalize "${currentDir}/imports/design_1_wrapper.v"] \
     ]
-add_files -norecurse -fileset $obj $files
-
-# Set 'sources_1' fileset file properties for remote files
-set file "$currentDir/imports/pcie_app_versal_bmd.vh"
-set file [file normalize $file]
-set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
-set_property -name "file_type" -value "Verilog Header" -objects $file_obj
-
-set file "$currentDir/imports/BMD_AXIST_512.sv"
-set file [file normalize $file]
-set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
-set_property -name "file_type" -value "SystemVerilog" -objects $file_obj
-
-set file "$currentDir/imports/BMD_AXIST_CC_512.sv"
-set file [file normalize $file]
-set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
-set_property -name "file_type" -value "SystemVerilog" -objects $file_obj
-
-set file "$currentDir/imports/BMD_AXIST_CQ_512.sv"
-set file [file normalize $file]
-set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
-set_property -name "file_type" -value "SystemVerilog" -objects $file_obj
-
-set file "$currentDir/imports/BMD_AXIST_EP_512.sv"
-set file [file normalize $file]
-set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
-set_property -name "file_type" -value "SystemVerilog" -objects $file_obj
-
-set file "$currentDir/imports/BMD_AXIST_RC_512.sv"
-set file [file normalize $file]
-set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
-set_property -name "file_type" -value "SystemVerilog" -objects $file_obj
-
-set file "$currentDir/imports/BMD_AXIST_RQ_512.sv"
-set file [file normalize $file]
-set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
-set_property -name "file_type" -value "SystemVerilog" -objects $file_obj
-
-set file "$currentDir/imports/BMD_AXIST_RQ_MUX_512.sv"
-set file [file normalize $file]
-set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
-set_property -name "file_type" -value "SystemVerilog" -objects $file_obj
-
-set file "$currentDir/imports/BMD_AXIST_RQ_READ_512.sv"
-set file [file normalize $file]
-set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
-set_property -name "file_type" -value "SystemVerilog" -objects $file_obj
-
-set file "$currentDir/imports/BMD_AXIST_RQ_WRITE_512.sv"
-set file [file normalize $file]
-set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
-set_property -name "file_type" -value "SystemVerilog" -objects $file_obj
-
-set file "$currentDir/imports/BMD_AXIST_TO_CTRL.sv"
-set file [file normalize $file]
-set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
-set_property -name "file_type" -value "SystemVerilog" -objects $file_obj
-
-set file "$currentDir/imports/pcie_app_versal_bmd.sv"
-set file [file normalize $file]
-set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
-set_property -name "file_type" -value "SystemVerilog" -objects $file_obj
-
+import_files -norecurse -fileset $obj $files
 
 # Set 'sources_1' fileset file properties for local files
 # None
 
 # Set 'sources_1' fileset properties
 set obj [get_filesets sources_1]
-set_property -name "top" -value "design_1_wrapper" -objects $obj
+set_property -name "top" -value "${design_name}_wrapper" -objects $obj
+
+# None
+set infile [open [file join [get_property directory [current_project]] [current_project].srcs sources_1 imports imports design_1_wrapper.v]]
+set contents [read $infile]
+close $infile
+set contents [string map [list "design_1" "$design_name"] $contents]
+
+set outfile  [open [file join [get_property directory [current_project]] [current_project].srcs sources_1 imports imports design_1_wrapper.v] w]
+puts -nonewline $outfile $contents
+close $outfile
+
 
 # Create 'constrs_1' fileset (if not found)
 if {[string equal [get_filesets -quiet constrs_1] ""]} {
@@ -129,8 +78,7 @@ set obj [get_filesets sim_1]
 
 # Set 'sim_1' fileset properties
 set obj [get_filesets sim_1]
-set_property -name "top" -value "design_1_wrapper" -objects $obj
-set_property -name "top_lib" -value "xil_defaultlib" -objects $obj
+set_property -name "top" -value "${design_name}_wrapper" -objects $obj
 
 # Set 'utils_1' fileset object
 set obj [get_filesets utils_1]
@@ -258,7 +206,7 @@ proc create_root_design { parentCell } {
   set_property CONFIG.CONST_VAL {0} $logic0
 
 
-  # Create instance: versal_cips_0, and set properties
+ # Create instance: versal_cips_0, and set properties
   set versal_cips_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:versal_cips versal_cips_0 ]
   set_property -dict [list \
     CONFIG.CPM_CONFIG { \
@@ -275,24 +223,17 @@ proc create_root_design { parentCell } {
       CPM_PCIE0_PF0_SUB_CLASS_INTF_MENU {Other_memory_controller} \
       CPM_PCIE0_PF0_USE_CLASS_CODE_LOOKUP_ASSISTANT {1} \
       CPM_PCIE0_PL_LINK_CAP_MAX_LINK_WIDTH {X8} \
-      CPM_PCIE0_TANDEM {Tandem_PROM} \
       CPM_PCIE0_TX_FC_IF {1} \
     } \
     CONFIG.DESIGN_MODE {1} \
     CONFIG.PS_PMC_CONFIG { \
       DESIGN_MODE {1} \
-      PCIE_APERTURES_DUAL_ENABLE {0} \
-      PCIE_APERTURES_SINGLE_ENABLE {0} \
       PMC_CRP_OSPI_REF_CTRL_FREQMHZ {135} \
-      PMC_CRP_PL0_REF_CTRL_FREQMHZ {250} \
-      PMC_OSPI_PERIPHERAL {{ENABLE 1} {IO {PMC_MIO 0 .. 11}} {MODE Single}} \
-      PS_BOARD_INTERFACE {Custom} \
-      PS_CRL_UART0_REF_CTRL_DIVISOR0 {12} \
+      PMC_OSPI_PERIPHERAL {ENABLE 1} \
+      PS_CRL_UART0_REF_CTRL_DIVISOR0 {6} \
       PS_CRL_UART0_REF_CTRL_SRCSEL {PPLL} \
-      PS_CRL_UART1_REF_CTRL_DIVISOR0 {12} \
+      PS_CRL_UART1_REF_CTRL_DIVISOR0 {6} \
       PS_CRL_UART1_REF_CTRL_SRCSEL {PPLL} \
-      PS_PCIE1_PERIPHERAL_ENABLE {1} \
-      PS_PCIE2_PERIPHERAL_ENABLE {0} \
       PS_PCIE_EP_RESET1_IO {PMC_MIO 38} \
       PS_PCIE_RESET {{ENABLE 1}} \
       PS_UART0_BAUD_RATE {115200} \
@@ -300,13 +241,8 @@ proc create_root_design { parentCell } {
       PS_UART1_BAUD_RATE {115200} \
       PS_UART1_PERIPHERAL {{ENABLE 1} {IO {PS_MIO 20 .. 21}}} \
       PS_USE_M_AXI_FPD {0} \
-      PS_USE_PMCPL_CLK0 {1} \
-      SMON_ALARMS {Set_Alarms_On} \
-      SMON_ENABLE_TEMP_AVERAGING {0} \
-      SMON_TEMP_AVERAGING_SAMPLES {0} \
-    } \
-  ] $versal_cips_0
-
+} \
+] $versal_cips_0 
 
   # Create interface connections
   connect_bd_intf_net -intf_net gt_refclk0_0_1 [get_bd_intf_ports gt_refclk0_0] [get_bd_intf_pins versal_cips_0/gt_refclk0]
@@ -364,5 +300,5 @@ proc create_root_design { parentCell } {
 
 create_root_design ""
 
-open_bd_design [get_files design_1.bd]
+open_bd_design [get_bd_files $design_name]
 }
