@@ -25,8 +25,9 @@ proc createDesign {design_name options} {
 set_property target_language Verilog [current_project]
 #set design_name mb_preset
 #set temp_options Application_Processor
+variable currentDir
 
-proc create_root_design { parentCell design_name temp_options} {
+proc create_root_design {currentDir design_name temp_options} {
 
 puts "create_root_design"
 set board_part [get_property NAME [current_board_part]]
@@ -174,13 +175,19 @@ set_property range 64K [get_bd_addr_segs {microblaze_0/Instruction/SEG_ilmb_bram
 set_property range 64K [get_bd_addr_segs {microblaze_0/Data/SEG_dlmb_bram_if_cntlr_Mem}]
 save_bd_design
 validate_bd_design
+
+if { ([lsearch $temp_options "Application"] != -1 ) && ([regexp "vek280" $board_name])} {
+set xdc [file join $currentDir constrs_1 top.xdc]
+	add_files -fileset constrs_1 -norecurse $xdc
+	import_files -fileset constrs_1 $xdc
+}
 }
 
 ##################################################################
 # MAIN FLOW
 ##################################################################
 
-create_root_design "" $design_name $options 
+create_root_design $currentDir $design_name $options 
 	
 	# close_bd_design [get_bd_designs $design_name]
 	# set bdDesignPath [file join [get_property directory [current_project]] [current_project].srcs sources_1 bd $design_name]

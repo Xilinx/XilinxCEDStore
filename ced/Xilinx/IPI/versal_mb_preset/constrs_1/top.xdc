@@ -1,0 +1,4 @@
+set_property IOSTANDARD DIFF_SSTL15 [get_ports lpddr4_clk1_clk_p]
+set_property IOSTANDARD DIFF_SSTL15 [get_ports lpddr4_clk1_clk_n]
+set_property IOSTANDARD LVCMOS15 [get_ports ch1_lpddr4_trip1_reset_n]
+set_property IOSTANDARD LVCMOS15 [get_ports ch0_lpddr4_trip1_reset_n]
