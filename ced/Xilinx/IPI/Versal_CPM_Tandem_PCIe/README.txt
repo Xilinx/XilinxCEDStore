@@ -96,6 +96,11 @@ for ease of use.
 
     $> dma-to-device -d /dev/qdmab30000-MM-0 -f <stage2.pdi> -s <size> -a 0x102100000
 
+      !! IMPORTANT !! 
+      If a device with CPM4 (not CPM5) is selected for this CED, it is required to 
+      remove the driver (rmmod qdma-pf), then go back to Step 6 to re-initialize 
+      the driver after loading the stage two bitstream to the device.
+
   11. (Optional) Perform H2C and C2H MM DMAs to BRAM and H2C ST DMA to the PL
       to verify that the stage two has successfully been programmed to the
       device
