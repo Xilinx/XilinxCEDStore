@@ -47,15 +47,18 @@ proc get_max_linerate {speedgrade type} {
           return 32.75
         }
         -2MP -
+        -2MHP -
         -2HP -
-        -2LP {
+        -2LP -
+        -2LHP {
           return 28.21
         }
         -1MM -
         -1MP {
           return 26.5625
         }
-        -1LP {
+        -1LP -
+        -1LHP {
           return 25.78125
         }
         default {
@@ -65,19 +68,22 @@ proc get_max_linerate {speedgrade type} {
     }
     GTYP {
       switch $speedgrade {
-        -3HP { 
+        -3HP -
+        -2HP { 
           return 32.75
         }
         -2MP -
-        -2HP -
-        -2LP {
-          return 32.0
+        -2MHP -
+        -2LP -
+        -2LHP {
+          return 28.21
         }
         -1MM -
         -1MP {
-          return 32.0
+          return 26.5625
         }
-        -1LP {
+        -1LP -
+        -1LHP {
           return 25.78125
         }
         default {
@@ -87,12 +93,23 @@ proc get_max_linerate {speedgrade type} {
     }
     GTM {
       switch $speedgrade {
-        -2LP -
-        -2MP {
+        -3HP {
           return 112.0
         }
+        -2LP -
+        -2LHP -
+        -2MP -
+        -2MHP {
+          return 106.25
+        }
+        -1MM - 
+        -1LP -
+        -1MP -
+        -1LHP {
+          return 53.125
+        }
         default {
-          return 112.0
+          return 53.125
         }
       }
     }
@@ -2659,6 +2676,69 @@ proc xqrvc1902 {} {
 proc xqvm1802 {} {
   log "using xqvc1802 procs"
   xqvc1902 
+}
+
+########################################################################################################################
+#  XCVN3716
+#
+proc xcvn3716 {} {
+  log "using xcvn3716 procs"
+  
+  proc get_gt_types {} {
+    return [list "GTM"]
+  }
+  
+  
+  proc get_left {pkg} {
+    switch $pkg {
+      vsvb2197 {
+        return [list]
+      }
+      default {
+        return [list]
+      }
+      
+    }
+  }
+
+  proc get_right {pkg} {
+    switch $pkg {
+      vsvb2197 {
+        return [list GTM_QUAD_200 GTM_QUAD_201]
+      }
+      default {
+        return [list]
+      }
+    }
+  }
+
+  proc get_refclk_neighbors {pkg quad} {
+    switch $pkg {
+      vsvb2197 {
+        switch $quad {
+          GTM_QUAD_200 { return [list "GTM_QUAD_201"] } 
+          GTM_QUAD_201 { return [list "GTM_QUAD_200"] } 
+        }
+      }
+    }
+  }
+
+  proc get_reflocs {q} {
+    set refclk_dict { 
+      GTM_QUAD_200 {GTM_REFCLK_X0Y0 GTM_REFCLK_X0Y1}
+      GTM_QUAD_201 {GTM_REFCLK_X0Y2 GTM_REFCLK_X0Y3}
+    }
+    return [dict get $refclk_dict $q]
+  }
+
+  proc get_gtloc {q} {
+    set gt_dict { 
+        GTM_QUAD_200 GTM_QUAD_X0Y0
+        GTM_QUAD_201 GTM_QUAD_X0Y1}
+
+    return [dict get $gt_dict $q]
+  }
+
 }
 
 # xcv65-vsvd1760-2MP-e-L xcv70-vsvh1760-2LHP-e-S-es1 xcvc1502-nsvg1369-1LHP-i-L xcvc1502-vsva1596-1LHP-i-L xcvc1502-vsva2197-1LHP-i-L xcvc1702-nsvg1369-1LHP-i-L xcvc1702-vsva1596-1LHP-i-L xcvc1702-vsva2197-1LHP-i-L xcvc1802-viva1596-1LHP-i-L xcvc1802-vsva2197-1LHP-i-L xcvc1802-vsvd1760-1LHP-i-L xcvc1902-viva1596-1LHP-i-L xcvc1902-vsva2197-1LHP-i-L xcvc1902-vsvd1760-1LHP-i-L xcvc2802-nsvh1369-1LHP-i-L-es1 xcvc2802-vsvh1760-1LHP-i-L-es1 xcve1752-nsvg1369-1LHP-i-L xcve1752-vsva1596-1LHP-i-L xcve1752-vsva2197-1LHP-i-L xcve2302-sfva784-1LHP-i-L-es1 xcve2802-nsvh1369-1LHP-i-L-es1 xcve2802-vsvh1760-1LHP-i-L-es1 xcvh1522-vsva3697-1LP-e-S-es1 xcvh1542-vsva3697-1LP-e-S-es1 xcvh1582-vsva3697-1LP-e-S-es1 xcvh1742-lsva4737-1LP-e-S-es1 xcvh1782-lsva4737-1LP-e-S-es1 xcvm1102-sfva784-1LHP-i-L-es1 xcvm1302-nbvb1024-1LHP-i-L xcvm1302-nsvf1369-1LHP-i-L xcvm1302-vfvc1596-1LHP-i-L xcvm1302-vsvd1760-1LHP-i-L xcvm1402-nbvb1024-1LHP-i-L xcvm1402-nsvf1369-1LHP-i-L xcvm1402-vfvc1596-1LHP-i-L xcvm1402-vsvd1760-1LHP-i-L xcvm1502-nfvb1369-1LHP-i-L xcvm1502-vfvc1760-1LHP-i-L xcvm1502-vsva2197-1LHP-i-L xcvm1802-vfvc1760-1LHP-i-L xcvm1802-vsva2197-1LHP-i-L xcvm1802-vsvd1760-1LHP-i-L xcvn3716-vsvb2197-1LHP-i-L-es1 xcvp1002-nfvi1369-1LHP-i-L xcvp1052-nfvi1369-1LHP-i-L xcvp1102-vsva2785-1LHP-i-L xcvp1202-vsva2785-1LHP-i-L-es1 xcvp1402-vsva2785-1LHP-i-L xcvp1402-vsva3340-1LHP-i-L xcvp1402-vsvd2197-1LHP-i-L xcvp1502-vsva2785-1LHP-i-L-es1 xcvp1502-vsva3340-1LHP-i-L-es1 xcvp1552-vsva2785-1LHP-i-L-es1 xcvp1702-vsva3340-1LHP-i-L-es1 xcvp1702-vsva5601-1LHP-i-L xcvp1802-lsvc4072-1LHP-i-L-es1 xcvp1802-vsva5601-1LHP-i-L xcvp2502-vsvb3340-1LHP-i-L xcvp2802-vsva5601-1LHP-i-L xqrvc1902-vsra2197-1MM-b-S xqvc1902-vira1596-1LHP-i-S xqvc1902-vsra2197-1LHP-i-S xqvc1902-vsrd1760-1LHP-i-S xqvm1802-vsra2197-1LHP-i-S xqvm1802-vsrd1760-1LHP-i-S

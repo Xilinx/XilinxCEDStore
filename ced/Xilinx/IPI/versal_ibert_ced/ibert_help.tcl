@@ -32,7 +32,7 @@ proc get_quad_type {quad} {
 proc get_default_lr {quad} {
   set type [get_quad_type $quad]
   if {$type eq "GTM"} {
-    return 56.42
+    return 53.125
   } else {
     return 10.3125
   }
@@ -200,25 +200,45 @@ proc createDesign {design_name options} {
     set f [open "create_design_bd.tcl" w]
     puts $f "# in create_root_design"
     puts $f "# options: $protocols"
-    create_bd_cell -type ip -vlnv xilinx.com:ip:versal_cips:3.3 versal_cips_0
+
+    set part [get_property PART [current_project]]
+    set device [lindex [split $part -] 0]
+    set pkg [lindex [split $part -] 1]  
+
+    if {$device eq "xcvn3716"} {
+
+      create_bd_cell -type ip -vlnv xilinx.com:ip:psx_wizard:1.0 versal_cips_0
+      set_property -dict [list \
+        CONFIG.PSX_PMCX_CONFIG(PMCX_CRP_PL0_REF_CTRL_FREQMHZ) {125} \
+        CONFIG.PSX_PMCX_CONFIG(PSX_NUM_FABRIC_RESETS) {0} \
+        CONFIG.PSX_PMCX_CONFIG(PSX_USE_PMCPL_CLK0) {1} \
+      ] [get_bd_cells versal_cips_0]
+
+      puts $f "# PSX created"
+    } else {
     
-    # CIPS v3.0 with automation build 0529
-    #apply_bd_automation -rule xilinx.com:bd_rule:cips -config { board_preset {No} boot_config {Custom} configure_noc {Add new AXI NoC} debug_config {Custom} design_flow {PL Flow (no PS)} mc_type {None} num_mc {1} pl_clocks {1} pl_resets {None}}  [get_bd_cells versal_cips_0]
-    apply_bd_automation -rule xilinx.com:bd_rule:cips -config { board_preset {No} boot_config {Custom} configure_noc {Add new AXI NoC} debug_config {Custom} design_flow {PL Subsystem} mc_type {None} num_mc {1} pl_clocks {1} pl_resets {None}}  [get_bd_cells versal_cips_0]
+      create_bd_cell -type ip -vlnv xilinx.com:ip:versal_cips:3.3 versal_cips_0
+      
+      # CIPS v3.0 with automation build 0529
+      #apply_bd_automation -rule xilinx.com:bd_rule:cips -config { board_preset {No} boot_config {Custom} configure_noc {Add new AXI NoC} debug_config {Custom} design_flow {PL Flow (no PS)} mc_type {None} num_mc {1} pl_clocks {1} pl_resets {None}}  [get_bd_cells versal_cips_0]
+      apply_bd_automation -rule xilinx.com:bd_rule:cips -config { board_preset {No} boot_config {Custom} configure_noc {Add new AXI NoC} debug_config {Custom} design_flow {PL Subsystem} mc_type {None} num_mc {1} pl_clocks {1} pl_resets {None}}  [get_bd_cells versal_cips_0]
+
+      
+      set_property -dict [list CONFIG.PS_PMC_CONFIG { CLOCK_MODE Custom PMC_CRP_PL0_REF_CTRL_FREQMHZ 125} CONFIG.CLOCK_MODE {Custom}] [get_bd_cells versal_cips_0]
+
+      
+      
+      puts $f "create_bd_cell -type ip -vlnv xilinx.com:ip:versal_cips versal_cips_0"
+      puts $f "apply_bd_automation -rule xilinx.com:bd_rule:cips -config { board_preset {No} boot_config {Custom} configure_noc {Add new AXI NoC} debug_config {Custom} design_flow {PL Only} mc_enable {No} mc_type {None} num_mc {1} pl_clocks {1} pl_resets {None}}  \[get_bd_cells versal_cips_0\]"
+      puts $f "set_property -dict \[list CONFIG.PS_PMC_CONFIG { CLOCK_MODE Custom PMC_CRP_PL0_REF_CTRL_FREQMHZ 125} CONFIG.CLOCK_MODE {Custom}] \[get_bd_cells versal_cips_0\]"
+      # puts $f "set_property -dict \[list CONFIG.PMC_MIO_37_OUTPUT_DATA {high} CONFIG.PMC_MIO_37_DIRECTION {out} CONFIG.PMC_MIO_37_USAGE {GPIO}\] \[get_bd_cells versal_cips_0\]"
+      flush $f
+    
+      puts $f "# CIPS created"
+    
+    }
 
     
-    set_property -dict [list CONFIG.PS_PMC_CONFIG { CLOCK_MODE Custom PMC_CRP_PL0_REF_CTRL_FREQMHZ 125} CONFIG.CLOCK_MODE {Custom}] [get_bd_cells versal_cips_0]
-
-    
-    
-    puts $f "create_bd_cell -type ip -vlnv xilinx.com:ip:versal_cips versal_cips_0"
-    puts $f "apply_bd_automation -rule xilinx.com:bd_rule:cips -config { board_preset {No} boot_config {Custom} configure_noc {Add new AXI NoC} debug_config {Custom} design_flow {PL Only} mc_enable {No} mc_type {None} num_mc {1} pl_clocks {1} pl_resets {None}}  \[get_bd_cells versal_cips_0\]"
-    puts $f "set_property -dict \[list CONFIG.PS_PMC_CONFIG { CLOCK_MODE Custom PMC_CRP_PL0_REF_CTRL_FREQMHZ 125} CONFIG.CLOCK_MODE {Custom}] \[get_bd_cells versal_cips_0\]"
-    # puts $f "set_property -dict \[list CONFIG.PMC_MIO_37_OUTPUT_DATA {high} CONFIG.PMC_MIO_37_DIRECTION {out} CONFIG.PMC_MIO_37_USAGE {GPIO}\] \[get_bd_cells versal_cips_0\]"
-    
-    flush $f
-    
-    puts $f "# CIPS created"
     
     for {set i 0} {$i < [dict size $protocols]} {incr i} {
       set name [dict get $protocols $i name]
