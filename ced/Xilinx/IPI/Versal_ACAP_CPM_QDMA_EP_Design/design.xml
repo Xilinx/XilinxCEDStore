@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<ExampleDesign>
+  <Vendor>xilinx.com</Vendor>
+  <Library>design</Library>
+  <Name>cpm_pcie_qdma_ep</Name>
+   <DisplayName>Versal ACAP CPM QDMA EP Design</DisplayName>
+  <Description>This is Versal ACAP CPM QDMA Endpoint Design. It allows generating CPM4 and CPM5 versions for VCK190 and VPK120 respectively based on the board selected. The associated drivers can be downloaded from: https://github.com/Xilinx/dma_ip_drivers</Description>
+   <Version>1.0</Version>
+  <Design>init.tcl</Design>
+  <Image>cpm_pcie_qdma_ep.PNG</Image>
+   <DesignType>IPI</DesignType>
+</ExampleDesign>
