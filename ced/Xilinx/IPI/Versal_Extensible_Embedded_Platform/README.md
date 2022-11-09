@@ -5,8 +5,8 @@ It gives the kernels access to DDR memory, an interrupt controller, and clocking
 
 1. Execute below commands in the terminal before launching vivado
 
-	source Installarea/installs/lin64/Vitis/Installedversion/settings64.csh
-	export JSON_DEVICE_FILE_PATH=Installarea/installs/lin64/Vitis/Installedversion/aietools/data/aie_ml/devices/VC2802.json
+		source Installarea/installs/lin64/Vitis/Installedversion/settings64.csh
+		export JSON_DEVICE_FILE_PATH=Installarea/installs/lin64/Vitis/Installedversion/aietools/data/aie_ml/devices/VC2802.json
 
 
 2. In batch mode follow the below commands if trying to execute Non-AIE simulation flow on AIE platform
