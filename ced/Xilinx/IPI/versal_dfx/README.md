@@ -19,9 +19,10 @@ Versal AI Core Series VCK190 Evaluation Kit is required.
 This Example design contains a top BD (versal_dfx_platform.bd) and a DFX BD(VitisRegion). What ever the Configurations selected in GUI will be added to VitisRegion.bd with Dynamic Function eXchange feature and boundary constraints. 
   
 Note: Block Diagram will vary according to GUI options selected.
-
+      User can skip from step-1 to step-8 as these are covered in default CED flow until unless, wants to modify the design by adding another RP or RM, launching DFX wizard to modify the configuartion runs etc.    
+	  
 Running the DFX Flow
-1. IP output products are not included as part of the example design and need to be generated. Generate output products for the block design. Select global for a quick turnaround.
+1. Generate output products for the block design. Select global for a quick turnaround.
 
 ## Output Products
 
@@ -66,3 +67,11 @@ Click on 'Dynamic Function eXchange Wizard' in the Flow Navigator. Click Next
 		
 		b.file mkdir rp (make directory)
 		  write_hw_platform  -rp versal_dfx_platform_i/VitisRegion rp/rp.xsa
+		
+        Note: User have to execute below commands to export XSA for hardware emulation flow.
+			  set_property platform.name {name} [current_project]
+			  set_property pfm_name {xilinx:vck190:name:0.0} [get_files -all VitisRegion.bd] (example for vck190 board)
+			  set_property platform.platform_state {pre_synth} [current_project]
+			  set_property platform.uses_pr {true} [current_project]
+			  write_hw_platform -hw_emu -force -file ./hw_emu.xsa
+		  
