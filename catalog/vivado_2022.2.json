@@ -233,11 +233,11 @@
         "name": "ext_platform",
         "display": "Versal Extensible Embedded Platform",
         "latest_revision": "1.0",
-        "commit_id": "8ef4594426c2cfd03f7d349e1fe1a16e56190d09",
+        "commit_id": "de897df0e5508258aae7e5bbfd051b1302199a39",
         "revisions": [
           {
             "revision": "1.0",
-            "commit_id": "8ef4594426c2cfd03f7d349e1fe1a16e56190d09",
+            "commit_id": "de897df0e5508258aae7e5bbfd051b1302199a39",
             "date": "20-09-2022:08:07:07",
             "history": "Added board Versal Extensible Embedded Platform v1.0"
           }
@@ -442,11 +442,11 @@
         "name": "versal_dfx_platform",
         "display": "Versal DFX Platform",
         "latest_revision": "1.0",
-        "commit_id": "085632c9debb86e57c2fcdc6e83027c13bef4d30",
+        "commit_id": "de897df0e5508258aae7e5bbfd051b1302199a39",
         "revisions": [
           {
             "revision": "1.0",
-            "commit_id": "085632c9debb86e57c2fcdc6e83027c13bef4d30",
+            "commit_id": "de897df0e5508258aae7e5bbfd051b1302199a39",
             "date": "23-09-2022:15:41:35",
             "history": "Added board Versal DFX Platform v1.0"
           }
