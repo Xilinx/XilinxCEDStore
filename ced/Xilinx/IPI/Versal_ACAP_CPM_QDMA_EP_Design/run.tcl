@@ -394,7 +394,7 @@ set_property STEPS.PLACE_DESIGN.TCL.PRE [get_files pre_place.tcl -of [get_filese
 # Set 'utils_1' fileset properties
 set obj [get_filesets utils_1]
  
-} elseif {[regexp "CPM5_QDMA_Gen4x8_MM_Only" $options]} {
+} elseif {[regexp "CPM5_QDMA_Gen4x8_MM_Only_Performance_Design" $options]} {
 set files [list \
  [file normalize "${currentDir}/cpm5_qdma_mm_only/src/ST_c2h.sv"] \
  [file normalize "${currentDir}/cpm5_qdma_mm_only/src/ST_c2h_cmpt.sv"] \
@@ -504,7 +504,7 @@ set_property STEPS.PLACE_DESIGN.TCL.PRE [get_files pre_place.tcl -of [get_filese
 
 # Set 'utils_1' fileset properties
 set obj [get_filesets utils_1]
-} elseif {[regexp "CPM5_QDMA_Gen4x8_ST_Only" $options]} {
+} elseif {[regexp "CPM5_QDMA_Gen4x8_ST_Only_Performance_Design" $options]} {
  set files [list \
  [file normalize "${currentDir}/cpm5_qdma_st_only/src/ST_c2h.sv"] \
  [file normalize "${currentDir}/cpm5_qdma_st_only/src/ST_c2h_cmpt.sv"] \
@@ -665,8 +665,8 @@ puts "INFO: xlnoc bd generated"
 regenerate_bd_layout
 
 set_property used_in simulation  [get_files  xlnoc.bd]
-} elseif {([lsearch $options CPM5_Preset.VALUE] == -1) || ([lsearch $options "CPM5_QDMA_Gen4x8_MM_Only"] != -1)} {
-puts "INFO: CPM5_QDMA_Gen4x8_MM_Only preset is selected."
+} elseif {([lsearch $options CPM5_Preset.VALUE] == -1) || ([lsearch $options "CPM5_QDMA_Gen4x8_MM_Only_Performance_Design"] != -1)} {
+puts "INFO: CPM5_QDMA_Gen4x8_MM_Only_Performance_Design preset is selected."
 source "$currentDir/cpm5_qdma_mm_only/design_1_bd.tcl"
 puts "INFO: EP bd generated"
 regenerate_bd_layout
@@ -675,8 +675,8 @@ source  "$currentDir/cpm5_qdma_mm_only/xlnoc_bd.tcl"
 puts "INFO: xlnoc bd generated"
 regenerate_bd_layout
 set_property used_in simulation  [get_files  xlnoc.bd]
-} elseif {([lsearch $options CPM5_Preset.VALUE] == -1) || ([lsearch $options "CPM5_QDMA_Gen4x8_ST_Only"] != -1)} {
-puts "INFO: CPM5_QDMA_Gen4x8_ST_Only preset is selected."
+} elseif {([lsearch $options CPM5_Preset.VALUE] == -1) || ([lsearch $options "CPM5_QDMA_Gen4x8_ST_Only_Performance_Design"] != -1)} {
+puts "INFO: CPM5_QDMA_Gen4x8_ST_Only_Performance_Design preset is selected."
 source "$currentDir/cpm5_qdma_st_only/design_1_bd.tcl"
 puts "INFO: EP bd generated"
 regenerate_bd_layout

@@ -28,7 +28,7 @@ proc getSupportedBoards {} {
 
 proc addOptions {DESIGNOBJ PROJECT_PARAM.BOARD_PART} {
 	lappend x [dict create name "CPM_Config" type "string" value "CPM4" value_list {"CPM4" "CPM5"} enabled true]
-        lappend x [dict create name "CPM5_Preset" type "string" value "CPM5_QDMA_Gen4x8_MM_ST" value_list {CPM5_QDMA_Gen4x8_MM_ST CPM5_QDMA_Gen4x8_MM_Only CPM5_QDMA_Gen4x8_ST_Only CPM5_QDMA_Dual_Ctrl_Gen4x8_MM_ST} enabled true]
+        lappend x [dict create name "CPM5_Preset" type "string" value "CPM5_QDMA_Gen4x8_MM_ST" value_list {CPM5_QDMA_Gen4x8_MM_ST CPM5_QDMA_Gen4x8_MM_Only_Performance_Design CPM5_QDMA_Gen4x8_ST_Only_Performance_Design CPM5_QDMA_Dual_Ctrl_Gen4x8_MM_ST} enabled true]
 	return $x
 }
 
