@@ -70,8 +70,8 @@ proc test_conf_example_design {tmpDir ced_download_location example_design_obj} 
   } 
   
   update_compile_order -fileset sources_1
-  launch_runs impl_1 -to_step write_bitstream -jobs 8 
-  wait_on_run impl_1
+  #launch_runs impl_1 -to_step write_bitstream -jobs 8 
+  #wait_on_run impl_1
   close_project 
   delete_dir $tmpDir
   puts "INFO: Test for configurable example design $example_design_obj passed successfully"
