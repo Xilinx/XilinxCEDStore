@@ -5,11 +5,11 @@
         "name": "MPSoC_ext_platform",
         "display": "MPSoC Extensible Embedded Platform",
         "latest_revision": "1.0",
-        "commit_id": "8ef4594426c2cfd03f7d349e1fe1a16e56190d09",
+        "commit_id": "9d32129acd0f80dc578094283986cbeba7d9e3b7",
         "revisions": [
           {
             "revision": "1.0",
-            "commit_id": "8ef4594426c2cfd03f7d349e1fe1a16e56190d09",
+            "commit_id": "9d32129acd0f80dc578094283986cbeba7d9e3b7",
             "date": "20-09-2022:08:07:07",
             "history": "Added board MPSoC Extensible Embedded Platform v1.0"
           }
