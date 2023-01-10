@@ -496,25 +496,6 @@
         "company": "xilinx.com"
       },
       {
-        "name": "design_1",
-        "display": "VCK190 CPM PCIE BMD Design",
-        "latest_revision": "1.0",
-        "commit_id": "814acc8f382bc2d0f44c547408f497c04920da51",
-        "revisions": [
-          {
-            "revision": "1.0",
-            "commit_id": "814acc8f382bc2d0f44c547408f497c04920da51",
-            "date": "27-09-2022:14:23:35",
-            "history": "Added board VCK190 CPM PCIE BMD Design v1.0"
-          }
-        ],
-        "config": {
-          "root": "ced/Xilinx/IPI/VCK190_CPM_PCIE_BMD",
-          "metadata_file": "xitem.json"
-        },
-        "company": "xilinx.com"
-      },
-      {
         "name": "cpm5_qdma",
         "display": "Versal CPM5 QDMA Simulation Design",
         "latest_revision": "1.0",
