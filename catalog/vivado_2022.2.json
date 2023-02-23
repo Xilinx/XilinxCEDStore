@@ -499,11 +499,11 @@
         "name": "cpm5_qdma",
         "display": "Versal CPM5 QDMA Simulation Design",
         "latest_revision": "1.0",
-        "commit_id": "814acc8f382bc2d0f44c547408f497c04920da51",
+        "commit_id": "286af297c8c19c516cff86a52a0056934e59616b",
         "revisions": [
           {
             "revision": "1.0",
-            "commit_id": "814acc8f382bc2d0f44c547408f497c04920da51",
+            "commit_id": "286af297c8c19c516cff86a52a0056934e59616b",
             "date": "27-09-2022:14:23:35",
             "history": "Added board Versal CPM5 QDMA Simulation Design v1.0"
           }
