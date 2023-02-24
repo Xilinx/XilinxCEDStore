@@ -36,7 +36,15 @@ proc get_max_refclk_rate {speedgrade type} {
 }
 
 proc get_max_refclk_sharing_linerate {type} {
-  return 16.375
+  switch $type {
+    GTY -
+    GTYP {
+      return 32.75
+    }
+    GTM {
+      return 56.42
+    }
+  }
 }
 
 proc get_max_linerate {speedgrade type} {
@@ -100,7 +108,7 @@ proc get_max_linerate {speedgrade type} {
         -2LHP -
         -2MP -
         -2MHP {
-          return 106.25
+          return 112.0
         }
         -1MM - 
         -1LP -
