@@ -480,11 +480,11 @@
         "name": "versal_ibert_ced",
         "display": "Versal IBERT",
         "latest_revision": "1.0",
-        "commit_id": "221cef9d52bf75a2149c010e9b43f227ef35017a",
+        "commit_id": "c4de3db30c9ab9ed3bb9191098590d95744e81a8",
         "revisions": [
           {
             "revision": "1.0",
-            "commit_id": "221cef9d52bf75a2149c010e9b43f227ef35017a",
+            "commit_id": "c4de3db30c9ab9ed3bb9191098590d95744e81a8",
             "date": "26-09-2022:15:33:39",
             "history": "Added board Versal IBERT v1.0"
           }
