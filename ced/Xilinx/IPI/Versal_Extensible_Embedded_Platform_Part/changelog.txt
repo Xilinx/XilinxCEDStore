@@ -1,0 +1,16 @@
+######### Extensible Embedded Platform example design change log ##############
+2023.1
+CED enhancements with GUI options.
+Added 15-bit interrupt option.
+Added simple testbench for CIPS reset polling. 
+
+2022.2
+Default frequency values for input clock options are modified.
+Added user note to clock gui options 
+
+2021.2 changes 
+versal part_support
+
+
+2021.1 changes 
+Updated with CIPS 3.0
