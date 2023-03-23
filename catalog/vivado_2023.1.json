@@ -5,11 +5,11 @@
         "name": "ver_ps_perf",
         "display": "Versal ACAP Processor Performance",
         "latest_revision": "1.0",
-        "commit_id": "a244dcc13d9e75aefc4aba4003978d45ea5ff367",
+        "commit_id": "9896b233c68263a86cfd9aae0cbd00e33d1c1894",
         "revisions": [
           {
             "revision": "1.0",
-            "commit_id": "a244dcc13d9e75aefc4aba4003978d45ea5ff367",
+            "commit_id": "9896b233c68263a86cfd9aae0cbd00e33d1c1894",
             "date": "25-06-2021:10:57:25",
             "history": "Added board Versal ACAP Processor Performance v1.0"
           }
@@ -24,11 +24,11 @@
         "name": "ext_platform_flexml",
         "display": "Versal Extensible Embedded Platform Flexml(SV60)",
         "latest_revision": "1.0",
-        "commit_id": "7a5a3e457423ae82f5a8724b775708d4d057d426",
+        "commit_id": "9896b233c68263a86cfd9aae0cbd00e33d1c1894",
         "revisions": [
           {
             "revision": "1.0",
-            "commit_id": "7a5a3e457423ae82f5a8724b775708d4d057d426",
+            "commit_id": "9896b233c68263a86cfd9aae0cbd00e33d1c1894",
             "date": "23-05-2022:09:57:24",
             "history": "Added board Versal Extensible Embedded Platform Flexml(SV60) v1.0"
           }
@@ -43,11 +43,11 @@
         "name": "MPSoC_ext_platform",
         "display": "Extensible Platform ExampleDesign for MPSoC",
         "latest_revision": "1.0",
-        "commit_id": "7a5a3e457423ae82f5a8724b775708d4d057d426",
+        "commit_id": "9896b233c68263a86cfd9aae0cbd00e33d1c1894",
         "revisions": [
           {
             "revision": "1.0",
-            "commit_id": "7a5a3e457423ae82f5a8724b775708d4d057d426",
+            "commit_id": "9896b233c68263a86cfd9aae0cbd00e33d1c1894",
             "date": "29-06-2022:18:15:46",
             "history": "Added board Extensible Platform ExampleDesign for MPSoC v1.0"
           }
@@ -62,11 +62,11 @@
         "name": "MPSoC_ext_platform_part",
         "display": "MPSoC Extensible Embedded Platform (Part based)",
         "latest_revision": "1.0",
-        "commit_id": "7a5a3e457423ae82f5a8724b775708d4d057d426",
+        "commit_id": "9896b233c68263a86cfd9aae0cbd00e33d1c1894",
         "revisions": [
           {
             "revision": "1.0",
-            "commit_id": "7a5a3e457423ae82f5a8724b775708d4d057d426",
+            "commit_id": "9896b233c68263a86cfd9aae0cbd00e33d1c1894",
             "date": "29-06-2022:18:15:46",
             "history": "Added board MPSoC Extensible Embedded Platform (Part based) v1.0"
           }
@@ -81,11 +81,11 @@
         "name": "mb_preset",
         "display": "MicroBlaze Design Presets",
         "latest_revision": "1.0",
-        "commit_id": "7a5a3e457423ae82f5a8724b775708d4d057d426",
+        "commit_id": "9896b233c68263a86cfd9aae0cbd00e33d1c1894",
         "revisions": [
           {
             "revision": "1.0",
-            "commit_id": "7a5a3e457423ae82f5a8724b775708d4d057d426",
+            "commit_id": "9896b233c68263a86cfd9aae0cbd00e33d1c1894",
             "date": "29-06-2022:18:15:46",
             "history": "Added board MicroBlaze Design Presets v1.0"
           }
@@ -100,11 +100,11 @@
         "name": "TMR_Microblaze",
         "display": "TMR Microblaze Example Design",
         "latest_revision": "1.0",
-        "commit_id": "7a5a3e457423ae82f5a8724b775708d4d057d426",
+        "commit_id": "9896b233c68263a86cfd9aae0cbd00e33d1c1894",
         "revisions": [
           {
             "revision": "1.0",
-            "commit_id": "7a5a3e457423ae82f5a8724b775708d4d057d426",
+            "commit_id": "9896b233c68263a86cfd9aae0cbd00e33d1c1894",
             "date": "29-06-2022:18:15:46",
             "history": "Added board TMR Microblaze Example Design v1.0"
           }
@@ -119,11 +119,11 @@
         "name": "axidma",
         "display": "AXI DMA",
         "latest_revision": "1.0",
-        "commit_id": "7a5a3e457423ae82f5a8724b775708d4d057d426",
+        "commit_id": "9896b233c68263a86cfd9aae0cbd00e33d1c1894",
         "revisions": [
           {
             "revision": "1.0",
-            "commit_id": "7a5a3e457423ae82f5a8724b775708d4d057d426",
+            "commit_id": "9896b233c68263a86cfd9aae0cbd00e33d1c1894",
             "date": "29-06-2022:18:15:46",
             "history": "Added board AXI DMA v1.0"
           }
@@ -138,11 +138,11 @@
         "name": "multirategty",
         "display": "Multi-Rate GTY",
         "latest_revision": "1.0",
-        "commit_id": "be797800f92367554de017f60c7c02141a5724ad",
+        "commit_id": "9896b233c68263a86cfd9aae0cbd00e33d1c1894",
         "revisions": [
           {
             "revision": "1.0",
-            "commit_id": "be797800f92367554de017f60c7c02141a5724ad",
+            "commit_id": "9896b233c68263a86cfd9aae0cbd00e33d1c1894",
             "date": "29-06-2022:18:15:46",
             "history": "Added board Multi-Rate GTY v1.0"
           }
@@ -157,11 +157,11 @@
         "name": "Versal_CPM_PCIe_Debug",
         "display": "Versal CPM Debug-over-PCIe",
         "latest_revision": "1.0",
-        "commit_id": "7a5a3e457423ae82f5a8724b775708d4d057d426",
+        "commit_id": "9896b233c68263a86cfd9aae0cbd00e33d1c1894",
         "revisions": [
           {
             "revision": "1.0",
-            "commit_id": "7a5a3e457423ae82f5a8724b775708d4d057d426",
+            "commit_id": "9896b233c68263a86cfd9aae0cbd00e33d1c1894",
             "date": "29-06-2022:18:15:46",
             "history": "Added board Versal CPM Debug-over-PCIe v1.0"
           }
@@ -176,11 +176,11 @@
         "name": "ext_platform",
         "display": "Versal Extensible Embedded Platform",
         "latest_revision": "1.0",
-        "commit_id": "1a82383b76782e8c99a8e475d0e76650d6a7f827",
+        "commit_id": "9896b233c68263a86cfd9aae0cbd00e33d1c1894",
         "revisions": [
           {
             "revision": "1.0",
-            "commit_id": "1a82383b76782e8c99a8e475d0e76650d6a7f827",
+            "commit_id": "9896b233c68263a86cfd9aae0cbd00e33d1c1894",
             "date": "29-06-2022:18:15:46",
             "history": "Added board Versal Extensible Embedded Platform v1.0"
           }
@@ -195,11 +195,11 @@
         "name": "ext_platform_part",
         "display": "Versal Extensible Embedded Platform part_support",
         "latest_revision": "1.0",
-        "commit_id": "1a82383b76782e8c99a8e475d0e76650d6a7f827",
+        "commit_id": "9896b233c68263a86cfd9aae0cbd00e33d1c1894",
         "revisions": [
           {
             "revision": "1.0",
-            "commit_id": "1a82383b76782e8c99a8e475d0e76650d6a7f827",
+            "commit_id": "9896b233c68263a86cfd9aae0cbd00e33d1c1894",
             "date": "29-06-2022:18:15:46",
             "history": "Added board Versal Extensible Embedded Platform part_support v1.0"
           }
@@ -214,11 +214,11 @@
         "name": "mpsoc_preset",
         "display": "Zynq UltraScale+ MPSoC Design Presets",
         "latest_revision": "1.0",
-        "commit_id": "7a5a3e457423ae82f5a8724b775708d4d057d426",
+        "commit_id": "9896b233c68263a86cfd9aae0cbd00e33d1c1894",
         "revisions": [
           {
             "revision": "1.0",
-            "commit_id": "7a5a3e457423ae82f5a8724b775708d4d057d426",
+            "commit_id": "9896b233c68263a86cfd9aae0cbd00e33d1c1894",
             "date": "29-06-2022:18:15:46",
             "history": "Added board Zynq UltraScale+ MPSoC Design Presets v1.0"
           }
@@ -233,11 +233,11 @@
         "name": "zynq7000_preset",
         "display": "Zynq-7000 Design Presets",
         "latest_revision": "1.0",
-        "commit_id": "7a5a3e457423ae82f5a8724b775708d4d057d426",
+        "commit_id": "9896b233c68263a86cfd9aae0cbd00e33d1c1894",
         "revisions": [
           {
             "revision": "1.0",
-            "commit_id": "7a5a3e457423ae82f5a8724b775708d4d057d426",
+            "commit_id": "9896b233c68263a86cfd9aae0cbd00e33d1c1894",
             "date": "29-06-2022:18:15:46",
             "history": "Added board Zynq-7000 Design Presets v1.0"
           }
@@ -252,11 +252,11 @@
         "name": "cips_ddr_pl_debug",
         "display": "CIPS DDR PL Debug",
         "latest_revision": "1.0",
-        "commit_id": "7a5a3e457423ae82f5a8724b775708d4d057d426",
+        "commit_id": "9896b233c68263a86cfd9aae0cbd00e33d1c1894",
         "revisions": [
           {
             "revision": "1.0",
-            "commit_id": "7a5a3e457423ae82f5a8724b775708d4d057d426",
+            "commit_id": "9896b233c68263a86cfd9aae0cbd00e33d1c1894",
             "date": "29-06-2022:18:15:46",
             "history": "Added board CIPS DDR PL Debug v1.0"
           }
@@ -271,11 +271,11 @@
         "name": "soc_vip",
         "display": "Versal ACAP CIPS PS VIP",
         "latest_revision": "1.0",
-        "commit_id": "050694a3907bb95472ea671a56e4a6ca1896ba65",
+        "commit_id": "9896b233c68263a86cfd9aae0cbd00e33d1c1894",
         "revisions": [
           {
             "revision": "1.0",
-            "commit_id": "050694a3907bb95472ea671a56e4a6ca1896ba65",
+            "commit_id": "9896b233c68263a86cfd9aae0cbd00e33d1c1894",
             "date": "29-06-2022:18:15:46",
             "history": "Added board Versal ACAP CIPS PS VIP v1.0"
           }
@@ -290,11 +290,11 @@
         "name": "versal_mb_preset",
         "display": "Versal MicroBlaze Design Presets",
         "latest_revision": "1.0",
-        "commit_id": "01fdfeb3ba57520d267dbf769089bb2620cb7b2f",
+        "commit_id": "9896b233c68263a86cfd9aae0cbd00e33d1c1894",
         "revisions": [
           {
             "revision": "1.0",
-            "commit_id": "01fdfeb3ba57520d267dbf769089bb2620cb7b2f",
+            "commit_id": "9896b233c68263a86cfd9aae0cbd00e33d1c1894",
             "date": "29-06-2022:18:15:46",
             "history": "Added board Versal MicroBlaze Design Presets v1.0"
           }
@@ -309,11 +309,11 @@
         "name": "BFT",
         "display": "BFT",
         "latest_revision": "1.0",
-        "commit_id": "be797800f92367554de017f60c7c02141a5724ad",
+        "commit_id": "9896b233c68263a86cfd9aae0cbd00e33d1c1894",
         "revisions": [
           {
             "revision": "1.0",
-            "commit_id": "be797800f92367554de017f60c7c02141a5724ad",
+            "commit_id": "9896b233c68263a86cfd9aae0cbd00e33d1c1894",
             "date": "29-06-2022:18:15:46",
             "history": "Added board BFT v1.0"
           }
@@ -328,11 +328,11 @@
         "name": "cpu_hdl",
         "display": "CPU (HDL)",
         "latest_revision": "1.0",
-        "commit_id": "be797800f92367554de017f60c7c02141a5724ad",
+        "commit_id": "9896b233c68263a86cfd9aae0cbd00e33d1c1894",
         "revisions": [
           {
             "revision": "1.0",
-            "commit_id": "be797800f92367554de017f60c7c02141a5724ad",
+            "commit_id": "9896b233c68263a86cfd9aae0cbd00e33d1c1894",
             "date": "29-06-2022:18:15:46",
             "history": "Added board CPU (HDL) v1.0"
           }
@@ -347,11 +347,11 @@
         "name": "cpu_netlist",
         "display": "CPU (Synthesized)",
         "latest_revision": "1.0",
-        "commit_id": "be797800f92367554de017f60c7c02141a5724ad",
+        "commit_id": "9896b233c68263a86cfd9aae0cbd00e33d1c1894",
         "revisions": [
           {
             "revision": "1.0",
-            "commit_id": "be797800f92367554de017f60c7c02141a5724ad",
+            "commit_id": "9896b233c68263a86cfd9aae0cbd00e33d1c1894",
             "date": "29-06-2022:18:15:46",
             "history": "Added board CPU (Synthesized) v1.0"
           }
@@ -366,11 +366,11 @@
         "name": "wave_gen",
         "display": "Wavegen (HDL)",
         "latest_revision": "1.0",
-        "commit_id": "be797800f92367554de017f60c7c02141a5724ad",
+        "commit_id": "9896b233c68263a86cfd9aae0cbd00e33d1c1894",
         "revisions": [
           {
             "revision": "1.0",
-            "commit_id": "be797800f92367554de017f60c7c02141a5724ad",
+            "commit_id": "9896b233c68263a86cfd9aae0cbd00e33d1c1894",
             "date": "29-06-2022:18:15:46",
             "history": "Added board Wavegen (HDL) v1.0"
           }
@@ -382,33 +382,14 @@
         "company": "xilinx.com"
       },
       {
-        "name": "ext_platform_LSVC4072",
-        "display": "Versal Extensible Embedded Platform(LSVC4072 AFX)",
-        "latest_revision": "1.0",
-        "commit_id": "7a5a3e457423ae82f5a8724b775708d4d057d426",
-        "revisions": [
-          {
-            "revision": "1.0",
-            "commit_id": "7a5a3e457423ae82f5a8724b775708d4d057d426",
-            "date": "20-07-2022:05:55:34",
-            "history": "Added board Versal Extensible Embedded Platform(LSVC4072 AFX) v1.0"
-          }
-        ],
-        "config": {
-          "root": "ced/Xilinx/IPI/Versal_Extensible_Embedded_Platform_lsvc4072_AFX",
-          "metadata_file": "xitem.json"
-        },
-        "company": "xilinx.com"
-      },
-      {
         "name": "Versal_CPM_Tandem PCIe",
         "display": "Versal CPM Tandem PCIe",
         "latest_revision": "1.0",
-        "commit_id": "17d6618fd14b7477b2b0ece89a0e198c9e9d5838",
+        "commit_id": "9896b233c68263a86cfd9aae0cbd00e33d1c1894",
         "revisions": [
           {
             "revision": "1.0",
-            "commit_id": "17d6618fd14b7477b2b0ece89a0e198c9e9d5838",
+            "commit_id": "9896b233c68263a86cfd9aae0cbd00e33d1c1894",
             "date": "20-07-2022:15:35:28",
             "history": "Added board Versal CPM Tandem PCIe v1.0"
           }
@@ -420,109 +401,14 @@
         "company": "xilinx.com"
       },
       {
-        "name": "ext_platform_VSVA3340",
-        "display": "Versal Extensible Embedded Platform(vsva3340 AFX)",
-        "latest_revision": "1.0",
-        "commit_id": "7a5a3e457423ae82f5a8724b775708d4d057d426",
-        "revisions": [
-          {
-            "revision": "1.0",
-            "commit_id": "7a5a3e457423ae82f5a8724b775708d4d057d426",
-            "date": "09-08-2022:15:49:12",
-            "history": "Added board Versal Extensible Embedded Platform(vsva3340 AFX) v1.0"
-          }
-        ],
-        "config": {
-          "root": "ced/Xilinx/IPI/Versal_Extensible_Embedded_Platform_vsva3340_AFX",
-          "metadata_file": "xitem.json"
-        },
-        "company": "xilinx.com"
-      },
-      {
-        "name": "ext_platform_SFVA784",
-        "display": "Versal Extensible Embedded Platform(SFVA784 AFX)",
-        "latest_revision": "1.0",
-        "commit_id": "7a5a3e457423ae82f5a8724b775708d4d057d426",
-        "revisions": [
-          {
-            "revision": "1.0",
-            "commit_id": "7a5a3e457423ae82f5a8724b775708d4d057d426",
-            "date": "17-08-2022:10:26:44",
-            "history": "Added board Versal Extensible Embedded Platform(SFVA784 AFX) v1.0"
-          }
-        ],
-        "config": {
-          "root": "ced/Xilinx/IPI/Versal_Extensible_Embedded_Platform_sfva784_AFX",
-          "metadata_file": "xitem.json"
-        },
-        "company": "xilinx.com"
-      },
-      {
-        "name": "ext_platform_VSVA2197",
-        "display": "Versal Extensible Embedded Platform(VSVA2197 Tenzing)",
-        "latest_revision": "1.0",
-        "commit_id": "7a5a3e457423ae82f5a8724b775708d4d057d426",
-        "revisions": [
-          {
-            "revision": "1.0",
-            "commit_id": "7a5a3e457423ae82f5a8724b775708d4d057d426",
-            "date": "17-08-2022:10:26:44",
-            "history": "Added board Versal Extensible Embedded Platform(VSVA2197 Tenzing) v1.0"
-          }
-        ],
-        "config": {
-          "root": "ced/Xilinx/IPI/Versal_Extensible_Embedded_Platform_vsva2197_tenzing",
-          "metadata_file": "xitem.json"
-        },
-        "company": "xilinx.com"
-      },
-      {
-        "name": "ext_platform_VSVA2785",
-        "display": "Versal Extensible Embedded Platform(VSVA2785 AFX)",
-        "latest_revision": "1.0",
-        "commit_id": "7a5a3e457423ae82f5a8724b775708d4d057d426",
-        "revisions": [
-          {
-            "revision": "1.0",
-            "commit_id": "7a5a3e457423ae82f5a8724b775708d4d057d426",
-            "date": "17-08-2022:10:26:44",
-            "history": "Added board Versal Extensible Embedded Platform(VSVA2785 AFX) v1.0"
-          }
-        ],
-        "config": {
-          "root": "ced/Xilinx/IPI/Versal_Extensible_Embedded_Platform_vsva2785_AFX",
-          "metadata_file": "xitem.json"
-        },
-        "company": "xilinx.com"
-      },
-      {
-        "name": "ext_platform_VSVH1760",
-        "display": "Versal Extensible Embedded Platform(VSVH1760 Jamling A)",
-        "latest_revision": "1.0",
-        "commit_id": "7a5a3e457423ae82f5a8724b775708d4d057d426",
-        "revisions": [
-          {
-            "revision": "1.0",
-            "commit_id": "7a5a3e457423ae82f5a8724b775708d4d057d426",
-            "date": "17-08-2022:10:26:44",
-            "history": "Added board Versal Extensible Embedded Platform(VSVH1760 Jamling A) v1.0"
-          }
-        ],
-        "config": {
-          "root": "ced/Xilinx/IPI/Versal_Extensible_Embedded_Platform_vsvh1760_Jamling_A",
-          "metadata_file": "xitem.json"
-        },
-        "company": "xilinx.com"
-      },
-      {
         "name": "versal_dfx_platform",
         "display": "Versal DFX Platform",
         "latest_revision": "1.0",
-        "commit_id": "01fdfeb3ba57520d267dbf769089bb2620cb7b2f",
+        "commit_id": "9896b233c68263a86cfd9aae0cbd00e33d1c1894",
         "revisions": [
           {
             "revision": "1.0",
-            "commit_id": "01fdfeb3ba57520d267dbf769089bb2620cb7b2f",
+            "commit_id": "9896b233c68263a86cfd9aae0cbd00e33d1c1894",
             "date": "04-09-2022:17:21:13",
             "history": "Added board Versal DFX Platform v1.0"
           }
@@ -537,11 +423,11 @@
         "name": "chipscopy",
         "display": "ChipScoPy Example Design",
         "latest_revision": "1.0",
-        "commit_id": "add0d030980614efc785583ad600deb3a3ae981f",
+        "commit_id": "9896b233c68263a86cfd9aae0cbd00e33d1c1894",
         "revisions": [
           {
             "revision": "1.0",
-            "commit_id": "add0d030980614efc785583ad600deb3a3ae981f",
+            "commit_id": "9896b233c68263a86cfd9aae0cbd00e33d1c1894",
             "date": "14-09-2022:18:19:45",
             "history": "Added board ChipScoPy Example Design v1.0"
           }
@@ -556,11 +442,11 @@
         "name": "versal_ibert_ced",
         "display": "Versal IBERT",
         "latest_revision": "1.0",
-        "commit_id": "fc872431d0b136b599ef625fe27a7c0a92e255d8",
+        "commit_id": "9896b233c68263a86cfd9aae0cbd00e33d1c1894",
         "revisions": [
           {
             "revision": "1.0",
-            "commit_id": "fc872431d0b136b599ef625fe27a7c0a92e255d8",
+            "commit_id": "9896b233c68263a86cfd9aae0cbd00e33d1c1894",
             "date": "14-09-2022:18:19:45",
             "history": "Added board Versal IBERT v1.0"
           }
@@ -575,11 +461,11 @@
         "name": "cpm_rp",
         "display": "Versal ACAP CPM4/CPM5 AXI Bridge Root Port Design",
         "latest_revision": "1.0",
-        "commit_id": "055afadb315745edd9b3f0fe4032800905153465",
+        "commit_id": "9896b233c68263a86cfd9aae0cbd00e33d1c1894",
         "revisions": [
           {
             "revision": "1.0",
-            "commit_id": "055afadb315745edd9b3f0fe4032800905153465",
+            "commit_id": "9896b233c68263a86cfd9aae0cbd00e33d1c1894",
             "date": "29-09-2022:07:20:01",
             "history": "Added board Versal ACAP CPM4/CPM5 AXI Bridge Root Port Design v1.0"
           }
@@ -594,11 +480,11 @@
         "name": "cpm_pcie_pio",
         "display": "Versal ACAP CPM PCIE PIO Design",
         "latest_revision": "1.0",
-        "commit_id": "055afadb315745edd9b3f0fe4032800905153465",
+        "commit_id": "9896b233c68263a86cfd9aae0cbd00e33d1c1894",
         "revisions": [
           {
             "revision": "1.0",
-            "commit_id": "055afadb315745edd9b3f0fe4032800905153465",
+            "commit_id": "9896b233c68263a86cfd9aae0cbd00e33d1c1894",
             "date": "29-09-2022:07:20:01",
             "history": "Added board Versal ACAP CPM PCIE PIO Design v1.0"
           }
@@ -613,11 +499,11 @@
         "name": "cpm5_pcie_bmd",
         "display": "Versal CPM5 PCIe BMD Simulation Design",
         "latest_revision": "1.0",
-        "commit_id": "055afadb315745edd9b3f0fe4032800905153465",
+        "commit_id": "9896b233c68263a86cfd9aae0cbd00e33d1c1894",
         "revisions": [
           {
             "revision": "1.0",
-            "commit_id": "055afadb315745edd9b3f0fe4032800905153465",
+            "commit_id": "9896b233c68263a86cfd9aae0cbd00e33d1c1894",
             "date": "29-09-2022:07:20:01",
             "history": "Added board Versal CPM5 PCIe BMD Simulation Design v1.0"
           }
@@ -632,11 +518,11 @@
         "name": "cpm5_qdma",
         "display": "Versal CPM5 QDMA Simulation Design",
         "latest_revision": "1.0",
-        "commit_id": "055afadb315745edd9b3f0fe4032800905153465",
+        "commit_id": "9896b233c68263a86cfd9aae0cbd00e33d1c1894",
         "revisions": [
           {
             "revision": "1.0",
-            "commit_id": "055afadb315745edd9b3f0fe4032800905153465",
+            "commit_id": "9896b233c68263a86cfd9aae0cbd00e33d1c1894",
             "date": "29-09-2022:07:20:01",
             "history": "Added board Versal CPM5 QDMA Simulation Design v1.0"
           }
@@ -651,11 +537,11 @@
         "name": "cpm4_bmd",
         "display": "VCK190 CPM PCIE BMD Design",
         "latest_revision": "1.0",
-        "commit_id": "483ac79531a3f831e5476a3c463ee141d556cbe5",
+        "commit_id": "9896b233c68263a86cfd9aae0cbd00e33d1c1894",
         "revisions": [
           {
             "revision": "1.0",
-            "commit_id": "483ac79531a3f831e5476a3c463ee141d556cbe5",
+            "commit_id": "9896b233c68263a86cfd9aae0cbd00e33d1c1894",
             "date": "05-10-2022:10:09:05",
             "history": "Added board VCK190 CPM PCIE BMD Design v1.0"
           }
@@ -670,36 +556,17 @@
         "name": "cpm_pcie_qdma_ep",
         "display": "Versal ACAP CPM QDMA EP Design",
         "latest_revision": "1.0",
-        "commit_id": "dcf86086e5bf01d7660f89dbda2e52e0c7674ec7",
+        "commit_id": "9896b233c68263a86cfd9aae0cbd00e33d1c1894",
         "revisions": [
           {
             "revision": "1.0",
-            "commit_id": "dcf86086e5bf01d7660f89dbda2e52e0c7674ec7",
+            "commit_id": "9896b233c68263a86cfd9aae0cbd00e33d1c1894",
             "date": "09-11-2022:10:08:47",
             "history": "Added board Versal ACAP CPM QDMA EP Design v1.0"
           }
         ],
         "config": {
           "root": "ced/Xilinx/IPI/Versal_ACAP_CPM_QDMA_EP_Design",
-          "metadata_file": "xitem.json"
-        },
-        "company": "xilinx.com"
-      },
-      {
-        "name": "ext_platform_VSVA5601",
-        "display": "Versal Extensible Embedded Platform(VSVA5601 AFX)",
-        "latest_revision": "1.0",
-        "commit_id": "3adfb4847ac038152dc6b7f2f57cd64fbeb591b7",
-        "revisions": [
-          {
-            "revision": "1.0",
-            "commit_id": "3adfb4847ac038152dc6b7f2f57cd64fbeb591b7",
-            "date": "08-12-2022:09:26:47",
-            "history": "Added board Versal Extensible Embedded Platform(VSVA5601 AFX) v1.0"
-          }
-        ],
-        "config": {
-          "root": "ced/Xilinx/IPI/Versal_Extensible_Embedded_Platform_vsva5601_AFX",
           "metadata_file": "xitem.json"
         },
         "company": "xilinx.com"
