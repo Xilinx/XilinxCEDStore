@@ -21,25 +21,6 @@
         "company": "xilinx.com"
       },
       {
-        "name": "ext_platform_flexml",
-        "display": "Versal Extensible Embedded Platform Flexml(SV60)",
-        "latest_revision": "1.0",
-        "commit_id": "9896b233c68263a86cfd9aae0cbd00e33d1c1894",
-        "revisions": [
-          {
-            "revision": "1.0",
-            "commit_id": "9896b233c68263a86cfd9aae0cbd00e33d1c1894",
-            "date": "23-05-2022:09:57:24",
-            "history": "Added board Versal Extensible Embedded Platform Flexml(SV60) v1.0"
-          }
-        ],
-        "config": {
-          "root": "ced/Xilinx/IPI/Versal_Ext_Platform_Flexml",
-          "metadata_file": "xitem.json"
-        },
-        "company": "xilinx.com"
-      },
-      {
         "name": "MPSoC_ext_platform",
         "display": "Extensible Platform ExampleDesign for MPSoC",
         "latest_revision": "1.0",
