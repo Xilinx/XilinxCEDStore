@@ -30,10 +30,10 @@ proc getSupportedParts {} {
 }
 
 #
-#  Only allow production VCK190/VMK180
+#  Only allow production VCK190/VMK180/VCK120
 #
 proc getSupportedBoards {} {
-  return [get_boards *vck190:3.0 *vmk180:3.0 *vpk120:1.0]
+  return [get_boards *vck190:3.2 *vmk180:3.2 *vpk120:1.1]
 }
 
 #
@@ -104,7 +104,8 @@ proc createDesign {design_name options} {
   
   make_wrapper -files [get_files ${proj_dir}/${proj_name}.srcs/sources_1/bd/${design_name}/${design_name}.bd] -top
   add_files -norecurse ${proj_dir}/${proj_name}.srcs/sources_1/bd/${design_name}/hdl/${design_name}_wrapper.v
-  
+  open_bd_design [get_bd_designs -filter {NAME == "chipscopy"}]
+  exec echo "PHASE_DONE" > ${proj_dir}/[current_project].srcs/[current_fileset]/bd/chipscopy/ip/chipscopy_noc_tg_0/chipscopy_noc_tg_0_synth_pattern.csv
 }
 
 
