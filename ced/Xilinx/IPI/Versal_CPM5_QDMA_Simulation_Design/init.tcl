@@ -18,7 +18,7 @@ variable currentDir [file dirname $currentFile]
 source -notrace "$currentDir/run.tcl"
 
 proc getSupportedParts {} {
-  return [get_parts *xcvp1202-vsva2785-2MHP-e-S-es1*]
+  return [get_parts xcvp1202-vsva2785-2MHP-e-S]
 }
 
 proc getSupportedBoards {} {

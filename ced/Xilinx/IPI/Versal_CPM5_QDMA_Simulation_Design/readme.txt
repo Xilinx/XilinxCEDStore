@@ -25,5 +25,5 @@ VCS Version     - S-2021.09
 
 NOTE : 
 1. This design usage is limited for simulation purpose
-2. The integrated testcase simulation will run for ~600us
+2. The integrated testcase simulation will run for ~650us
 ##############################################################################

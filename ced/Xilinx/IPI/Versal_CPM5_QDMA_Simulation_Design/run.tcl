@@ -66,7 +66,7 @@ set files [list \
  [file normalize "${currentDir}/sim_files/usp_pci_exp_usrapp_rx.v"]\
  [file normalize "${currentDir}/sim_files/sample_tests.vh"]\
  [file normalize "${currentDir}/sim_files/tests.vh"]\
- [file normalize "${currentDir}/sim_files/usp_pci_exp_usrapp_tx.v"]\
+ [file normalize "${currentDir}/sim_files/usp_pci_exp_usrapp_tx.sv"]\
  [file normalize "${currentDir}/sim_files/xilinx_pcie5_versal_rp.sv"]\
  [file normalize "${currentDir}/sim_files/board.v"]\
  [file normalize "${currentDir}/sim_files/sample_tests_sriov.vh"]\
@@ -95,12 +95,12 @@ puts -nonewline $outfile $contents
 close $outfile
 
 # None
-set infile [open [file join [get_property directory [current_project]] [current_project].srcs sim_1 imports sim_files usp_pci_exp_usrapp_tx.v]]
+set infile [open [file join [get_property directory [current_project]] [current_project].srcs sim_1 imports sim_files usp_pci_exp_usrapp_tx.sv]]
 set contents [read $infile]
 close $infile
 set contents [string map [list "design_1" "$design_name"] $contents]
 
-set outfile  [open [file join [get_property directory [current_project]] [current_project].srcs sim_1 imports sim_files usp_pci_exp_usrapp_tx.v] w]
+set outfile  [open [file join [get_property directory [current_project]] [current_project].srcs sim_1 imports sim_files usp_pci_exp_usrapp_tx.sv] w]
 puts -nonewline $outfile $contents
 close $outfile
 ##################################################################
@@ -118,12 +118,12 @@ regenerate_bd_layout
 
 set_property USER_COMMENTS.comment_0 {} [current_bd_design]
     set_property USER_COMMENTS.comment0 {Next Steps:
-    1. Refer to https://github.com/Xilinx/XilinxCEDStore/tree/2022.2/ced/Xilinx/IPI/Versal_CPM5_QDMA_Simulation_Design/readme.txt} [current_bd_design]
+    1. Refer to https://github.com/Xilinx/XilinxCEDStore/tree/2023.1/ced/Xilinx/IPI/Versal_CPM5_QDMA_Simulation_Design/readme.txt} [current_bd_design]
 
     regenerate_bd_layout -layout_string {
    "ActiveEmotionalView":"Default View",
    "comment_0":"Next Steps:
-    1. Refer to https://github.com/Xilinx/XilinxCEDStore/tree/2022.2/ced/Xilinx/IPI/Versal_CPM5_QDMA_Simulation_Design/readme.txt",
+    1. Refer to https://github.com/Xilinx/XilinxCEDStore/tree/2023.1/ced/Xilinx/IPI/Versal_CPM5_QDMA_Simulation_Design/readme.txt",
    "commentid":"comment_0|",
    "font_comment_0":"18",
    "guistr":"# # String gsaved with Nlview 7.0r4  2019-12-20 bk=1.5203 VDI=41 GEI=36 GUI=JA:10.0 TLS
@@ -171,7 +171,7 @@ set_property top board [get_filesets sim_1]
 set_property top_lib xil_defaultlib [get_filesets sim_1]
 
 set_property -name "vcs.elaborate.vcs.more_options" -value "+nospecify +notimingchecks" -objects $obj
-set_property -name {vcs.simulate.runtime} -value {600000ns} -objects [get_filesets sim_1]
+set_property -name {vcs.simulate.runtime} -value {650000ns} -objects [get_filesets sim_1]
 set_property -name {vcs.simulate.vcs.more_options} -value {-gui} -objects [get_filesets sim_1]
 
 #set_property target_simulator Questa [current_project]
