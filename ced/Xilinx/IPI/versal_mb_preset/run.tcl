@@ -111,6 +111,9 @@ if {([lsearch $temp_options Preset.VALUE] == -1) || ([lsearch $temp_options "Mic
 	apply_board_connection -board_interface "ddr4_dimm1" -ip_intf "axi_noc_0/CH0_DDR4_0" -diagram $design_name 
 	apply_board_connection -board_interface "ddr4_dimm1_sma_clk" -ip_intf "axi_noc_0/sys_clk0" -diagram $design_name }
 	
+	if { [regexp "vpk120" $board_name]||[regexp "vpk180" $board_name]||[regexp "vek280" $board_name] } {
+	set_property -dict [list CONFIG.MC_CHANNEL_INTERLEAVING {true} CONFIG.MC_CH_INTERLEAVING_SIZE {4K_Bytes} ] [get_bd_cells axi_noc_0]}
+	
 	set_property -dict [list CONFIG.NUM_SI {2} CONFIG.NUM_MI {0} CONFIG.NUM_CLKS {2} CONFIG.MC_CHAN_REGION1 {DDR_LOW1}] [get_bd_cells axi_noc_0]
 	set_property -dict [list CONFIG.CONNECTIONS {MC_0 { read_bw {1720} write_bw {1720} read_avg_burst {4} write_avg_burst {4}} }] [get_bd_intf_pins /axi_noc_0/S00_AXI]
 	set_property -dict [list CONFIG.CATEGORY {ps_pmc} CONFIG.CONNECTIONS {MC_0 { read_bw {1720} write_bw {1720} read_avg_burst {4} write_avg_burst {4}} }] [get_bd_intf_pins /axi_noc_0/S01_AXI]

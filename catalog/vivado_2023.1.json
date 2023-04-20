@@ -157,11 +157,11 @@
         "name": "ext_platform",
         "display": "Versal Extensible Embedded Platform",
         "latest_revision": "1.0",
-        "commit_id": "9896b233c68263a86cfd9aae0cbd00e33d1c1894",
+        "commit_id": "581723bd72be579bc9cb4db482b88747bc2e67d0",
         "revisions": [
           {
             "revision": "1.0",
-            "commit_id": "9896b233c68263a86cfd9aae0cbd00e33d1c1894",
+            "commit_id": "581723bd72be579bc9cb4db482b88747bc2e67d0",
             "date": "29-06-2022:18:15:46",
             "history": "Added board Versal Extensible Embedded Platform v1.0"
           }
@@ -271,11 +271,11 @@
         "name": "versal_mb_preset",
         "display": "Versal MicroBlaze Design Presets",
         "latest_revision": "1.0",
-        "commit_id": "9896b233c68263a86cfd9aae0cbd00e33d1c1894",
+        "commit_id": "581723bd72be579bc9cb4db482b88747bc2e67d0",
         "revisions": [
           {
             "revision": "1.0",
-            "commit_id": "9896b233c68263a86cfd9aae0cbd00e33d1c1894",
+            "commit_id": "581723bd72be579bc9cb4db482b88747bc2e67d0",
             "date": "29-06-2022:18:15:46",
             "history": "Added board Versal MicroBlaze Design Presets v1.0"
           }
