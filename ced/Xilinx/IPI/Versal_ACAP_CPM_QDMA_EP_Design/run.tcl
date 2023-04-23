@@ -328,9 +328,9 @@ if {[string equal [get_filesets -quiet constrs_1] ""]} {
 set obj [get_filesets constrs_1]
 
 # Add/Import constrs file and set constrs file properties
-set file "[file normalize "$currentDir/cpm5_qdma_dual_ctrl/constraints/h10_schematic.xdc"]"
+set file "[file normalize "$currentDir/cpm5_qdma_dual_ctrl/constraints/vpk120_schematic.xdc"]"
 set file_added [add_files -norecurse -fileset $obj [list $file]]
-set file "$currentDir/cpm5_qdma_dual_ctrl/constraints/h10_schematic.xdc"
+set file "$currentDir/cpm5_qdma_dual_ctrl/constraints/vpk120_schematic.xdc"
 set file [file normalize $file]
 set file_obj [get_files -of_objects [get_filesets constrs_1] [list "*$file"]]
 set_property -name "file_type" -value "XDC" -objects $file_obj
@@ -615,12 +615,12 @@ open_bd_design [get_bd_files $design_name]
 
     set_property USER_COMMENTS.comment_0 {} [current_bd_design]
     set_property USER_COMMENTS.comment0 {Next Steps:
-    1. Refer to https://github.com/Xilinx/XilinxCEDStore/tree/2022.2/ced/Xilinx/IPI/Versal_ACAP_CPM_QDMA_EP_Design/readme.txt} [current_bd_design]
+    1. Refer to https://github.com/Xilinx/XilinxCEDStore/tree/2023.1/ced/Xilinx/IPI/Versal_ACAP_CPM_QDMA_EP_Design/readme.txt} [current_bd_design]
 
     regenerate_bd_layout -layout_string {
    "ActiveEmotionalView":"Default View",
    "comment_0":"Next Steps:
-    1. Refer to https://github.com/Xilinx/XilinxCEDStore/tree/2022.2/ced/Xilinx/IPI/Versal_ACAP_CPM_QDMA_EP_Design/readme.txt",
+    1. Refer to https://github.com/Xilinx/XilinxCEDStore/tree/2023.1/ced/Xilinx/IPI/Versal_ACAP_CPM_QDMA_EP_Design/readme.txt",
    "commentid":"comment_0|",
    "font_comment_0":"18",
    "guistr":"# # String gsaved with Nlview 7.0r4  2019-12-20 bk=1.5203 VDI=41 GEI=36 GUI=JA:10.0 TLS
@@ -690,4 +690,5 @@ set_property used_in simulation  [get_files  xlnoc.bd]
 open_bd_design [get_files $design_name.bd]
 
 }
+
 

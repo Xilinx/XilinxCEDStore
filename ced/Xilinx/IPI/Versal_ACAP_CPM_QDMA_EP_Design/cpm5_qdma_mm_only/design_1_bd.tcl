@@ -374,7 +374,7 @@ proc create_root_design { parentCell } {
     CONFIG.MC_F1_TZQLATMIN {30000} \
     CONFIG.MC_INPUTCLK0_PERIOD {5000} \
     CONFIG.MC_LP4_RESETN_WIDTH {1} \
-    CONFIG.MC_MEMORY_SPEEDGRADE {LPDDR4X-3200} \
+    CONFIG.MC_MEMORY_SPEEDGRADE {LPDDR4-3200} \
     CONFIG.MC_MEMORY_TIMEPERIOD0 {625} \
     CONFIG.MC_NO_CHANNELS {Dual} \
     CONFIG.MC_ODTLon {6} \
@@ -703,6 +703,7 @@ proc create_root_design { parentCell } {
       PS_CRL_CPM_TOPSW_REF_CTRL_FREQMHZ {825} \
       PS_PCIE1_PERIPHERAL_ENABLE {0} \
       PS_PCIE2_PERIPHERAL_ENABLE {1} \
+      PS_PCIE_EP_RESET1_IO {None} \
       PS_USE_PMCPL_CLK0 {1} \
       SMON_ALARMS {Set_Alarms_On} \
       SMON_ENABLE_TEMP_AVERAGING {0} \
@@ -712,13 +713,10 @@ proc create_root_design { parentCell } {
   ] $versal_cips_0
 
 set board_part [get_property NAME [current_board_part]]
-
-if [regexp "vpk120_es_revb" $board_part] {
-set_property CONFIG.PS_PMC_CONFIG { PS_PCIE_EP_RESET1_IO {PS_MIO 18} PS_PCIE_RESET {{ENABLE 1}} } [get_bd_cells versal_cips_0] 
-set_property CONFIG.PS_PMC_CONFIG { PS_PCIE_EP_RESET2_IO {PS_MIO 19} PS_PCIE_RESET {{ENABLE 1}} } [get_bd_cells versal_cips_0]
+if [regexp "vpk120_es:part0:1.3" $board_part] {
+set_property CONFIG.PS_PMC_CONFIG { PS_PCIE_EP_RESET2_IO {PMC_MIO 39} PS_PCIE_RESET {{ENABLE 1}} } [get_bd_cells versal_cips_0]
 } else {
-set_property CONFIG.PS_PMC_CONFIG { PS_PCIE_EP_RESET1_IO {PMC_MIO 38} PS_PCIE_RESET {{ENABLE 1}} } [get_bd_cells versal_cips_0] 
-set_property CONFIG.PS_PMC_CONFIG { PS_PCIE_EP_RESET2_IO {PMC_MIO 39} PS_PCIE_RESET {{ENABLE 1}} } [get_bd_cells versal_cips_0] }
+set_property CONFIG.PS_PMC_CONFIG { PS_PCIE_EP_RESET2_IO {PS_MIO 19} PS_PCIE_RESET {{ENABLE 1}} } [get_bd_cells versal_cips_0] }
 
   # Create interface connections
   connect_bd_intf_net -intf_net S_AXIL_1 [get_bd_intf_ports S_AXIL] [get_bd_intf_pins axi_bram_ctrl_2/S_AXI]

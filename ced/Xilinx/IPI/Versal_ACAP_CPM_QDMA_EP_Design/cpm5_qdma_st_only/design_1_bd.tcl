@@ -19,11 +19,14 @@ set script_folder [_tcl::get_script_folder]
 
 ################################################################
 # Check if script is running in correct Vivado version.
+#
+# NOTE - set scripts_vivado_version "" to ignore version check.
 ################################################################
-set scripts_vivado_version 2022.2
+set scripts_vivado_version ""
+#set scripts_vivado_version 2023.1
 set current_vivado_version [version -short]
 
-if { [string first $scripts_vivado_version $current_vivado_version] == -1 } {
+if { $scripts_vivado_version ne "" && [string first $scripts_vivado_version $current_vivado_version] == -1 } {
    puts ""
    common::send_gid_msg -ssname BD::TCL -id 2040 -severity "WARNING" "This script was generated using Vivado <$scripts_vivado_version> without IP versions in the create_bd_cell commands, but is now being run in <$current_vivado_version> of Vivado. There may have been major IP version changes between Vivado <$scripts_vivado_version> and <$current_vivado_version>, which could impact the parameter settings of the IPs."
 
@@ -42,7 +45,7 @@ if { [string first $scripts_vivado_version $current_vivado_version] == -1 } {
 
 set list_projs [get_projects -quiet]
 if { $list_projs eq "" } {
-   create_project project_1 myproj -part xcvp1202-vsva2785-2MP-e-S-es1
+   create_project project_1 myproj -part xcvp1202-vsva2785-2MP-e-S
 }
 
 
@@ -341,7 +344,7 @@ proc create_root_design { parentCell } {
     CONFIG.MC_F1_TZQLATMIN {30000} \
     CONFIG.MC_INPUTCLK0_PERIOD {5000} \
     CONFIG.MC_LP4_RESETN_WIDTH {1} \
-    CONFIG.MC_MEMORY_SPEEDGRADE {LPDDR4X-3200} \
+    CONFIG.MC_MEMORY_SPEEDGRADE {LPDDR4-3200} \
     CONFIG.MC_MEMORY_TIMEPERIOD0 {625} \
     CONFIG.MC_NO_CHANNELS {Dual} \
     CONFIG.MC_ODTLon {6} \
@@ -402,7 +405,7 @@ proc create_root_design { parentCell } {
     CONFIG.MC_XPLL_CLKOUT1_PERIOD {1250} \
     CONFIG.NUM_CLKS {2} \
     CONFIG.NUM_MC {0} \
-    CONFIG.NUM_MI {1} \
+    CONFIG.NUM_MI {2} \
     CONFIG.NUM_SI {1} \
   ] $axi_noc_0
 
@@ -414,9 +417,14 @@ proc create_root_design { parentCell } {
  ] [get_bd_intf_pins /axi_noc_0/M00_AXI]
 
   set_property -dict [ list \
+   CONFIG.APERTURES {{0x201_8000_0000 1G}} \
+   CONFIG.CATEGORY {pl} \
+ ] [get_bd_intf_pins /axi_noc_0/M01_AXI]
+
+  set_property -dict [ list \
    CONFIG.DATA_WIDTH {128} \
-   CONFIG.CONNECTIONS {M00_AXI {read_bw {1720} write_bw {1720}}} \
-   CONFIG.DEST_IDS {M00_AXI:0x0} \
+   CONFIG.CONNECTIONS {M01_AXI {read_bw {500} write_bw {500} read_avg_burst {4} write_avg_burst {4}} M00_AXI {read_bw {1720} write_bw {1720}}} \
+   CONFIG.DEST_IDS {M01_AXI:0x0:M00_AXI:0x40} \
    CONFIG.NOC_PARAMS {} \
    CONFIG.CATEGORY {ps_pcie} \
  ] [get_bd_intf_pins /axi_noc_0/S00_AXI]
@@ -426,7 +434,7 @@ proc create_root_design { parentCell } {
  ] [get_bd_pins /axi_noc_0/aclk0]
 
   set_property -dict [ list \
-   CONFIG.ASSOCIATED_BUSIF {M00_AXI} \
+   CONFIG.ASSOCIATED_BUSIF {M00_AXI:M01_AXI} \
  ] [get_bd_pins /axi_noc_0/aclk1]
 
   # Create instance: emb_mem_gen_2, and set properties
@@ -610,27 +618,47 @@ proc create_root_design { parentCell } {
       PS_CRL_CPM_TOPSW_REF_CTRL_FREQMHZ {825} \
       PS_PCIE1_PERIPHERAL_ENABLE {0} \
       PS_PCIE2_PERIPHERAL_ENABLE {1} \
+      PS_PCIE_EP_RESET1_IO {None} \
       PS_USE_PMCPL_CLK0 {1} \
       SMON_ALARMS {Set_Alarms_On} \
       SMON_ENABLE_TEMP_AVERAGING {0} \
       SMON_TEMP_AVERAGING_SAMPLES {0} \
     } \
-    CONFIG.PS_PMC_CONFIG_APPLIED {1} \
+    CONFIG.PS_PMC_CONFIG_APPLIED {0} \
   ] $versal_cips_0
 
 set board_part [get_property NAME [current_board_part]]
-
-if [regexp "vpk120_es_revb" $board_part] {
-set_property CONFIG.PS_PMC_CONFIG { PS_PCIE_EP_RESET1_IO {PS_MIO 18} PS_PCIE_RESET {{ENABLE 1}} } [get_bd_cells versal_cips_0] 
-set_property CONFIG.PS_PMC_CONFIG { PS_PCIE_EP_RESET2_IO {PS_MIO 19} PS_PCIE_RESET {{ENABLE 1}} } [get_bd_cells versal_cips_0]
+if [regexp "vpk120_es:part0:1.3" $board_part] {
+set_property CONFIG.PS_PMC_CONFIG { PS_PCIE_EP_RESET2_IO {PMC_MIO 39} PS_PCIE_RESET {{ENABLE 1}} } [get_bd_cells versal_cips_0]
 } else {
-set_property CONFIG.PS_PMC_CONFIG { PS_PCIE_EP_RESET1_IO {PMC_MIO 38} PS_PCIE_RESET {{ENABLE 1}} } [get_bd_cells versal_cips_0] 
-set_property CONFIG.PS_PMC_CONFIG { PS_PCIE_EP_RESET2_IO {PMC_MIO 39} PS_PCIE_RESET {{ENABLE 1}} } [get_bd_cells versal_cips_0] }
+set_property CONFIG.PS_PMC_CONFIG { PS_PCIE_EP_RESET2_IO {PS_MIO 19} PS_PCIE_RESET {{ENABLE 1}} } [get_bd_cells versal_cips_0]}
+
+  # Create instance: axi_bram_ctrl_1, and set properties
+  set axi_bram_ctrl_1 [ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_bram_ctrl axi_bram_ctrl_1 ]
+  set_property -dict [list \
+    CONFIG.PROTOCOL {AXI4LITE} \
+    CONFIG.READ_LATENCY {2} \
+    CONFIG.SINGLE_PORT_BRAM {1} \
+  ] $axi_bram_ctrl_1
+
+
+  # Create instance: emb_mem_gen_1, and set properties
+  set emb_mem_gen_1 [ create_bd_cell -type ip -vlnv xilinx.com:ip:emb_mem_gen emb_mem_gen_1 ]
+
+  # Create instance: smartconnect_1, and set properties
+  set smartconnect_1 [ create_bd_cell -type ip -vlnv xilinx.com:ip:smartconnect smartconnect_1 ]
+  set_property -dict [list \
+    CONFIG.NUM_MI {1} \
+    CONFIG.NUM_SI {1} \
+  ] $smartconnect_1
+
 
   # Create interface connections
   connect_bd_intf_net -intf_net S_AXIL_1 [get_bd_intf_ports S_AXIL] [get_bd_intf_pins axi_bram_ctrl_2/S_AXI]
   connect_bd_intf_net -intf_net axi_bram_ctrl_2_BRAM_PORTA [get_bd_intf_pins axi_bram_ctrl_2/BRAM_PORTA] [get_bd_intf_pins emb_mem_gen_2/BRAM_PORTA]
+  connect_bd_intf_net -intf_net axi_bram_ctrl_3_BRAM_PORTA [get_bd_intf_pins axi_bram_ctrl_1/BRAM_PORTA] [get_bd_intf_pins emb_mem_gen_1/BRAM_PORTA]
   connect_bd_intf_net -intf_net axi_noc_0_M00_AXI [get_bd_intf_pins axi_noc_0/M00_AXI] [get_bd_intf_pins smartconnect_0/S00_AXI]
+  connect_bd_intf_net -intf_net axi_noc_0_M01_AXI [get_bd_intf_pins axi_noc_0/M01_AXI] [get_bd_intf_pins smartconnect_1/S00_AXI]
   connect_bd_intf_net -intf_net dma1_dsc_crdt_in_0_1 [get_bd_intf_ports dma1_dsc_crdt_in_0] [get_bd_intf_pins versal_cips_0/dma1_dsc_crdt_in]
   connect_bd_intf_net -intf_net dma1_s_axis_c2h_0_1 [get_bd_intf_ports dma1_s_axis_c2h_0] [get_bd_intf_pins versal_cips_0/dma1_s_axis_c2h]
   connect_bd_intf_net -intf_net dma1_s_axis_c2h_cmpt_0_1 [get_bd_intf_ports dma1_s_axis_c2h_cmpt_0] [get_bd_intf_pins versal_cips_0/dma1_s_axis_c2h_cmpt]
@@ -639,6 +667,7 @@ set_property CONFIG.PS_PMC_CONFIG { PS_PCIE_EP_RESET2_IO {PMC_MIO 39} PS_PCIE_RE
   connect_bd_intf_net -intf_net pcie_qdma_mailbox_0_dma_usr_irq [get_bd_intf_pins pcie_qdma_mailbox_0/dma_usr_irq] [get_bd_intf_pins versal_cips_0/dma1_usr_irq]
   connect_bd_intf_net -intf_net pcie_qdma_mailbox_0_pcie_mgmt [get_bd_intf_pins pcie_qdma_mailbox_0/pcie_mgmt] [get_bd_intf_pins versal_cips_0/dma1_mgmt]
   connect_bd_intf_net -intf_net smartconnect_0_M00_AXI [get_bd_intf_pins pcie_qdma_mailbox_0/S_AXI_LITE] [get_bd_intf_pins smartconnect_0/M00_AXI]
+  connect_bd_intf_net -intf_net smartconnect_1_M00_AXI [get_bd_intf_pins smartconnect_1/M00_AXI] [get_bd_intf_pins axi_bram_ctrl_1/S_AXI]
   connect_bd_intf_net -intf_net usr_flr_0_1 [get_bd_intf_ports usr_flr_0] [get_bd_intf_pins pcie_qdma_mailbox_0/usr_flr]
   connect_bd_intf_net -intf_net usr_irq_0_1 [get_bd_intf_ports usr_irq_0] [get_bd_intf_pins pcie_qdma_mailbox_0/usr_irq]
   connect_bd_intf_net -intf_net versal_cips_0_CPM_PCIE_NOC_0 [get_bd_intf_pins axi_noc_0/S00_AXI] [get_bd_intf_pins versal_cips_0/CPM_PCIE_NOC_0]
@@ -654,14 +683,15 @@ set_property CONFIG.PS_PMC_CONFIG { PS_PCIE_EP_RESET2_IO {PMC_MIO 39} PS_PCIE_RE
   connect_bd_net -net cpm_irq0_0_1 [get_bd_ports cpm_irq0_0] [get_bd_pins versal_cips_0/cpm_irq0]
   connect_bd_net -net cpm_irq1_0_1 [get_bd_ports cpm_irq1_0] [get_bd_pins versal_cips_0/cpm_irq1]
   connect_bd_net -net dma1_intrfc_resetn_0_1 [get_bd_ports dma1_intrfc_resetn_0] [get_bd_pins versal_cips_0/dma1_intrfc_resetn]
-  connect_bd_net -net versal_cips_0_cpm_cor_irq [get_bd_ports cpm_cor_irq_0] [get_bd_pins versal_cips_0/cpm_cor_irq]
-  connect_bd_net -net versal_cips_0_cpm_misc_irq [get_bd_ports cpm_misc_irq_0] [get_bd_pins versal_cips_0/cpm_misc_irq]
-  connect_bd_net -net versal_cips_0_cpm_pcie_noc_axi0_clk [get_bd_pins axi_noc_0/aclk0] [get_bd_pins versal_cips_0/cpm_pcie_noc_axi0_clk]
-  connect_bd_net -net versal_cips_0_cpm_uncor_irq [get_bd_ports cpm_uncor_irq_0] [get_bd_pins versal_cips_0/cpm_uncor_irq]
-  connect_bd_net -net versal_cips_0_dma1_axi_aresetn [get_bd_ports dma1_axi_aresetn_0] [get_bd_pins axi_bram_ctrl_2/s_axi_aresetn] [get_bd_pins pcie_qdma_mailbox_0/axi_aresetn] [get_bd_pins smartconnect_0/aresetn] [get_bd_pins versal_cips_0/dma1_axi_aresetn]
-  connect_bd_net -net versal_cips_0_pcie1_user_clk [get_bd_ports pcie1_user_clk_0] [get_bd_pins axi_bram_ctrl_2/s_axi_aclk] [get_bd_pins axi_noc_0/aclk1] [get_bd_pins pcie_qdma_mailbox_0/axi_aclk] [get_bd_pins smartconnect_0/aclk] [get_bd_pins versal_cips_0/dma1_intrfc_clk] [get_bd_pins versal_cips_0/pl0_ref_clk]
+  connect_bd_net -net versal_cips_0_cpm_cor_irq [get_bd_pins versal_cips_0/cpm_cor_irq] [get_bd_ports cpm_cor_irq_0]
+  connect_bd_net -net versal_cips_0_cpm_misc_irq [get_bd_pins versal_cips_0/cpm_misc_irq] [get_bd_ports cpm_misc_irq_0]
+  connect_bd_net -net versal_cips_0_cpm_pcie_noc_axi0_clk [get_bd_pins versal_cips_0/cpm_pcie_noc_axi0_clk] [get_bd_pins axi_noc_0/aclk0]
+  connect_bd_net -net versal_cips_0_cpm_uncor_irq [get_bd_pins versal_cips_0/cpm_uncor_irq] [get_bd_ports cpm_uncor_irq_0]
+  connect_bd_net -net versal_cips_0_dma1_axi_aresetn [get_bd_pins versal_cips_0/dma1_axi_aresetn] [get_bd_ports dma1_axi_aresetn_0] [get_bd_pins axi_bram_ctrl_2/s_axi_aresetn] [get_bd_pins pcie_qdma_mailbox_0/axi_aresetn] [get_bd_pins smartconnect_0/aresetn] [get_bd_pins axi_bram_ctrl_1/s_axi_aresetn] [get_bd_pins smartconnect_1/aresetn]
+  connect_bd_net -net versal_cips_0_pcie1_user_clk [get_bd_pins versal_cips_0/pl0_ref_clk] [get_bd_ports pcie1_user_clk_0] [get_bd_pins axi_bram_ctrl_2/s_axi_aclk] [get_bd_pins axi_noc_0/aclk1] [get_bd_pins pcie_qdma_mailbox_0/axi_aclk] [get_bd_pins smartconnect_0/aclk] [get_bd_pins versal_cips_0/dma1_intrfc_clk] [get_bd_pins axi_bram_ctrl_1/s_axi_aclk] [get_bd_pins smartconnect_1/aclk]
 
   # Create address segments
+  assign_bd_address -offset 0x020180000000 -range 0x00002000 -target_address_space [get_bd_addr_spaces versal_cips_0/CPM_PCIE_NOC_0] [get_bd_addr_segs axi_bram_ctrl_1/S_AXI/Mem0] -force
   assign_bd_address -offset 0x020800000000 -range 0x80000000 -target_address_space [get_bd_addr_spaces versal_cips_0/CPM_PCIE_NOC_0] [get_bd_addr_segs pcie_qdma_mailbox_0/S_AXI_LITE/Reg] -force
   assign_bd_address -offset 0x00000000 -range 0x00001000 -target_address_space [get_bd_addr_spaces S_AXIL] [get_bd_addr_segs axi_bram_ctrl_2/S_AXI/Mem0] -force
 
