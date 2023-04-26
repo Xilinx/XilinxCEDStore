@@ -155,12 +155,12 @@ open_bd_design [get_bd_files $design_name]
 
     set_property USER_COMMENTS.comment_0 {} [current_bd_design]
     set_property USER_COMMENTS.comment0 {Next Steps:
-    1. Refer to https://github.com/Xilinx/XilinxCEDStore/tree/2022.2/ced/Xilinx/IPI/Versal_CPM5_PCIe_BMD_Simulation_Design/readme.txt} [current_bd_design]
+    1. Refer to https://github.com/Xilinx/XilinxCEDStore/tree/2023.1/ced/Xilinx/IPI/Versal_CPM5_PCIe_BMD_Simulation_Design/readme.txt} [current_bd_design]
 
     regenerate_bd_layout -layout_string {
    "ActiveEmotionalView":"Default View",
    "comment_0":"Next Steps:
-    1. Refer to https://github.com/Xilinx/XilinxCEDStore/tree/2022.2/ced/Xilinx/IPI/Versal_CPM5_PCIe_BMD_Simulation_Design/readme.txt",
+    1. Refer to https://github.com/Xilinx/XilinxCEDStore/tree/2023.1/ced/Xilinx/IPI/Versal_CPM5_PCIe_BMD_Simulation_Design/readme.txt",
    "commentid":"comment_0|",
    "font_comment_0":"18",
    "guistr":"# # String gsaved with Nlview 7.0r4  2019-12-20 bk=1.5203 VDI=41 GEI=36 GUI=JA:10.0 TLS
@@ -185,7 +185,7 @@ set_property top board [get_filesets sim_1]
 set_property top_lib xil_defaultlib [get_filesets sim_1]
 
 set_property -name "vcs.elaborate.vcs.more_options" -value "+nospecify +notimingchecks" -objects $obj
-set_property -name {vcs.simulate.runtime} -value {550000ns} -objects [get_filesets sim_1]
+set_property -name {vcs.simulate.runtime} -value {600000ns} -objects [get_filesets sim_1]
 set_property -name {vcs.simulate.vcs.more_options} -value {-gui} -objects [get_filesets sim_1]
 
 }
