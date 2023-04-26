@@ -129,6 +129,124 @@ proc get_min_linerate {speedgrade type} {
 }
 
 
+proc empty {} {
+  log "using empty procs"
+
+  proc get_gt_types {} {
+    return [list "GTY"]
+  }
+
+  proc get_left {pkg} {
+      return [list]
+  }
+
+  proc get_right {pkg} {
+    return [list]
+  }
+
+  proc get_refclk_neighbors {pkg quad} {
+    return [list]
+  }
+
+  proc get_reflocs {q} {
+    return [list ]
+  }
+
+  proc get_gtloc {q} {
+    return [list ]
+  }
+}
+
+########################################################################################################################
+#  V70
+#
+proc xcv70 {} {
+  empty
+}
+
+########################################################################################################################
+#  V80
+#
+proc xcv80 {} {
+  log "using xcvp1702 procs"
+  
+  proc get_gt_types {} {
+    return [list "GTYP" "GTM"]
+  }
+  
+  proc get_left {pkg} {
+    switch $pkg {
+      lsva4737 {
+        return [list GTM_QUAD_111 GTM_QUAD_112]
+      }
+      default {
+        return [list]
+      }
+      
+    }
+  }
+
+  proc get_right {pkg} {
+    switch $pkg {
+      lsva4737 {
+        return [list GTYP_QUAD_200 GTM_QUAD_209 GTM_QUAD_210 GTYP_QUAD_213 GTYP_QUAD_214 GTYP_QUAD_218]
+      }
+      default {
+        return [list]
+      }
+    }
+  }
+  
+  proc get_refclk_neighbors {pkg quad} {
+    switch $pkg {
+      lsva4737 {
+        switch $quad {
+          GTM_QUAD_111 { return [list "GTM_QUAD_112"] } 
+          GTM_QUAD_112 { return [list "GTM_QUAD_111"] } 
+          GTYP_QUAD_200 { return [list ] } 
+          GTM_QUAD_209 { return [list "GTM_QUAD_210"] } 
+          GTM_QUAD_210 { return [list "GTM_QUAD_209"] } 
+          GTYP_QUAD_213 { return [list "GTYP_QUAD_214"] } 
+          GTYP_QUAD_214 { return [list "GTYP_QUAD_213"] } 
+          GTYP_QUAD_218 { return [list ] }    
+        }  
+      }
+    }
+  }
+
+  proc get_reflocs {q} {
+    set refclk_dict { 
+        GTM_QUAD_111 {GTM_REFCLK_X0Y18 GTM_REFCLK_X0Y19}
+        GTM_QUAD_112 {GTM_REFCLK_X0Y20 GTM_REFCLK_X0Y21}
+        GTYP_QUAD_200 {GTYP_REFCLK_X1Y0 GTYP_REFCLK_X1Y1}
+        GTM_QUAD_209 {GTM_REFCLK_X1Y14 GTM_REFCLK_X1Y15}
+        GTM_QUAD_210 {GTM_REFCLK_X1Y16 GTM_REFCLK_X1Y17}
+        GTYP_QUAD_213 {GTYP_REFCLK_X1Y14 GTYP_REFCLK_X1Y15}
+        GTYP_QUAD_214 {GTYP_REFCLK_X1Y16 GTYP_REFCLK_X1Y17}
+        GTYP_QUAD_218 {GTYP_REFCLK_X1Y24 GTYP_REFCLK_X1Y25} 
+    }
+    return [dict get $refclk_dict $q]
+  }
+
+  proc get_gtloc {q} {
+    set gt_dict { 
+          GTM_QUAD_111 GTM_QUAD_X0Y9
+          GTM_QUAD_112 GTM_QUAD_X0Y10
+          GTYP_QUAD_200 GTYP_QUAD_X1Y0
+          GTM_QUAD_209 GTM_QUAD_X1Y7
+          GTM_QUAD_210 GTM_QUAD_X1Y8
+          GTYP_QUAD_213 GTYP_QUAD_X1Y7
+          GTYP_QUAD_214 GTYP_QUAD_X1Y8
+          GTYP_QUAD_218 GTYP_QUAD_X1Y12}
+
+    return [dict get $gt_dict $q]
+  }
+
+}
+
+
+
+
 ########################################################################################################################
 #  V20
 #
@@ -1491,6 +1609,160 @@ proc xcvm1502 {} {
 proc xcvm1802 {} { 
   log "using xcvm1802 procs"
   xcvc1902 
+}
+
+########################################################################################################################
+#  VM2202
+#
+proc xcvm2202 {} {
+  log "using xcvm2202 procs"
+  
+  proc get_gt_types {} {
+    return [list "GTYP"]
+  }
+  
+  proc get_left {pkg} {
+    switch $pkg {
+      nsvh1369 {
+        return [list GTYP_QUAD_106]
+      }
+    }
+  }
+
+  proc get_right {pkg} {
+    switch $pkg {
+      nsvh1369 {
+        return [list GTYP_QUAD_204 GTYP_QUAD_205 GTYP_QUAD_206]
+      }
+    }
+  }
+  
+  proc get_refclk_neighbors {pkg quad} {
+    switch $pkg {
+      nsvh1369 {
+        switch $quad {
+          GTYP_QUAD_106 { return [list]} 
+          GTYP_QUAD_204 { return [list "GTYP_QUAD_205"]} 
+          GTYP_QUAD_205 { return [list "GTYP_QUAD_204" "GTYP_QUAD_206"]} 
+          GTYP_QUAD_206 { return [list "GTYP_QUAD_205" "GTYP_QUAD_207"]} 
+        }  
+      }
+    }
+  }
+
+  proc get_reflocs {q} {
+    set refclk_dict { 
+          GTYP_QUAD_106 {GTYP_REFCLK_X0Y8 GTYP_REFCLK_X0Y9}
+          GTYP_QUAD_204 {GTYP_REFCLK_X1Y4 GTYP_REFCLK_X1Y5}
+          GTYP_QUAD_205 {GTYP_REFCLK_X1Y6 GTYP_REFCLK_X1Y7}
+          GTYP_QUAD_206 {GTYP_REFCLK_X1Y8 GTYP_REFCLK_X1Y9}}
+    return [dict get $refclk_dict $q]
+  }
+
+  proc get_gtloc {q} {
+    set gt_dict { 
+        GTYP_QUAD_106 GTYP_QUAD_X0Y4
+        GTYP_QUAD_204 GTYP_QUAD_X1Y2
+        GTYP_QUAD_205 GTYP_QUAD_X1Y3
+        GTYP_QUAD_206 GTYP_QUAD_X1Y4}
+
+    return [dict get $gt_dict $q]
+  }  
+}
+
+########################################################################################################################
+#  VM2302
+#
+proc xcvm2302 {} {
+  log "using xcvm2302 procs"
+  
+  proc get_gt_types {} {
+    return [list "GTYP" "GTM"]
+  }
+  
+  proc get_left {pkg} {
+    switch $pkg {
+      vfvf1760 {
+        return [list GTYP_QUAD_102 GTYP_QUAD_103 GTM_QUAD_107 GTM_QUAD_108 GTM_QUAD_109]
+      }
+    }
+  }
+
+  proc get_right {pkg} {
+    switch $pkg {
+      vfvf1760 {
+        return [list GTM_QUAD_202 GTM_QUAD_203 GTM_QUAD_204 GTM_QUAD_205 GTM_QUAD_206 GTM_QUAD_207]
+      }
+    }
+  }
+  
+  proc get_refclk_neighbors {pkg quad} {
+    switch $pkg {
+      vfvf1760 {
+        switch $quad {
+          GTYP_QUAD_102 { return [list "GTYP_QUAD_102"]} 
+          GTYP_QUAD_103 { return [list "GTYP_QUAD_103"]} 
+          GTM_QUAD_107 { return [list "GTM_QUAD_108"]} 
+          GTM_QUAD_108 { return [list "GTM_QUAD_107" "GTM_QUAD_109"]} 
+          GTM_QUAD_109 { return [list "GTM_QUAD_108"]} 
+          GTM_QUAD_202 { return [list "GTM_QUAD_203"]} 
+          GTM_QUAD_203 { return [list "GTM_QUAD_202" "GTM_QUAD_204"]} 
+          GTM_QUAD_204 { return [list "GTM_QUAD_203" "GTM_QUAD_205"]}
+          GTM_QUAD_205 { return [list "GTM_QUAD_204" "GTM_QUAD_206"]}
+          GTM_QUAD_206 { return [list "GTM_QUAD_205" "GTM_QUAD_207"]}
+          GTM_QUAD_207 { return [list "GTM_QUAD_206"]} 
+        }  
+      }
+    }
+  }
+
+  proc get_reflocs {q} {
+    set refclk_dict { 
+          GTYP_QUAD_102 {GTYP_REFCLK_X0Y0 GTYP_REFCLK_X0Y1}
+          GTYP_QUAD_103 {GTYP_REFCLK_X0Y2 GTYP_REFCLK_X0Y3}
+          GTM_QUAD_107 {GTM_REFCLK_X0Y14 GTM_REFCLK_X0Y15}
+          GTM_QUAD_108 {GTM_REFCLK_X0Y16 GTM_REFCLK_X0Y17}
+          GTM_QUAD_109 {GTM_REFCLK_X0Y18 GTM_REFCLK_X0Y19}
+          GTM_QUAD_202 {GTM_REFCLK_X1Y4 GTM_REFCLK_X1Y5}
+          GTM_QUAD_203 {GTM_REFCLK_X1Y6 GTM_REFCLK_X1Y7}
+          GTM_QUAD_204 {GTM_REFCLK_X1Y8 GTM_REFCLK_X1Y9}
+          GTM_QUAD_205 {GTM_REFCLK_X1Y10 GTM_REFCLK_X1Y11}
+          GTM_QUAD_206 {GTM_REFCLK_X1Y12 GTM_REFCLK_X1Y13}
+          GTM_QUAD_207 {GTM_REFCLK_X1Y14 GTM_REFCLK_X1Y15}}
+    return [dict get $refclk_dict $q]
+  }
+
+  proc get_gtloc {q} {
+    set gt_dict { 
+        GTYP_QUAD_102 GTYP_QUAD_X0Y0
+        GTYP_QUAD_103 GTYP_QUAD_X0Y1
+        GTM_QUAD_107 GTM_QUAD_X0Y7
+        GTM_QUAD_108 GTM_QUAD_X0Y8
+        GTM_QUAD_109 GTM_QUAD_X0Y9
+        GTM_QUAD_202 GTM_QUAD_X1Y2
+        GTM_QUAD_203 GTM_QUAD_X1Y3
+        GTM_QUAD_204 GTM_QUAD_X1Y4
+        GTM_QUAD_205 GTM_QUAD_X1Y5
+        GTM_QUAD_206 GTM_QUAD_X1Y6
+        GTM_QUAD_207 GTM_QUAD_X1Y7}
+
+    return [dict get $gt_dict $q]
+  }  
+
+}
+
+########################################################################################################################
+#  VM2502
+#
+proc xcvm2502 {} {
+  empty
+}
+
+########################################################################################################################
+#  VM2902
+#
+proc xcvm2902 {} {
+  xcvm2302
 }
 
 ########################################################################################################################
