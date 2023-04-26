@@ -480,11 +480,11 @@
         "name": "cpm5_pcie_bmd",
         "display": "Versal CPM5 PCIe BMD Simulation Design",
         "latest_revision": "1.0",
-        "commit_id": "9896b233c68263a86cfd9aae0cbd00e33d1c1894",
+        "commit_id": "499730618069eb031b9a06a4100a85ef7f378ee3",
         "revisions": [
           {
             "revision": "1.0",
-            "commit_id": "9896b233c68263a86cfd9aae0cbd00e33d1c1894",
+            "commit_id": "499730618069eb031b9a06a4100a85ef7f378ee3",
             "date": "29-09-2022:07:20:01",
             "history": "Added board Versal CPM5 PCIe BMD Simulation Design v1.0"
           }
