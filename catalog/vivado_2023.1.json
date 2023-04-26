@@ -404,11 +404,11 @@
         "name": "chipscopy",
         "display": "ChipScoPy Example Design",
         "latest_revision": "1.0",
-        "commit_id": "9896b233c68263a86cfd9aae0cbd00e33d1c1894",
+        "commit_id": "4df4590a64cb77e8813abf16385cee5f2c34a8a7",
         "revisions": [
           {
             "revision": "1.0",
-            "commit_id": "9896b233c68263a86cfd9aae0cbd00e33d1c1894",
+            "commit_id": "4df4590a64cb77e8813abf16385cee5f2c34a8a7",
             "date": "14-09-2022:18:19:45",
             "history": "Added board ChipScoPy Example Design v1.0"
           }
@@ -423,11 +423,11 @@
         "name": "versal_ibert_ced",
         "display": "Versal IBERT",
         "latest_revision": "1.0",
-        "commit_id": "9896b233c68263a86cfd9aae0cbd00e33d1c1894",
+        "commit_id": "4df4590a64cb77e8813abf16385cee5f2c34a8a7",
         "revisions": [
           {
             "revision": "1.0",
-            "commit_id": "9896b233c68263a86cfd9aae0cbd00e33d1c1894",
+            "commit_id": "4df4590a64cb77e8813abf16385cee5f2c34a8a7",
             "date": "14-09-2022:18:19:45",
             "history": "Added board Versal IBERT v1.0"
           }
