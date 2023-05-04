@@ -697,6 +697,7 @@ proc create_root_design { parentCell } {
       PCIE_APERTURES_DUAL_ENABLE {0} \
       PCIE_APERTURES_SINGLE_ENABLE {1} \
       PMC_CRP_PL0_REF_CTRL_FREQMHZ {250} \
+      PMC_QSPI_FBCLK {{ENABLE 0} {IO {PMC_MIO 6}}} \
       PMC_QSPI_PERIPHERAL_ENABLE {1} \
       PMC_QSPI_PERIPHERAL_MODE {Dual Parallel} \
       PS_BOARD_INTERFACE {Custom} \

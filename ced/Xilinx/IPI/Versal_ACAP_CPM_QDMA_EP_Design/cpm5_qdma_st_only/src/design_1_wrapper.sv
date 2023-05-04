@@ -594,6 +594,27 @@ module design_1_wrapper #
       .PCIE1_GT_0_gtx_n(PCIE1_GT_0_gtx_n),
       .PCIE1_GT_0_gtx_p(PCIE1_GT_0_gtx_p),
  
+ //Lite 1      
+      .M_AXIL_araddr  (m_axil_araddr),
+      .M_AXIL_arprot  (m_axil_arprot),
+      .M_AXIL_arready (m_axil_arready),
+      .M_AXIL_arvalid (m_axil_arvalid),
+      .M_AXIL_awaddr  (m_axil_awaddr),
+      .M_AXIL_awprot  (m_axil_awprot),
+      .M_AXIL_awready (m_axil_awready),
+      .M_AXIL_awvalid (m_axil_awvalid),
+      .M_AXIL_bready  (m_axil_bready),
+      .M_AXIL_bresp   (m_axil_bresp),
+      .M_AXIL_bvalid  (m_axil_bvalid),
+      .M_AXIL_rdata   (m_axil_rdata),
+      .M_AXIL_rready  (m_axil_rready),
+      .M_AXIL_rresp   (m_axil_rresp),
+      .M_AXIL_rvalid  (m_axil_rvalid),
+      .M_AXIL_wdata   (m_axil_wdata),
+      .M_AXIL_wready  (m_axil_wready),
+      .M_AXIL_wstrb   (m_axil_wstrb),
+      .M_AXIL_wvalid  (m_axil_wvalid),
+      
       // To AXIL BRAM
       .S_AXIL_araddr  (m_axil_araddr[11:0]),
       .S_AXIL_arprot  (m_axil_arprot),

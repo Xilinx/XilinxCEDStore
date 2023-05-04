@@ -420,6 +420,7 @@ NONE HBM_PC1_USER_DEFINED_ADDRESS_MAP NONE} \
   # Create instance: versal_cips_1, and set properties
   set versal_cips_1 [ create_bd_cell -type ip -vlnv xilinx.com:ip:versal_cips versal_cips_1 ]
   set_property -dict [list \
+    CONFIG.BOOT_MODE {Custom} \
     CONFIG.CLOCK_MODE {Custom} \
     CONFIG.CPM_CONFIG { \
       CPM_PCIE0_ACS_CAP_ON {1} \
@@ -580,12 +581,16 @@ NONE HBM_PC1_USER_DEFINED_ADDRESS_MAP NONE} \
       CPM_PCIE1_TL_PF_ENABLE_REG {4} \
     } \
     CONFIG.PS_PMC_CONFIG { \
+      BOOT_MODE {Custom} \
       CLOCK_MODE {Custom} \
       DESIGN_MODE {1} \
       PCIE_APERTURES_DUAL_ENABLE {0} \
       PCIE_APERTURES_SINGLE_ENABLE {1} \
       PMC_CRP_PL0_REF_CTRL_FREQMHZ {250} \
       PMC_OT_CHECK {{DELAY 0} {ENABLE 0}} \
+      PMC_QSPI_FBCLK {{ENABLE 0} {IO {PMC_MIO 6}}} \
+      PMC_QSPI_PERIPHERAL_ENABLE {1} \
+      PMC_QSPI_PERIPHERAL_MODE {Dual Parallel} \
       PS_BOARD_INTERFACE {Custom} \
       PS_PCIE1_PERIPHERAL_ENABLE {0} \
       PS_PCIE2_PERIPHERAL_ENABLE {1} \
@@ -662,7 +667,7 @@ set_property CONFIG.PS_PMC_CONFIG { PS_PCIE_EP_RESET2_IO {PS_MIO 19} PS_PCIE_RES
   assign_bd_address -offset 0x020100000000 -range 0x00100000 -target_address_space [get_bd_addr_spaces versal_cips_1/CPM_PCIE_NOC_0] [get_bd_addr_segs axi_bram_ctrl_0/S_AXI/Mem0] -force
   assign_bd_address -offset 0x00000000 -range 0x80000000 -target_address_space [get_bd_addr_spaces versal_cips_1/CPM_PCIE_NOC_0] [get_bd_addr_segs axi_noc_0/S00_AXI/C0_DDR_LOW0] -force
   assign_bd_address -offset 0x000800000000 -range 0x80000000 -target_address_space [get_bd_addr_spaces versal_cips_1/CPM_PCIE_NOC_0] [get_bd_addr_segs axi_noc_0/S00_AXI/C0_DDR_LOW1] -force
-  assign_bd_address -offset 0x020200000000 -range 0x00100000 -target_address_space [get_bd_addr_spaces versal_cips_1/CPM_PCIE_NOC_0] [get_bd_addr_segs pcie_qdma_mailbox_1/S_AXI_LITE/Reg] -force
+  assign_bd_address -offset 0x020200000000 -range 0x80000000 -target_address_space [get_bd_addr_spaces versal_cips_1/CPM_PCIE_NOC_0] [get_bd_addr_segs pcie_qdma_mailbox_1/S_AXI_LITE/Reg] -force
   assign_bd_address -offset 0x020180000000 -range 0x00100000 -target_address_space [get_bd_addr_spaces versal_cips_1/CPM_PCIE_NOC_1] [get_bd_addr_segs M_AXIL/Reg] -force
   assign_bd_address -offset 0x020100000000 -range 0x00100000 -target_address_space [get_bd_addr_spaces versal_cips_1/CPM_PCIE_NOC_1] [get_bd_addr_segs axi_bram_ctrl_0/S_AXI/Mem0] -force
   assign_bd_address -offset 0x00000000 -range 0x80000000 -target_address_space [get_bd_addr_spaces versal_cips_1/CPM_PCIE_NOC_1] [get_bd_addr_segs axi_noc_0/S01_AXI/C0_DDR_LOW0] -force

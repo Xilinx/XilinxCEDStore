@@ -719,6 +719,7 @@ NONE HBM_PC1_USER_DEFINED_ADDRESS_MAP NONE} \
   # Create instance: versal_cips_1, and set properties
   set versal_cips_1 [ create_bd_cell -type ip -vlnv xilinx.com:ip:versal_cips versal_cips_1 ]
   set_property -dict [list \
+    CONFIG.BOOT_MODE {Custom} \
     CONFIG.CLOCK_MODE {Custom} \
     CONFIG.CPM_CONFIG { \
       CPM_PCIE0_ACS_CAP_ON {1} \
@@ -879,12 +880,16 @@ NONE HBM_PC1_USER_DEFINED_ADDRESS_MAP NONE} \
       CPM_PCIE1_TL_PF_ENABLE_REG {4} \
     } \
     CONFIG.PS_PMC_CONFIG { \
+      BOOT_MODE {Custom} \
       CLOCK_MODE {Custom} \
       DESIGN_MODE {1} \
       PCIE_APERTURES_DUAL_ENABLE {1} \
       PCIE_APERTURES_SINGLE_ENABLE {0} \
       PMC_CRP_PL0_REF_CTRL_FREQMHZ {250} \
       PMC_OT_CHECK {{DELAY 0} {ENABLE 0}} \
+      PMC_QSPI_FBCLK {{ENABLE 0} {IO {PMC_MIO 6}}} \
+      PMC_QSPI_PERIPHERAL_ENABLE {1} \
+      PMC_QSPI_PERIPHERAL_MODE {Dual Parallel} \
       PS_BOARD_INTERFACE {Custom} \
       PS_PCIE1_PERIPHERAL_ENABLE {1} \
       PS_PCIE2_PERIPHERAL_ENABLE {1} \
