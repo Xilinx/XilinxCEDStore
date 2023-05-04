@@ -537,11 +537,11 @@
         "name": "cpm_pcie_qdma_ep",
         "display": "Versal ACAP CPM QDMA EP Design",
         "latest_revision": "1.0",
-        "commit_id": "ea38cf79bff3c90949936eecf06cba86f1c8e570",
+        "commit_id": "64294d956b4a727a82e438d629ddae2c25fa67b0",
         "revisions": [
           {
             "revision": "1.0",
-            "commit_id": "ea38cf79bff3c90949936eecf06cba86f1c8e570",
+            "commit_id": "64294d956b4a727a82e438d629ddae2c25fa67b0",
             "date": "09-11-2022:10:08:47",
             "history": "Added board Versal ACAP CPM QDMA EP Design v1.0"
           }
