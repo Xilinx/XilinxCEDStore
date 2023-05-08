@@ -461,11 +461,11 @@
         "name": "cpm_pcie_pio",
         "display": "Versal ACAP CPM PCIE PIO Design",
         "latest_revision": "1.0",
-        "commit_id": "9896b233c68263a86cfd9aae0cbd00e33d1c1894",
+        "commit_id": "467b407ff3ac70d235f7d5cbbbd6c7c4de13be0c",
         "revisions": [
           {
             "revision": "1.0",
-            "commit_id": "9896b233c68263a86cfd9aae0cbd00e33d1c1894",
+            "commit_id": "467b407ff3ac70d235f7d5cbbbd6c7c4de13be0c",
             "date": "29-09-2022:07:20:01",
             "history": "Added board Versal ACAP CPM PCIE PIO Design v1.0"
           }
