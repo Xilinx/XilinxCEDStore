@@ -1,0 +1,18 @@
+######### Extensible Embedded Platform example design change log ##############
+2023.1
+CED enhancements with GUI options.
+Added 15-bit interrupt option.
+Added simple testbench for CIPS reset polling.
+
+2022.2 changes
+Added vhk158 support and Memory display names changed.
+Added vek280 support.
+ 
+2022.1 changes
+configuration options changed.
+
+2021.2 changes
+QoR script is included for VCK190
+
+2021.1 changes 
+Updated with CIPS 3.0
