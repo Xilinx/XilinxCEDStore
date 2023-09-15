@@ -158,7 +158,7 @@ proc create_root_design { parentCell design_name temp_options} {
    CONFIG.W_TRAFFIC_CLASS {BEST_EFFORT} \
    CONFIG.CONNECTIONS {M03_AXI { read_bw {1720} write_bw {1720} read_avg_burst {4} write_avg_burst {4}} M01_AXI { read_bw {3000} write_bw {3000} read_avg_burst {4} write_avg_burst {4}} M02_AXI { read_bw {1000} write_bw {1000} read_avg_burst {4} write_avg_burst {4}} M00_AXI { read_bw {3000} write_bw {3000}}} \
    CONFIG.DEST_IDS {M03_AXI:0x140:M01_AXI:0x40:M02_AXI:0x0:M00_AXI:0x80} \
-   CONFIG.REMAPS { M00_AXI {{0x0 0x201_C000_0000 64K}}} \
+   CONFIG.REMAPS {{ M00_AXI {{0x0 0x201_C000_0000 64K}}}} \
    CONFIG.CATEGORY {ps_pcie} \
   ] [get_bd_intf_pins /axi_noc_0/S00_AXI]
 
@@ -168,7 +168,7 @@ proc create_root_design { parentCell design_name temp_options} {
    CONFIG.W_TRAFFIC_CLASS {BEST_EFFORT} \
    CONFIG.CONNECTIONS {M03_AXI { read_bw {1720} write_bw {1720} read_avg_burst {4} write_avg_burst {4}} M01_AXI { read_bw {3000} write_bw {3000} read_avg_burst {4} write_avg_burst {4}} M02_AXI { read_bw {1000} write_bw {1000} read_avg_burst {4} write_avg_burst {4}} M00_AXI { read_bw {3000} write_bw {3000} read_avg_burst {4} write_avg_burst {4}}} \
    CONFIG.DEST_IDS {M03_AXI:0x140:M01_AXI:0x40:M02_AXI:0x0:M00_AXI:0x80} \
-   CONFIG.REMAPS { M00_AXI {{0x0 0x201_C000_0000 64K}}} \
+   CONFIG.REMAPS {{ M00_AXI {{0x0 0x201_C000_0000 64K}}}} \
    CONFIG.CATEGORY {ps_pcie} \
   ] [get_bd_intf_pins /axi_noc_0/S01_AXI]
 
@@ -176,7 +176,7 @@ proc create_root_design { parentCell design_name temp_options} {
    CONFIG.DATA_WIDTH {128} \
    CONFIG.CONNECTIONS {M01_AXI { read_bw {1720} write_bw {1720} read_avg_burst {4} write_avg_burst {4}} M02_AXI { read_bw {1720} write_bw {1720} read_avg_burst {4} write_avg_burst {4}} M00_AXI { read_bw {1720} write_bw {1720} read_avg_burst {4} write_avg_burst {4}} } \
    CONFIG.DEST_IDS {M01_AXI:0x40:M02_AXI:0x0:M00_AXI:0x80} \
-   CONFIG.REMAPS { M00_AXI {{0x0 0x201_C000_0000 64K}}} \
+   CONFIG.REMAPS {{ M00_AXI {{0x0 0x201_C000_0000 64K}}}} \
    CONFIG.CATEGORY {ps_pmc} \
   ] [get_bd_intf_pins /axi_noc_0/S02_AXI]
 
