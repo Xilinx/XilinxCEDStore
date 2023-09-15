@@ -1,0 +1,3 @@
+######### Extensible Embedded Platform example design_vsva5601 AFX change log ##############
+2023.1 changes 
+versal part_support_vsva5601_AFX
