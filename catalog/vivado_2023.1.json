@@ -366,11 +366,11 @@
         "name": "Versal_CPM_Tandem PCIe",
         "display": "Versal CPM Tandem PCIe",
         "latest_revision": "1.0",
-        "commit_id": "9896b233c68263a86cfd9aae0cbd00e33d1c1894",
+        "commit_id": "d271db035561e099c1abaa95b232028233a1d1dd",
         "revisions": [
           {
             "revision": "1.0",
-            "commit_id": "9896b233c68263a86cfd9aae0cbd00e33d1c1894",
+            "commit_id": "d271db035561e099c1abaa95b232028233a1d1dd",
             "date": "20-07-2022:15:35:28",
             "history": "Added board Versal CPM Tandem PCIe v1.0"
           }
