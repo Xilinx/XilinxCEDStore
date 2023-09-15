@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<ExampleDesign>
+  <Vendor>xilinx.com</Vendor>
+  <Library>design</Library>
+  <Name>cpm5_pcie_bmd</Name>
+   <DisplayName>Versal CPM5 PCIe BMD Simulation Design</DisplayName>
+  <Description>This is Versal CPM5 PCIe BMD Gen5x8 Simulation Design. Simulation only design.</Description>
+   <Version>1.0</Version>
+  <Design>init.tcl</Design>
+  <Image>cpm5_bmd.PNG</Image>
+   <DesignType>IPI</DesignType>
+</ExampleDesign>

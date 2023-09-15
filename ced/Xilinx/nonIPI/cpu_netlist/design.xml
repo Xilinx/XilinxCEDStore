@@ -1,0 +1,10 @@
+<ExampleDesign>
+<Vendor>xilinx.com</Vendor>
+<Library>design</Library>
+<Name>cpu_netlist</Name>
+<Version>1.0</Version> 
+<Design>init.tcl</Design>
+<DisplayName>CPU (Synthesized)</DisplayName>
+<Description>Large synthesized netlist project</Description>
+<Image>CPU.png</Image>
+</ExampleDesign>

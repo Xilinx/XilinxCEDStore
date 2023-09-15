@@ -1,0 +1,33 @@
+{
+    "config": {
+      "items": [
+        {
+          "infra": {
+            "name": "cpm_pcie_pio",
+            "display": "Versal ACAP CPM PCIE PIO Design",
+            "revision": "1.0",
+            "description": "The design is PIO and covers both CPM4 and CPM5. Respective design is generated based on which board is selected i.e. CPM4 PIO design if VCK190 is selected and CPM5 PIO design if VPK120 is selected.",
+            "company": "xilinx.com",
+            "company_display": "Xilinx",
+            "author": "Sindhura",
+            "contributors": [
+              {
+                "group": "Xilinx",
+                "url": "www.xilinx.com"
+              }
+            ],
+            "category": "PCIe",
+            "website": "www.xilinx.com",
+            "is_active" : true, 
+            "search-keywords": [
+              "Versal ACAP CPM PCIE PIO Design",
+              "xilinx.com",
+              "example"             
+            ]
+          }
+        }
+      ]
+    },
+    "_major" : 1,
+    "_minor" : 0
+}
