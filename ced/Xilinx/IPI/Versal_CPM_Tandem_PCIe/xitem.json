@@ -3,7 +3,7 @@
       "items": [
         {
           "infra": {
-            "name": "Versal_CPM_Tandem PCIe",
+            "name": "Versal_CPM_Tandem_PCIe",
             "display": "Versal CPM Tandem PCIe",
             "revision": "1.0",
             "description": "",
