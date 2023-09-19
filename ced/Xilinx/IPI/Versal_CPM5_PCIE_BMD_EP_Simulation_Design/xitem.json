@@ -4,9 +4,9 @@
         {
           "infra": {
             "name": "cpm5_pcie_bmd",
-            "display": "Versal CPM5 PCIe BMD Simulation Design",
+            "display": "Versal CPM5 PCIE BMD EP Simulation Design",
             "revision": "1.0",
-            "description": "This is Versal CPM5 PCIe BMD Gen5x8 Simulation Design. Simulation only design.",
+            "description": "This is Versal CPM5 PCIE BMD EP Gen5x8 Simulation Design.",
             "company": "xilinx.com",
             "company_display": "Xilinx",
             "author": "Sindhura",

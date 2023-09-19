@@ -254,7 +254,7 @@ end
     default: begin
       $fdisplay(_log_file_ptr, "[%t] : Not a valid frame \n", $time);
       $display(_log_file_ptr, "[%t] : Received an invalid frame \n", $time);
-      $system("date +'%X--%x : Received an invalid frame' >> time.log");
+      //$system("date +'%X--%x : Received an invalid frame' >> time.log");
       $finish(2);
     end
 

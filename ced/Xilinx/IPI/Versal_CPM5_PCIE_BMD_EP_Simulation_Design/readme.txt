@@ -5,11 +5,12 @@ This package contains the CPM5 - PCIe BMD Example Design along with the
 Testbench to exercise the same. Please use below version of tools to run the
 simulation
 
-Vivado Version  - 2022.2 E-EA
-VCS Version     - S-2021.09-SP2
+Vivado Version  - 2023.2 
+VCS Version     - U-2023.03-1
+Questa Version  - 2023.2
 
 - For launching the simulation, under Project Manager -> Settings -> Simulation
-	- Update Target Simulator as VCS
+	- Update Target Simulator as VCS/Questa
 	- Update Compiled Library Location
 	- Select Generate Simulation scripts only check box
 - Click on Run Simulation under Flow Navigator.

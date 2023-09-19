@@ -350,7 +350,7 @@ end
         //--------------------------------------------------------------------------
         wait (reset == 0);
         $display("[%t] : Transaction Reset Is De-asserted...", $realtime);
-        $system("date +'%X--%x : Transaction Reset Is De-asserted...' >> time.log");
+        //$system("date +'%X--%x : Transaction Reset Is De-asserted...' >> time.log");
 
         //--------------------------------------------------------------------------
         // Event # 2: Wait for Transaction link to be asserted...
@@ -360,7 +360,7 @@ end
         board.RP.tx_usrapp.TSK_TX_CLK_EAT(100);
 
         $display("[%t] : Transaction Link Is Up...", $realtime);
-        $system("date +'%X--%x : Transaction Link Is Up...' >> time.log");
+        //$system("date +'%X--%x : Transaction Link Is Up...' >> time.log");
         
         board.RP.cfg_usrapp.TSK_WRITE_CFG_DW(32'h01, 32'h00000007, 4'h1);
         TSK_SYSTEM_CONFIGURATION_CHECK;
@@ -475,7 +475,7 @@ end
             $display("[%t] :    SYSTEM CHECK PASSED", $realtime);
         end else begin
             $display("[%t] :    SYSTEM CHECK FAILED", $realtime);
-            $system("date +'%X--%x : SYSTEM CHECK FAILED' >> time.log");
+            //$system("date +'%X--%x : SYSTEM CHECK FAILED' >> time.log");
             $finish;
         end
         
@@ -721,7 +721,7 @@ end
             //-----------------------------------------------------------------------\\
             if (user_lnk_up_n) begin
                 $display("[%t] :  interface is MIA", $realtime);
-                $system("date +'%X--%x : interface is MIA' >> time.log");
+                //$system("date +'%X--%x : interface is MIA' >> time.log");
                 $finish(1);
             end
             //-----------------------------------------------------------------------\\
@@ -836,7 +836,7 @@ end
             //-----------------------------------------------------------------------\\
             if (user_lnk_up_n) begin
                 $display("[%t] :  interface is MIA", $realtime);
-                $system("date +'%X--%x : interface is MIA' >> time.log");
+                //$system("date +'%X--%x : interface is MIA' >> time.log");
                 $finish(1);
             end
             //-----------------------------------------------------------------------\\
@@ -975,7 +975,7 @@ end
             //-----------------------------------------------------------------------\\
             if (user_lnk_up_n) begin
                 $display("[%t] :  interface is MIA", $realtime);
-                $system("date +'%X--%x : interface is MIA' >> time.log");
+                //$system("date +'%X--%x : interface is MIA' >> time.log");
                 $finish(1);
             end
             //-----------------------------------------------------------------------\\
@@ -1116,7 +1116,7 @@ end
             //-----------------------------------------------------------------------\\
             if (user_lnk_up_n) begin
                 $display("[%t] :  interface is MIA", $realtime);
-                $system("date +'%X--%x : interface is MIA' >> time.log");
+                //$system("date +'%X--%x : interface is MIA' >> time.log");
                 $finish(1);
             end
             $display("[%t] : Mem32 Read Req @address %x", $realtime,addr_);
@@ -1228,7 +1228,7 @@ end
             //-----------------------------------------------------------------------\\
             if (user_lnk_up_n) begin
                 $display("[%t] :  interface is MIA", $realtime);
-                $system("date +'%X--%x : interface is MIA' >> time.log");
+                //$system("date +'%X--%x : interface is MIA' >> time.log");
                 $finish(1);
             end
             $display("[%t] : Mem64 Read Req @address %x", $realtime,addr_[31:0]);
@@ -1359,7 +1359,7 @@ end
             //-----------------------------------------------------------------------\\
             if (user_lnk_up_n) begin
                 $display("[%t] :  interface is MIA", $realtime);
-                $system("date +'%X--%x : interface is MIA' >> time.log");
+                //$system("date +'%X--%x : interface is MIA' >> time.log");
                 $finish(1);
             end
             $display("[%t] : Mem32 Write Req @address %x", $realtime,addr_);
@@ -1747,7 +1747,7 @@ end
             //-----------------------------------------------------------------------\\
             if (user_lnk_up_n) begin
                 $display("[%t] :  interface is MIA", $realtime);
-                $system("date +'%X--%x : interface is MIA' >> time.log");
+                //$system("date +'%X--%x : interface is MIA' >> time.log");
                 $finish(1);
             end
             $display("[%t] : Mem64 Write Req @address %x", $realtime,addr_[31:0]);
@@ -2111,7 +2111,7 @@ end
             //-----------------------------------------------------------------------\\
             if (user_lnk_up_n) begin
                 $display("[%t] :  interface is MIA", $realtime);
-                $system("date +'%X--%x : interface is MIA' >> time.log");
+                //$system("date +'%X--%x : interface is MIA' >> time.log");
                 $finish(1);
             end
             //-----------------------------------------------------------------------\\
@@ -2241,7 +2241,7 @@ end
             //-----------------------------------------------------------------------\\
             if (user_lnk_up_n) begin
                 $display("[%t] :  interface is MIA", $realtime);
-                $system("date +'%X--%x : interface is MIA' >> time.log");
+                //$system("date +'%X--%x : interface is MIA' >> time.log");
                 $finish(1);
             end
             //-----------------------------------------------------------------------\\
@@ -2667,7 +2667,7 @@ end
             //-----------------------------------------------------------------------\\
             if (user_lnk_up_n) begin
                 $display("[%t] :  interface is MIA", $realtime);
-                $system("date +'%X--%x : interface is MIA' >> time.log");
+                //$system("date +'%X--%x : interface is MIA' >> time.log");
                 $finish(1);
             end
             //-----------------------------------------------------------------------\\
@@ -2791,7 +2791,7 @@ end
             //-----------------------------------------------------------------------\\
             if (user_lnk_up_n) begin
                 $display("[%t] :  interface is MIA", $realtime);
-                $system("date +'%X--%x : interface is MIA' >> time.log");
+                //$system("date +'%X--%x : interface is MIA' >> time.log");
                 $finish(1);
             end
             //-----------------------------------------------------------------------\\
@@ -3045,7 +3045,7 @@ end
             //-----------------------------------------------------------------------\\
             if (user_lnk_up_n) begin
                 $display("[%t] :  interface is MIA", $realtime);
-                $system("date +'%X--%x : interface is MIA' >> time.log");
+                //$system("date +'%X--%x : interface is MIA' >> time.log");
                 $finish(1);
             end
             //-----------------------------------------------------------------------\\
@@ -3147,7 +3147,7 @@ end
             //-----------------------------------------------------------------------\\
             if (user_lnk_up_n) begin
                 $display("[%t] :  interface is MIA", $realtime);
-                $system("date +'%X--%x : interface is MIA' >> time.log");
+                //$system("date +'%X--%x : interface is MIA' >> time.log");
                 $finish(1);
             end
             //-----------------------------------------------------------------------\\
@@ -3506,7 +3506,7 @@ end
                         cpld_to = 1;
                         if (cpld_to_finish == 1) begin
                             $display("TIMEOUT ERROR in usrapp_tx:TSK_WAIT_FOR_READ_DATA. Completion data never received.");
-                            $system("date +'%X--%x : TIMEOUT ERROR in usrapp_tx:TSK_WAIT_FOR_READ_DATA. Completion data never received.' >> time.log");
+                            //$system("date +'%X--%x : TIMEOUT ERROR in usrapp_tx:TSK_WAIT_FOR_READ_DATA. Completion data never received.' >> time.log");
                             $finish;
                           end
                         else
@@ -3782,7 +3782,7 @@ end
                   if ( (OUT_OF_IO) | (OUT_OF_LO_MEM) | (OUT_OF_HI_MEM)) begin
                      TSK_DISPLAY_PCIE_MAP;
                      $display("ERROR: Ending simulation: Memory Manager is out of memory/IO to allocate to PCI Express device");
-                     $system("date +'%X--%x : ERROR: Ending simulation: Memory Manager is out of memory/IO to allocate to PCI Express device' >> time.log");
+                     //$system("date +'%X--%x : ERROR: Ending simulation: Memory Manager is out of memory/IO to allocate to PCI Express device' >> time.log");
                      $finish;
 
                   end
@@ -4182,7 +4182,7 @@ task TSK_MEM_TEST_DATA_BUS;
              $display("[%t] : Data Error Mismatch, Address: %x Write Data %x != Read Data %x", $realtime,
                               BAR_INIT_P_BAR[bar_index][31:0], pattern, P_READ_DATA);
              success = 0;
-             $system("date +'%X--%x : Data Error Mismatch' >> time.log");
+             //$system("date +'%X--%x : Data Error Mismatch' >> time.log");
              $finish;
            end
         else
@@ -4288,7 +4288,7 @@ task TSK_MEM_TEST_ADDR_BUS;
                      $realtime, BAR_INIT_P_BAR[bar_index][31:0]+(4*offset), pattern, P_READ_DATA);
              stuckHi_success = 0;
              success = 0;
-             $system("date +'%X--%x : Error: Pattern Mismatch' >> time.log");
+             //$system("date +'%X--%x : Error: Pattern Mismatch' >> time.log");
              $finish;
            end
         else
@@ -4338,7 +4338,7 @@ task TSK_MEM_TEST_ADDR_BUS;
                                                  $realtime, BAR_INIT_P_BAR[bar_index][31:0]+(4*0), pattern, P_READ_DATA);
              stuckLo_success = 0;
              success = 0;
-             $system("date +'%X--%x : Error: Pattern Mismatch' >> time.log");
+             //$system("date +'%X--%x : Error: Pattern Mismatch' >> time.log");
              $finish;
            end
         else
@@ -4364,7 +4364,7 @@ task TSK_MEM_TEST_ADDR_BUS;
                                                  pattern, P_READ_DATA);
                   stuckLo_success = 0;
                   success = 0;
-                  $system("date +'%X--%x : Error: Pattern Mismatch' >> time.log");
+                  //$system("date +'%X--%x : Error: Pattern Mismatch' >> time.log");
                   $finish;
                 end
              else
@@ -4465,7 +4465,7 @@ task TSK_MEM_TEST_DEVICE;
            $display("[%t] : Error: Pattern Mismatch, Address = %x, Write Data %x != Read Data %x", $realtime,
                             BAR_INIT_P_BAR[bar_index][31:0]+(4*offset), pattern, P_READ_DATA);
            success = 0;
-           $system("date +'%X--%x : Error: Pattern Mismatch' >> time.log");
+           //$system("date +'%X--%x : Error: Pattern Mismatch' >> time.log");
            $finish;
         end
 
@@ -4499,7 +4499,7 @@ task TSK_MEM_TEST_DEVICE;
            $display("[%t] : Error: Pattern Mismatch, Address = %x, Write Data %x != Read Data %x", $realtime,
                             BAR_INIT_P_BAR[bar_index][31:0]+(4*offset), pattern, P_READ_DATA);
            success = 0;
-           $system("date +'%X--%x : Error: Pattern Mismatch' >> time.log");
+           //$system("date +'%X--%x : Error: Pattern Mismatch' >> time.log");
            $finish;
         end
         pattern = pattern + 1;
