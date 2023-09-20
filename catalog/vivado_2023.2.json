@@ -135,25 +135,6 @@
         "company": "xilinx.com"
       },
       {
-        "name": "cpm_rp",
-        "display": "Versal ACAP CPM4/CPM5 AXI Bridge Root Port Design",
-        "latest_revision": "1.0",
-        "commit_id": "53c56b0148a6c7529195ce04e50aba273cc65607",
-        "revisions": [
-          {
-            "revision": "1.0",
-            "commit_id": "53c56b0148a6c7529195ce04e50aba273cc65607",
-            "date": "15-09-2023:17:16:49",
-            "history": "Added board Versal ACAP CPM4/CPM5 AXI Bridge Root Port Design v1.0"
-          }
-        ],
-        "config": {
-          "root": "ced/Xilinx/IPI/Versal_ACAP_CPM_AXI_Bridge_RootPort_Design",
-          "metadata_file": "xitem.json"
-        },
-        "company": "xilinx.com"
-      },
-      {
         "name": "cpm_pcie_pio",
         "display": "Versal ACAP CPM PCIE PIO Design",
         "latest_revision": "1.0",
@@ -263,25 +244,6 @@
         ],
         "config": {
           "root": "ced/Xilinx/IPI/Versal_CPM5N_CSI_Uport_Design",
-          "metadata_file": "xitem.json"
-        },
-        "company": "xilinx.com"
-      },
-      {
-        "name": "cpm5_pcie_bmd",
-        "display": "Versal CPM5 PCIe BMD Simulation Design",
-        "latest_revision": "1.0",
-        "commit_id": "53c56b0148a6c7529195ce04e50aba273cc65607",
-        "revisions": [
-          {
-            "revision": "1.0",
-            "commit_id": "53c56b0148a6c7529195ce04e50aba273cc65607",
-            "date": "15-09-2023:17:16:49",
-            "history": "Added board Versal CPM5 PCIe BMD Simulation Design v1.0"
-          }
-        ],
-        "config": {
-          "root": "ced/Xilinx/IPI/Versal_CPM5_PCIe_BMD_Simulation_Design",
           "metadata_file": "xitem.json"
         },
         "company": "xilinx.com"
@@ -624,6 +586,44 @@
         ],
         "config": {
           "root": "ced/Xilinx/nonIPI/wave_gen",
+          "metadata_file": "xitem.json"
+        },
+        "company": "xilinx.com"
+      },
+      {
+        "name": "cpm5_pcie_bmd",
+        "display": "Versal CPM5 PCIE BMD EP Simulation Design",
+        "latest_revision": "1.0",
+        "commit_id": "0157caa52b4a4f2c21a82a674e99c36071f52365",
+        "revisions": [
+          {
+            "revision": "1.0",
+            "commit_id": "0157caa52b4a4f2c21a82a674e99c36071f52365",
+            "date": "20-09-2023:09:17:32",
+            "history": "Added board Versal CPM5 PCIE BMD EP Simulation Design v1.0"
+          }
+        ],
+        "config": {
+          "root": "ced/Xilinx/IPI/Versal_CPM5_PCIE_BMD_EP_Simulation_Design",
+          "metadata_file": "xitem.json"
+        },
+        "company": "xilinx.com"
+      },
+      {
+        "name": "cpm_rp",
+        "display": "Versal CPM Bridge RP Design",
+        "latest_revision": "1.0",
+        "commit_id": "0157caa52b4a4f2c21a82a674e99c36071f52365",
+        "revisions": [
+          {
+            "revision": "1.0",
+            "commit_id": "0157caa52b4a4f2c21a82a674e99c36071f52365",
+            "date": "20-09-2023:09:17:32",
+            "history": "Added board Versal CPM Bridge RP Design v1.0"
+          }
+        ],
+        "config": {
+          "root": "ced/Xilinx/IPI/Versal_CPM_Bridge_RP_Design",
           "metadata_file": "xitem.json"
         },
         "company": "xilinx.com"
