@@ -366,7 +366,7 @@ end
         wait (board.RP.cfg_ltssm_state == 'h10);
 
         $display("[%t] : Transaction Link Is Up...", $realtime);
-       // $system("date +'Link up : date %X--%x' >> time.log");
+        $system("date +'Link up : date %X--%x' >> time.log");
         TSK_SYSTEM_CONFIGURATION_CHECK;
 
         end

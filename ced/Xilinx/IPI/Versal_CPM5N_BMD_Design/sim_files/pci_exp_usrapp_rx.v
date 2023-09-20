@@ -963,7 +963,7 @@ task TSK_WAIT_CCIX_DATA;
         if (board.RP.tx_usrapp.DATA_STORE[_i] != board.RP.tx_usrapp.DATA_STORE_2[_i]) begin
             $display("[%t] : Test FAILED --- CCIX Data Error Mismatch @ Byte %d: WRITE_DATA %x != READ_DATA %x",
                      $realtime, _i, board.RP.tx_usrapp.DATA_STORE[_i], board.RP.tx_usrapp.DATA_STORE_2[_i]);
-            //$system("date +'%X--%x : Test FAILED --- CCIX Data Error Mismatch' >> time.log");
+            $system("date +'%X--%x : Test FAILED --- CCIX Data Error Mismatch' >> time.log");
             $finish;
         end
 

@@ -159,9 +159,7 @@ module board;
   //defparam board.RP.design_rp_wrapper_i.design_rp_i.psx_wizard_0.inst.cpm5n_0.inst.CPM_INST.SIM_CPM_CDO_FILE_NAME = "rp_cpm_data_sim.cdo";
   //// EP cdo file to use
   //defparam board.EP.design_1_i.psx_wizard_0.inst.cpm5n_0.inst.CPM_INST.SIM_CPM_CDO_FILE_NAME = "cpm_data_sim.cdo";
-  defparam board.EP.cpm5n_csi_uport_wrapper_i.cpm5n_csi_uport_i.psx_wizard_0.inst.cpm5n_0.inst.CPM_INST.SIP_CPM5N_INST.SIM_CPM_CDO_MODE = 2; 
-  defparam board.RP.design_rp_wrapper_i.design_rp_i.psx_wizard_0.inst.cpm5n_0.inst.CPM_INST.SIP_CPM5N_INST.SIM_CPM_CDO_MODE = 2; 
-
+  
   integer            i;
 
   // System-level clock and reset
@@ -425,7 +423,7 @@ module board;
   initial begin
     // Assert System resets
     $display("[%t] : System Reset Is Asserted...", $realtime);
-    //$system("date +'%X--%x :  System Reset Is Asserted...' > time.log");
+    $system("date +'%X--%x :  System Reset Is Asserted...' > time.log");
     perstn = 1'b0;
     sys_rst_n = 1'b0;
     
@@ -434,7 +432,7 @@ module board;
     // Release POR resets after some delay
     repeat (500) @(posedge rp_sys_clk_p);
     $display("[%t] : POR Reset Is De-asserted...", $realtime);
-    //$system("date +'%X--%x :  POR Reset Is De-asserted...' >> time.log");
+    $system("date +'%X--%x :  POR Reset Is De-asserted...' >> time.log");
     sys_rst_n = 1'b1;
     
     board.EP.design_1_wrapper_i.design_1_i.psx_wizard_0.inst.psxl_0.inst.PSX_VIP_inst.inst.por_reset(1);
@@ -446,7 +444,7 @@ module board;
     wait(board.EP.cpm5n_csi_uport_wrapper_i.cpm5n_csi_uport_i.psx_wizard_0.inst.cpm5n_0.inst.CPM_INST.SIP_CPM5N_INST.i_cpm5n_sim_cfg_wrap.u_cpm5n_sim_cfg.cdo_programming_done == 1'b1)
     
     $display("[%t] : PCIe Reset Is De-asserted...", $realtime);
-    //$system("date +'%X--%x :  PCIe Reset Is De-asserted...' >> time.log");
+    $system("date +'%X--%x :  PCIe Reset Is De-asserted...' >> time.log");
 
     // Endpoint reset release based on GUI selection.
     perstn = 1'b1;

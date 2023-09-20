@@ -14,8 +14,9 @@
 # under the License.
 # ########################################################################
 
+
 set currentFile [file normalize [info script]]
-variable currentDir [file dirname $currentFile]
+variable currentDir [file dirname $currentFile] 
 variable logStuff 0
 
 source -notrace "$currentDir/ibert_help.tcl"

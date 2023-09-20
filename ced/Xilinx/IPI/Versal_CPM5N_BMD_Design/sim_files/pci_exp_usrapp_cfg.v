@@ -345,7 +345,7 @@ begin
   if (user_reset) begin
   
     $display("[%t] : user_reset is asserted", $realtime);
-    //$system("date +'%X--%x : user_reset is asserted' >> time.log");
+    $system("date +'%X--%x : user_reset is asserted' >> time.log");
     $finish(1); 
   
   end
@@ -392,7 +392,7 @@ begin
   if (user_reset) begin
 
     $display("[%t] : trn_reset_n is asserted", $realtime);
-    //$system("date +'%X--%x : trn_reset is asserted' >> time.log");
+    $system("date +'%X--%x : trn_reset is asserted' >> time.log");
     $finish(1);
 
   end

@@ -2561,7 +2561,7 @@ endgenerate
    `BMDREG(user_clk, (reset_n & ~init_rst_i), s_axis_rq_tkeep    , s_axis_rq_tkeep_w , 32'd0)
    `BMDREG(user_clk, (reset_n & ~init_rst_i), s_axis_rq_tlast    , s_axis_rq_tlast_w , 1'd0)
    `BMDREG(user_clk, (reset_n & ~init_rst_i), s_axis_rq_tvalid   , s_axis_rq_tvalid_w, 1'd0)
-   `BMDREG(user_clk, (reset_n & ~init_rst_i), s_axis_rq_tuser_reg, s_axis_rq_tuser_w_parity, 457'd0)
+   `BMDREG(user_clk, (reset_n & ~init_rst_i), s_axis_rq_tuser_reg, s_axis_rq_tuser_w_parity, 373'd0)
 
    `BMDREG(user_clk, (reset_n & ~init_rst_i), rq_done            , rq_done_w        , 1'd0)
 

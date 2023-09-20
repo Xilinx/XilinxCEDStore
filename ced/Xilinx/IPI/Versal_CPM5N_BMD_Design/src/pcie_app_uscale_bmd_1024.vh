@@ -182,15 +182,6 @@ typedef struct packed { \
 
 `define STRUCT_AXI_RC_IF_1024 \
 typedef struct packed { \
-   logic  [7:0]   ldid_valid;    /* 472:465 */ \
-   logic  [15:0]  ldid_7;        /* 464:449 */ \
-   logic  [15:0]  ldid_6;        /* 448:433 */ \
-   logic  [15:0]  ldid_5;        /* 432:417 */ \
-   logic  [15:0]  ldid_4;        /* 416:401 */ \
-   logic  [15:0]  ldid_3;        /* 400:385 */ \
-   logic  [15:0]  ldid_2;        /* 384:369 */ \
-   logic  [15:0]  ldid_1;        /* 368:353 */ \
-   logic  [15:0]  ldid_0;        /* 352:337 */ \
    logic [127:0]  parity;        /* 336:209 */ \
    logic          discontinue;   /* 208     */ \
    logic [4:0]    is_eop7_ptr;   /* 207:203 */ \
@@ -215,63 +206,56 @@ typedef struct packed { \
 } s_axis_rc_tuser_1024; \
  \
 typedef struct packed { \
-  logic [927:0]  dw3_31; \
-  logic          rsvd3;         /* 31    */ \
-  logic [2:0]    attr;          /* 30:28 */ \
-  logic [2:0]    tc;            /* 27:25 */ \
-  logic          rsvd2;         /* 24    */ \
-  logic [7:0]    cmp_bus;       /* 23:16 */ \
-  logic [7:0]    cmp_dev_fn;    /* 15:8  */ \
-  logic [7:0]    tag;           /*  7:0  */ \
-  logic [7:0]    req_bus;       /* 31:24 */ \
-  logic [7:0]    req_dev_fn;    /* 23:16 */ \
-  logic          rsvd1;         /* 15    */ \
-  logic          poisoned_cmp;  /* 14    */ \
-  logic [2:0]    cmp_status;    /* 13:11 */ \
-  logic [10:0]   dword_count;   /* 10:0  */ \
-  logic          rsvd0;         /* 31    */ \
-  logic          req_completed; /* 30    */ \
-  logic          lock_read_cmp; /* 29    */ \
-  logic [12:0]   byte_count;    /* 28:16 */ \
-  logic [3:0]    error_code;    /* 15:12 */ \
-  logic [11:0]   address;       /* 11:0  */ \
+   logic [927:0]  dw3_31; \
+   logic          rsvd3;         /* 31    */ \
+   logic [2:0]    attr;          /* 30:28 */ \
+   logic [2:0]    tc;            /* 27:25 */ \
+   logic          rsvd2;         /* 24    */ \
+   logic [7:0]    cmp_bus;       /* 23:16 */ \
+   logic [7:0]    cmp_dev_fn;    /* 15:8  */ \
+   logic [7:0]    tag;           /*  7:0  */ \
+   logic [7:0]    req_bus;       /* 31:24 */ \
+   logic [7:0]    req_dev_fn;    /* 23:16 */ \
+   logic          rsvd1;         /* 15    */ \
+   logic          poisoned_cmp;  /* 14    */ \
+   logic [2:0]    cmp_status;    /* 13:11 */ \
+   logic [10:0]   dword_count;   /* 10:0  */ \
+   logic          rsvd0;         /* 31    */ \
+   logic          req_completed; /* 30    */ \
+   logic          lock_read_cmp; /* 29    */ \
+   logic [12:0]   byte_count;    /* 28:16 */ \
+   logic [3:0]    error_code;    /* 15:12 */ \
+   logic [11:0]   address;       /* 11:0  */ \
 } s_axis_rc_tdata_1024;
 
 `define STRUCT_AXI_RQ_IF_1024 \
 typedef struct packed { \
-  logic [  3:0]  tbit;            /* 456:453 */ \
-  logic [  3:0]  ide_valid;       /* 452:449 */ \
-  logic [  3:0]  ld_id_valid;     /* 448:445 */ \
-  logic [ 15:0]  ld_id3;          /* 444:429 */ \
-  logic [ 15:0]  ld_id2;          /* 428:413 */ \
-  logic [ 15:0]  ld_id1;          /* 412:397 */ \
-  logic [ 15:0]  ld_id0;          /* 396:381 */ \
-  logic [  7:0]  seq_num3;        /* 380:373 */ \
-  logic [  7:0]  seq_num2;        /* 372:365 */ \
-  logic [  7:0]  seq_num1;        /* 364:357 */ \
-  logic [  7:0]  seq_num0;        /* 356:349 */ \
-  logic [  3:0]  pasid_pmode_req; /* 348:345 */ \
-  logic [  3:0]  pasid_exe_req;   /* 344:341 */ \
-  logic [ 79:0]  pasid;           /* 340:261 */ \
-  logic [  3:0]  pasid_valid;     /* 260:257 */ \
-  logic [127:0]  parity;          /* 256:129 */ \
-  logic [ 31:0]  tph_st_tag;      /* 128: 97 */ \
-  logic [  7:0]  tph_type;        /*  96: 89 */ \
-  logic [  3:0]  tph_present;     /*  88: 85 */ \
-  logic          discontinue;     /*      84 */ \
-  logic [  4:0]  is_eop3_ptr;     /*  83: 79 */ \
-  logic [  4:0]  is_eop2_ptr;     /*  78: 74 */ \
-  logic [  4:0]  is_eop1_ptr;     /*  73: 69 */ \
-  logic [  4:0]  is_eop0_ptr;     /*  68: 64 */ \
-  logic [  3:0]  is_eop;          /*  63: 60 */ \
-  logic [  1:0]  is_sop3_ptr;     /*  59: 58 */ \
-  logic [  1:0]  is_sop2_ptr;     /*  57: 56 */ \
-  logic [  1:0]  is_sop1_ptr;     /*  55: 54 */ \
-  logic [  1:0]  is_sop0_ptr;     /*  53: 52 */ \
-  logic [  3:0]  is_sop;          /*  51: 48 */ \
-  logic [ 15:0]  addr_offset;     /*  47: 32 */ \
-  logic [ 15:0]  last_be;         /*  31: 16 */ \
-  logic [ 15:0]  first_be;        /*  15:  0 */ \
+   logic [  5:0]  seq_num3;        /* 372:367 */ \
+   logic [  5:0]  seq_num2;        /* 366:361 */ \
+   logic [  5:0]  seq_num1;        /* 360:355 */ \
+   logic [  5:0]  seq_num0;        /* 354:349 */ \
+   logic [  3:0]  pasid_pmode_req; /* 348:345 */ \
+   logic [  3:0]  pasid_exe_req;   /* 344:341 */ \
+   logic [ 79:0]  pasid;           /* 340:261 */ \
+   logic [  3:0]  pasid_valid;     /* 260:257 */ \
+   logic [127:0]  parity;          /* 256:129 */ \
+   logic [ 31:0]  tph_st_tag;      /* 128: 97 */ \
+   logic [  7:0]  tph_type;        /*  96: 89 */ \
+   logic [  3:0]  tph_present;     /*  88: 85 */ \
+   logic          discontinue;     /*      84 */ \
+   logic [  4:0]  is_eop3_ptr;     /*  83: 79 */ \
+   logic [  4:0]  is_eop2_ptr;     /*  78: 74 */ \
+   logic [  4:0]  is_eop1_ptr;     /*  73: 69 */ \
+   logic [  4:0]  is_eop0_ptr;     /*  68: 64 */ \
+   logic [  3:0]  is_eop;          /*  63: 60 */ \
+   logic [  1:0]  is_sop3_ptr;     /*  59: 58 */ \
+   logic [  1:0]  is_sop2_ptr;     /*  57: 56 */ \
+   logic [  1:0]  is_sop1_ptr;     /*  55: 54 */ \
+   logic [  1:0]  is_sop0_ptr;     /*  53: 52 */ \
+   logic [  3:0]  is_sop;          /*  51: 48 */ \
+   logic [ 15:0]  addr_offset;     /*  47: 32 */ \
+   logic [ 15:0]  last_be;         /*  31: 16 */ \
+   logic [ 15:0]  first_be;        /*  15:  0 */ \
 } s_axis_rq_tuser_1024; \
  \
 typedef struct packed { /* 128 bits */ \

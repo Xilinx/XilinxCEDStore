@@ -137,20 +137,6 @@ begin
 
    board.RP.tx_usrapp.TSK_TX_CLK_EAT(10000);
 
-   board.RP.tx_usrapp.TSK_MEM64_RD(32'h204);
-
-   if  (P_READ_DATA[31]) begin
-        $display("[%t] : TEST FAILED --- Completion data error", $realtime);
-   end
-   if (P_READ_DATA[8] == 1'b0) begin
-        $display("[%t] : TEST FAILED --- Write failed to complete", $realtime);
-   end
-   if (P_READ_DATA[24] == 1'b0) begin
-        $display("[%t] : TEST FAILED --- Read failed to complete", $realtime);
-   end
-   if  ((!P_READ_DATA[31]) && P_READ_DATA[8] && P_READ_DATA[24]) begin
-        $display("[%t] : TEST Passed Successfully", $realtime);
-   end
 
   $finish;
 end

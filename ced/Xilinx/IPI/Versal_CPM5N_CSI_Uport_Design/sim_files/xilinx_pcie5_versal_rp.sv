@@ -56,7 +56,7 @@ module xilinx_pcie5_versal_rp # (
 );
 
   localparam         TCQ = 1;
-  localparam         EP_DEV_ID = 16'hB00F;
+  localparam         EP_DEV_ID = 16'hB03F;
   //----------------------------------------------------------------------------------------------------------------//
   // 3. AXI Interface                                                                                               //
   //----------------------------------------------------------------------------------------------------------------//
@@ -240,7 +240,7 @@ module xilinx_pcie5_versal_rp # (
 
   wire [15:0]  cfg_vend_id        = 16'h10EE; //16'h10EE;   
 
-  wire [15:0]  cfg_dev_id         = 16'hB00F; //16'h903F;   
+  wire [15:0]  cfg_dev_id         = 16'hB03F; //16'h903F;   
   wire [15:0]  cfg_subsys_id      = 16'h0007; //16'h0007;                                
   wire [7:0]   cfg_rev_id         = 8'h00;    //8'h00; 
   wire [15:0]  cfg_subsys_vend_id = 16'h10EE; //16'h10EE;

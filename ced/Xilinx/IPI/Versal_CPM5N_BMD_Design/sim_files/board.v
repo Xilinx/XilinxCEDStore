@@ -134,23 +134,20 @@ module board;
   initial begin
     // Assert System resets
     $display("[%t] : System Reset Is Asserted...", $realtime);
-    //$system("date +'%X--%x :  System Reset Is Asserted...' > time.log");
+    $system("date +'%X--%x :  System Reset Is Asserted...' > time.log");
     perstn = 1'b0;
     sys_rst_n = 1'b0;
     
     // Release POR resets after some delay
     repeat (500) @(posedge rp_sys_clk_p);
     $display("[%t] : POR Reset Is De-asserted...", $realtime);
-    //$system("date +'%X--%x :  POR Reset Is De-asserted...' >> time.log");
+    $system("date +'%X--%x :  POR Reset Is De-asserted...' >> time.log");
     sys_rst_n = 1'b1;
     
     // Wait for CDO load to complete before releasing PCIe reset
-    //repeat (12300) @(posedge rp_sys_clk_p);
-    wait(board.RP.design_rp_i.psx_wizard_0.inst.cpm5n_0.inst.CPM_INST.SIP_CPM5N_INST.i_cpm5n_sim_cfg_wrap.u_cpm5n_sim_cfg.cdo_programming_done == 1'b1)
-    wait(board.EP.cpm5n_bmd_i.psx_wizard_0.inst.cpm5n_0.inst.CPM_INST.SIP_CPM5N_INST.i_cpm5n_sim_cfg_wrap.u_cpm5n_sim_cfg.cdo_programming_done == 1'b1)
-
+    repeat (12300) @(posedge rp_sys_clk_p);
     $display("[%t] : PCIe Reset Is De-asserted...", $realtime);
-    //$system("date +'%X--%x :  PCIe Reset Is De-asserted...' >> time.log");
+    $system("date +'%X--%x :  PCIe Reset Is De-asserted...' >> time.log");
 
     // Endpoint reset release based on GUI selection.
     perstn = 1'b1;
