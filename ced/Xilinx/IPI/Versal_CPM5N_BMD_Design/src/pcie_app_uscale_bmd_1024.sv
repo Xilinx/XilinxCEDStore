@@ -39,10 +39,10 @@ module  pcie_app_versal_bmd #(
    parameter         AXISTEN_IF_ENABLE_RX_MSG_INTFC   = 0,
    parameter [17:0]  AXISTEN_IF_ENABLE_MSG_ROUTE      = 18'h2FFFF,
    // Switchable between 512b and 256b/128b/64b design
-   parameter          AXI4_CQ_TUSER_WIDTH            = 573,
-   parameter          AXI4_CC_TUSER_WIDTH            = 273,
-   parameter          AXI4_RQ_TUSER_WIDTH            = 457,
-   parameter          AXI4_RC_TUSER_WIDTH            = 473,
+   parameter          AXI4_CQ_TUSER_WIDTH            = 465,
+   parameter          AXI4_CC_TUSER_WIDTH            = 165,
+   parameter          AXI4_RQ_TUSER_WIDTH            = 373,
+   parameter          AXI4_RC_TUSER_WIDTH            = 337,
    parameter         KEEP_WIDTH                       = C_DATA_WIDTH / 32,
    //parameter         AXISTEN_IF_EXT_512               = (C_DATA_WIDTH == 512)? 1: 0,
    //parameter [1:0]   AXISTEN_IF_WIDTH                 = (C_DATA_WIDTH == 512)? 2'b11: 

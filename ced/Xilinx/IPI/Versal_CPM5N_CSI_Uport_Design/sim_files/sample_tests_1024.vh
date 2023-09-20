@@ -62,7 +62,7 @@ begin
     board.RP.tx_usrapp.TSK_BAR_INIT;
       
     // PIO Byte enable tests
-    //$system("date +'PIO Access: System Time %X--%x' >> time.log"); 
+    $system("date +'PIO Access: System Time %X--%x' >> time.log"); 
     
     for (board.RP.tx_usrapp.kk = 0; board.RP.tx_usrapp.kk <= 0; board.RP.tx_usrapp.kk = board.RP.tx_usrapp.kk + 1) begin
       board.RP.tx_usrapp.TSK_MEM32_WR_BARX(32'h10, 32'h12345678,4'hf,3'h4);
@@ -112,7 +112,7 @@ begin
  //    board.RP.tx_usrapp.TSK_TX_MESSAGE(8'h00,3'b0,11'b1,64'hABCDEFAB1AB4A5A5, 3'b011,8'h7F);
 
     
-    //$system("date +'Trigger UPort Gen : System Time %X--%x' >> time.log"); 
+    $system("date +'Trigger UPort Gen : System Time %X--%x' >> time.log"); 
     board.RP.trig_uport_gen = 'h1; 
     
     //board.RP.tx_usrapp.TSK_TX_CLK_EAT(5000);
@@ -132,7 +132,7 @@ begin
     $display("CMPL Received = %d", {board.EP.design_1_wrapper_i.csi_uport_inst.csi_uport_axil_reg_1.cmpl_sop_received_count_i[31:0]}); 
     
     $display("[%t] : CSI Test Completed", $realtime);
-    //$system("date +'Test Completed : System Time %X--%x' >> time.log"); 
+    $system("date +'Test Completed : System Time %X--%x' >> time.log"); 
       
     force board.EP.design_1_wrapper_i.axi_vip_en = 0;
     board.RP.tx_usrapp.TSK_MEM32_WR_BARX(32'h20, 32'h04040404,4'hf, 3'h0);

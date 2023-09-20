@@ -16,7 +16,7 @@
 
 `timescale 1 ps / 1 ps
 
-module cpm5n_bmd_wrapper
+module design_1_wrapper
    (gt_refclk0_0_clk_n,
     gt_refclk0_0_clk_p,
     PCIE0_GT_0_grx_n,
@@ -26,10 +26,11 @@ module cpm5n_bmd_wrapper
    );
    parameter C_DATA_WIDTH = 1024; // RX/TX interface data width
    parameter KEEP_WIDTH = C_DATA_WIDTH / 32;
-   parameter AXI4_CQ_TUSER_WIDTH = 573;
-   parameter AXI4_CC_TUSER_WIDTH = 273;
-   parameter AXI4_RQ_TUSER_WIDTH = 457;
-   parameter AXI4_RC_TUSER_WIDTH = 473;
+   parameter AXI4_CQ_TUSER_WIDTH = 465;
+   parameter AXI4_CC_TUSER_WIDTH = 165;
+   parameter AXI4_RQ_TUSER_WIDTH = 373;
+   parameter AXI4_RC_TUSER_WIDTH = 337;
+
   input gt_refclk0_0_clk_n;
   input gt_refclk0_0_clk_p;
   input [15:0]PCIE0_GT_0_grx_n;
@@ -168,7 +169,7 @@ module cpm5n_bmd_wrapper
 
 assign w_pcie0_cfg_interrupt_0_pending = pcie0_cfg_interrupt_0_pending | w_cfg_interrupt_0_pending;
  
-  cpm5n_bmd cpm5n_bmd_i (
+  design_1 design_1_i (
 
     // Global Signals
     .cpm_bot_user_clk_0(pcie0_user_clk_0),

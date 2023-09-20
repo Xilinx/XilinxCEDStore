@@ -154,7 +154,7 @@ set_property top board [get_filesets sim_1]
 set_property top_lib xil_defaultlib [get_filesets sim_1]
 
 set_property -name "vcs.elaborate.vcs.more_options" -value "+nospecify +notimingchecks" -objects $obj
-set_property -name {vcs.simulate.runtime} -value {350000ns} -objects [get_filesets sim_1]
+set_property -name {vcs.simulate.runtime} -value {300000ns} -objects [get_filesets sim_1]
 set_property -name {vcs.simulate.vcs.more_options} -value {-gui} -objects [get_filesets sim_1]
 
 } else {

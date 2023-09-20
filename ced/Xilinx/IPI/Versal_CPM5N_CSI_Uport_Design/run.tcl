@@ -199,15 +199,14 @@ set obj [get_filesets sim_1]
 
 set OS [lindex $::tcl_platform(os) 0]
 
-set_property top board [get_filesets sim_1]
-set_property top_lib xil_defaultlib [get_filesets sim_1]
-
 if { [string equal -nocase $OS "Windows"] == 0 } {
 #set_property target_simulator Questa [current_project]
 set_property target_simulator VCS [current_project]
+set_property top board [get_filesets sim_1]
+set_property top_lib xil_defaultlib [get_filesets sim_1]
 
 set_property -name "vcs.elaborate.vcs.more_options" -value "+nospecify +notimingchecks" -objects $obj
-set_property -name {vcs.simulate.runtime} -value {400000ns} -objects [get_filesets sim_1]
+set_property -name {vcs.simulate.runtime} -value {650000ns} -objects [get_filesets sim_1]
 set_property -name {vcs.simulate.vcs.more_options} -value {-gui} -objects [get_filesets sim_1]
 set_property -name {vcs.simulate.log_all_signals} -value {true} -objects [get_filesets sim_1]
 

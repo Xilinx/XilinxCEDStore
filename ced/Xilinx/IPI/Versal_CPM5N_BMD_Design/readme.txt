@@ -6,7 +6,7 @@ Testbench to exercise the same. Please use below version of tools to run the
 simulation
 
 Vivado Version  - 2023.2 
-VCS Version     - U-2023.03-1
+VCS Version     - T-2022.06-SP1-1
 
 - For launching the simulation, under Project Manager -> Settings -> Simulation
 	- Update Target Simulator as VCS
@@ -25,5 +25,5 @@ VCS Version     - U-2023.03-1
 
 NOTE : 
 1. This design usage is limited for simulation purpose
-2. The integrated testcase simulation will run for ~350us
+2. The integrated testcase simulation will run for ~300us
 ##############################################################################
