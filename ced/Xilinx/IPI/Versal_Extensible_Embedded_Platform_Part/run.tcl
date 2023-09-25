@@ -32,6 +32,15 @@ proc create_root_design {currentDir design_name use_lpddr clk_options irqs use_a
 	set_property -dict [list CONFIG.PS_PMC_CONFIG {PS_GEN_IPI0_ENABLE 1 PS_GEN_IPI0_MASTER A72 PS_GEN_IPI1_ENABLE 1 PS_GEN_IPI1_MASTER A72 PS_GEN_IPI2_ENABLE 1 PS_GEN_IPI2_MASTER A72 PS_GEN_IPI3_ENABLE 1 PS_GEN_IPI3_MASTER A72 PS_GEN_IPI4_ENABLE 1 PS_GEN_IPI4_MASTER A72 PS_GEN_IPI5_ENABLE 1 PS_GEN_IPI5_MASTER A72 PS_GEN_IPI6_ENABLE 1 PS_GEN_IPI6_MASTER A72} ] [get_bd_cells CIPS_0]
 
 	set_property -dict [list CONFIG.PS_PMC_CONFIG { PMC_SD1_PERIPHERAL {{ENABLE 1} {IO {PMC_MIO 0 .. 11}}} PS_UART0_PERIPHERAL {{ENABLE 1} {IO {PS_MIO 0 .. 1}}}}] [get_bd_cells CIPS_0]
+	
+	set slr_cnt [get_property SLRS [get_parts [get_property PART [current_project]]]]
+	if { $slr_cnt > 0 } {
+		set_property CONFIG.PS_PMC_CONFIG [subst {
+			SLR[format %d [expr $slr_cnt - 1]]_PMC_CRP_HSM0_REF_CTRL_FREQMHZ {33.333} \
+		}] [get_bd_cells CIPS_0]
+	}
+
+	
 
 
 	if {$use_intc_15} {
