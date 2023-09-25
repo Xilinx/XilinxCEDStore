@@ -154,25 +154,6 @@
         "company": "xilinx.com"
       },
       {
-        "name": "cpm_pcie_qdma_ep",
-        "display": "Versal ACAP CPM QDMA EP Design",
-        "latest_revision": "1.0",
-        "commit_id": "53c56b0148a6c7529195ce04e50aba273cc65607",
-        "revisions": [
-          {
-            "revision": "1.0",
-            "commit_id": "53c56b0148a6c7529195ce04e50aba273cc65607",
-            "date": "15-09-2023:17:16:49",
-            "history": "Added board Versal ACAP CPM QDMA EP Design v1.0"
-          }
-        ],
-        "config": {
-          "root": "ced/Xilinx/IPI/Versal_ACAP_CPM_QDMA_EP_Design",
-          "metadata_file": "xitem.json"
-        },
-        "company": "xilinx.com"
-      },
-      {
         "name": "ver_ps_perf",
         "display": "Versal ACAP Processor Performance",
         "latest_revision": "1.0",
@@ -643,6 +624,25 @@
         ],
         "config": {
           "root": "ced/Xilinx/IPI/Versal_CPM5_QDMA_EP_Simulation_Design",
+          "metadata_file": "xitem.json"
+        },
+        "company": "xilinx.com"
+      },
+      {
+        "name": "cpm_pcie_qdma_ep",
+        "display": "Versal CPM QDMA EP Design",
+        "latest_revision": "1.0",
+        "commit_id": "0b512f47b5231e219b5e84af790adbfb7ce26158",
+        "revisions": [
+          {
+            "revision": "1.0",
+            "commit_id": "0b512f47b5231e219b5e84af790adbfb7ce26158",
+            "date": "25-09-2023:06:27:36",
+            "history": "Added board Versal CPM QDMA EP Design v1.0"
+          }
+        ],
+        "config": {
+          "root": "ced/Xilinx/IPI/Versal_CPM_QDMA_EP_Design",
           "metadata_file": "xitem.json"
         },
         "company": "xilinx.com"
