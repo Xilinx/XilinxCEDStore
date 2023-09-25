@@ -173,63 +173,6 @@
         "company": "xilinx.com"
       },
       {
-        "name": "cpm5n_bmd",
-        "display": "Versal CPM5N BMD Design",
-        "latest_revision": "1.0",
-        "commit_id": "ec04b990e34ff03dee8b5d9b9486d28ff1b32d0e",
-        "revisions": [
-          {
-            "revision": "1.0",
-            "commit_id": "ec04b990e34ff03dee8b5d9b9486d28ff1b32d0e",
-            "date": "15-09-2023:17:16:49",
-            "history": "Added board Versal CPM5N BMD Design v1.0"
-          }
-        ],
-        "config": {
-          "root": "ced/Xilinx/IPI/Versal_CPM5N_BMD_Design",
-          "metadata_file": "xitem.json"
-        },
-        "company": "xilinx.com"
-      },
-      {
-        "name": "cpm5n_cdm_msgldst",
-        "display": "Versal CPM5N CDM Msg Ld St Design",
-        "latest_revision": "1.0",
-        "commit_id": "53c56b0148a6c7529195ce04e50aba273cc65607",
-        "revisions": [
-          {
-            "revision": "1.0",
-            "commit_id": "53c56b0148a6c7529195ce04e50aba273cc65607",
-            "date": "15-09-2023:17:16:49",
-            "history": "Added board Versal CPM5N CDM Msg Ld St Design v1.0"
-          }
-        ],
-        "config": {
-          "root": "ced/Xilinx/IPI/Versal_CPM5N_CDM_Msg_Ld_St_Design",
-          "metadata_file": "xitem.json"
-        },
-        "company": "xilinx.com"
-      },
-      {
-        "name": "cpm5n_csi_uport",
-        "display": "Versal CPM5N CSI Uport Design",
-        "latest_revision": "1.0",
-        "commit_id": "ec04b990e34ff03dee8b5d9b9486d28ff1b32d0e",
-        "revisions": [
-          {
-            "revision": "1.0",
-            "commit_id": "ec04b990e34ff03dee8b5d9b9486d28ff1b32d0e",
-            "date": "15-09-2023:17:16:49",
-            "history": "Added board Versal CPM5N CSI Uport Design v1.0"
-          }
-        ],
-        "config": {
-          "root": "ced/Xilinx/IPI/Versal_CPM5N_CSI_Uport_Design",
-          "metadata_file": "xitem.json"
-        },
-        "company": "xilinx.com"
-      },
-      {
         "name": "Versal_CPM_PCIe_Debug",
         "display": "Versal CPM Debug-over-PCIe",
         "latest_revision": "1.0",
@@ -662,6 +605,25 @@
         ],
         "config": {
           "root": "ced/Xilinx/IPI/Versal_CPM4_QDMA_EP_MM_ST_Perf_Design",
+          "metadata_file": "xitem.json"
+        },
+        "company": "xilinx.com"
+      },
+      {
+        "name": "cpm4_bmd_sim",
+        "display": "Versal CPM4 BMD EP Simulation Design",
+        "latest_revision": "1.0",
+        "commit_id": "12c6e71cb8d77b429b694b72a821aad3a0c4db98",
+        "revisions": [
+          {
+            "revision": "1.0",
+            "commit_id": "12c6e71cb8d77b429b694b72a821aad3a0c4db98",
+            "date": "25-09-2023:10:26:49",
+            "history": "Added board Versal CPM4 BMD EP Simulation Design v1.0"
+          }
+        ],
+        "config": {
+          "root": "ced/Xilinx/IPI/Versal_CPM4_BMD_EP_Simulation_Design",
           "metadata_file": "xitem.json"
         },
         "company": "xilinx.com"
