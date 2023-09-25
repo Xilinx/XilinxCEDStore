@@ -646,6 +646,25 @@
           "metadata_file": "xitem.json"
         },
         "company": "xilinx.com"
+      },
+      {
+        "name": "cpm4_qdma_ep_perf",
+        "display": "Versal CPM4 QDMA EP MM ST Perf Design",
+        "latest_revision": "1.0",
+        "commit_id": "c2b841c47f382181a39c249f61b6f6a2b0cc0af6",
+        "revisions": [
+          {
+            "revision": "1.0",
+            "commit_id": "c2b841c47f382181a39c249f61b6f6a2b0cc0af6",
+            "date": "25-09-2023:07:55:43",
+            "history": "Added board Versal CPM4 QDMA EP MM ST Perf Design v1.0"
+          }
+        ],
+        "config": {
+          "root": "ced/Xilinx/IPI/Versal_CPM4_QDMA_EP_MM_ST_Perf_Design",
+          "metadata_file": "xitem.json"
+        },
+        "company": "xilinx.com"
       }
     ],
     "categories": [
