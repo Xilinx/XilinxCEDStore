@@ -3,10 +3,10 @@
       "items": [
         {
           "infra": {
-            "name": "cpm4_bmd",
-            "display": "VCK190 CPM PCIE BMD Design",
+            "name": "cpm_bmd_ep",
+            "display": "Versal CPM PCIE BMD EP Design",
             "revision": "1.0",
-            "description": "VCK190 CPM PCIE BMD Example Design",
+            "description": "Versal CPM PCIE BMD EP Example Design",
             "company": "xilinx.com",
             "company_display": "Xilinx",
             "author": "Sindhura",
@@ -20,7 +20,7 @@
             "website": "www.xilinx.com",
             "is_active" : true, 
             "search-keywords": [
-              "VCK190 CPM PCIE BMD Design",
+              "Versal CPM PCIE BMD EP Design",
               "xilinx.com",
               "example"             
             ]

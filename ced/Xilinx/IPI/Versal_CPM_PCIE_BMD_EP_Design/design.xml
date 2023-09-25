@@ -2,11 +2,11 @@
 <ExampleDesign>
   <Vendor>xilinx.com</Vendor>
   <Library>design</Library>
-  <Name>cpm4_bmd</Name>
-   <DisplayName>VCK190 CPM PCIE BMD Design</DisplayName>
-  <Description>VCK190 CPM PCIE BMD Example Design</Description>
+  <Name>cpm_bmd_ep</Name>
+   <DisplayName>Versal CPM PCIE BMD EP Design</DisplayName>
+  <Description>Versal CPM PCIE BMD EP Example Design</Description>
    <Version>1.0</Version>
   <Design>init.tcl</Design>
-  <Image>VCK190_CPM_PCIE_BMD.png</Image>
+  <Image>Versal_CPM_PCIE_BMD.png</Image>
    <DesignType>IPI</DesignType>
 </ExampleDesign>
