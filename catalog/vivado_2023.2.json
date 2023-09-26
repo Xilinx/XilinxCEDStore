@@ -97,25 +97,6 @@
         "company": "xilinx.com"
       },
       {
-        "name": "cpm4_bmd",
-        "display": "VCK190 CPM PCIE BMD Design",
-        "latest_revision": "1.0",
-        "commit_id": "53c56b0148a6c7529195ce04e50aba273cc65607",
-        "revisions": [
-          {
-            "revision": "1.0",
-            "commit_id": "53c56b0148a6c7529195ce04e50aba273cc65607",
-            "date": "15-09-2023:17:16:49",
-            "history": "Added board VCK190 CPM PCIE BMD Design v1.0"
-          }
-        ],
-        "config": {
-          "root": "ced/Xilinx/IPI/VCK190_CPM_PCIE_BMD",
-          "metadata_file": "xitem.json"
-        },
-        "company": "xilinx.com"
-      },
-      {
         "name": "multirategty",
         "display": "Multi-Rate GTY",
         "latest_revision": "1.0",
@@ -130,25 +111,6 @@
         ],
         "config": {
           "root": "ced/Xilinx/IPI/Versal Multi-Rate GTY",
-          "metadata_file": "xitem.json"
-        },
-        "company": "xilinx.com"
-      },
-      {
-        "name": "cpm_pcie_pio",
-        "display": "Versal ACAP CPM PCIE PIO Design",
-        "latest_revision": "1.0",
-        "commit_id": "53c56b0148a6c7529195ce04e50aba273cc65607",
-        "revisions": [
-          {
-            "revision": "1.0",
-            "commit_id": "53c56b0148a6c7529195ce04e50aba273cc65607",
-            "date": "15-09-2023:17:16:49",
-            "history": "Added board Versal ACAP CPM PCIE PIO Design v1.0"
-          }
-        ],
-        "config": {
-          "root": "ced/Xilinx/IPI/Versal_ACAP_CPM_PCIE_PIO_Design",
           "metadata_file": "xitem.json"
         },
         "company": "xilinx.com"
@@ -624,6 +586,44 @@
         ],
         "config": {
           "root": "ced/Xilinx/IPI/Versal_CPM4_BMD_EP_Simulation_Design",
+          "metadata_file": "xitem.json"
+        },
+        "company": "xilinx.com"
+      },
+      {
+        "name": "cpm_pcie_pio",
+        "display": "Versal CPM PCIE PIO EP Design",
+        "latest_revision": "1.0",
+        "commit_id": "141172c779f2ebbdc63da6a9d753799634ce4244",
+        "revisions": [
+          {
+            "revision": "1.0",
+            "commit_id": "141172c779f2ebbdc63da6a9d753799634ce4244",
+            "date": "26-09-2023:04:57:56",
+            "history": "Added board Versal CPM PCIE PIO EP Design v1.0"
+          }
+        ],
+        "config": {
+          "root": "ced/Xilinx/IPI/Versal_CPM_PCIE_PIO_EP_Design",
+          "metadata_file": "xitem.json"
+        },
+        "company": "xilinx.com"
+      },
+      {
+        "name": "cpm_bmd_ep",
+        "display": "Versal CPM PCIE BMD EP Design",
+        "latest_revision": "1.0",
+        "commit_id": "141172c779f2ebbdc63da6a9d753799634ce4244",
+        "revisions": [
+          {
+            "revision": "1.0",
+            "commit_id": "141172c779f2ebbdc63da6a9d753799634ce4244",
+            "date": "26-09-2023:04:57:56",
+            "history": "Added board Versal CPM PCIE BMD EP Design v1.0"
+          }
+        ],
+        "config": {
+          "root": "ced/Xilinx/IPI/Versal_CPM_PCIE_BMD_EP_Design",
           "metadata_file": "xitem.json"
         },
         "company": "xilinx.com"
