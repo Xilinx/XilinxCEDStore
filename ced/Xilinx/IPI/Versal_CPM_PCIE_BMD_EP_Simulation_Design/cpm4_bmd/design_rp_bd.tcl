@@ -276,7 +276,9 @@ proc create_root_design { parentCell } {
   set versal_cips_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:versal_cips versal_cips_0 ]
   set_property -dict [list \
     CONFIG.CPM_CONFIG { \
-      CPM_PCIE0_AXISTEN_IF_EXT_512_RC_4TLP_STRADDLE {1} \
+      CPM_PCIE0_AXISTEN_IF_EXT_512_CQ_STRADDLE {0} \
+      CPM_PCIE0_AXISTEN_IF_EXT_512_RC_4TLP_STRADDLE {0} \
+      CPM_PCIE0_AXISTEN_IF_EXT_512_RQ_STRADDLE {0} \
       CPM_PCIE0_CFG_CTL_IF {1} \
       CPM_PCIE0_CFG_EXT_IF {1} \
       CPM_PCIE0_CFG_FC_IF {1} \

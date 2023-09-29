@@ -3,10 +3,10 @@
       "items": [
         {
           "infra": {
-            "name": "cpm4_bmd_sim",
-            "display": "Versal CPM4 BMD EP Simulation Design",
+            "name": "cpm_bmd",
+            "display": "Versal CPM PCIE BMD EP Simulation Design",
             "revision": "1.0",
-            "description": "This is CPM4 BMD Gen4x8 Simulation Design",
+            "description": "This is Versal CPM PCIE BMD EP Simulation Design. It allows generating CPM4 Gen4x8 and CPM5 Gen5x8 for VCK190 and VPK120 respectively based on the board selected",
             "company": "xilinx.com",
             "company_display": "Xilinx",
             "author": "Sindhura",
@@ -20,7 +20,7 @@
             "website": "www.xilinx.com",
             "is_active" : true, 
             "search-keywords": [
-              "Versal CPM4 BMD EP Simulation Design",
+              "Versal CPM PCIE BMD EP Simulation Design",
               "xilinx.com",
               "example"             
             ]

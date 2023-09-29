@@ -80,7 +80,8 @@ module board;
                                   (REF_CLK_FREQ == 1) ? 4000 :
                                   (REF_CLK_FREQ == 2) ? 2000 : 0;
 
-
+ localparam C_CPM_PIPESIM = `EP_CPM_PATH.inst.C_CPM_PIPESIM;
+ 
   // System-level clock and reset
   reg sys_rst_n;
 
@@ -292,7 +293,7 @@ endgenerate
   
 generate
 if ((PCIE_CTRL_MODE == 0) &&
-   (`EP_CPM_PATH.inst.C_CPM_PIPESIM == "TRUE")) begin : Single_CTRL_PIPE // CTRL 0 x16
+   (C_CPM_PIPESIM == "TRUE")) begin : Single_CTRL_PIPE // CTRL 0 x16
   initial begin
      force `EP_IP_PATH.pcie0_pipe_ep_commands_in = `RP_IP_PATH.pcie0_pipe_rp_commands_in;
      force `RP_IP_PATH.pcie0_pipe_rp_commands_out = `EP_IP_PATH.pcie0_pipe_ep_commands_out;
@@ -333,7 +334,7 @@ if ((PCIE_CTRL_MODE == 0) &&
   end
 end
 else if ((PCIE_CTRL_MODE == 1) &&
-         (`EP_CPM_PATH.inst.C_CPM_PIPESIM == "TRUE")) begin : Dual_Ctrl_PIPE // CTRL 0+2 x8x8
+         (C_CPM_PIPESIM == "TRUE")) begin : Dual_Ctrl_PIPE // CTRL 0+2 x8x8
   initial begin
      force `EP_IP_PATH.pcie0_pipe_ep_commands_in = `RP_IP_PATH.pcie0_pipe_rp_commands_in;
      force `RP_IP_PATH.pcie0_pipe_rp_commands_out = `EP_IP_PATH.pcie0_pipe_ep_commands_out;
