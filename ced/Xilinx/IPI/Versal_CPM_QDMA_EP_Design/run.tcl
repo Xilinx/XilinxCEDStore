@@ -30,9 +30,13 @@ proc createDesign {design_name options} {
 set obj [get_filesets sources_1]
 
 set board_name [get_property BOARD_NAME [current_board]]
-puts $board_name 
+puts $board_name
+
 if [regexp "vck190" $board_name] {
-puts "INFO: CPM4 QDMA preset is selected."
+puts "INFO: VCK190 Board is selected."
+if {([lsearch $options CPM4_Preset.VALUE] == -1) || ([lsearch $options "CPM4_QDMA_Gen4x8_MM_ST"] != -1)} {
+puts "INFO: default CPM4_QDMA_Gen4x8_MM_ST preset is selected."
+
 set files [list \
  [file normalize "${currentDir}/cpm4_qdma/src/exdes/ST_c2h.sv"] \
  [file normalize "${currentDir}/cpm4_qdma/src/exdes/ST_h2c.sv"] \
@@ -180,7 +184,62 @@ set outfile  [open [file join [get_property directory [current_project]] [curren
 puts -nonewline $outfile $contents
 close $outfile
 
-} 
+} elseif {[regexp "CPM4_QDMA_Gen4x8_Performance_Design" $options]} {
+set obj [get_filesets sources_1]
+set files [list \
+ [file normalize "${currentDir}/cpm4_qdma_perf/src/exdes/ST_c2h.sv"] \
+ [file normalize "${currentDir}/cpm4_qdma_perf/src/exdes/ST_c2h_cmpt.sv"] \
+ [file normalize "${currentDir}/cpm4_qdma_perf/src/exdes/ST_h2c.sv"] \
+ [file normalize "${currentDir}/cpm4_qdma_perf/src/exdes/axi_st_module.sv"] \
+ [file normalize "${currentDir}/cpm4_qdma_perf/src/exdes/desc_cnt.sv"] \
+ [file normalize "${currentDir}/cpm4_qdma_perf/src/exdes/dsc_byp_c2h.sv"] \
+ [file normalize "${currentDir}/cpm4_qdma_perf/src/exdes/dsc_byp_h2c.sv"] \
+ [file normalize "${currentDir}/cpm4_qdma_perf/src/exdes/l3fwd_cntr.sv"] \
+ [file normalize "${currentDir}/cpm4_qdma_perf/src/exdes/next_queue_fifo.sv"] \
+ [file normalize "${currentDir}/cpm4_qdma_perf/src/exdes/perf_cntr.sv"] \
+ [file normalize "${currentDir}/cpm4_qdma_perf/src/exdes/queue_cnts.sv"] \
+ [file normalize "${currentDir}/cpm4_qdma_perf/src/exdes/user_control.sv"] \
+ [file normalize "${currentDir}/cpm4_qdma_perf/src/exdes/design_1_wrapper.sv"] \
+]
+
+import_files -norecurse -fileset $obj $files
+
+# Set 'sources_1' fileset properties
+set obj [get_filesets sources_1]
+set_property -name "top" -value "${design_name}_wrapper" -objects $obj
+
+# None
+set infile [open [file join [get_property directory [current_project]] [current_project].srcs sources_1 imports exdes design_1_wrapper.sv]]
+set contents [read $infile]
+close $infile
+set contents [string map [list "design_1" "$design_name"] $contents]
+
+set outfile  [open [file join [get_property directory [current_project]] [current_project].srcs sources_1 imports  exdes design_1_wrapper.sv] w]
+puts -nonewline $outfile $contents
+close $outfile
+
+# Create 'constrs_1' fileset (if not found)
+if {[string equal [get_filesets -quiet constrs_1] ""]} {
+  create_fileset -constrset constrs_1
+}
+
+# Set 'constrs_1' fileset object
+set obj [get_filesets constrs_1]
+
+# Add/Import constrs file and set constrs file properties
+set file "[file normalize "$currentDir/cpm4_qdma_perf/constraints/top_impl.xdc"]"
+set file_added [add_files -norecurse -fileset $obj [list $file]]
+set file "$currentDir/cpm4_qdma_perf/constraints/top_impl.xdc"
+set file [file normalize $file]
+set file_obj [get_files -of_objects [get_filesets constrs_1] [list "*$file"]]
+set_property -name "file_type" -value "XDC" -objects $file_obj
+
+# Set 'constrs_1' fileset properties
+set obj [get_filesets constrs_1]
+
+}
+
+}
 
 if [regexp "vpk120.*" $board_name] {
 puts $board_name
@@ -575,7 +634,6 @@ set obj [get_filesets utils_1]
 
 }
 
-
 open_bd_design [get_bd_files $design_name]
 
     set_property USER_COMMENTS.comment_0 {} [current_bd_design]
@@ -595,6 +653,8 @@ open_bd_design [get_bd_files $design_name]
    "linktoobj_comment_0":"",
    "linktotype_comment_0":"bd_design" }
  
+generate_target all [get_files $design_name.bd]
+
 validate_bd_design
 save_bd_design
  
@@ -615,7 +675,14 @@ set use_cpm "CPM5"
 
 if [regexp "CPM4" $use_cpm] {
 puts "INFO: CPM4 preset is selected."
+if {([lsearch $options CPM4_Preset.VALUE] == -1) || ([lsearch $options "CPM4_QDMA_Gen4x8_MM_ST"] != -1)} {
+puts "INFO: CPM4_QDMA_Gen4x8_MM_ST preset is selected."
 source -notrace "$currentDir/create_cpm4.tcl"
+} elseif {([lsearch $options CPM4_Preset.VALUE] == -1) || ([lsearch $options "CPM4_QDMA_Gen4x8_Performance_Design"] != -1)} {
+puts "INFO: CPM4_QDMA_Gen4x8_Performance_Design preset is selected."
+source -notrace "$currentDir/cpm4_qdma_perf/design_1_bd.tcl"
+}
+
 } elseif {([lsearch $options CPM5_Preset.VALUE] == -1) || ([lsearch $options "CPM5_QDMA_Gen4x8_MM_ST"] != -1)} {
 puts "INFO: CPM5_QDMA_Gen4x8_MM_ST preset is selected."
 source -notrace "$currentDir/create_cpm5.tcl"

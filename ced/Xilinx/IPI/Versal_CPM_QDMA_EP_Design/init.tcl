@@ -28,10 +28,10 @@ proc getSupportedBoards {} {
 
 proc addOptions {DESIGNOBJ PROJECT_PARAM.BOARD_PART} {
 	lappend x [dict create name "CPM_Config" type "string" value "CPM4" value_list {"CPM4" "CPM5"} enabled true]
+        lappend x [dict create name "CPM4_Preset" type "string" value "CPM4_QDMA_Gen4x8_MM_ST" value_list {CPM4_QDMA_Gen4x8_MM_ST CPM4_QDMA_Gen4x8_Performance_Design } enabled true]
         lappend x [dict create name "CPM5_Preset" type "string" value "CPM5_QDMA_Gen4x8_MM_ST" value_list {CPM5_QDMA_Gen4x8_MM_ST CPM5_QDMA_Gen4x8_MM_Only_Performance_Design CPM5_QDMA_Gen4x8_ST_Only_Performance_Design CPM5_QDMA_Dual_Ctrl_Gen4x8_MM_ST} enabled true]
 	return $x
 }
-
 
  proc addGUILayout {DESIGNOBJ PROJECT_PARAM.BOARD_PART} {
 	set designObj $DESIGNOBJ
@@ -43,7 +43,8 @@ proc addOptions {DESIGNOBJ PROJECT_PARAM.BOARD_PART} {
 	ced::add_param -name CPM_Config -parent $left_panel -designObject $designObj  -widget radioGroup 
 
         #set combinedPanel [ced::add_panel -name combinedPanel -parent $right_panel -designObject $designObj]
-        ced::add_param -name CPM5_Preset  -parent $right_panel -designObject $designObj -widget radioGroup 
+        ced::add_param -name CPM5_Preset  -parent $right_panel -designObject $designObj -widget radioGroup
+        ced::add_param -name CPM4_Preset  -parent $right_panel -designObject $designObj -widget radioGroup  
 
 }
 
@@ -68,6 +69,17 @@ set CPM5_Preset.VISIBLE false
 } else {
 set CPM5_Preset.ENABLEMENT true
 set CPM5_Preset.VISIBLE true
+}
+}
+
+gui_updater {PROJECT_PARAM.BOARD_PART} {CPM4_Preset.VISIBLE CPM4_Preset.ENABLEMENT} {
+set CPM_Config.DISPLAYNAME "CIPS CPM Configurations"
+if { [regexp "vpk120" ${PROJECT_PARAM.BOARD_PART}]} {
+set CPM4_Preset.ENABLEMENT false
+set CPM4_Preset.VISIBLE false
+} else {
+set CPM4_Preset.ENABLEMENT true
+set CPM4_Preset.VISIBLE true
 }
 }
 

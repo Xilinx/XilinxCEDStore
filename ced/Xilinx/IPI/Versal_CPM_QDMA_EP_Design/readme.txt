@@ -8,9 +8,14 @@ The associated drivers can be downloaded from: https://github.com/Xilinx/dma_ip_
 
 This design allows following configurations
 
-CPM4                                                : This is Versal CPM4 QDMA Gen4x8 Endpoint Design 
+CPM4_QDMA_Gen4x8_MM_ST                              : This is Versal CPM4 QDMA Gen4x8 Endpoint Design 
                                                       with both Memory Map and Streaming options,
                                                       4PF, 252VF, Descriptor bypass and sriov enabled
+
+CPM4_QDMA_Gen4x8_Performance_Design                 : This is Versal CPM4 QDMA Gen4x8 Endpoint Design 
+                                                      with both Memory Map and Streaming options,
+                                                      4PF, 252VF, Descriptor bypass and sriov enabled 
+
                                                       
 CPM5_QDMA_Gen4x8_MM_ST                              : This is Versal CPM5 QDMA Gen4x8 Endpoint Design 
                                                       with both Memory Map and Streaming options,  
