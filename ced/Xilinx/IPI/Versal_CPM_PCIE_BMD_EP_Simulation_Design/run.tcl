@@ -228,7 +228,7 @@ set outfile  [open [file join [get_property directory [current_project]] [curren
 puts -nonewline $outfile $contents
 close $outfile
 } else {
-puts "NOTE: xcvp1202-vsva2785-2MP-e-S board part not supported"
+puts "Warning: In CPM5, Gen5 Speed Configuration requires -2MHP or above Speed Grade Part. Since -2MP part is selected CED is not generated"
 }
 }
 
@@ -293,7 +293,7 @@ puts "INFO: RP bd generated"
 set_property used_in simulation  [get_files  design_rp.bd]
 
 } else {
-puts "NOTE: xcvp1202-vsva2785-2MP-e-S board part not supported"
+puts "Warning: In CPM5, Gen5 Speed Configuration requires -2MHP or above Speed Grade Part. Since -2MP part is selected CED is not generated"
 }
 
 }
