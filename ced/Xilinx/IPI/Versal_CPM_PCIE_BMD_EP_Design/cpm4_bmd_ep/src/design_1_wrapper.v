@@ -154,7 +154,7 @@ module design_1_wrapper
   wire pcie0_user_lnk_up_0;
   wire pcie0_user_reset_0;
   wire [511:0]sig_ila;
-wire pl_ref_clk;
+
   design_1 design_1_i
        (.gt_refclk0_0_clk_n(gt_refclk0_0_clk_n),
         .gt_refclk0_0_clk_p(gt_refclk0_0_clk_p),
@@ -281,7 +281,6 @@ wire pl_ref_clk;
         .pcie0_cfg_fc_cpld_0(pcie0_cfg_fc_cpld_0),
         .pcie0_cfg_fc_cplh_0(pcie0_cfg_fc_cplh_0),
         .pcie0_user_lnk_up_0(pcie0_user_lnk_up_0),
-        .pl_ref_clk(pl_ref_clk),
 
 
 

@@ -1,108 +1,3 @@
-proc createDesign {design_name options} {
-
-    # Set the reference directory for source file relative paths (by default the value is script directory path)
-    variable currentDir
-
-    # Create 'sources_1' fileset (if not found)
-    if {[string equal [get_filesets -quiet sources_1] ""]} {
-        create_fileset -srcset sources_1
-    }
-
-    # Set 'sources_1' fileset object
-    set obj [get_filesets sources_1]
-    set files [list \
-        [file normalize "${currentDir}/imports/BMD_AXIST_EP_MEM.v"] \
-        [file normalize "${currentDir}/imports/BMD_AXIST_EP_MEM_ACCESS.v"] \
-        [file normalize "${currentDir}/imports/BMD_AXIST_INTR_CTRL.v"] \
-        [file normalize "${currentDir}/imports/pcie_app_versal_bmd.vh"] \
-        [file normalize "${currentDir}/imports/BMD_AXIST_512.sv"] \
-        [file normalize "${currentDir}/imports/BMD_AXIST_CC_512.sv"] \
-        [file normalize "${currentDir}/imports/BMD_AXIST_CQ_512.sv"] \
-        [file normalize "${currentDir}/imports/BMD_AXIST_EP_512.sv"] \
-        [file normalize "${currentDir}/imports/BMD_AXIST_RC_512.sv"] \
-        [file normalize "${currentDir}/imports/BMD_AXIST_RQ_512.sv"] \
-        [file normalize "${currentDir}/imports/BMD_AXIST_RQ_MUX_512.sv"] \
-        [file normalize "${currentDir}/imports/BMD_AXIST_RQ_READ_512.sv"] \
-        [file normalize "${currentDir}/imports/BMD_AXIST_RQ_WRITE_512.sv"] \
-        [file normalize "${currentDir}/imports/BMD_AXIST_TO_CTRL.sv"] \
-        [file normalize "${currentDir}/imports/pcie_app_versal_bmd.sv"] \
-        [file normalize "${currentDir}/imports/design_1_wrapper.v"] \
-    ]
-import_files -norecurse -fileset $obj $files
-
-# Set 'sources_1' fileset file properties for local files
-# None
-
-# Set 'sources_1' fileset properties
-set obj [get_filesets sources_1]
-set_property -name "top" -value "${design_name}_wrapper" -objects $obj
-
-# None
-set infile [open [file join [get_property directory [current_project]] [current_project].srcs sources_1 imports imports design_1_wrapper.v]]
-set contents [read $infile]
-close $infile
-set contents [string map [list "design_1" "$design_name"] $contents]
-
-set outfile  [open [file join [get_property directory [current_project]] [current_project].srcs sources_1 imports imports design_1_wrapper.v] w]
-puts -nonewline $outfile $contents
-close $outfile
-
-
-# Create 'constrs_1' fileset (if not found)
-if {[string equal [get_filesets -quiet constrs_1] ""]} {
-    create_fileset -constrset constrs_1
-}
-
-# Set 'constrs_1' fileset object
-set obj [get_filesets constrs_1]
-
-# Add/Import constrs file and set constrs file properties
-set file "[file normalize "$currentDir/imports/top_impl.xdc"]"
-set file_added [add_files -norecurse -fileset $obj [list $file]]
-set file "$currentDir/imports/top_impl.xdc"
-set file [file normalize $file]
-set file_obj [get_files -of_objects [get_filesets constrs_1] [list "*$file"]]
-set_property -name "file_type" -value "XDC" -objects $file_obj
-
-# Set 'constrs_1' fileset properties
-set obj [get_filesets constrs_1]
-
-# Create 'sim_1' fileset (if not found)
-if {[string equal [get_filesets -quiet sim_1] ""]} {
-    create_fileset -simset sim_1
-}
-
-# Set 'sim_1' fileset object
-set obj [get_filesets sim_1]
-# Empty (no sources present)
-
-# Set 'sim_1' fileset properties
-set obj [get_filesets sim_1]
-set_property -name "top" -value "${design_name}_wrapper" -objects $obj
-
-# Set 'utils_1' fileset object
-set obj [get_filesets utils_1]
-set files [list \
-    [file normalize "${currentDir}/imports/pre_place.tcl"] \
-]
-add_files -norecurse -fileset $obj $files
-
-# Set 'utils_1' fileset file properties for remote files
-set file "$currentDir/imports/pre_place.tcl"
-set file [file normalize $file]
-set file_obj [get_files -of_objects [get_filesets utils_1] [list "*$file"]]
-set_property -name "file_type" -value "TCL" -objects $file_obj
-
-set_property STEPS.PLACE_DESIGN.TCL.PRE [get_files pre_place.tcl -of [get_fileset utils_1] ] [get_runs impl_1]
-
-# Set 'utils_1' fileset file properties for local files
-# None
-
-# Set 'utils_1' fileset properties
-set obj [get_filesets utils_1]
-
-
-# Adding sources referenced in BDs, if not already added
 
 ##################################################################
 # DESIGN PROCs
@@ -198,7 +93,6 @@ proc create_root_design { parentCell } {
 
   set pcie0_user_lnk_up_0 [ create_bd_port -dir O pcie0_user_lnk_up_0 ]
   set pcie0_user_reset_0 [ create_bd_port -dir O -type rst pcie0_user_reset_0 ]
-  set pl_ref_clk [ create_bd_port -dir O pl_ref_clk ]
   set xdma0_usr_irq_fnc_0 [ create_bd_port -dir I -from 7 -to 0 xdma0_usr_irq_fnc_0 ]
 
   # Create instance: logic0, and set properties
@@ -300,5 +194,4 @@ proc create_root_design { parentCell } {
 
 create_root_design ""
 
-open_bd_design [get_bd_files $design_name]
-}
+
