@@ -89,7 +89,7 @@ module board;
   `ifdef LINKSPEED
   localparam   [2:0] LINK_SPEED = 3'h`LINKSPEED;
   `else
-  localparam   [2:0] LINK_SPEED = 3'h8;
+  localparam   [3:0] LINK_SPEED = 4'h8;
   `endif
 
   localparam EXT_PIPE_SIM = "FALSE";

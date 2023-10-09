@@ -6099,7 +6099,6 @@ Inputs : Number of Payload Bytes
 Outputs : None
 Description : Compare Data received at XDMA with data sent from RP - user TB
 *************************************************************/
-
 task COMPARE_DATA_H2C;
    input [31:0]payload_bytes ;
    input integer address;
@@ -6114,242 +6113,72 @@ task COMPARE_DATA_H2C;
   begin
    
     matched_data_counter = 0;	
-
-        //Calculate number of beats for payload on XDMA
-/*    
-    case (board.EP.C_DATA_WIDTH)    
-    64:		data_beat_count = ((payload_bytes % 32'h8) == 0) ? (payload_bytes/32'h8) : ((payload_bytes/32'h8)+32'h1); 
-    128:	data_beat_count = ((payload_bytes % 32'h10) == 0) ? (payload_bytes/32'h10) : ((payload_bytes/32'h10)+32'h1); 
-    256:	data_beat_count = ((payload_bytes % 32'h20) == 0) ? (payload_bytes/32'h20) : ((payload_bytes/32'h20)+32'h1); 
-    512:	data_beat_count = ((payload_bytes % 32'h40) == 0) ? (payload_bytes/32'h40) : ((payload_bytes/32'h40)+32'h1); 
-    endcase
-
+    //Calculate number of beats for payload on XDMA
+    //128bit case
+    data_beat_count = ((payload_bytes % 32'h10) == 0) ? (payload_bytes/32'h10) : ((payload_bytes/32'h10)+32'h1); 
     $display ("Enters into compare read data task at %gns\n", $realtime);
     $display ("payload bytes=%h, data_beat_count =%d\n", payload_bytes, data_beat_count);
     
     for (i=0; i<data_beat_count; i=i+1)   begin
-    
       DATA_STORE_512[i] = 512'b0;
-    
+      READ_DATA[i]      = 512'b0;
     end
-    
-    
-    
+
     //Sampling data payload on XDMA
-    
-    @ (posedge board.EP.m_axi_wvalid) ;		  			//valid data comes at wvalid
+    @ (posedge board.EP.cpm_qdma_wrapper_i.cpm_qdma_i.versal_cips_0_NOC_CPM_PCIE_0_WVALID) ;//valid data comes at WVALID
       for (i=0; i<data_beat_count; i=i+1)   begin
-        @ (negedge board.EP.user_clk);							//samples data wvalid and negedge of user_clk
+        @ (negedge board.EP.cpm_qdma_wrapper_i.cpm_qdma_i.versal_cips_0_cpm_pcie_noc_axi0_clk); //samples data WVALID and negedge of user_clk
 
-            if ( board.EP.m_axi_wready ) begin			//check for wready is high before sampling data
-               case (board.EP.C_DATA_WIDTH)
-                64: READ_DATA[i] = {((board.EP.m_axi_wstrb[7] == 1'b1) ? board.EP.m_axi_wdata[63:56] : 8'h00),
-                                    ((board.EP.m_axi_wstrb[6] == 1'b1) ? board.EP.m_axi_wdata[55:48] : 8'h00),
-                                    ((board.EP.m_axi_wstrb[5] == 1'b1) ? board.EP.m_axi_wdata[47:40] : 8'h00),
-                                    ((board.EP.m_axi_wstrb[4] == 1'b1) ? board.EP.m_axi_wdata[39:32] : 8'h00),
-                                    ((board.EP.m_axi_wstrb[3] == 1'b1) ? board.EP.m_axi_wdata[31:24] : 8'h00),
-                                    ((board.EP.m_axi_wstrb[2] == 1'b1) ? board.EP.m_axi_wdata[23:16] : 8'h00),
-                                    ((board.EP.m_axi_wstrb[1] == 1'b1) ? board.EP.m_axi_wdata[15:8] : 8'h00),
-                                    ((board.EP.m_axi_wstrb[0] == 1'b1) ? board.EP.m_axi_wdata[7:0] : 8'h00)};
-                128: READ_DATA[i] = {((board.EP.m_axi_wstrb[15] == 1'b1) ? board.EP.m_axi_wdata[127:120] : 8'h00),
-                                        ((board.EP.m_axi_wstrb[14] == 1'b1) ? board.EP.m_axi_wdata[119:112] : 8'h00),
-                                        ((board.EP.m_axi_wstrb[13] == 1'b1) ? board.EP.m_axi_wdata[111:104] : 8'h00),
-                                        ((board.EP.m_axi_wstrb[12] == 1'b1) ? board.EP.m_axi_wdata[103:96] : 8'h00),
-                                        ((board.EP.m_axi_wstrb[11] == 1'b1) ? board.EP.m_axi_wdata[95:88] : 8'h00),
-                                        ((board.EP.m_axi_wstrb[10] == 1'b1) ? board.EP.m_axi_wdata[87:80] : 8'h00),
-                                        ((board.EP.m_axi_wstrb[9] == 1'b1) ? board.EP.m_axi_wdata[79:72] : 8'h00),
-                                        ((board.EP.m_axi_wstrb[8] == 1'b1) ? board.EP.m_axi_wdata[71:64] : 8'h00),
-                                        ((board.EP.m_axi_wstrb[7] == 1'b1) ? board.EP.m_axi_wdata[63:56] : 8'h00),
-                                        ((board.EP.m_axi_wstrb[6] == 1'b1) ? board.EP.m_axi_wdata[55:48] : 8'h00),
-                                        ((board.EP.m_axi_wstrb[5] == 1'b1) ? board.EP.m_axi_wdata[47:40] : 8'h00),
-                                        ((board.EP.m_axi_wstrb[4] == 1'b1) ? board.EP.m_axi_wdata[39:32] : 8'h00),
-                                        ((board.EP.m_axi_wstrb[3] == 1'b1) ? board.EP.m_axi_wdata[31:24] : 8'h00),
-                                        ((board.EP.m_axi_wstrb[2] == 1'b1) ? board.EP.m_axi_wdata[23:16] : 8'h00),
-                                        ((board.EP.m_axi_wstrb[1] == 1'b1) ? board.EP.m_axi_wdata[15:8] : 8'h00),
-                                        ((board.EP.m_axi_wstrb[0] == 1'b1) ? board.EP.m_axi_wdata[7:0] : 8'h00)};
-                256: READ_DATA[i] = {((board.EP.m_axi_wstrb[31] == 1'b1) ? board.EP.m_axi_wdata[255:248] : 8'h00),
-                                        ((board.EP.m_axi_wstrb[30] == 1'b1) ? board.EP.m_axi_wdata[247:240] : 8'h00),
-                                        ((board.EP.m_axi_wstrb[29] == 1'b1) ? board.EP.m_axi_wdata[239:232] : 8'h00),
-                                        ((board.EP.m_axi_wstrb[28] == 1'b1) ? board.EP.m_axi_wdata[231:224] : 8'h00),
-                                        ((board.EP.m_axi_wstrb[27] == 1'b1) ? board.EP.m_axi_wdata[223:216] : 8'h00),
-                                        ((board.EP.m_axi_wstrb[26] == 1'b1) ? board.EP.m_axi_wdata[215:208] : 8'h00),
-                                        ((board.EP.m_axi_wstrb[25] == 1'b1) ? board.EP.m_axi_wdata[207:200] : 8'h00),
-                                        ((board.EP.m_axi_wstrb[24] == 1'b1) ? board.EP.m_axi_wdata[199:192] : 8'h00),
-                                        ((board.EP.m_axi_wstrb[23] == 1'b1) ? board.EP.m_axi_wdata[191:184] : 8'h00),
-                                        ((board.EP.m_axi_wstrb[22] == 1'b1) ? board.EP.m_axi_wdata[183:176] : 8'h00),
-                                        ((board.EP.m_axi_wstrb[21] == 1'b1) ? board.EP.m_axi_wdata[175:168] : 8'h00),
-                                        ((board.EP.m_axi_wstrb[20] == 1'b1) ? board.EP.m_axi_wdata[167:160] : 8'h00),
-                                        ((board.EP.m_axi_wstrb[19] == 1'b1) ? board.EP.m_axi_wdata[159:152] : 8'h00),
-                                        ((board.EP.m_axi_wstrb[18] == 1'b1) ? board.EP.m_axi_wdata[151:144] : 8'h00),
-                                        ((board.EP.m_axi_wstrb[17] == 1'b1) ? board.EP.m_axi_wdata[143:136] : 8'h00),
-                                        ((board.EP.m_axi_wstrb[16] == 1'b1) ? board.EP.m_axi_wdata[135:128] : 8'h00),
-                                        ((board.EP.m_axi_wstrb[15] == 1'b1) ? board.EP.m_axi_wdata[127:120] : 8'h00),
-                                        ((board.EP.m_axi_wstrb[14] == 1'b1) ? board.EP.m_axi_wdata[119:112] : 8'h00),
-                                        ((board.EP.m_axi_wstrb[13] == 1'b1) ? board.EP.m_axi_wdata[111:104] : 8'h00),
-                                        ((board.EP.m_axi_wstrb[12] == 1'b1) ? board.EP.m_axi_wdata[103:96] : 8'h00),
-                                        ((board.EP.m_axi_wstrb[11] == 1'b1) ? board.EP.m_axi_wdata[95:88] : 8'h00),
-                                        ((board.EP.m_axi_wstrb[10] == 1'b1) ? board.EP.m_axi_wdata[87:80] : 8'h00),
-                                        ((board.EP.m_axi_wstrb[9] == 1'b1) ? board.EP.m_axi_wdata[79:72] : 8'h00),
-                                        ((board.EP.m_axi_wstrb[8] == 1'b1) ? board.EP.m_axi_wdata[71:64] : 8'h00),
-                                        ((board.EP.m_axi_wstrb[7] == 1'b1) ? board.EP.m_axi_wdata[63:56] : 8'h00),
-                                        ((board.EP.m_axi_wstrb[6] == 1'b1) ? board.EP.m_axi_wdata[55:48] : 8'h00),
-                                        ((board.EP.m_axi_wstrb[5] == 1'b1) ? board.EP.m_axi_wdata[47:40] : 8'h00),
-                                        ((board.EP.m_axi_wstrb[4] == 1'b1) ? board.EP.m_axi_wdata[39:32] : 8'h00),
-                                        ((board.EP.m_axi_wstrb[3] == 1'b1) ? board.EP.m_axi_wdata[31:24] : 8'h00),
-                                        ((board.EP.m_axi_wstrb[2] == 1'b1) ? board.EP.m_axi_wdata[23:16] : 8'h00),
-                                        ((board.EP.m_axi_wstrb[1] == 1'b1) ? board.EP.m_axi_wdata[15:8] : 8'h00),
-                                        ((board.EP.m_axi_wstrb[0] == 1'b1) ? board.EP.m_axi_wdata[7:0] : 8'h00)};
-                512: READ_DATA[i] = {((board.EP.m_axi_wstrb[63] == 1'b1) ? board.EP.m_axi_wdata[511:504] : 8'h00),
-                                        ((board.EP.m_axi_wstrb[62] == 1'b1) ? board.EP.m_axi_wdata[503:496] : 8'h00),
-                                        ((board.EP.m_axi_wstrb[61] == 1'b1) ? board.EP.m_axi_wdata[495:488] : 8'h00),
-                                        ((board.EP.m_axi_wstrb[60] == 1'b1) ? board.EP.m_axi_wdata[487:480] : 8'h00),
-                                        ((board.EP.m_axi_wstrb[59] == 1'b1) ? board.EP.m_axi_wdata[479:472] : 8'h00),
-                                        ((board.EP.m_axi_wstrb[58] == 1'b1) ? board.EP.m_axi_wdata[471:464] : 8'h00),
-                                        ((board.EP.m_axi_wstrb[57] == 1'b1) ? board.EP.m_axi_wdata[463:456] : 8'h00),
-                                        ((board.EP.m_axi_wstrb[56] == 1'b1) ? board.EP.m_axi_wdata[455:448] : 8'h00),
-                                        ((board.EP.m_axi_wstrb[55] == 1'b1) ? board.EP.m_axi_wdata[447:440] : 8'h00),
-                                        ((board.EP.m_axi_wstrb[54] == 1'b1) ? board.EP.m_axi_wdata[439:432] : 8'h00),
-                                        ((board.EP.m_axi_wstrb[53] == 1'b1) ? board.EP.m_axi_wdata[431:424] : 8'h00),
-                                        ((board.EP.m_axi_wstrb[52] == 1'b1) ? board.EP.m_axi_wdata[423:416] : 8'h00),
-                                        ((board.EP.m_axi_wstrb[51] == 1'b1) ? board.EP.m_axi_wdata[415:408] : 8'h00),
-                                        ((board.EP.m_axi_wstrb[50] == 1'b1) ? board.EP.m_axi_wdata[407:400] : 8'h00),
-                                        ((board.EP.m_axi_wstrb[49] == 1'b1) ? board.EP.m_axi_wdata[399:392] : 8'h00),
-                                        ((board.EP.m_axi_wstrb[48] == 1'b1) ? board.EP.m_axi_wdata[391:384] : 8'h00),
-                                        ((board.EP.m_axi_wstrb[47] == 1'b1) ? board.EP.m_axi_wdata[383:376] : 8'h00),
-                                        ((board.EP.m_axi_wstrb[46] == 1'b1) ? board.EP.m_axi_wdata[375:368] : 8'h00),
-                                        ((board.EP.m_axi_wstrb[45] == 1'b1) ? board.EP.m_axi_wdata[367:360] : 8'h00),
-                                        ((board.EP.m_axi_wstrb[44] == 1'b1) ? board.EP.m_axi_wdata[359:352] : 8'h00),
-                                        ((board.EP.m_axi_wstrb[43] == 1'b1) ? board.EP.m_axi_wdata[351:344] : 8'h00),
-                                        ((board.EP.m_axi_wstrb[42] == 1'b1) ? board.EP.m_axi_wdata[343:336] : 8'h00),
-                                        ((board.EP.m_axi_wstrb[41] == 1'b1) ? board.EP.m_axi_wdata[335:328] : 8'h00),
-                                        ((board.EP.m_axi_wstrb[40] == 1'b1) ? board.EP.m_axi_wdata[327:320] : 8'h00),
-                                        ((board.EP.m_axi_wstrb[39] == 1'b1) ? board.EP.m_axi_wdata[319:312] : 8'h00),
-                                        ((board.EP.m_axi_wstrb[38] == 1'b1) ? board.EP.m_axi_wdata[311:304] : 8'h00),
-                                        ((board.EP.m_axi_wstrb[37] == 1'b1) ? board.EP.m_axi_wdata[303:296] : 8'h00),
-                                        ((board.EP.m_axi_wstrb[36] == 1'b1) ? board.EP.m_axi_wdata[295:288] : 8'h00),
-                                        ((board.EP.m_axi_wstrb[35] == 1'b1) ? board.EP.m_axi_wdata[287:280] : 8'h00),
-                                        ((board.EP.m_axi_wstrb[34] == 1'b1) ? board.EP.m_axi_wdata[279:272] : 8'h00),
-                                        ((board.EP.m_axi_wstrb[33] == 1'b1) ? board.EP.m_axi_wdata[271:264] : 8'h00),
-                                        ((board.EP.m_axi_wstrb[32] == 1'b1) ? board.EP.m_axi_wdata[263:256] : 8'h00),
-                                        ((board.EP.m_axi_wstrb[31] == 1'b1) ? board.EP.m_axi_wdata[255:248] : 8'h00),
-                                        ((board.EP.m_axi_wstrb[30] == 1'b1) ? board.EP.m_axi_wdata[247:240] : 8'h00),
-                                        ((board.EP.m_axi_wstrb[29] == 1'b1) ? board.EP.m_axi_wdata[239:232] : 8'h00),
-                                        ((board.EP.m_axi_wstrb[28] == 1'b1) ? board.EP.m_axi_wdata[231:224] : 8'h00),
-                                        ((board.EP.m_axi_wstrb[27] == 1'b1) ? board.EP.m_axi_wdata[223:216] : 8'h00),
-                                        ((board.EP.m_axi_wstrb[26] == 1'b1) ? board.EP.m_axi_wdata[215:208] : 8'h00),
-                                        ((board.EP.m_axi_wstrb[25] == 1'b1) ? board.EP.m_axi_wdata[207:200] : 8'h00),
-                                        ((board.EP.m_axi_wstrb[24] == 1'b1) ? board.EP.m_axi_wdata[199:192] : 8'h00),
-                                        ((board.EP.m_axi_wstrb[23] == 1'b1) ? board.EP.m_axi_wdata[191:184] : 8'h00),
-                                        ((board.EP.m_axi_wstrb[22] == 1'b1) ? board.EP.m_axi_wdata[183:176] : 8'h00),
-                                        ((board.EP.m_axi_wstrb[21] == 1'b1) ? board.EP.m_axi_wdata[175:168] : 8'h00),
-                                        ((board.EP.m_axi_wstrb[20] == 1'b1) ? board.EP.m_axi_wdata[167:160] : 8'h00),
-                                        ((board.EP.m_axi_wstrb[19] == 1'b1) ? board.EP.m_axi_wdata[159:152] : 8'h00),
-                                        ((board.EP.m_axi_wstrb[18] == 1'b1) ? board.EP.m_axi_wdata[151:144] : 8'h00),
-                                        ((board.EP.m_axi_wstrb[17] == 1'b1) ? board.EP.m_axi_wdata[143:136] : 8'h00),
-                                        ((board.EP.m_axi_wstrb[16] == 1'b1) ? board.EP.m_axi_wdata[135:128] : 8'h00),
-                                        ((board.EP.m_axi_wstrb[15] == 1'b1) ? board.EP.m_axi_wdata[127:120] : 8'h00),
-                                        ((board.EP.m_axi_wstrb[14] == 1'b1) ? board.EP.m_axi_wdata[119:112] : 8'h00),
-                                        ((board.EP.m_axi_wstrb[13] == 1'b1) ? board.EP.m_axi_wdata[111:104] : 8'h00),
-                                        ((board.EP.m_axi_wstrb[12] == 1'b1) ? board.EP.m_axi_wdata[103:96] : 8'h00),
-                                        ((board.EP.m_axi_wstrb[11] == 1'b1) ? board.EP.m_axi_wdata[95:88] : 8'h00),
-                                        ((board.EP.m_axi_wstrb[10] == 1'b1) ? board.EP.m_axi_wdata[87:80] : 8'h00),
-                                        ((board.EP.m_axi_wstrb[9] == 1'b1) ? board.EP.m_axi_wdata[79:72] : 8'h00),
-                                        ((board.EP.m_axi_wstrb[8] == 1'b1) ? board.EP.m_axi_wdata[71:64] : 8'h00),
-                                        ((board.EP.m_axi_wstrb[7] == 1'b1) ? board.EP.m_axi_wdata[63:56] : 8'h00),
-                                        ((board.EP.m_axi_wstrb[6] == 1'b1) ? board.EP.m_axi_wdata[55:48] : 8'h00),
-                                        ((board.EP.m_axi_wstrb[5] == 1'b1) ? board.EP.m_axi_wdata[47:40] : 8'h00),
-                                        ((board.EP.m_axi_wstrb[4] == 1'b1) ? board.EP.m_axi_wdata[39:32] : 8'h00),
-                                        ((board.EP.m_axi_wstrb[3] == 1'b1) ? board.EP.m_axi_wdata[31:24] : 8'h00),
-                                        ((board.EP.m_axi_wstrb[2] == 1'b1) ? board.EP.m_axi_wdata[23:16] : 8'h00),
-                                        ((board.EP.m_axi_wstrb[1] == 1'b1) ? board.EP.m_axi_wdata[15:8] : 8'h00),
-                                        ((board.EP.m_axi_wstrb[0] == 1'b1) ? board.EP.m_axi_wdata[7:0] : 8'h00)};
-               endcase
+            if ( board.EP.cpm_qdma_wrapper_i.cpm_qdma_i.versal_cips_0_NOC_CPM_PCIE_0_WREADY ) begin //check for wready is high before sampling data
+
+               //128 bits width NOC I/F
+               READ_DATA[i] = {((board.EP.cpm_qdma_wrapper_i.cpm_qdma_i.versal_cips_0_NOC_CPM_PCIE_0_WSTRB[15] == 1'b1) ? board.EP.cpm_qdma_wrapper_i.cpm_qdma_i.versal_cips_0_NOC_CPM_PCIE_0_WDATA[127:120] : 8'h00),
+                               ((board.EP.cpm_qdma_wrapper_i.cpm_qdma_i.versal_cips_0_NOC_CPM_PCIE_0_WSTRB[14] == 1'b1) ? board.EP.cpm_qdma_wrapper_i.cpm_qdma_i.versal_cips_0_NOC_CPM_PCIE_0_WDATA[119:112] : 8'h00),
+                               ((board.EP.cpm_qdma_wrapper_i.cpm_qdma_i.versal_cips_0_NOC_CPM_PCIE_0_WSTRB[13] == 1'b1) ? board.EP.cpm_qdma_wrapper_i.cpm_qdma_i.versal_cips_0_NOC_CPM_PCIE_0_WDATA[111:104] : 8'h00),
+                               ((board.EP.cpm_qdma_wrapper_i.cpm_qdma_i.versal_cips_0_NOC_CPM_PCIE_0_WSTRB[12] == 1'b1) ? board.EP.cpm_qdma_wrapper_i.cpm_qdma_i.versal_cips_0_NOC_CPM_PCIE_0_WDATA[103:96] : 8'h00),
+                               ((board.EP.cpm_qdma_wrapper_i.cpm_qdma_i.versal_cips_0_NOC_CPM_PCIE_0_WSTRB[11] == 1'b1) ? board.EP.cpm_qdma_wrapper_i.cpm_qdma_i.versal_cips_0_NOC_CPM_PCIE_0_WDATA[95:88] : 8'h00),
+                               ((board.EP.cpm_qdma_wrapper_i.cpm_qdma_i.versal_cips_0_NOC_CPM_PCIE_0_WSTRB[10] == 1'b1) ? board.EP.cpm_qdma_wrapper_i.cpm_qdma_i.versal_cips_0_NOC_CPM_PCIE_0_WDATA[87:80] : 8'h00),
+                               ((board.EP.cpm_qdma_wrapper_i.cpm_qdma_i.versal_cips_0_NOC_CPM_PCIE_0_WSTRB[9] == 1'b1) ? board.EP.cpm_qdma_wrapper_i.cpm_qdma_i.versal_cips_0_NOC_CPM_PCIE_0_WDATA[79:72] : 8'h00),
+                               ((board.EP.cpm_qdma_wrapper_i.cpm_qdma_i.versal_cips_0_NOC_CPM_PCIE_0_WSTRB[8] == 1'b1) ? board.EP.cpm_qdma_wrapper_i.cpm_qdma_i.versal_cips_0_NOC_CPM_PCIE_0_WDATA[71:64] : 8'h00),
+                               ((board.EP.cpm_qdma_wrapper_i.cpm_qdma_i.versal_cips_0_NOC_CPM_PCIE_0_WSTRB[7] == 1'b1) ? board.EP.cpm_qdma_wrapper_i.cpm_qdma_i.versal_cips_0_NOC_CPM_PCIE_0_WDATA[63:56] : 8'h00),
+                               ((board.EP.cpm_qdma_wrapper_i.cpm_qdma_i.versal_cips_0_NOC_CPM_PCIE_0_WSTRB[6] == 1'b1) ? board.EP.cpm_qdma_wrapper_i.cpm_qdma_i.versal_cips_0_NOC_CPM_PCIE_0_WDATA[55:48] : 8'h00),
+                               ((board.EP.cpm_qdma_wrapper_i.cpm_qdma_i.versal_cips_0_NOC_CPM_PCIE_0_WSTRB[5] == 1'b1) ? board.EP.cpm_qdma_wrapper_i.cpm_qdma_i.versal_cips_0_NOC_CPM_PCIE_0_WDATA[47:40] : 8'h00),
+                               ((board.EP.cpm_qdma_wrapper_i.cpm_qdma_i.versal_cips_0_NOC_CPM_PCIE_0_WSTRB[4] == 1'b1) ? board.EP.cpm_qdma_wrapper_i.cpm_qdma_i.versal_cips_0_NOC_CPM_PCIE_0_WDATA[39:32] : 8'h00),
+                               ((board.EP.cpm_qdma_wrapper_i.cpm_qdma_i.versal_cips_0_NOC_CPM_PCIE_0_WSTRB[3] == 1'b1) ? board.EP.cpm_qdma_wrapper_i.cpm_qdma_i.versal_cips_0_NOC_CPM_PCIE_0_WDATA[31:24] : 8'h00),
+                               ((board.EP.cpm_qdma_wrapper_i.cpm_qdma_i.versal_cips_0_NOC_CPM_PCIE_0_WSTRB[2] == 1'b1) ? board.EP.cpm_qdma_wrapper_i.cpm_qdma_i.versal_cips_0_NOC_CPM_PCIE_0_WDATA[23:16] : 8'h00),
+                               ((board.EP.cpm_qdma_wrapper_i.cpm_qdma_i.versal_cips_0_NOC_CPM_PCIE_0_WSTRB[1] == 1'b1) ? board.EP.cpm_qdma_wrapper_i.cpm_qdma_i.versal_cips_0_NOC_CPM_PCIE_0_WDATA[15:8] : 8'h00),
+                               ((board.EP.cpm_qdma_wrapper_i.cpm_qdma_i.versal_cips_0_NOC_CPM_PCIE_0_WSTRB[0] == 1'b1) ? board.EP.cpm_qdma_wrapper_i.cpm_qdma_i.versal_cips_0_NOC_CPM_PCIE_0_WDATA[7:0] : 8'h00)};
                $display ("--- H2C data at QDMA = %h ---\n", READ_DATA[i]);
-
             end
       end
-*/
-
 
       //Sampling stored data from User TB in reg
-
       k = 0;
-/* IMPL SIM
-      case (board.EP.C_DATA_WIDTH)
-
-            64: 
-                begin
-                  for (i = 0; i < data_beat_count; i = i + 1)   begin
-                    for (j=7; j>=0; j=j-1) begin
-                      DATA_STORE_512[i] = {DATA_STORE_512[i], DATA_STORE[address+k+j]};
-                    end
-                    k=k+8;
-
-                    $display ("--- Data Stored in TB for H2C Transfer = %h ---\n", DATA_STORE_512[i]);
-                  end
-                end
-
-           128: 
-                begin
-                for (i = 0; i < data_beat_count; i = i + 1)   begin
-                    for (j=15; j>=0; j=j-1) begin
-                    DATA_STORE_512[i] = {DATA_STORE_512[i], DATA_STORE[address+k+j]};
-                    end
-
-                    k=k+16;
-
-                    $display ("-- Data Stored in TB for H2C Transfer = %h--\n", DATA_STORE_512[i]);
-                  end
-                end
-                
-           256: 
-                begin
-                  for (i = 0; i < data_beat_count; i = i + 1)   begin
-                    for (j=31; j>=0; j=j-1) begin 
-                      DATA_STORE_512[i] = {DATA_STORE_512[i], DATA_STORE[address+k+j]};
-                    end
-                  
-                    k=k+32;
-                  
-                    $display ("-- Data Stored in TB for H2C Transfer = %h--\n", DATA_STORE_512[i]);
-                  end
-                end
-            512: 
-                begin
-                  for (i = 0; i < data_beat_count; i = i + 1)   begin
-                    for (j=63; j>=0; j=j-1) begin 
-                      DATA_STORE_512[i] = {DATA_STORE_512[i], DATA_STORE[address+k+j]};
-                    end
-             
-                    k=k+64;
-             
-                    $display ("-- Data Stored in TB for H2C Transfer = %h--\n", DATA_STORE_512[i]);
-                  end
-                end
-
-
-
-      endcase
-*/
-      //Compare sampled data from QDMA with stored TB data
+      //128bit case
+      for (i = 0; i < data_beat_count; i = i + 1)   begin
+         for (j=15; j>=0; j=j-1) begin
+         DATA_STORE_512[i] = {DATA_STORE_512[i], DATA_STORE[address+k+j]};
+         end
+         k=k+16;
+         $display ("-- Data Stored in TB for H2C Transfer = %h--\n", DATA_STORE_512[i]);
+      end
       
+     //Compare sampled data from QDMA with stored TB data
       for (i=0; i<data_beat_count; i=i+1)   begin
-      
         if (READ_DATA[i] == DATA_STORE_512[i]) begin
           matched_data_counter = matched_data_counter + 1;
         end else
           matched_data_counter = matched_data_counter;
       end
       
-    //  if (matched_data_counter == data_beat_count) begin
-    //    $display ("*** H2C Transfer Data MATCHES ***\n");
-    //    $display("[%t] : QDMA H2C Test Completed Successfully",$realtime);
-    //  end else
-    //    $display ("[%t] : TEST FAILED ---***ERROR*** H2C Transfer Data MISMATCH ---\n",$realtime);
-    
+      if (matched_data_counter == data_beat_count) begin
+        $display ("*** H2C Transfer Data MATCHES ***\n");
+        $display("[%t] : QDMA H2C Test Completed Successfully",$realtime);
+      end else
+        $display ("[%t] : TEST FAILED ---***ERROR*** H2C Transfer Data MISMATCH ---\n",$realtime);
   end
-           
 endtask
+
 
 /************************************************************
 Task : COMPARE_DATA_C2H_
