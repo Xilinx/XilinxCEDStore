@@ -689,7 +689,7 @@ set_property -name "file_type" -value "XDC" -objects $file_obj
 set obj [get_filesets constrs_1]
 
 } else {
-puts "NOTE: xcvp1202-vsva2785-2MP-e-S board part not supported"
+puts "Warning: In CPM5, Gen5 Speed Configuration requires -2MHP or above Speed Grade Part. Since -2MP part is selected CED is not generated"
 }
 }
 }
@@ -791,7 +791,7 @@ puts "INFO: EP bd generated"
 regenerate_bd_layout
 
 } else {
-    puts "NOTE: xcvp1202-vsva2785-2MP-e-S board part not supported"
+    puts "Warning: In CPM5, Gen5 Speed Configuration requires -2MHP or above Speed Grade Part. Since -2MP part is selected CED is not generated"
 }
 
 }
