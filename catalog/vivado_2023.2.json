@@ -499,11 +499,11 @@
         "name": "cpm_pcie_qdma_ep",
         "display": "Versal CPM QDMA EP Design",
         "latest_revision": "1.0",
-        "commit_id": "5f4029a8304fa5e7747226d941284851680ad146",
+        "commit_id": "5bd61a0edb29e66befb4b39f4504dddcd9042008",
         "revisions": [
           {
             "revision": "1.0",
-            "commit_id": "5f4029a8304fa5e7747226d941284851680ad146",
+            "commit_id": "5bd61a0edb29e66befb4b39f4504dddcd9042008",
             "date": "25-09-2023:06:27:36",
             "history": "Added board Versal CPM QDMA EP Design v1.0"
           }
@@ -556,11 +556,11 @@
         "name": "cpm_bmd",
         "display": "Versal CPM PCIE BMD EP Simulation Design",
         "latest_revision": "1.0",
-        "commit_id": "5f4029a8304fa5e7747226d941284851680ad146",
+        "commit_id": "5bd61a0edb29e66befb4b39f4504dddcd9042008",
         "revisions": [
           {
             "revision": "1.0",
-            "commit_id": "5f4029a8304fa5e7747226d941284851680ad146",
+            "commit_id": "5bd61a0edb29e66befb4b39f4504dddcd9042008",
             "date": "03-10-2023:04:25:45",
             "history": "Added board Versal CPM PCIE BMD EP Simulation Design v1.0"
           }
@@ -575,11 +575,11 @@
         "name": "cpm_qdma",
         "display": "Versal CPM QDMA EP Simulation Design",
         "latest_revision": "1.0",
-        "commit_id": "5f4029a8304fa5e7747226d941284851680ad146",
+        "commit_id": "5bd61a0edb29e66befb4b39f4504dddcd9042008",
         "revisions": [
           {
             "revision": "1.0",
-            "commit_id": "5f4029a8304fa5e7747226d941284851680ad146",
+            "commit_id": "5bd61a0edb29e66befb4b39f4504dddcd9042008",
             "date": "03-10-2023:04:25:45",
             "history": "Added board Versal CPM QDMA EP Simulation Design v1.0"
           }
@@ -591,20 +591,20 @@
         "company": "xilinx.com"
       },
       {
-        "name": "cpm5_qdma_ep_perf_part",
-        "display": "Versal CPM5 QDMA EP MM ST Perf Design (Part based)",
+        "name": "cpm_qdma_ep_part",
+        "display": "Versal CPM QDMA EP Design (Part based)",
         "latest_revision": "1.0",
-        "commit_id": "5f4029a8304fa5e7747226d941284851680ad146",
+        "commit_id": "5bd61a0edb29e66befb4b39f4504dddcd9042008",
         "revisions": [
           {
             "revision": "1.0",
-            "commit_id": "5f4029a8304fa5e7747226d941284851680ad146",
-            "date": "09-10-2023:05:47:29",
-            "history": "Added board Versal CPM5 QDMA EP MM ST Perf Design (Part based) v1.0"
+            "commit_id": "5bd61a0edb29e66befb4b39f4504dddcd9042008",
+            "date": "09-10-2023:18:47:31",
+            "history": "Added board Versal CPM QDMA EP Design (Part based) v1.0"
           }
         ],
         "config": {
-          "root": "ced/Xilinx/IPI/Versal_CPM5_QDMA_EP_Perf_Design_PartBased",
+          "root": "ced/Xilinx/IPI/Versal_CPM_QDMA_EP_Design_PartBased",
           "metadata_file": "xitem.json"
         },
         "company": "xilinx.com"
