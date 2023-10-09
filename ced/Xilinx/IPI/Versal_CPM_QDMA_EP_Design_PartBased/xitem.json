@@ -3,10 +3,10 @@
       "items": [
         {
           "infra": {
-            "name": "cpm5_qdma_ep_perf_part",
-            "display": "Versal CPM5 QDMA EP MM ST Perf Design (Part based)",
+            "name": "cpm_qdma_ep_part",
+            "display": "Versal CPM QDMA EP Design (Part based)",
             "revision": "1.0",
-            "description": "This is CPM5 QDMA EP Gen5x8 MM ST Perf Design",
+            "description": "This is CPM QDMA EP Design",
             "company": "xilinx.com",
             "company_display": "Xilinx",
             "author": "Sindhura",
@@ -20,7 +20,7 @@
             "website": "www.xilinx.com",
             "is_active" : true, 
             "search-keywords": [
-              "Versal CPM5 QDMA EP MM ST Perf Design",
+              "Versal CPM QDMA EP Design PartBased",
               "xilinx.com",
               "example"             
             ]
