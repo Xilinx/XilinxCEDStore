@@ -1,6 +1,6 @@
-################################################################################################################
+###################################################################################################################
 		CPM - PCIe QDMA Example Design
-################################################################################################################
+###################################################################################################################
 This package contains the CPM - PCIe QDMA Example Design. 
 It allows generating CPM4 and CPM5 versions for VCK190 and VPK120 respectively 
 based on the board selected.
@@ -31,4 +31,8 @@ CPM5_QDMA_Dual_Ctrl_Gen4x8_MM_ST                    : This is Versal CPM5 Gen4x8
                                                       Endpoint Design with both Memory Map and Streaming 
                                                       options, 4PF, 240VF, Descriptor bypass and sriov enabled.
 
-################################################################################################################
+CPM5_QDMA_Gen5x8_MM_Only_Performance_Design         : This is Versal CPM5 Gen5x8 QDMA Endpoint Design with Ctrl1, 
+                                                      Memory Map option 
+
+
+###################################################################################################################

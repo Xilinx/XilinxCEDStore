@@ -630,8 +630,68 @@ set_property STEPS.PLACE_DESIGN.TCL.PRE [get_files pre_place.tcl -of [get_filese
 
 # Set 'utils_1' fileset properties
 set obj [get_filesets utils_1]
+} elseif {[regexp "CPM5_QDMA_Gen5x8_MM_Only_Performance_Design" $options]} {
+set board_part_name [get_property PART_NAME [current_board_part]]
+if [regexp "xcvp1202-vsva2785-2MHP-e-S" $board_part_name] {
+# Create 'sources_1' fileset (if not found)
+if {[string equal [get_filesets -quiet sources_1] ""]} {
+  create_fileset -srcset sources_1
 }
 
+# Set 'sources_1' fileset object
+set obj [get_filesets sources_1]
+# Import local files from the original project
+set files [list \
+ [file normalize "${currentDir}/cpm5_qdma_g5x8_mm_perf/src/design_1_wrapper.v"]\
+]
+
+import_files -norecurse -fileset $obj $files
+
+# Set 'sources_1' fileset properties
+set obj [get_filesets sources_1]
+set_property -name "top" -value "${design_name}_wrapper" -objects $obj
+
+# None
+set infile [open [file join [get_property directory [current_project]] [current_project].srcs sources_1 imports src design_1_wrapper.v]]
+set contents [read $infile]
+close $infile
+set contents [string map [list "design_1" "$design_name"] $contents]
+
+set outfile  [open [file join [get_property directory [current_project]] [current_project].srcs sources_1 imports  src design_1_wrapper.v] w]
+puts -nonewline $outfile $contents
+close $outfile
+
+# Create 'constrs_1' fileset (if not found)
+if {[string equal [get_filesets -quiet constrs_1] ""]} {
+  create_fileset -constrset constrs_1
+}
+
+# Set 'constrs_1' fileset object
+set obj [get_filesets constrs_1]
+
+# Add/Import constrs file and set constrs file properties
+set file "[file normalize "$currentDir/cpm5_qdma_g5x8_mm_perf/constraints/vpk120_lpddr_3MC_no_interleave.xdc"]"
+set file_added [add_files -norecurse -fileset $obj [list $file]]
+set file "$currentDir/cpm5_qdma_g5x8_mm_perf/constraints/vpk120_lpddr_3MC_no_interleave.xdc"
+set file [file normalize $file]
+set file_obj [get_files -of_objects [get_filesets constrs_1] [list "*$file"]]
+set_property -name "file_type" -value "XDC" -objects $file_obj
+
+# Add/Import constrs file and set constrs file properties
+set file "[file normalize "$currentDir/cpm5_qdma_g5x8_mm_perf/constraints/config_v_bs_compress.xdc"]"
+set file_added [add_files -norecurse -fileset $obj [list $file]]
+set file "$currentDir/cpm5_qdma_g5x8_mm_perf/constraints/config_v_bs_compress.xdc"
+set file [file normalize $file]
+set file_obj [get_files -of_objects [get_filesets constrs_1] [list "*$file"]]
+set_property -name "file_type" -value "XDC" -objects $file_obj
+
+# Set 'constrs_1' fileset properties
+set obj [get_filesets constrs_1]
+
+} else {
+puts "NOTE: xcvp1202-vsva2785-2MP-e-S board part not supported"
+}
+}
 }
 
 open_bd_design [get_bd_files $design_name]
@@ -718,9 +778,24 @@ puts "INFO: xlnoc bd generated"
 regenerate_bd_layout
 set_property used_in simulation  [get_files  xlnoc.bd]
 
-} 
-open_bd_design [get_files $design_name.bd]
+} elseif {([lsearch $options CPM5_Preset.VALUE] == -1) || ([lsearch $options "CPM5_QDMA_Gen5x8_MM_Only_Performance_Design"] != -1)} {
+
+set board_part_name [get_property PART_NAME [current_board_part]]
+if [regexp "xcvp1202-vsva2785-2MHP-e-S" $board_part_name] {
+source "$currentDir/cpm5_qdma_g5x8_mm_perf/design_1_bd.tcl"
+# Set synthesis property to be non-OOC
+set_property synth_checkpoint_mode None [get_files $design_name.bd]
+generate_target all [get_files $design_name.bd]
+puts "INFO: EP bd generated"
+
+regenerate_bd_layout
+
+} else {
+    puts "NOTE: xcvp1202-vsva2785-2MP-e-S board part not supported"
+}
 
 }
 
+open_bd_design [get_files $design_name.bd]
 
+}
