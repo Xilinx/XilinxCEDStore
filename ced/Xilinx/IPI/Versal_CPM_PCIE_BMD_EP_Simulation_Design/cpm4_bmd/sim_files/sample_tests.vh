@@ -121,10 +121,10 @@ begin
     //DCSR2- Start Writes
       tx_usrapp.TSK_MEM64_WR(32'h4, 32'h00000001,4'hf);
       
-      $display("[%t] : Start BMD Iterations at Gen3",$realtime);
+      $display("[%t] : Start BMD Iterations at Gen4",$realtime);
     //  wait(board.EP.pcie_app_uscale_i.BMD_AXIST.BMD_AXIST_EP.mwr_done);
       #50000;
-      $display("[%t] : BMD Iteration Complete at Gen3 ",$realtime);
+      $display("[%t] : BMD Iteration Complete at Gen4 ",$realtime);
       
       $finish;
 end
@@ -607,11 +607,11 @@ begin
     //DCSR2- Start Writes and Reads
       tx_usrapp.TSK_MEM64_WR(32'h4, 32'h00010001,4'hf);
       
-      $display("[%t] : Start BMD Iterations at Gen3",$realtime);
+      $display("[%t] : Start BMD Iterations at Gen4",$realtime);
 
       #1000000  
     //  wait(board.EP.pcie_app_uscale_i.BMD_AXIST.BMD_AXIST_EP.mwr_done);
-      $display("[%t] : BMD Iteration Complete at Gen3 ",$realtime);
+      $display("[%t] : BMD Iteration Complete at Gen4 ",$realtime);
       $finish;
 
 end

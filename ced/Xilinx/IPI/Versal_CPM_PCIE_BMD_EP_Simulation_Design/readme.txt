@@ -27,4 +27,5 @@ Questa Version  - 2023.2
 NOTE : 
 1. This design usage is limited for simulation purpose
 2. The integrated testcase simulation will run for ~600us
+3. This design will not support xcvp1202-vsva2785-2MP-e-S board part
 ##############################################################################

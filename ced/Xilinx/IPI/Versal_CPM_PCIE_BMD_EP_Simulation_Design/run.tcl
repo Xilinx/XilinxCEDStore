@@ -112,6 +112,9 @@ close $outfile
 
 } else {
 
+set board_part_name [get_property PART_NAME [current_board_part]]
+if [regexp "xcvp1202-vsva2785-2MHP-e-S" $board_part_name] {
+
 # Create 'sources_1' fileset (if not found)
 if {[string equal [get_filesets -quiet sources_1] ""]} {
   create_fileset -srcset sources_1
@@ -224,6 +227,9 @@ set contents [string map [list "design_1" "$design_name"] $contents]
 set outfile  [open [file join [get_property directory [current_project]] [current_project].srcs sim_1 imports sim_files board.v] w]
 puts -nonewline $outfile $contents
 close $outfile
+} else {
+puts "NOTE: xcvp1202-vsva2785-2MP-e-S board part not supported"
+}
 }
 
 ##################################################################
@@ -265,6 +271,10 @@ set_property used_in simulation [get_files design_rp.bd]
 
 
 } else {
+
+set board_part_name [get_property PART_NAME [current_board_part]]
+if [regexp "xcvp1202-vsva2785-2MHP-e-S" $board_part_name] {
+
 puts "INFO: CPM5 preset is selected."
 source "$currentDir/cpm5_bmd/design_1_bd.tcl"
 # Set synthesis property to be non-OOC
@@ -281,6 +291,10 @@ generate_target all [get_files design_rp.bd]
 puts "INFO: RP bd generated"
 
 set_property used_in simulation  [get_files  design_rp.bd]
+
+} else {
+puts "NOTE: xcvp1202-vsva2785-2MP-e-S board part not supported"
+}
 
 }
 
