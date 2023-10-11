@@ -21,9 +21,6 @@ CPM5_QDMA_Gen4x8_MM_ST                              : This is Versal CPM5 QDMA G
                                                       with both Memory Map and Streaming options,  
                                                       4PF, 240VF, Descriptor bypass and sriov enabled.
 
-CPM5_QDMA_Gen4x8_MM_Only_Performance_Design         : This is Versal CPM5 Gen4x8 QDMA Endpoint Design with 
-                                                      Memory Map option, 4PF, 240VF,and sriov enabled 
-
 CPM5_QDMA_Gen4x8_ST_Only_Performance_Design         : This is Versal CPM5 Gen4x8 QDMA Endpoint Design with 
                                                       Streaming option, 4PF, 240VF, and sriov enabled. 
 

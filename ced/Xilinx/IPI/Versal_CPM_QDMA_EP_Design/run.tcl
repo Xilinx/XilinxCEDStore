@@ -370,33 +370,6 @@ set_property -name "file_type" -value "XDC" -objects $file_obj
 # Set 'constrs_1' fileset properties
 set obj [get_filesets constrs_1]
 
-# Create 'sim_1' fileset (if not found)
-if {[string equal [get_filesets -quiet sim_1] ""]} {
-  create_fileset -simset sim_1
-}
-
-# Set 'sim_1' fileset object
-set obj [get_filesets sim_1]
-set files [list \
- [file normalize "${currentDir}/cpm5_qdma_dual_ctrl/sim_files/design_1_wrapper_sim_wrapper.v"] \
- ]
-#add_files -norecurse -fileset $obj $files
-import_files -norecurse -fileset $obj $files
-
-# Set 'sim_1' fileset properties
-set obj [get_filesets sim_1]
-set_property -name "top" -value "${design_name}_wrapper_sim_wrapper" -objects $obj
-
-# None
-set infile [open [file join [get_property directory [current_project]] [current_project].srcs sim_1 imports sim_files design_1_wrapper_sim_wrapper.v]]
-set contents [read $infile]
-close $infile
-set contents [string map [list "design_1" "$design_name"] $contents]
-
-set outfile  [open [file join [get_property directory [current_project]] [current_project].srcs sim_1 imports sim_files design_1_wrapper_sim_wrapper.v] w]
-puts -nonewline $outfile $contents
-close $outfile
-
 # Set 'utils_1' fileset object
 set obj [get_filesets utils_1]
 set files [list \
@@ -418,116 +391,6 @@ set_property STEPS.PLACE_DESIGN.TCL.PRE [get_files pre_place.tcl -of [get_filese
 # Set 'utils_1' fileset properties
 set obj [get_filesets utils_1]
  
-} elseif {[regexp "CPM5_QDMA_Gen4x8_MM_Only_Performance_Design" $options]} {
-set files [list \
- [file normalize "${currentDir}/cpm5_qdma_mm_only/src/ST_c2h.sv"] \
- [file normalize "${currentDir}/cpm5_qdma_mm_only/src/ST_c2h_cmpt.sv"] \
- [file normalize "${currentDir}/cpm5_qdma_mm_only/src/ST_h2c.sv"] \
- [file normalize "${currentDir}/cpm5_qdma_mm_only/src/axi_st_module.sv"] \
- [file normalize "${currentDir}/cpm5_qdma_mm_only/src/crc32_gen.sv"] \
- [file normalize "${currentDir}/cpm5_qdma_mm_only/src/desc_cnt.sv"] \
- [file normalize "${currentDir}/cpm5_qdma_mm_only/src/l3fwd_cntr.sv"] \
- [file normalize "${currentDir}/cpm5_qdma_mm_only/src/next_queue_fifo.sv"] \
- [file normalize "${currentDir}/cpm5_qdma_mm_only/src/perf_cntr.sv"] \
- [file normalize "${currentDir}/cpm5_qdma_mm_only/src/queue_cnts.sv"] \
- [file normalize "${currentDir}/cpm5_qdma_mm_only/src/user_control.sv"] \
- [file normalize "${currentDir}/cpm5_qdma_mm_only/src/qdma_stm_defines.svh"] \
- [file normalize "${currentDir}/cpm5_qdma_mm_only/src/design_1_wrapper.sv"] \
-]
-
-import_files -norecurse -fileset $obj $files
-
-# Set 'sources_1' fileset file properties for local files
-# None
-
-# Set 'sources_1' fileset properties
-set obj [get_filesets sources_1]
-set_property -name "top" -value "${design_name}_wrapper" -objects $obj
-
-# None
-set infile [open [file join [get_property directory [current_project]] [current_project].srcs sources_1 imports src design_1_wrapper.sv]]
-set contents [read $infile]
-close $infile
-set contents [string map [list "design_1" "$design_name"] $contents]
-
-set outfile  [open [file join [get_property directory [current_project]] [current_project].srcs sources_1 imports src design_1_wrapper.sv] w]
-puts -nonewline $outfile $contents
-close $outfile
-
-# Create 'constrs_1' fileset (if not found)
-if {[string equal [get_filesets -quiet constrs_1] ""]} {
-  create_fileset -constrset constrs_1
-}
-
-# Set 'constrs_1' fileset object
-set obj [get_filesets constrs_1]
-
-# Add/Import constrs file and set constrs file properties
-set file "[file normalize "$currentDir/cpm5_qdma_mm_only/constraints/config_v_bs_compress.xdc"]"
-set file_added [add_files -norecurse -fileset $obj [list $file]]
-set file "$currentDir/cpm5_qdma_mm_only/constraints/config_v_bs_compress.xdc"
-set file [file normalize $file]
-set file_obj [get_files -of_objects [get_filesets constrs_1] [list "*$file"]]
-set_property -name "file_type" -value "XDC" -objects $file_obj
-
-# Add/Import constrs file and set constrs file properties
-set file "[file normalize "$currentDir/cpm5_qdma_mm_only/constraints/vpk120_schematic.xdc"]"
-set file_added [add_files -norecurse -fileset $obj [list $file]]
-set file "$currentDir/cpm5_qdma_mm_only/constraints/vpk120_schematic.xdc"
-set file [file normalize $file]
-set file_obj [get_files -of_objects [get_filesets constrs_1] [list "*$file"]]
-set_property -name "file_type" -value "XDC" -objects $file_obj
-
-# Set 'constrs_1' fileset properties
-set obj [get_filesets constrs_1]
-
-# Create 'sim_1' fileset (if not found)
-if {[string equal [get_filesets -quiet sim_1] ""]} {
-  create_fileset -simset sim_1
-}
-
-# Set 'sim_1' fileset object
-set obj [get_filesets sim_1]
-set files [list \
- [file normalize "${currentDir}/cpm5_qdma_mm_only/sim_files/design_1_wrapper_sim_wrapper.v"] \
- ]
-#add_files -norecurse -fileset $obj $files
-import_files -norecurse -fileset $obj $files
-
-# Set 'sim_1' fileset properties
-set obj [get_filesets sim_1]
-set_property -name "top" -value "${design_name}_wrapper_sim_wrapper" -objects $obj
-
-# None
-set infile [open [file join [get_property directory [current_project]] [current_project].srcs sim_1 imports sim_files design_1_wrapper_sim_wrapper.v]]
-set contents [read $infile]
-close $infile
-set contents [string map [list "design_1" "$design_name"] $contents]
-
-set outfile  [open [file join [get_property directory [current_project]] [current_project].srcs sim_1 imports sim_files design_1_wrapper_sim_wrapper.v] w]
-puts -nonewline $outfile $contents
-close $outfile
-
-# Set 'utils_1' fileset object
-set obj [get_filesets utils_1]
-set files [list \
-    [file normalize "${currentDir}/cpm5_qdma_mm_only/scripts/pre_place.tcl"] \
-]
-add_files -norecurse -fileset $obj $files
-
-# Set 'utils_1' fileset file properties for remote files
-set file "$currentDir/cpm5_qdma_mm_only/scripts/pre_place.tcl"
-set file [file normalize $file]
-set file_obj [get_files -of_objects [get_filesets utils_1] [list "*$file"]]
-set_property -name "file_type" -value "TCL" -objects $file_obj
-
-set_property STEPS.PLACE_DESIGN.TCL.PRE [get_files pre_place.tcl -of [get_fileset utils_1] ] [get_runs impl_1]
-
-# Set 'utils_1' fileset file properties for local files
-# None
-
-# Set 'utils_1' fileset properties
-set obj [get_filesets utils_1]
 } elseif {[regexp "CPM5_QDMA_Gen4x8_ST_Only_Performance_Design" $options]} {
  set files [list \
  [file normalize "${currentDir}/cpm5_qdma_st_only/src/ST_c2h.sv"] \
@@ -582,33 +445,6 @@ set_property -name "file_type" -value "XDC" -objects $file_obj
 
 # Set 'constrs_1' fileset properties
 set obj [get_filesets constrs_1]
-
-# Create 'sim_1' fileset (if not found)
-if {[string equal [get_filesets -quiet sim_1] ""]} {
-  create_fileset -simset sim_1
-}
-
-# Set 'sim_1' fileset object
-set obj [get_filesets sim_1]
-set files [list \
- [file normalize "${currentDir}/cpm5_qdma_st_only/sim_files/design_1_wrapper_sim_wrapper.v"] \
- ]
-#add_files -norecurse -fileset $obj $files
-import_files -norecurse -fileset $obj $files
-
-# Set 'sim_1' fileset properties
-set obj [get_filesets sim_1]
-set_property -name "top" -value "${design_name}_wrapper_sim_wrapper" -objects $obj
-
-# None
-set infile [open [file join [get_property directory [current_project]] [current_project].srcs sim_1 imports sim_files design_1_wrapper_sim_wrapper.v]]
-set contents [read $infile]
-close $infile
-set contents [string map [list "design_1" "$design_name"] $contents]
-
-set outfile  [open [file join [get_property directory [current_project]] [current_project].srcs sim_1 imports sim_files design_1_wrapper_sim_wrapper.v] w]
-puts -nonewline $outfile $contents
-close $outfile
 
 # Set 'utils_1' fileset object
 set obj [get_filesets utils_1]
@@ -752,31 +588,11 @@ source "$currentDir/cpm5_qdma_dual_ctrl/design_1_bd.tcl"
 puts "INFO: EP bd generated"
 regenerate_bd_layout
 
-source  "$currentDir/cpm5_qdma_dual_ctrl/xlnoc_bd.tcl"
-puts "INFO: xlnoc bd generated"
-regenerate_bd_layout
-
-set_property used_in simulation  [get_files  xlnoc.bd]
-} elseif {([lsearch $options CPM5_Preset.VALUE] == -1) || ([lsearch $options "CPM5_QDMA_Gen4x8_MM_Only_Performance_Design"] != -1)} {
-puts "INFO: CPM5_QDMA_Gen4x8_MM_Only_Performance_Design preset is selected."
-source "$currentDir/cpm5_qdma_mm_only/design_1_bd.tcl"
-puts "INFO: EP bd generated"
-regenerate_bd_layout
-
-source  "$currentDir/cpm5_qdma_mm_only/xlnoc_bd.tcl"
-puts "INFO: xlnoc bd generated"
-regenerate_bd_layout
-set_property used_in simulation  [get_files  xlnoc.bd]
 } elseif {([lsearch $options CPM5_Preset.VALUE] == -1) || ([lsearch $options "CPM5_QDMA_Gen4x8_ST_Only_Performance_Design"] != -1)} {
 puts "INFO: CPM5_QDMA_Gen4x8_ST_Only_Performance_Design preset is selected."
 source "$currentDir/cpm5_qdma_st_only/design_1_bd.tcl"
 puts "INFO: EP bd generated"
 regenerate_bd_layout
-
-source  "$currentDir/cpm5_qdma_st_only/xlnoc_bd.tcl"
-puts "INFO: xlnoc bd generated"
-regenerate_bd_layout
-set_property used_in simulation  [get_files  xlnoc.bd]
 
 } elseif {([lsearch $options CPM5_Preset.VALUE] == -1) || ([lsearch $options "CPM5_QDMA_Gen5x8_MM_Only_Performance_Design"] != -1)} {
 
