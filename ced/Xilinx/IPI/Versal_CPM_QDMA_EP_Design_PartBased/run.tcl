@@ -112,7 +112,7 @@ save_bd_design
  
 puts "INFO: design generation completed successfully"
 
-
+set_property strategy Performance_Explore [get_runs impl_*]
 }
 
 
