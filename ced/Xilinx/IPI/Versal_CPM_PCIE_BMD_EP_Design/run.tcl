@@ -99,6 +99,8 @@ set files [list \
  [file normalize "${currentDir}/cpm5_bmd_ep/src/BMD_AXIST_EP_MEM_ACCESS.v"] \
  [file normalize "${currentDir}/cpm5_bmd_ep/src/BMD_AXIST_INTR_CTRL.v"] \
  [file normalize "${currentDir}/cpm5_bmd_ep/src/pcie_app_versal_bmd.vh"] \
+ [file normalize "${currentDir}/cpm5_bmd_ep/src/pcie_intf_defs_cpm5n.vh"] \
+ [file normalize "${currentDir}/cpm5_bmd_ep/src/pcie_intf_defs_legacy.vh"] \
  [file normalize "${currentDir}/cpm5_bmd_ep/src/BMD_AXIST_512.sv"] \
  [file normalize "${currentDir}/cpm5_bmd_ep/src/BMD_AXIST_CC_512.sv"] \
  [file normalize "${currentDir}/cpm5_bmd_ep/src/BMD_AXIST_CQ_512.sv"] \
