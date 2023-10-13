@@ -72,6 +72,7 @@ module pio_rx_engine  #(
   parameter        AXISTEN_IF_CQ_PARITY_CHECK     = 0,
   parameter        AXISTEN_IF_RC_PARITY_CHECK     = 0,
   parameter [17:0] AXISTEN_IF_ENABLE_MSG_ROUTE    = 18'h2FFFF,
+  parameter        COMPLETER_10B_TAG              = "TRUE", // When Completer 8-bit tag is used, this parameter can still be set to TRUE
 
 
   // Do not override parameters below this line
@@ -132,7 +133,7 @@ module pio_rx_engine  #(
   output reg             [15:0]    req_rid,            // Memory Read Requestor ID { 8'b0 (Bus no),
                                                     //                            3'b0 (Dev no),
                                                     //                            5'b0 (Func no)}
-  output reg              [7:0]    req_tag,            // Memory Read Tag
+  (*keep*)(*mark_debug*) output reg              [9:0]    req_tag,            // Memory Read Tag
   output reg              [7:0]    req_be,             // Memory Read Byte Enables
   output reg             [12:0]    req_addr,           // Memory Read Address
   output reg              [1:0]    req_at,             // Address Translation
@@ -364,7 +365,7 @@ module pio_rx_engine  #(
           req_attr            <= #TCQ 3'b0;
           req_len             <= #TCQ 11'b0;
           req_rid             <= #TCQ 16'b0;
-          req_tag             <= #TCQ 8'b0;
+          req_tag             <= #TCQ 10'b0;
           req_be              <= #TCQ 8'b0;
           req_addr            <= #TCQ 13'b0;
           req_at              <= #TCQ 2'b0;
@@ -455,7 +456,9 @@ module pio_rx_engine  #(
                       req_tc           <= #TCQ m_axis_cq_tdata[59:57];
                       req_attr         <= #TCQ m_axis_cq_tdata[62:60];
                       req_rid          <= #TCQ m_axis_cq_tdata[31:16];
-                      req_tag          <= #TCQ m_axis_cq_tdata[39:32];
+                      //req_tag          <= #TCQ m_axis_cq_tdata[39:32];
+                      req_tag          <= #TCQ (COMPLETER_10B_TAG == "TRUE") ? {m_axis_cq_tdata[63], m_axis_cq_tdata[15], m_axis_cq_tdata[39:32]}
+                                                                             : {2'b00, m_axis_cq_tdata[39:32]};
                       req_be           <= #TCQ req_byte_enables;
                       req_addr         <= #TCQ {region_select[1:0],desc_hdr_qw0[10:2], 2'b00};
                       req_at           <= #TCQ desc_hdr_qw0[1:0];
@@ -492,7 +495,9 @@ module pio_rx_engine  #(
                       req_tc           <= #TCQ m_axis_cq_tdata[59:57];
                       req_attr         <= #TCQ m_axis_cq_tdata[62:60];
                       req_rid          <= #TCQ m_axis_cq_tdata[31:16];
-                      req_tag          <= #TCQ m_axis_cq_tdata[39:32];
+                      //req_tag          <= #TCQ m_axis_cq_tdata[39:32];
+                      req_tag          <= #TCQ (COMPLETER_10B_TAG == "TRUE") ? {m_axis_cq_tdata[63], m_axis_cq_tdata[15], m_axis_cq_tdata[39:32]}
+                                                                             : {2'b00, m_axis_cq_tdata[39:32]};
                       req_be           <= #TCQ req_byte_enables;
                       req_addr         <= #TCQ {region_select[1:0],desc_hdr_qw0[10:2], 2'b00};
                       req_at           <= #TCQ desc_hdr_qw0[1:0];
@@ -534,7 +539,9 @@ module pio_rx_engine  #(
                       req_tc           <= #TCQ m_axis_cq_tdata[59:57];
                       req_attr         <= #TCQ m_axis_cq_tdata[62:60];
                       req_rid          <= #TCQ m_axis_cq_tdata[31:16];
-                      req_tag          <= #TCQ m_axis_cq_tdata[39:32];
+                      //req_tag          <= #TCQ m_axis_cq_tdata[39:32];
+                      req_tag          <= #TCQ (COMPLETER_10B_TAG == "TRUE") ? {m_axis_cq_tdata[63], m_axis_cq_tdata[15], m_axis_cq_tdata[39:32]}
+                                                                             : {2'b00, m_axis_cq_tdata[39:32]};
                       req_be           <= #TCQ req_byte_enables;
                       req_addr         <= #TCQ {region_select[1:0],desc_hdr_qw0[10:2], 2'b00};
                       req_at           <= #TCQ desc_hdr_qw0[1:0];
@@ -571,7 +578,9 @@ module pio_rx_engine  #(
                       req_tc           <= #TCQ m_axis_cq_tdata[59:57];
                       req_attr         <= #TCQ m_axis_cq_tdata[62:60];
                       req_rid          <= #TCQ m_axis_cq_tdata[31:16];
-                      req_tag          <= #TCQ m_axis_cq_tdata[39:32];
+                      //req_tag          <= #TCQ m_axis_cq_tdata[39:32];
+                      req_tag          <= #TCQ (COMPLETER_10B_TAG == "TRUE") ? {m_axis_cq_tdata[63], m_axis_cq_tdata[15], m_axis_cq_tdata[39:32]}
+                                                                             : {2'b00, m_axis_cq_tdata[39:32]};
                       req_be           <= #TCQ req_byte_enables;
                       req_addr         <= #TCQ {region_select[1:0],desc_hdr_qw0[10:2], 2'b00};
                       req_at           <= #TCQ desc_hdr_qw0[1:0];
@@ -614,7 +623,9 @@ module pio_rx_engine  #(
                       req_tc           <= #TCQ m_axis_cq_tdata[59:57];
                       req_attr         <= #TCQ m_axis_cq_tdata[62:60];
                       req_rid          <= #TCQ m_axis_cq_tdata[31:16];
-                      req_tag          <= #TCQ m_axis_cq_tdata[39:32];
+                      //req_tag          <= #TCQ m_axis_cq_tdata[39:32];
+                      req_tag          <= #TCQ (COMPLETER_10B_TAG == "TRUE") ? {m_axis_cq_tdata[63], m_axis_cq_tdata[15], m_axis_cq_tdata[39:32]}
+                                                                             : {2'b00, m_axis_cq_tdata[39:32]};
                       req_be           <= #TCQ req_byte_enables;
                       end
                     else begin
@@ -645,7 +656,9 @@ module pio_rx_engine  #(
                       req_tc           <= #TCQ m_axis_cq_tdata[59:57];
                       req_attr         <= #TCQ m_axis_cq_tdata[62:60];
                       req_rid          <= #TCQ m_axis_cq_tdata[31:16];
-                      req_tag          <= #TCQ m_axis_cq_tdata[39:32];
+                      //req_tag          <= #TCQ m_axis_cq_tdata[39:32];
+                      req_tag          <= #TCQ (COMPLETER_10B_TAG == "TRUE") ? {m_axis_cq_tdata[63], m_axis_cq_tdata[15], m_axis_cq_tdata[39:32]}
+                                                                             : {2'b00, m_axis_cq_tdata[39:32]};
                       req_be           <= #TCQ req_byte_enables;
                       req_mem_lock     <= #TCQ 1'b1;
                       req_addr         <= #TCQ {region_select[1:0],desc_hdr_qw0[10:2], 2'b00};
@@ -678,7 +691,9 @@ module pio_rx_engine  #(
                     req_attr             <= #TCQ m_axis_cq_tdata[62:60];
                     req_at               <= #TCQ desc_hdr_qw0[1:0];
                     req_rid              <= #TCQ m_axis_cq_tdata[31:16];
-                    req_tag              <= #TCQ m_axis_cq_tdata[39:32];
+                    //req_tag              <= #TCQ m_axis_cq_tdata[39:32];
+                    req_tag              <= #TCQ (COMPLETER_10B_TAG == "TRUE") ? {m_axis_cq_tdata[63], m_axis_cq_tdata[15], m_axis_cq_tdata[39:32]}
+                                                                               : {2'b00, m_axis_cq_tdata[39:32]};
                     req_be               <= #TCQ req_byte_enables;
                     req_msg_code         <= #TCQ m_axis_cq_tdata[47:40];
                     req_msg_route        <= #TCQ m_axis_cq_tdata[50:48];
@@ -696,7 +711,9 @@ module pio_rx_engine  #(
                     req_tc               <= #TCQ m_axis_cq_tdata[59:57];
                     req_attr             <= #TCQ m_axis_cq_tdata[62:60];
                     req_rid              <= #TCQ m_axis_cq_tdata[31:16];
-                    req_tag              <= #TCQ m_axis_cq_tdata[39:32];
+                    //req_tag              <= #TCQ m_axis_cq_tdata[39:32];
+                    req_tag              <= #TCQ (COMPLETER_10B_TAG == "TRUE") ? {m_axis_cq_tdata[63], m_axis_cq_tdata[15], m_axis_cq_tdata[39:32]}
+                                                                               : {2'b00, m_axis_cq_tdata[39:32]};
                     req_msg_code         <= #TCQ m_axis_cq_tdata[47:40];
                     req_msg_route        <= #TCQ m_axis_cq_tdata[50:48];
                     req_be               <= #TCQ req_byte_enables;
@@ -718,7 +735,9 @@ module pio_rx_engine  #(
                     req_tc               <= #TCQ m_axis_cq_tdata[59:57];
                     req_attr             <= #TCQ m_axis_cq_tdata[62:60];
                     req_rid              <= #TCQ m_axis_cq_tdata[31:16];
-                    req_tag              <= #TCQ m_axis_cq_tdata[39:32];
+                    //req_tag              <= #TCQ m_axis_cq_tdata[39:32];
+                    req_tag              <= #TCQ (COMPLETER_10B_TAG == "TRUE") ? {m_axis_cq_tdata[63], m_axis_cq_tdata[15], m_axis_cq_tdata[39:32]}
+                                                                               : {2'b00, m_axis_cq_tdata[39:32]};
                     req_msg_code         <= #TCQ m_axis_cq_tdata[47:40];
                     req_msg_route        <= #TCQ m_axis_cq_tdata[50:48];
                     req_be               <= #TCQ req_byte_enables;
@@ -865,7 +884,7 @@ module pio_rx_engine  #(
           req_attr            <= #TCQ 3'b0;
           req_len             <= #TCQ 11'b0;
           req_rid             <= #TCQ 16'b0;
-          req_tag             <= #TCQ 8'b0;
+          req_tag             <= #TCQ 10'b0;
           req_be              <= #TCQ 8'b0;
           req_addr            <= #TCQ 13'b0;
           req_at              <= #TCQ 2'b0;
@@ -938,7 +957,9 @@ module pio_rx_engine  #(
                       req_tc           <= #TCQ m_axis_cq_tdata[123:121];
                       req_attr         <= #TCQ m_axis_cq_tdata[126:124];
                       req_rid          <= #TCQ m_axis_cq_tdata[95:80];
-                      req_tag          <= #TCQ m_axis_cq_tdata[103:96];
+                      //req_tag          <= #TCQ m_axis_cq_tdata[103:96];
+                      req_tag          <= #TCQ (COMPLETER_10B_TAG == "TRUE") ? {m_axis_cq_tdata[127], m_axis_cq_tdata[79], m_axis_cq_tdata[103:96]}
+                                                                             : {2'b00, m_axis_cq_tdata[103:96]};
                       req_be           <= #TCQ m_axis_cq_tuser[7:0];
                       req_addr         <= #TCQ {region_select[1:0],m_axis_cq_tdata[10:2], 2'b00};
                       req_at           <= #TCQ m_axis_cq_tdata[1:0];
@@ -975,7 +996,9 @@ module pio_rx_engine  #(
                       req_tc           <= #TCQ m_axis_cq_tdata[123:121];
                       req_attr         <= #TCQ m_axis_cq_tdata[126:124];
                       req_rid          <= #TCQ m_axis_cq_tdata[95:80];
-                      req_tag          <= #TCQ m_axis_cq_tdata[103:96];
+                      //req_tag          <= #TCQ m_axis_cq_tdata[103:96];
+                      req_tag          <= #TCQ (COMPLETER_10B_TAG == "TRUE") ? {m_axis_cq_tdata[127], m_axis_cq_tdata[79], m_axis_cq_tdata[103:96]}
+                                                                             : {2'b00, m_axis_cq_tdata[103:96]};
                       req_be           <= #TCQ m_axis_cq_tuser[7:0];
                       req_addr         <= #TCQ {region_select[1:0],m_axis_cq_tdata[10:2], 2'b00};
                       req_at           <= #TCQ m_axis_cq_tdata[1:0];
@@ -1018,7 +1041,9 @@ module pio_rx_engine  #(
                       req_tc           <= #TCQ m_axis_cq_tdata[123:121];
                       req_attr         <= #TCQ m_axis_cq_tdata[126:124];
                       req_rid          <= #TCQ m_axis_cq_tdata[95:80];
-                      req_tag          <= #TCQ m_axis_cq_tdata[103:96];
+                      //req_tag          <= #TCQ m_axis_cq_tdata[103:96];
+                      req_tag          <= #TCQ (COMPLETER_10B_TAG == "TRUE") ? {m_axis_cq_tdata[127], m_axis_cq_tdata[79], m_axis_cq_tdata[103:96]}
+                                                                             : {2'b00, m_axis_cq_tdata[103:96]};
                       req_be           <= #TCQ m_axis_cq_tuser[7:0];
                       req_addr         <= #TCQ {region_select[1:0],m_axis_cq_tdata[10:2], 2'b00};
                       req_at           <= #TCQ m_axis_cq_tdata[1:0];
@@ -1055,7 +1080,9 @@ module pio_rx_engine  #(
                       req_tc           <= #TCQ m_axis_cq_tdata[123:121];
                       req_attr         <= #TCQ m_axis_cq_tdata[126:124];
                       req_rid          <= #TCQ m_axis_cq_tdata[95:80];
-                      req_tag          <= #TCQ m_axis_cq_tdata[103:96];
+                      //req_tag          <= #TCQ m_axis_cq_tdata[103:96];
+                      req_tag          <= #TCQ (COMPLETER_10B_TAG == "TRUE") ? {m_axis_cq_tdata[127], m_axis_cq_tdata[79], m_axis_cq_tdata[103:96]}
+                                                                             : {2'b00, m_axis_cq_tdata[103:96]};
                       req_be           <= #TCQ m_axis_cq_tuser[7:0];
                       req_addr         <= #TCQ {region_select[1:0],m_axis_cq_tdata[10:2], 2'b00};
                       req_at           <= #TCQ m_axis_cq_tdata[1:0];
@@ -1099,7 +1126,9 @@ module pio_rx_engine  #(
                       req_tc           <= #TCQ m_axis_cq_tdata[123:121];
                       req_attr         <= #TCQ m_axis_cq_tdata[126:124];
                       req_rid          <= #TCQ m_axis_cq_tdata[95:80];
-                      req_tag          <= #TCQ m_axis_cq_tdata[103:96];
+                      //req_tag          <= #TCQ m_axis_cq_tdata[103:96];
+                      req_tag          <= #TCQ (COMPLETER_10B_TAG == "TRUE") ? {m_axis_cq_tdata[127], m_axis_cq_tdata[79], m_axis_cq_tdata[103:96]}
+                                                                             : {2'b00, m_axis_cq_tdata[103:96]};
                       req_be           <= #TCQ m_axis_cq_tuser[7:0];
                       end
                     else begin
@@ -1130,7 +1159,9 @@ module pio_rx_engine  #(
                       req_tc           <= #TCQ m_axis_cq_tdata[123:121];
                       req_attr         <= #TCQ m_axis_cq_tdata[126:124];
                       req_rid          <= #TCQ m_axis_cq_tdata[95:80];
-                      req_tag          <= #TCQ m_axis_cq_tdata[103:96];
+                      //req_tag          <= #TCQ m_axis_cq_tdata[103:96];
+                      req_tag          <= #TCQ (COMPLETER_10B_TAG == "TRUE") ? {m_axis_cq_tdata[127], m_axis_cq_tdata[79], m_axis_cq_tdata[103:96]}
+                                                                             : {2'b00, m_axis_cq_tdata[103:96]};
                       req_be           <= #TCQ m_axis_cq_tuser[7:0];
                       req_mem_lock     <= #TCQ 1'b1;
                       req_addr         <= #TCQ {region_select[1:0],m_axis_cq_tdata[10:2], 2'b00};
@@ -1168,7 +1199,9 @@ module pio_rx_engine  #(
                     req_attr             <= #TCQ m_axis_cq_tdata[126:124];
                     req_at               <= #TCQ m_axis_cq_tdata[1:0];
                     req_rid              <= #TCQ m_axis_cq_tdata[95:80];
-                    req_tag              <= #TCQ m_axis_cq_tdata[103:96];
+                    //req_tag              <= #TCQ m_axis_cq_tdata[103:96];
+                    req_tag              <= #TCQ (COMPLETER_10B_TAG == "TRUE") ? {m_axis_cq_tdata[127], m_axis_cq_tdata[79], m_axis_cq_tdata[103:96]}
+                                                                               : {2'b00, m_axis_cq_tdata[103:96]};
                     req_be               <= #TCQ m_axis_cq_tuser[7:0];
                     req_msg_code         <= #TCQ m_axis_cq_tdata[47:40];
                     req_msg_route        <= #TCQ m_axis_cq_tdata[50:48];
@@ -1186,7 +1219,9 @@ module pio_rx_engine  #(
                     req_tc               <= #TCQ m_axis_cq_tdata[123:121];
                     req_attr             <= #TCQ m_axis_cq_tdata[126:124];
                     req_rid              <= #TCQ m_axis_cq_tdata[95:80];
-                    req_tag              <= #TCQ m_axis_cq_tdata[103:96];
+                    //req_tag              <= #TCQ m_axis_cq_tdata[103:96];
+                    req_tag              <= #TCQ (COMPLETER_10B_TAG == "TRUE") ? {m_axis_cq_tdata[127], m_axis_cq_tdata[79], m_axis_cq_tdata[103:96]}
+                                                                               : {2'b00, m_axis_cq_tdata[103:96]};
                     req_msg_code         <= #TCQ m_axis_cq_tdata[47:40];
                     req_msg_route        <= #TCQ m_axis_cq_tdata[50:48];
                     req_be               <= #TCQ m_axis_cq_tuser[7:0];
@@ -1208,7 +1243,9 @@ module pio_rx_engine  #(
                     req_tc               <= #TCQ m_axis_cq_tdata[123:121];
                     req_attr             <= #TCQ m_axis_cq_tdata[126:124];
                     req_rid              <= #TCQ m_axis_cq_tdata[95:80];
-                    req_tag              <= #TCQ m_axis_cq_tdata[103:96];
+                    //req_tag              <= #TCQ m_axis_cq_tdata[103:96];
+                    req_tag              <= #TCQ (COMPLETER_10B_TAG == "TRUE") ? {m_axis_cq_tdata[127], m_axis_cq_tdata[79], m_axis_cq_tdata[103:96]}
+                                                                               : {2'b00, m_axis_cq_tdata[103:96]};
                     req_msg_code         <= #TCQ m_axis_cq_tdata[47:40];
                     req_msg_route        <= #TCQ m_axis_cq_tdata[50:48];
                     req_be               <= #TCQ m_axis_cq_tuser[7:0];
@@ -1368,7 +1405,7 @@ module pio_rx_engine  #(
           req_attr            <= #TCQ 3'b0;
           req_len             <= #TCQ 11'b0;
           req_rid             <= #TCQ 16'b0;
-          req_tag             <= #TCQ 8'b0;
+          req_tag             <= #TCQ 10'b0;
           req_be              <= #TCQ 8'b0;
           req_addr            <= #TCQ 13'b0;
           req_at              <= #TCQ 2'b0;
@@ -1447,7 +1484,9 @@ module pio_rx_engine  #(
                       req_tc           <= #TCQ m_axis_cq_tdata[123:121];
                       req_attr         <= #TCQ m_axis_cq_tdata[126:124];
                       req_rid          <= #TCQ m_axis_cq_tdata[95:80];
-                      req_tag          <= #TCQ m_axis_cq_tdata[103:96];
+                      //req_tag          <= #TCQ m_axis_cq_tdata[103:96];
+                      req_tag          <= #TCQ (COMPLETER_10B_TAG == "TRUE") ? {m_axis_cq_tdata[127], m_axis_cq_tdata[79], m_axis_cq_tdata[103:96]}
+                                                                             : {2'b00, m_axis_cq_tdata[103:96]};
                       req_at           <= #TCQ m_axis_cq_tdata[1:0];
                       payload_len    <=#TCQ m_axis_cq_tdata[65];
                     end
@@ -1524,7 +1563,9 @@ module pio_rx_engine  #(
                       req_tc           <= #TCQ m_axis_cq_tdata[123:121];
                       req_attr         <= #TCQ m_axis_cq_tdata[126:124];
                       req_rid          <= #TCQ m_axis_cq_tdata[95:80];
-                      req_tag          <= #TCQ m_axis_cq_tdata[103:96];
+                      //req_tag          <= #TCQ m_axis_cq_tdata[103:96];
+                      req_tag          <= #TCQ (COMPLETER_10B_TAG == "TRUE") ? {m_axis_cq_tdata[127], m_axis_cq_tdata[79], m_axis_cq_tdata[103:96]}
+                                                                             : {2'b00, m_axis_cq_tdata[103:96]};
                       req_at           <= #TCQ m_axis_cq_tdata[1:0];
                       payload_len    <=#TCQ m_axis_cq_tdata[65];
                     end
@@ -1558,7 +1599,9 @@ module pio_rx_engine  #(
                       req_tc           <= #TCQ m_axis_cq_tdata[123:121];
                       req_attr         <= #TCQ m_axis_cq_tdata[126:124];
                       req_rid          <= #TCQ m_axis_cq_tdata[95:80];
-                      req_tag          <= #TCQ m_axis_cq_tdata[103:96];
+                      //req_tag          <= #TCQ m_axis_cq_tdata[103:96];
+                      req_tag          <= #TCQ (COMPLETER_10B_TAG == "TRUE") ? {m_axis_cq_tdata[127], m_axis_cq_tdata[79], m_axis_cq_tdata[103:96]}
+                                                                             : {2'b00, m_axis_cq_tdata[103:96]};
                       req_at           <= #TCQ m_axis_cq_tdata[1:0];
                       payload_len   <=#TCQ m_axis_cq_tdata[65];
                       if(AXISTEN_IF_CQ_ALIGNMENT_MODE == "FALSE") begin // DWord Aligned Mode
@@ -1610,7 +1653,9 @@ module pio_rx_engine  #(
                       req_tc           <= #TCQ m_axis_cq_tdata[123:121];
                       req_attr         <= #TCQ m_axis_cq_tdata[126:124];
                       req_rid          <= #TCQ m_axis_cq_tdata[95:80];
-                      req_tag          <= #TCQ m_axis_cq_tdata[103:96];
+                      //req_tag          <= #TCQ m_axis_cq_tdata[103:96];
+                      req_tag          <= #TCQ (COMPLETER_10B_TAG == "TRUE") ? {m_axis_cq_tdata[127], m_axis_cq_tdata[79], m_axis_cq_tdata[103:96]}
+                                                                             : {2'b00, m_axis_cq_tdata[103:96]};
                     end
                     else begin
                       req_compl        <= #TCQ 1'b0;
@@ -1642,7 +1687,9 @@ module pio_rx_engine  #(
                       req_tc           <= #TCQ m_axis_cq_tdata[123:121];
                       req_attr         <= #TCQ m_axis_cq_tdata[126:124];
                       req_rid          <= #TCQ m_axis_cq_tdata[95:80];
-                      req_tag          <= #TCQ m_axis_cq_tdata[103:96];
+                      //req_tag          <= #TCQ m_axis_cq_tdata[103:96];
+                      req_tag          <= #TCQ (COMPLETER_10B_TAG == "TRUE") ? {m_axis_cq_tdata[127], m_axis_cq_tdata[79], m_axis_cq_tdata[103:96]}
+                                                                             : {2'b00, m_axis_cq_tdata[103:96]};
                       req_mem_lock     <= #TCQ 1'b1;
                       req_at           <= #TCQ m_axis_cq_tdata[1:0];
                       payload_len   <=#TCQ m_axis_cq_tdata[65];
@@ -1670,7 +1717,9 @@ module pio_rx_engine  #(
                     req_attr             <= #TCQ m_axis_cq_tdata[126:124];
                     req_at               <= #TCQ m_axis_cq_tdata[1:0];
                     req_rid              <= #TCQ m_axis_cq_tdata[95:80];
-                    req_tag              <= #TCQ m_axis_cq_tdata[103:96];
+                    //req_tag              <= #TCQ m_axis_cq_tdata[103:96];
+                    req_tag              <= #TCQ (COMPLETER_10B_TAG == "TRUE") ? {m_axis_cq_tdata[127], m_axis_cq_tdata[79], m_axis_cq_tdata[103:96]}
+                                                                               : {2'b00, m_axis_cq_tdata[103:96]};
                     req_be               <= #TCQ m_axis_cq_tuser[7:0];
                     req_msg_code         <= #TCQ m_axis_cq_tdata[111:104];
                     req_msg_route        <= #TCQ m_axis_cq_tdata[107:105];
@@ -1688,7 +1737,9 @@ module pio_rx_engine  #(
                     req_tc               <= #TCQ m_axis_cq_tdata[123:121];
                     req_attr             <= #TCQ m_axis_cq_tdata[126:124];
                     req_rid              <= #TCQ m_axis_cq_tdata[95:80];
-                    req_tag              <= #TCQ m_axis_cq_tdata[103:96];
+                    //req_tag              <= #TCQ m_axis_cq_tdata[103:96];
+                    req_tag              <= #TCQ (COMPLETER_10B_TAG == "TRUE") ? {m_axis_cq_tdata[127], m_axis_cq_tdata[79], m_axis_cq_tdata[103:96]}
+                                                                               : {2'b00, m_axis_cq_tdata[103:96]};
                     req_be               <= #TCQ m_axis_cq_tuser[7:0];
                     req_at               <= #TCQ m_axis_cq_tdata[1:0];
                     req_msg_code         <= #TCQ m_axis_cq_tdata[111:104];
@@ -1711,7 +1762,9 @@ module pio_rx_engine  #(
                     req_attr             <= #TCQ m_axis_cq_tdata[126:124];
                     req_at               <= #TCQ m_axis_cq_tdata[1:0];
                     req_rid              <= #TCQ m_axis_cq_tdata[95:80];
-                    req_tag              <= #TCQ m_axis_cq_tdata[103:96];
+                    //req_tag              <= #TCQ m_axis_cq_tdata[103:96];
+                    req_tag              <= #TCQ (COMPLETER_10B_TAG == "TRUE") ? {m_axis_cq_tdata[127], m_axis_cq_tdata[79], m_axis_cq_tdata[103:96]}
+                                                                               : {2'b00, m_axis_cq_tdata[103:96]};
                     req_be               <= #TCQ m_axis_cq_tuser[7:0];
                     req_msg_code         <= #TCQ m_axis_cq_tdata[111:104];
                     req_msg_route        <= #TCQ m_axis_cq_tdata[107:105];
@@ -1896,7 +1949,7 @@ module pio_rx_engine  #(
           req_attr            <= #TCQ 3'b0;
           req_len             <= #TCQ 11'b0;
           req_rid             <= #TCQ 16'b0;
-          req_tag             <= #TCQ 8'b0;
+          req_tag             <= #TCQ 10'b0;
           req_be              <= #TCQ 8'b0;
           req_addr            <= #TCQ 13'b0;
           req_at              <= #TCQ 2'b0;
@@ -1977,7 +2030,9 @@ module pio_rx_engine  #(
                       req_tc           <= #TCQ m_axis_cq_tdata[123:121];
                       req_attr         <= #TCQ m_axis_cq_tdata[126:124];
                       req_rid          <= #TCQ m_axis_cq_tdata[95:80];
-                      req_tag          <= #TCQ m_axis_cq_tdata[103:96];
+                      //req_tag          <= #TCQ m_axis_cq_tdata[103:96];
+                      req_tag          <= #TCQ (COMPLETER_10B_TAG == "TRUE") ? {m_axis_cq_tdata[127], m_axis_cq_tdata[79], m_axis_cq_tdata[103:96]}
+                                                                             : {2'b00, m_axis_cq_tdata[103:96]};
                       req_at           <= #TCQ m_axis_cq_tdata[1:0];
                       payload_len    <=#TCQ m_axis_cq_tdata[65];
                     end
@@ -2054,7 +2109,9 @@ module pio_rx_engine  #(
                       req_tc           <= #TCQ m_axis_cq_tdata[123:121];
                       req_attr         <= #TCQ m_axis_cq_tdata[126:124];
                       req_rid          <= #TCQ m_axis_cq_tdata[95:80];
-                      req_tag          <= #TCQ m_axis_cq_tdata[103:96];
+                      //req_tag          <= #TCQ m_axis_cq_tdata[103:96];
+                      req_tag          <= #TCQ (COMPLETER_10B_TAG == "TRUE") ? {m_axis_cq_tdata[127], m_axis_cq_tdata[79], m_axis_cq_tdata[103:96]}
+                                                                             : {2'b00, m_axis_cq_tdata[103:96]};
                       req_at           <= #TCQ m_axis_cq_tdata[1:0];
                       payload_len    <=#TCQ m_axis_cq_tdata[65];
                     end
@@ -2088,7 +2145,9 @@ module pio_rx_engine  #(
                       req_tc           <= #TCQ m_axis_cq_tdata[123:121];
                       req_attr         <= #TCQ m_axis_cq_tdata[126:124];
                       req_rid          <= #TCQ m_axis_cq_tdata[95:80];
-                      req_tag          <= #TCQ m_axis_cq_tdata[103:96];
+                      //req_tag          <= #TCQ m_axis_cq_tdata[103:96];
+                      req_tag          <= #TCQ (COMPLETER_10B_TAG == "TRUE") ? {m_axis_cq_tdata[127], m_axis_cq_tdata[79], m_axis_cq_tdata[103:96]}
+                                                                             : {2'b00, m_axis_cq_tdata[103:96]};
                       req_at           <= #TCQ m_axis_cq_tdata[1:0];
                       payload_len   <=#TCQ m_axis_cq_tdata[65];
                       if(AXISTEN_IF_CQ_ALIGNMENT_MODE == "FALSE") begin // DWord Aligned Mode
@@ -2140,7 +2199,9 @@ module pio_rx_engine  #(
                       req_tc           <= #TCQ m_axis_cq_tdata[123:121];
                       req_attr         <= #TCQ m_axis_cq_tdata[126:124];
                       req_rid          <= #TCQ m_axis_cq_tdata[95:80];
-                      req_tag          <= #TCQ m_axis_cq_tdata[103:96];
+                      //req_tag          <= #TCQ m_axis_cq_tdata[103:96];
+                      req_tag          <= #TCQ (COMPLETER_10B_TAG == "TRUE") ? {m_axis_cq_tdata[127], m_axis_cq_tdata[79], m_axis_cq_tdata[103:96]}
+                                                                             : {2'b00, m_axis_cq_tdata[103:96]};
                     end
                     else begin
                       req_compl        <= #TCQ 1'b0;
@@ -2172,7 +2233,9 @@ module pio_rx_engine  #(
                       req_tc           <= #TCQ m_axis_cq_tdata[123:121];
                       req_attr         <= #TCQ m_axis_cq_tdata[126:124];
                       req_rid          <= #TCQ m_axis_cq_tdata[95:80];
-                      req_tag          <= #TCQ m_axis_cq_tdata[103:96];
+                      //req_tag          <= #TCQ m_axis_cq_tdata[103:96];
+                      req_tag          <= #TCQ (COMPLETER_10B_TAG == "TRUE") ? {m_axis_cq_tdata[127], m_axis_cq_tdata[79], m_axis_cq_tdata[103:96]}
+                                                                             : {2'b00, m_axis_cq_tdata[103:96]};
                       req_mem_lock     <= #TCQ 1'b1;
                       req_at           <= #TCQ m_axis_cq_tdata[1:0];
                       payload_len   <=#TCQ m_axis_cq_tdata[65];
@@ -2200,7 +2263,9 @@ module pio_rx_engine  #(
                     req_attr             <= #TCQ m_axis_cq_tdata[126:124];
                     req_at               <= #TCQ m_axis_cq_tdata[1:0];
                     req_rid              <= #TCQ m_axis_cq_tdata[95:80];
-                    req_tag              <= #TCQ m_axis_cq_tdata[103:96];
+                    //req_tag              <= #TCQ m_axis_cq_tdata[103:96];
+                    req_tag              <= #TCQ (COMPLETER_10B_TAG == "TRUE") ? {m_axis_cq_tdata[127], m_axis_cq_tdata[79], m_axis_cq_tdata[103:96]}
+                                                                               : {2'b00, m_axis_cq_tdata[103:96]};
                     req_be               <= #TCQ {m_axis_cq_tuser[11:8],m_axis_cq_tuser[3:0]};
                     req_msg_code         <= #TCQ m_axis_cq_tdata[111:104];
                     req_msg_route        <= #TCQ m_axis_cq_tdata[107:105];
@@ -2218,7 +2283,9 @@ module pio_rx_engine  #(
                     req_tc               <= #TCQ m_axis_cq_tdata[123:121];
                     req_attr             <= #TCQ m_axis_cq_tdata[126:124];
                     req_rid              <= #TCQ m_axis_cq_tdata[95:80];
-                    req_tag              <= #TCQ m_axis_cq_tdata[103:96];
+                    //req_tag              <= #TCQ m_axis_cq_tdata[103:96];
+                    req_tag              <= #TCQ (COMPLETER_10B_TAG == "TRUE") ? {m_axis_cq_tdata[127], m_axis_cq_tdata[79], m_axis_cq_tdata[103:96]}
+                                                                               : {2'b00, m_axis_cq_tdata[103:96]};
                     req_be               <= #TCQ {m_axis_cq_tuser[11:8],m_axis_cq_tuser[3:0]};
                     req_at               <= #TCQ m_axis_cq_tdata[1:0];
                     req_msg_code         <= #TCQ m_axis_cq_tdata[111:104];
@@ -2241,7 +2308,9 @@ module pio_rx_engine  #(
                     req_attr             <= #TCQ m_axis_cq_tdata[126:124];
                     req_at               <= #TCQ m_axis_cq_tdata[1:0];
                     req_rid              <= #TCQ m_axis_cq_tdata[95:80];
-                    req_tag              <= #TCQ m_axis_cq_tdata[103:96];
+                    //req_tag              <= #TCQ m_axis_cq_tdata[103:96];
+                    req_tag              <= #TCQ (COMPLETER_10B_TAG == "TRUE") ? {m_axis_cq_tdata[127], m_axis_cq_tdata[79], m_axis_cq_tdata[103:96]}
+                                                                               : {2'b00, m_axis_cq_tdata[103:96]};
                     req_be               <= #TCQ {m_axis_cq_tuser[11:8],m_axis_cq_tuser[3:0]};
                     req_msg_code         <= #TCQ m_axis_cq_tdata[111:104];
                     req_msg_route        <= #TCQ m_axis_cq_tdata[107:105];

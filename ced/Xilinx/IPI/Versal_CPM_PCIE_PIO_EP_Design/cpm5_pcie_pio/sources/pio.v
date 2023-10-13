@@ -85,6 +85,7 @@ module pio #(
   parameter        AXISTEN_IF_MC_RX_STRADDLE      = 0,
   parameter        AXISTEN_IF_ENABLE_RX_MSG_INTFC = 0,
   parameter [17:0] AXISTEN_IF_ENABLE_MSG_ROUTE    = 18'h2FFFF,
+  parameter        COMPLETER_10B_TAG              = "TRUE", // When Completer 8-bit tag is used, this parameter can still be set to TRUE
 
   //Do not modify the parameters below this line
   //parameter C_DATA_WIDTH = (AXISTEN_IF_WIDTH[1]) ? 256 : (AXISTEN_IF_WIDTH[0])? 128 : 64,
@@ -235,7 +236,8 @@ module pio #(
     .AXISTEN_IF_RC_PARITY_CHECK              ( AXISTEN_IF_RC_PARITY_CHECK ),
     .AXISTEN_IF_CQ_PARITY_CHECK              ( AXISTEN_IF_CQ_PARITY_CHECK ),
     .AXISTEN_IF_ENABLE_RX_MSG_INTFC          ( AXISTEN_IF_ENABLE_RX_MSG_INTFC ),
-    .AXISTEN_IF_ENABLE_MSG_ROUTE             ( AXISTEN_IF_ENABLE_MSG_ROUTE )
+    .AXISTEN_IF_ENABLE_MSG_ROUTE             ( AXISTEN_IF_ENABLE_MSG_ROUTE ),
+    .COMPLETER_10B_TAG                       ( COMPLETER_10B_TAG )
   ) pio_ep (
 
     .user_clk                                ( user_clk ),

@@ -71,6 +71,7 @@ module pio_tx_engine    #(
   parameter       AXISTEN_IF_ENABLE_CLIENT_TAG = 0,
   parameter       AXISTEN_IF_RQ_PARITY_CHECK   = 0,
   parameter       AXISTEN_IF_CC_PARITY_CHECK   = 0,
+  parameter       COMPLETER_10B_TAG              = "TRUE", // When Completer 8-bit tag is used, this parameter can still be set to TRUE
 
   //Do not modify the parameters below this line
   //parameter C_DATA_WIDTH = (AXISTEN_IF_WIDTH[1]) ? 256 : (AXISTEN_IF_WIDTH[0])? 128 : 64,
@@ -141,9 +142,9 @@ module pio_tx_engine    #(
   input                          req_td,
   input                          req_ep,
   input                   [1:0]  req_attr,
-  input                   [10:0]  req_len,
+  input                  [10:0]  req_len,
   input                  [15:0]  req_rid,
-  input                   [7:0]  req_tag,
+  input                   [9:0]  req_tag,
   input                   [7:0]  req_be,
   input                  [12:0]  req_addr,
   input                   [1:0]  req_at,
@@ -491,13 +492,14 @@ assign cfg_fc_sel = 3'b0;
                                              8'h00,         // Completer Bus number - selected if Compl ID    = 1
                                              8'h00,         // Compl Dev / Func no - sel if Compl ID = 1
                                              (AXISTEN_IF_ENABLE_CLIENT_TAG ?
-                                             8'hCC : req_tag),  // Select Client Tag or core's internal tag
+                                             8'hCC : req_tag[7:0]),  // Select Client Tag or core's internal tag
                                              req_rid,       // Requester ID - 16 bits
-                                             1'b0,          // Rsvd
+                                             req_tag[9],    // T9
                                              1'b0,          // Posioned completion
                                              3'b000,        // SuccessFull completion
                                              (req_mem ? (11'h1 + payload_len) : 11'b0),         // DWord Count 0 - IO Write completions
-                                             2'b0,          // Rsvd
+                                             req_tag[8],    // T8
+                                             1'b0,          // Rsvd
                                              1'b0,          // Locked Read Completion
                                              13'h0004,      // Byte Count
                                              6'b0,          // Rsvd
@@ -545,13 +547,14 @@ assign cfg_fc_sel = 3'b0;
                                                  8'h00,         // Completer Bus number - selected if Compl ID    = 1
                                                  8'h00,         // Compl Dev / Func no - sel if Compl ID = 1
                                                  (AXISTEN_IF_ENABLE_CLIENT_TAG ?
-                                                 8'hCC : req_tag),  // Select Client Tag or core's internal tag
+                                                 8'hCC : req_tag[7:0]),  // Select Client Tag or core's internal tag
                                                  req_rid,       // Requester ID - 16 bits
-                                                 1'b0,          // Rsvd
+                                                 req_tag[9],    // T9
                                                  1'b0,          // Posioned completion
                                                  3'b000,        // SuccessFull completion
                                                  (req_mem ? (11'h1 + payload_len) : 11'b1),         // DWord Count 0 - IO Write completions
-                                                 2'b0,          // Rsvd
+                                                 req_tag[8],    // T8
+                                                 1'b0,          // Rsvd
                                                  (req_mem_lock? 1'b1 : 1'b0),  // Locked Read Completion
                                                  13'h0004,      // Byte Count
                                                  6'b0,          // Rsvd
@@ -605,13 +608,14 @@ assign cfg_fc_sel = 3'b0;
                                                  8'h00,         // Completer Bus number - selected if Compl ID    = 1
                                                  8'h00,         // Compl Dev / Func no - sel if Compl ID = 1
                                                  (AXISTEN_IF_ENABLE_CLIENT_TAG ?
-                                                 8'hCC : req_tag),  // Select Client Tag or core's internal tag
+                                                 8'hCC : req_tag[7:0]),  // Select Client Tag or core's internal tag
                                                  req_rid,       // Requester ID - 16 bits
-                                                 1'b0,          // Rsvd
+                                                 req_tag[9],    // T9
                                                  1'b0,          // Posioned completion
                                                  3'b000,        // SuccessFull completion
                                                  (req_mem ? (11'h1 + payload_len) : 11'b1),         // DWord Count 0 - IO Write completions
-                                                 2'b0,          // Rsvd
+                                                 req_tag[8],    // T8
+                                                 1'b0,          // Rsvd
                                                  (req_mem_lock? 1'b1 : 1'b0),      // Locked Read Completion
                                                  13'h0004,      // Byte Count
                                                  6'b0,          // Rsvd
@@ -710,13 +714,14 @@ assign cfg_fc_sel = 3'b0;
                                            8'h00,         // Completer Bus number - selected if Compl ID    = 1
                                            8'h00,         // Compl Dev / Func no - sel if Compl ID = 1
                                            (AXISTEN_IF_ENABLE_CLIENT_TAG ?
-                                           8'hCC : req_tag),  // Select Client Tag or core's internal tag
+                                           8'hCC : req_tag[7:0]),  // Select Client Tag or core's internal tag
                                            req_rid,       // Requester ID - 16 bits
-                                           1'b0,          // Rsvd
+                                           req_tag[9],    // T9
                                            1'b0,          // Posioned completion
                                            3'b000,        // SuccessFull completion
                                            (req_mem ? (11'h1 + payload_len) : 11'b1),         // DWord Count 0 - IO Write completions
-                                           2'b0,          // Rsvd
+                                           req_tag[8],    // T8
+                                           1'b0,          // Rsvd
                                            (req_mem_lock? 1'b1 : 1'b0),   // Locked Read Completion
                                            13'h0004,      // Byte Count
                                            6'b0,          // Rsvd
@@ -766,13 +771,14 @@ assign cfg_fc_sel = 3'b0;
                                            8'h00,         // Completer Bus number - selected if Compl ID    = 1
                                            8'h00,         // Compl Dev / Func no - sel if Compl ID = 1
                                            (AXISTEN_IF_ENABLE_CLIENT_TAG ?
-                                           8'hCC : req_tag),  // Select Client Tag or core's internal tag
+                                           8'hCC : req_tag[7:0]),  // Select Client Tag or core's internal tag
                                            req_rid,       // Requester ID - 16 bits
-                                           1'b0,          // Rsvd
+                                           req_tag[9],    // T9
                                            1'b0,          // Posioned completion
                                            3'b000,        // SuccessFull completion
                                            (req_mem ? (11'h1 + payload_len) : 11'b1),         // DWord Count 0 - IO Write completions
-                                           2'b0,          // Rsvd
+                                           req_tag[8],    // T8
+                                           1'b0,          // Rsvd
                                            (req_mem_lock? 1'b1 : 1'b0),      // Locked Read Completion
                                            13'h0004,      // Byte Count
                                            6'b0,          // Rsvd
@@ -822,9 +828,9 @@ assign cfg_fc_sel = 3'b0;
                                                 8'h00,         // Completer Bus number - selected if Compl ID    = 1
                                                 8'h00,         // Compl Dev / Func no - sel if Compl ID = 1
                                                 (AXISTEN_IF_ENABLE_CLIENT_TAG ?
-                                                8'hCC : req_tag),  // Select Client Tag or core's internal tag
+                                                8'hCC : req_tag[7:0]),  // Select Client Tag or core's internal tag
                                                 req_rid,       // Requester ID - 16 bits
-                                                1'b0,          // Rsvd
+                                                req_tag[9],    // T9
                                                 1'b0,          // Posioned completion
                                                 3'b001,        // Completion Status - UR
                                                 11'h005,       // DWord Count -55
@@ -892,7 +898,7 @@ assign cfg_fc_sel = 3'b0;
                                            1'b0,         // RID Enable to use the Client supplied Bus/Device/Func No
                                            16'b0,        // Completer -ID, set only for Completers or ID based routing
                                            (AXISTEN_IF_ENABLE_CLIENT_TAG ?
-                                           8'h00 : req_tag),  // Select Client Tag or core's internal tag
+                                           8'h00 : req_tag[7:0]),  // Select Client Tag or core's internal tag
                                            8'h00,             // Req Bus No- used only when RID enable = 1
                                            8'h00,             // Req Dev/Func no - used only when RID enable = 1
                                            1'b0,              // Poisoned Req
@@ -1005,13 +1011,14 @@ assign cfg_fc_sel = 3'b0;
                                              8'h00,         // Completer Bus number - selected if Compl ID    = 1
                                              8'h00,         // Compl Dev / Func no - sel if Compl ID = 1
                                              (AXISTEN_IF_ENABLE_CLIENT_TAG ?
-                                             8'hCC : req_tag),  // Select Client Tag or core's internal tag
+                                             8'hCC : req_tag[7:0]),  // Select Client Tag or core's internal tag
                                              req_rid,       // Requester ID - 16 bits
-                                             1'b0,          // Rsvd
+                                             req_tag[9],    // T9
                                              1'b0,          // Posioned completion
                                              3'b000,        // SuccessFull completion
                                              (req_mem ? (11'h1 + payload_len) : 11'b0),         // DWord Count 0 - IO Write completions
-                                             2'b0,          // Rsvd
+                                             req_tag[8],    // T8
+                                             1'b0,          // Rsvd
                                              1'b0,          // Locked Read Completion
                                              13'h0004,      // Byte Count
                                              6'b0,          // Rsvd
@@ -1051,13 +1058,14 @@ assign cfg_fc_sel = 3'b0;
                                                  8'h00,         // Completer Bus number - selected if Compl ID    = 1
                                                  8'h00,         // Compl Dev / Func no - sel if Compl ID = 1
                                                  (AXISTEN_IF_ENABLE_CLIENT_TAG ?
-                                                 8'hCC : req_tag),  // Select Client Tag or core's internal tag
+                                                 8'hCC : req_tag[7:0]),  // Select Client Tag or core's internal tag
                                                  req_rid,       // Requester ID - 16 bits
-                                                 1'b0,          // Rsvd
+                                                 req_tag[9],    // T9
                                                  1'b0,          // Posioned completion
                                                  3'b000,        // SuccessFull completion
                                                  (req_mem ? (11'h1 + payload_len) : 11'b1),         // DWord Count 0 - IO Write completions
-                                                 2'b0,          // Rsvd
+                                                 req_tag[8],    // T8
+                                                 1'b0,          // Rsvd
                                                  (req_mem_lock? 1'b1 : 1'b0),  // Locked Read Completion
                                                  13'h0004,      // Byte Count
                                                  6'b0,          // Rsvd
@@ -1087,13 +1095,14 @@ assign cfg_fc_sel = 3'b0;
                                                  8'h00,         // Completer Bus number - selected if Compl ID    = 1
                                                  8'h00,         // Compl Dev / Func no - sel if Compl ID = 1
                                                  (AXISTEN_IF_ENABLE_CLIENT_TAG ?
-                                                 8'hCC : req_tag),  // Select Client Tag or core's internal tag
+                                                 8'hCC : req_tag[7:0]),  // Select Client Tag or core's internal tag
                                                  req_rid,       // Requester ID - 16 bits
-                                                 1'b0,          // Rsvd
+                                                 req_tag[9],    // T9
                                                  1'b0,          // Posioned completion
                                                  3'b000,        // SuccessFull completion
                                                  (req_mem ? (11'h1 + payload_len) : 11'b1),         // DWord Count 0 - IO Write completions
-                                                 2'b0,          // Rsvd
+                                                 req_tag[8],    // T8
+                                                 1'b0,          // Rsvd
                                                  (req_mem_lock? 1'b1 : 1'b0),      // Locked Read Completion
                                                  13'h0004,      // Byte Count
                                                  6'b0,          // Rsvd
@@ -1136,13 +1145,14 @@ assign cfg_fc_sel = 3'b0;
                                                  8'h00,         // Completer Bus number - selected if Compl ID    = 1
                                                  8'h00,         // Compl Dev / Func no - sel if Compl ID = 1
                                                  (AXISTEN_IF_ENABLE_CLIENT_TAG ?
-                                                 8'hCC : req_tag),  // Select Client Tag or core's internal tag
+                                                 8'hCC : req_tag[7:0]),  // Select Client Tag or core's internal tag
                                                  req_rid,       // Requester ID - 16 bits
-                                                 1'b0,          // Rsvd
+                                                 req_tag[9],    // T9
                                                  1'b0,          // Posioned completion
                                                  3'b000,        // SuccessFull completion
                                                  (req_mem ? (11'h1 + payload_len) : 11'b1),         // DWord Count 0 - IO Write completions
-                                                 2'b0,          // Rsvd
+                                                 req_tag[8],    // T8
+                                                 1'b0,          // Rsvd
                                                  (req_mem_lock? 1'b1 : 1'b0),      // Locked Read Completion
                                                  13'h0004,      // Byte Count
                                                  6'b0,          // Rsvd
@@ -1206,13 +1216,14 @@ assign cfg_fc_sel = 3'b0;
                                            8'h00,         // Completer Bus number - selected if Compl ID    = 1
                                            8'h00,         // Compl Dev / Func no - sel if Compl ID = 1
                                            (AXISTEN_IF_ENABLE_CLIENT_TAG ?
-                                           8'hCC : req_tag),  // Select Client Tag or core's internal tag
+                                           8'hCC : req_tag[7:0]),  // Select Client Tag or core's internal tag
                                            req_rid,       // Requester ID - 16 bits
-                                           1'b0,          // Rsvd
+                                           req_tag[9],    // T9
                                            1'b0,          // Posioned completion
                                            3'b000,        // SuccessFull completion
                                            (req_mem ? (11'h1 + payload_len) : 11'b1),         // DWord Count 0 - IO Write completions
-                                           2'b0,          // Rsvd
+                                           req_tag[8],    // T8
+                                           1'b0,          // Rsvd
                                            (req_mem_lock? 1'b1 : 1'b0),   // Locked Read Completion
                                            13'h0004,      // Byte Count
                                            6'b0,          // Rsvd
@@ -1308,9 +1319,9 @@ assign cfg_fc_sel = 3'b0;
                                                 8'h00,         // Completer Bus number - selected if Compl ID    = 1
                                                 8'h00,         // Compl Dev / Func no - sel if Compl ID = 1
                                                 (AXISTEN_IF_ENABLE_CLIENT_TAG ?
-                                                8'hCC : req_tag),  // Select Client Tag or core's internal tag
+                                                8'hCC : req_tag[7:0]),  // Select Client Tag or core's internal tag
                                                 req_rid,       // Requester ID - 16 bits
-                                                1'b0,          // Rsvd
+                                                req_tag[9],    // T9
                                                 1'b0,          // Posioned completion
                                                 3'b001,        // Completion Status - UR
                                                 11'h005,       // DWord Count -55
@@ -1369,7 +1380,7 @@ assign cfg_fc_sel = 3'b0;
                                            1'b0,         // RID Enable to use the Client supplied Bus/Device/Func No
                                            16'b0,        // Completer -ID, set only for Completers or ID based routing
                                            (AXISTEN_IF_ENABLE_CLIENT_TAG ?
-                                           8'h00 : req_tag),  // Select Client Tag or core's internal tag
+                                           8'h00 : req_tag[7:0]),  // Select Client Tag or core's internal tag
                                            8'h00,             // Req Bus No- used only when RID enable = 1
                                            8'h00,             // Req Dev/Func no - used only when RID enable = 1
                                            1'b0,              // Poisoned Req
@@ -1486,13 +1497,14 @@ assign cfg_fc_sel = 3'b0;
                                              8'h00,         // Completer Bus number - selected if Compl ID    = 1
                                              8'h00,         // Compl Dev / Func no - sel if Compl ID = 1
                                              (AXISTEN_IF_ENABLE_CLIENT_TAG ?
-                                             8'hCC : req_tag),  // Select Client Tag or core's internal tag
+                                             8'hCC : req_tag[7:0]),  // Select Client Tag or core's internal tag
                                              req_rid,       // Requester ID - 16 bits
-                                             1'b0,          // Rsvd
+                                             req_tag[9],    // T9
                                              1'b0,          // Posioned completion
                                              3'b000,        // SuccessFull completion
                                              (req_mem ? (11'h1 + payload_len) : 11'b0),         // DWord Count 0 - IO Write completions
-                                             2'b0,          // Rsvd
+                                             req_tag[8],    // T8
+                                             1'b0,          // Rsvd
                                              1'b0,          // Locked Read Completion
                                              13'h0004,      // Byte Count
                                              6'b0,          // Rsvd
@@ -1528,13 +1540,14 @@ assign cfg_fc_sel = 3'b0;
                                                  8'h00,         // Completer Bus number - selected if Compl ID    = 1
                                                  8'h00,         // Compl Dev / Func no - sel if Compl ID = 1
                                                  (AXISTEN_IF_ENABLE_CLIENT_TAG ?
-                                                 8'hCC : req_tag),  // Select Client Tag or core's internal tag
+                                                 8'hCC : req_tag[7:0]),  // Select Client Tag or core's internal tag
                                                  req_rid,       // Requester ID - 16 bits
-                                                 1'b0,          // Rsvd
+                                                 req_tag[9],    // T9
                                                  1'b0,          // Posioned completion
                                                  3'b000,        // SuccessFull completion
                                                  (req_mem ? (11'h1 + payload_len) : 11'b1),         // DWord Count 0 - IO Write completions
-                                                 2'b0,          // Rsvd
+                                                 req_tag[8],    // T8
+                                                 1'b0,          // Rsvd
                                                  (req_mem_lock? 1'b1 : 1'b0),  // Locked Read Completion
                                                  13'h0004,      // Byte Count
                                                  6'b0,          // Rsvd
@@ -1573,13 +1586,14 @@ assign cfg_fc_sel = 3'b0;
                                                  8'h00,         // Completer Bus number - selected if Compl ID    = 1
                                                  8'h00,         // Compl Dev / Func no - sel if Compl ID = 1
                                                  (AXISTEN_IF_ENABLE_CLIENT_TAG ?
-                                                 8'hCC : req_tag),  // Select Client Tag or core's internal tag
+                                                 8'hCC : req_tag[7:0]),  // Select Client Tag or core's internal tag
                                                  req_rid,       // Requester ID - 16 bits
-                                                 1'b0,          // Rsvd
+                                                 req_tag[9],    // T9
                                                  1'b0,          // Posioned completion
                                                  3'b000,        // SuccessFull completion
                                                  (req_mem ? (11'h1 + payload_len) : 11'b1),         // DWord Count 0 - IO Write completions
-                                                 2'b0,          // Rsvd
+                                                 req_tag[8],    // T8
+                                                 1'b0,          // Rsvd
                                                  (req_mem_lock? 1'b1 : 1'b0),      // Locked Read Completion
                                                  13'h0004,      // Byte Count
                                                  6'b0,          // Rsvd
@@ -1695,9 +1709,9 @@ assign cfg_fc_sel = 3'b0;
                                                 8'h00,               // Completer Bus number - selected if Compl ID    = 1
                                                 8'h00,               // Compl Dev / Func no - sel if Compl ID = 1
                                                 (AXISTEN_IF_ENABLE_CLIENT_TAG ?
-                                                8'hCC : req_tag),    // Select Client Tag or core's internal tag
+                                                8'hCC : req_tag[7:0]),  // Select Client Tag or core's internal tag
                                                 req_rid,             // Requester ID - 16 bits
-                                                1'b0,                // Rsvd
+                                                req_tag[9],          // T9
                                                 1'b0,                // Posioned completion
                                                 3'b001,              // Completion Status - UR
                                                 11'h005,             // DWord Count -55
@@ -1767,7 +1781,7 @@ assign cfg_fc_sel = 3'b0;
                                            1'b0,         // RID Enable to use the Client supplied Bus/Device/Func No
                                            16'b0,        // Completer -ID, set only for Completers or ID based routing
                                            (AXISTEN_IF_ENABLE_CLIENT_TAG ?
-                                           8'h00 : req_tag),  // Select Client Tag or core's internal tag
+                                           8'h00 : req_tag[7:0]),  // Select Client Tag or core's internal tag
                                            8'h00,             // Req Bus No- used only when RID enable = 1
                                            8'h00,             // Req Dev/Func no - used only when RID enable = 1
                                            1'b0,              // Poisoned Req
@@ -1873,11 +1887,12 @@ assign cfg_fc_sel = 3'b0;
                   s_axis_cc_tkeep   <= #TCQ 2'h3;
                   compl_done        <= #TCQ 1'b0;
                   s_axis_cc_tdata   <= #TCQ {req_rid,       // Requester ID - 16 bits
-                                             1'b0,          // Rsvd
+                                             req_tag[9],    // T9
                                              1'b0,          // Posioned completion
                                              3'b000,        // SuccessFull completion
                                              (req_mem ? (11'h1 + payload_len) : 11'b0),         // DWord Count 0 - IO Write completions
-                                             2'b0,          // Rsvd
+                                             req_tag[8],    // T8
+                                             1'b0,          // Rsvd
                                              1'b0,          // Locked Read Completion
                                              13'h0004,      // Byte Count
                                              6'b0,          // Rsvd
@@ -1908,7 +1923,7 @@ assign cfg_fc_sel = 3'b0;
                                              8'h00,         // Completer Bus number - selected if Compl ID    = 1
                                              8'h00,         // Compl Dev / Func no - sel if Compl ID = 1
                                              (AXISTEN_IF_ENABLE_CLIENT_TAG ?
-                                             8'hCC : req_tag)};   // Starting address of the mem byte - 7 bits
+                                             8'hCC : req_tag[7:0])};   // Starting address of the mem byte - 7 bits
                   s_axis_cc_tuser_wo_parity   <= #TCQ {32'b0,1'b0};
 
                   if(s_axis_cc_tready) begin
@@ -1931,11 +1946,12 @@ assign cfg_fc_sel = 3'b0;
                   s_axis_cc_tkeep   <= #TCQ 2'h3;
                   compl_done        <= #TCQ 1'b0;
                   s_axis_cc_tdata   <= #TCQ {req_rid,                                   // Requester ID - 16 bits
-                                             1'b0,                                      // Rsvd
+                                             req_tag[9],    // T9
                                              1'b0,                                      // Posioned completion
                                              3'b000,                                    // SuccessFull completion
                                              (req_mem ? (11'h1 + payload_len) : 11'b1), // DWord Count 0 - IO Write completions
-                                             2'b0,                                      // Rsvd
+                                             req_tag[8],    // T8
+                                             1'b0,                                      // Rsvd
                                              (req_mem_lock? 1'b1 : 1'b0),               // Locked Read Completion
                                              13'h0004,                                  // Byte Count
                                              6'b0,                                      // Rsvd
@@ -1970,7 +1986,7 @@ assign cfg_fc_sel = 3'b0;
                                                  8'h00,         // Completer Bus number - selected if Compl ID    = 1
                                                  8'h00,         // Compl Dev / Func no - sel if Compl ID = 1
                                                  (AXISTEN_IF_ENABLE_CLIENT_TAG ?
-                                                 8'hCC : req_tag)};   // Starting address of the mem byte - 7 bits
+                                                 8'hCC : req_tag[7:0])};   // Starting address of the mem byte - 7 bits
                       s_axis_cc_tuser_wo_parity   <= #TCQ {32'b0,1'b0};
 
                       if(s_axis_cc_tready) begin
@@ -2000,7 +2016,7 @@ assign cfg_fc_sel = 3'b0;
                                              8'h00,         // Completer Bus number - selected if Compl ID    = 1
                                              8'h00,         // Compl Dev / Func no - sel if Compl ID = 1
                                              (AXISTEN_IF_ENABLE_CLIENT_TAG ?
-                                             8'hCC : req_tag)};   // Starting address of the mem byte - 7 bits
+                                             8'hCC : req_tag[7:0])};   // Starting address of the mem byte - 7 bits
                   s_axis_cc_tuser_wo_parity   <= #TCQ {32'b0,1'b0};
                   compl_done        <= #TCQ 1'b0;
 
@@ -2091,7 +2107,7 @@ assign cfg_fc_sel = 3'b0;
                   s_axis_cc_tkeep   <= #TCQ 2'h3;
                   compl_done        <= #TCQ 1'b0;
                   s_axis_cc_tdata   <= #TCQ {req_rid,             // Requester ID - 16 bits
-                                             1'b0,                // Rsvd
+                                             req_tag[9],          // T9
                                              1'b0,                // Posioned completion
                                              3'b001,              // Completion Status - UR
                                              11'h005,             // DWord Count -55
@@ -2133,7 +2149,7 @@ assign cfg_fc_sel = 3'b0;
                                            8'h00,               // Completer Bus number - selected if Compl ID    = 1
                                            8'h00,               // Compl Dev / Func no - sel if Compl ID = 1
                                            (AXISTEN_IF_ENABLE_CLIENT_TAG ?
-                                           8'hCC : req_tag)};    // Select Client Tag or core's internal tag
+                                           8'hCC : req_tag[7:0])};    // Select Client Tag or core's internal tag
                 s_axis_cc_tuser_wo_parity   <= #TCQ {32'b0,1'b0};
 
                 if(s_axis_cc_tready) begin
@@ -2215,7 +2231,7 @@ assign cfg_fc_sel = 3'b0;
                                            1'b0,              // RID Enable to use the Client supplied Bus/Device/Func No
                                            16'b0,             // Completer -ID, set only for Completers or ID based routing
                                            (AXISTEN_IF_ENABLE_CLIENT_TAG ?
-                                           8'h00 : req_tag),  // Select Client Tag or core's internal tag
+                                           8'h00 : req_tag[7:0]),  // Select Client Tag or core's internal tag
                                            8'h00,             // Req Bus No- used only when RID enable = 1
                                            8'h00,             // Req Dev/Func no - used only when RID enable = 1
                                            1'b0,              // Poisoned Req

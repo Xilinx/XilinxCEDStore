@@ -87,7 +87,8 @@ module  pcie_app_versal #(
   parameter        AXISTEN_IF_CQ_PARITY_CHECK     = 0,
   parameter        AXISTEN_IF_MC_RX_STRADDLE      = 1,
   parameter        AXISTEN_IF_ENABLE_RX_MSG_INTFC = 0,
-  parameter [17:0] AXISTEN_IF_ENABLE_MSG_ROUTE    = 18'h2FFFF
+  parameter [17:0] AXISTEN_IF_ENABLE_MSG_ROUTE    = 18'h2FFFF,
+  parameter        COMPLETER_10B_TAG              = "TRUE" // When Completer 8-bit tag is used, this parameter can still be set to TRUE
 )(
 
 
@@ -370,7 +371,8 @@ module  pcie_app_versal #(
     
     .AXISTEN_IF_MC_RX_STRADDLE(AXISTEN_IF_MC_RX_STRADDLE),
     .AXISTEN_IF_ENABLE_RX_MSG_INTFC(AXISTEN_IF_ENABLE_RX_MSG_INTFC),
-    .AXISTEN_IF_ENABLE_MSG_ROUTE(AXISTEN_IF_ENABLE_MSG_ROUTE)
+    .AXISTEN_IF_ENABLE_MSG_ROUTE(AXISTEN_IF_ENABLE_MSG_ROUTE),
+    .COMPLETER_10B_TAG(COMPLETER_10B_TAG)
 
   ) PIO_i (
     .user_clk(user_clk),

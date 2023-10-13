@@ -31,12 +31,12 @@ module design_1_wrapper
   wire [7:0]PCIE1_GT_0_grx_p;
   wire [7:0]PCIE1_GT_0_gtx_n;
   wire [7:0]PCIE1_GT_0_gtx_p;
-  wire [511:0]pcie1_m_axis_cq_0_tdata;
-  wire [15:0]pcie1_m_axis_cq_0_tkeep;
-  wire pcie1_m_axis_cq_0_tlast;
-  wire pcie1_m_axis_cq_0_tready;
-  wire [80:0]pcie1_m_axis_cq_0_tuser;
-  wire pcie1_m_axis_cq_0_tvalid;
+  (*MARK_DEBUG*)(*KEEP*) wire [511:0]pcie1_m_axis_cq_0_tdata;
+  (*MARK_DEBUG*)(*KEEP*) wire [15:0]pcie1_m_axis_cq_0_tkeep;
+  (*MARK_DEBUG*)(*KEEP*) wire pcie1_m_axis_cq_0_tlast;
+  (*MARK_DEBUG*)(*KEEP*) wire pcie1_m_axis_cq_0_tready;
+  (*MARK_DEBUG*)(*KEEP*) wire [80:0]pcie1_m_axis_cq_0_tuser;
+  (*MARK_DEBUG*)(*KEEP*) wire pcie1_m_axis_cq_0_tvalid;
   wire [511:0]pcie1_m_axis_rc_0_tdata;
   wire [15:0]pcie1_m_axis_rc_0_tkeep;
   wire pcie1_m_axis_rc_0_tlast;
@@ -85,8 +85,8 @@ module design_1_wrapper
   wire [1:0]pcie1_cfg_msix_0_tph_type;
   wire [1:0]pcie1_cfg_msix_0_vec_pending;
   wire pcie1_cfg_msix_0_vec_pending_status;
-  wire [1:0]pcie1_cfg_status_0_cq_np_req;
-  wire [5:0]pcie1_cfg_status_0_cq_np_req_count;
+  (*MARK_DEBUG*)(*KEEP*)wire [1:0]pcie1_cfg_status_0_cq_np_req;
+  (*MARK_DEBUG*)(*KEEP*)wire [5:0]pcie1_cfg_status_0_cq_np_req_count;
   wire [1:0]pcie1_cfg_status_0_current_speed;
   wire pcie1_cfg_status_0_err_cor_out;
   wire pcie1_cfg_status_0_err_fatal_out;
@@ -122,12 +122,12 @@ module design_1_wrapper
   wire [1:0]pcie1_cfg_status_0_tx_pm_state;
   wire [3:0]pcie1_transmit_fc_0_npd_av;
   wire [3:0]pcie1_transmit_fc_0_nph_av;
-  wire [511:0]pcie1_s_axis_cc_0_tdata;
-  wire [15:0]pcie1_s_axis_cc_0_tkeep;
-  wire pcie1_s_axis_cc_0_tlast;
-  wire [3:0]pcie1_s_axis_cc_0_tready;
-  wire [80:0]pcie1_s_axis_cc_0_tuser;
-  wire pcie1_s_axis_cc_0_tvalid;
+  (*MARK_DEBUG*)(*KEEP*) wire [511:0]pcie1_s_axis_cc_0_tdata;
+  (*MARK_DEBUG*)(*KEEP*) wire [15:0]pcie1_s_axis_cc_0_tkeep;
+  (*MARK_DEBUG*)(*KEEP*) wire pcie1_s_axis_cc_0_tlast;
+  (*MARK_DEBUG*)(*KEEP*) wire [3:0]pcie1_s_axis_cc_0_tready;
+  (*MARK_DEBUG*)(*KEEP*) wire [80:0]pcie1_s_axis_cc_0_tuser;
+  (*MARK_DEBUG*)(*KEEP*) wire pcie1_s_axis_cc_0_tvalid;
   wire [511:0]pcie1_s_axis_rq_0_tdata;
   wire [15:0]pcie1_s_axis_rq_0_tkeep;
   wire pcie1_s_axis_rq_0_tlast;
@@ -303,7 +303,8 @@ pcie_app_versal #(
     .AXI4_CC_TUSER_WIDTH ('d81), 
     .AXI4_RC_TUSER_WIDTH ('d161), 
     .AXI4_RQ_TUSER_WIDTH ('d183), 
-    .C_DATA_WIDTH(512)
+    .C_DATA_WIDTH        (512),
+    .COMPLETER_10B_TAG   ("TRUE")
   )  pcie_app_versal_i (
        .user_clk                                    ( pcie1_user_clk_0 ),
     .user_reset                                     ( pcie1_user_reset_0 ),

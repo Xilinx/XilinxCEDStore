@@ -80,6 +80,7 @@ module pio_ep #(
   parameter        AXISTEN_IF_RC_STRADDLE          = 0,
   parameter        AXISTEN_IF_ENABLE_RX_MSG_INTFC  = 0,
   parameter [17:0] AXISTEN_IF_ENABLE_MSG_ROUTE     = 18'h2FFFF,
+  parameter        COMPLETER_10B_TAG               = "TRUE", // When Completer 8-bit tag is used, this parameter can still be set to TRUE
 
   //Do not modify the parameters below this line
   //parameter C_DATA_WIDTH = (AXISTEN_IF_WIDTH[1]) ? 256 : (AXISTEN_IF_WIDTH[0])? 128 : 64,
@@ -218,9 +219,9 @@ module pio_ep #(
 
   wire  [2:0]       req_tc;
   wire  [2:0]       req_attr;
-  wire  [10:0]       req_len;
+  wire  [10:0]      req_len;
   wire  [15:0]      req_rid;
-  wire  [7:0]       req_tag;
+  wire  [9:0]       req_tag;
   wire  [7:0]       req_be;
   wire  [12:0]      req_addr;
   wire  [1:0]       req_at;
@@ -291,7 +292,8 @@ module pio_ep #(
     .AXISTEN_IF_CQ_PARITY_CHECK     ( AXISTEN_IF_CQ_PARITY_CHECK ),
     .AXISTEN_IF_RC_STRADDLE         ( AXISTEN_IF_RC_STRADDLE ),
     .AXISTEN_IF_ENABLE_RX_MSG_INTFC ( AXISTEN_IF_ENABLE_RX_MSG_INTFC ),
-    .AXISTEN_IF_ENABLE_MSG_ROUTE    ( AXISTEN_IF_ENABLE_MSG_ROUTE )
+    .AXISTEN_IF_ENABLE_MSG_ROUTE    ( AXISTEN_IF_ENABLE_MSG_ROUTE ),
+    .COMPLETER_10B_TAG              ( COMPLETER_10B_TAG )
   ) ep_rx (
 
     .user_clk( user_clk ),
@@ -366,7 +368,8 @@ module pio_ep #(
     .AXI4_RQ_TUSER_WIDTH          ( AXI4_RQ_TUSER_WIDTH),
     .AXISTEN_IF_ENABLE_CLIENT_TAG ( AXISTEN_IF_ENABLE_CLIENT_TAG ),
     .AXISTEN_IF_RQ_PARITY_CHECK   ( AXISTEN_IF_RQ_PARITY_CHECK ),
-    .AXISTEN_IF_CC_PARITY_CHECK   ( AXISTEN_IF_CC_PARITY_CHECK )
+    .AXISTEN_IF_CC_PARITY_CHECK   ( AXISTEN_IF_CC_PARITY_CHECK ),
+    .COMPLETER_10B_TAG            ( COMPLETER_10B_TAG )
   ) ep_tx (
     .user_clk( user_clk ),
     .reset_n( reset_n ),
