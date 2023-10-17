@@ -102,7 +102,7 @@ module pci_exp_usrapp_tx #(
 );
 
 parameter    Tcq = 1;
-localparam   [15:0] DMA_BYTE_CNT = 16'h0400;
+localparam   [15:0] DMA_BYTE_CNT = 16'h080;
 
 localparam   [4:0] LINK_CAP_MAX_LINK_WIDTH = 5'd8;
 localparam   [3:0] LINK_CAP_MAX_LINK_SPEED = 4'd8;
@@ -112,7 +112,7 @@ localparam  [11:0] LINK_CTRL_REG_ADDR = 12'h080;
 localparam  [11:0] PCIE_DEV_CAP_ADDR  = 12'h074;
 localparam  [11:0] PCIE_CFG_SRIOV_CAP_A = 12'h140;
 localparam  [11:0] DEV_CTRL_REG_ADDR  = 12'h078;
-localparam  NUMBER_OF_PFS = 4; //1;
+localparam  NUMBER_OF_PFS = 1; //1;
 localparam  NUM_FN=9'h1;
 localparam  QUEUE_PER_PF     = 32;
 reg        [31:0] MSIX_VEC_OFFSET [NUM_FN-1:0];
@@ -406,9 +406,9 @@ initial begin
       board.RP.tx_usrapp.TSK_REG_READ(xdma_bar, 16'h00);
       if (P_READ_DATA[31:16] == 16'h1fd3) begin    // QDMA
          //testname = "qdma_st_h2c_test0";
-         //testname = "qdma_mm_st_test0";
-         testname = "qdma_mm_test0";
-//         testname = "qdma_st_c2h_simbyp_test0";
+         testname = "qdma_mm_st_test0";
+         //testname = "qdma_mm_test0";
+
          $display("*** Running QDMA AXI-MM test for PF{%d}, test_name = {%0s}......", pfIndex, testname);
       end
       else begin     // XDMA
@@ -1004,6 +1004,8 @@ begin
    board.RP.tx_usrapp.TSK_REG_WRITE(xdma_bar, 16'h23C, 32'h00000010, 4'hF);
    board.RP.tx_usrapp.TSK_REG_WRITE(xdma_bar, 16'h240, 32'h00000010, 4'hF);
 
+   TSK_QDMA_CLEAR_Q(qid);
+
   // FMAP programing. set up 16Queues
      wr_dat[31:0]   = 32'h0 | q_base;
      wr_dat[63:32]  = 32'h0 | q_count;
@@ -1025,6 +1027,7 @@ begin
     wr_dat[0]     = 'h0;
     TSK_REG_WRITE(xdma_bar, 32'h844, wr_dat[31:0], 4'hF);
 
+/*   
  //-------------- Clear HW CXTX for H2C and C2H first for Q1 ------------------------------------
  // Clear Prefetch Context First before anything else
  // [17:7] QID   01
@@ -1076,7 +1079,7 @@ begin
  //        00000000001_00_1000_0 : _1001_0000 : 0x90
  wr_dat = {14'h0,axi_st_q[10:0],7'b0010000};
  board.RP.tx_usrapp.TSK_REG_WRITE(xdma_bar, 16'h844, wr_dat[31:0], 4'hF);
-
+*/
  $display ("******* Program C2H Global and Context values ******** \n");
  // Setup Stream H2C context 
  //-------------- Ind Dire CTXT MASK 0xffffffff for all 256 bits -------------------
@@ -1289,6 +1292,68 @@ begin
  end
  endtask
 
+// Talsk clear Q's in QDMA   
+task TSK_QDMA_CLEAR_Q;
+   input [10:0] qid;
+
+      begin
+ //-------------- Clear HW CXTX for H2C and C2H ------------------------------------
+ // Clear Prefetch Context First before anything else
+   wr_dat[0]    = 0;
+   wr_dat[4:1]  = 4'b0111;
+   wr_dat[6:5]  = 2'b00;
+   wr_dat[31:7] = {14'h0,qid[10:0]};
+   board.RP.tx_usrapp.TSK_REG_WRITE(xdma_bar, 16'h844, wr_dat[31:0], 4'hF);
+ // Clear WRB CPMT Context 
+   wr_dat[0]    = 0;
+   wr_dat[4:1]  = 4'b0110;
+   wr_dat[6:5]  = 2'b00;
+   wr_dat[31:7] = {14'h0,qid[10:0]};
+   board.RP.tx_usrapp.TSK_REG_WRITE(xdma_bar, 16'h844, wr_dat[31:0], 4'hF);
+ // Clear HW H2C Context 
+   wr_dat[0]    = 0;
+   wr_dat[4:1]  = 4'b0011;
+   wr_dat[6:5]  = 2'b00;
+   wr_dat[31:7] = {14'h0,qid[10:0]};
+   board.RP.tx_usrapp.TSK_REG_WRITE(xdma_bar, 16'h844, wr_dat[31:0], 4'hF);
+ // Clear HW C2H Context 
+   wr_dat[0]    = 0;
+   wr_dat[4:1]  = 4'b0010;
+   wr_dat[6:5]  = 2'b00;
+   wr_dat[31:7] = {14'h0,qid[10:0]};
+   board.RP.tx_usrapp.TSK_REG_WRITE(xdma_bar, 16'h844, wr_dat[31:0], 4'hF);
+ // Clear SW H2C Context 
+   wr_dat[0]    = 0;
+   wr_dat[4:1]  = 4'b0001;
+   wr_dat[6:5]  = 2'b00;
+   wr_dat[31:7] = {14'h0,qid[10:0]};
+   board.RP.tx_usrapp.TSK_REG_WRITE(xdma_bar, 16'h844, wr_dat[31:0], 4'hF);
+ // Clear SW C2H Context 
+   wr_dat[0]    = 0;
+   wr_dat[4:1]  = 4'b0000;
+   wr_dat[6:5]  = 2'b00;
+   wr_dat[31:7] = {14'h0,qid[10:0]};
+   board.RP.tx_usrapp.TSK_REG_WRITE(xdma_bar, 16'h844, wr_dat[31:0], 4'hF);
+ // Clear INT COL Context 
+   wr_dat[0]    = 0;
+   wr_dat[4:1]  = 4'b1000;
+   wr_dat[6:5]  = 2'b00;
+   wr_dat[31:7] = {14'h0,qid[10:0]};
+   board.RP.tx_usrapp.TSK_REG_WRITE(xdma_bar, 16'h844, wr_dat[31:0], 4'hF);
+
+ // Clear FMAP for func
+   wr_dat[31:18] = 'h0; // reserved
+   wr_dat[17:7]  = 11'h0; // fnc
+   wr_dat[6:5]   = 2'h1; // MDMA_CTXT_CMD_WR
+   wr_dat[4:1]   = 4'hC; // QDMA_CTXT_SELC_FMAP
+   wr_dat[0]     = 'h0;
+   board.RP.tx_usrapp.TSK_REG_WRITE(xdma_bar, 16'h804, 32'h0, 4'hF);
+   board.RP.tx_usrapp.TSK_REG_WRITE(xdma_bar, 16'h808, 32'h0, 4'hF);
+   board.RP.tx_usrapp.TSK_REG_WRITE(xdma_bar, 16'h844, wr_dat[31:0], 4'hF);
+
+   end
+endtask //
+
 task TSK_QDMA_ST_H2C_TEST;
    input [10:0] qid;
    input dsc_bypass;
@@ -1320,9 +1385,9 @@ begin
  //-------------- Load DATA in Buffer for AXI-ST C2H ----------------------------------------------------
  // AXI-St C2H Descriptor is at address 0x0800 (2048)
  // AXI-St C2H Data       is at address 0x0A00 (2560)
-   board.RP.tx_usrapp.TSK_INIT_QDMA_ST_DATA_C2H;
+//   board.RP.tx_usrapp.TSK_INIT_QDMA_ST_DATA_C2H;
  // AXI-St C2H CMPT Data   is at address 0x1000 (2048)
-   board.RP.tx_usrapp.TSK_INIT_QDMA_ST_CMPT_C2H;     // addrss 0x1000 (2048)
+//   board.RP.tx_usrapp.TSK_INIT_QDMA_ST_CMPT_C2H;     // addrss 0x1000 (2048)
 
    // enable dsc bypass loopback
    if (dsc_bypass)
@@ -1357,6 +1422,8 @@ begin
    board.RP.tx_usrapp.TSK_REG_WRITE(xdma_bar, 16'h83C, 32'hffffffff, 4'hF);
    board.RP.tx_usrapp.TSK_REG_WRITE(xdma_bar, 16'h840, 32'hffffffff, 4'hF);
 
+    TSK_QDMA_CLEAR_Q(qid);
+
  // set up 16Queues
      wr_dat[31:0]   = 32'h0 | q_base;
      wr_dat[63:32]  = 32'h0 | q_count;
@@ -1378,6 +1445,7 @@ begin
     wr_dat[0]     = 'h0;
     TSK_REG_WRITE(xdma_bar, 32'h844, wr_dat[31:0], 4'hF);
 
+/*   
  //-------------- Clear HW CXTX for H2C and C2H first for Q1 ------------------------------------
  // Clear Prefetch Context First before anything else
  // [17:7] QID   01
@@ -1429,7 +1497,8 @@ begin
  //        00000000001_00_1000_0 : _1001_0000 : 0x90
  wr_dat = {14'h0,axi_st_q[10:0],7'b0010000};
  board.RP.tx_usrapp.TSK_REG_WRITE(xdma_bar, 16'h844, wr_dat[31:0], 4'hF);
-
+*/
+   
  $display ("******* Program H2C Context values ******** \n");
  //-------------- Ind Dire CTXT AXI-ST H2C -------------------
  // ring size index is at 1
@@ -1501,8 +1570,6 @@ begin
  //-------------- Write Queue 1 of PIDX to 1 to transfer 1 descriptor in H2C ----------------
    wr_add = QUEUE_PTR_PF_ADDR + (axi_st_q* 16) + 4;  // 32'h00006414
    board.RP.tx_usrapp.TSK_REG_WRITE(xdma_bar, wr_add[31:0], 32'h1, 4'hF);   // Write 1 PIDX 
-//   CISCO case send pidx on BAR 4.    
-//   board.RP.tx_usrapp.TSK_REG_WRITE(pidx_bar, wr_add[31:0], 32'h1, 4'hF);   // Write 1 PIDX 
 
  //compare H2C data
    $display("------Compare H2C AXI-ST Data--------\n");
@@ -1519,220 +1586,6 @@ begin
     $display ("ERROR: [%t] : TEST FAILED ---****ERROR**** H2C Data Mis-Matches and H2C Q number = %h\n",$realtime, P_READ_DATA[10:4]);
     board.RP.tx_usrapp.test_state =1;
  end
-   $display("------AXI-ST H2C Completed--------\n");
- end
-
- endtask
-
-task TSK_QDMA_ST_H2C_CISCO_TEST;
-   input [10:0] qid;
-   input dsc_bypass;
-
-   reg [11:0] q_count;
-   reg [10:0] q_base;
-begin
-   //
-// now doing AXI-Stream Test for QDMA
-//
-// Assign Q 2 for AXI-ST
- pf0_qmax = 11'h200;
-// axi_st_q = 11'h2;
- axi_st_q = qid;
- q_base   = QUEUE_PER_PF * fnc;
- q_count  = QUEUE_PER_PF;
-
-   //For CISCO design
-   // need to set Credit Limit in address 0xB0 (user bar)
-   // need to send Credit pidx in address 0xB4 (user bar)
- board.RP.tx_usrapp.TSK_REG_WRITE(user_bar, 32'hb0, 32'h4, 4'hF);   // Write Q num to user side 
-
- $display ("\n");
- $display ("******* AXI-ST H2C transfer START ******** \n");
- $display ("\n");
- //-------------- Load DATA in Buffer for aXI-ST H2C----------------------------------------------------
- // AXI-St H2C Descriptor is at address 0x0100 (256)
- // AXI-St H2c Data       is at address 0x0300 (768)
-   board.RP.tx_usrapp.TSK_INIT_QDMA_ST_DATA_H2C_NEW;
-
-
-   // enable dsc bypass loopback
-   if (dsc_bypass)
-     board.RP.tx_usrapp.TSK_REG_WRITE(user_bar, 32'h90, 32'h3, 4'hF);
-
-    // initilize all ring size to some value.
-    //-------------- Global Ring Size for Queue 0  0x204  : num of dsc 16 ------------------------
-   board.RP.tx_usrapp.TSK_REG_WRITE(xdma_bar, 16'h204, DSC_NUM, 4'hF);
-   board.RP.tx_usrapp.TSK_REG_WRITE(xdma_bar, 16'h208, DSC_NUM, 4'hF);
-   board.RP.tx_usrapp.TSK_REG_WRITE(xdma_bar, 16'h20C, 32'h00000010, 4'hF);
-   board.RP.tx_usrapp.TSK_REG_WRITE(xdma_bar, 16'h210, 32'h00000010, 4'hF);
-   board.RP.tx_usrapp.TSK_REG_WRITE(xdma_bar, 16'h214, 32'h00000010, 4'hF);
-   board.RP.tx_usrapp.TSK_REG_WRITE(xdma_bar, 16'h218, 32'h00000010, 4'hF);
-   board.RP.tx_usrapp.TSK_REG_WRITE(xdma_bar, 16'h21C, 32'h00000010, 4'hF);
-   board.RP.tx_usrapp.TSK_REG_WRITE(xdma_bar, 16'h220, 32'h00000010, 4'hF);
-   board.RP.tx_usrapp.TSK_REG_WRITE(xdma_bar, 16'h224, 32'h00000010, 4'hF);
-   board.RP.tx_usrapp.TSK_REG_WRITE(xdma_bar, 16'h228, 32'h00000010, 4'hF);
-   board.RP.tx_usrapp.TSK_REG_WRITE(xdma_bar, 16'h22C, 32'h00000010, 4'hF);
-   board.RP.tx_usrapp.TSK_REG_WRITE(xdma_bar, 16'h230, 32'h00000010, 4'hF);
-   board.RP.tx_usrapp.TSK_REG_WRITE(xdma_bar, 16'h234, 32'h00000010, 4'hF);
-   board.RP.tx_usrapp.TSK_REG_WRITE(xdma_bar, 16'h238, 32'h00000010, 4'hF);
-   board.RP.tx_usrapp.TSK_REG_WRITE(xdma_bar, 16'h23C, 32'h00000010, 4'hF);
-   board.RP.tx_usrapp.TSK_REG_WRITE(xdma_bar, 16'h240, 32'h00000010, 4'hF);
-
- // set up 16Queues
-     wr_dat[31:0]   = 32'h0 | q_base;
-     wr_dat[63:32]  = 32'h0 | q_count;
-     wr_dat[255:64] = 'h0;
-
-    TSK_REG_WRITE(xdma_bar, 16'h804, wr_dat[31 :0 ], 4'hF);
-    TSK_REG_WRITE(xdma_bar, 16'h808, wr_dat[63 :32], 4'hF);
-    TSK_REG_WRITE(xdma_bar, 16'h80C, wr_dat[95 :64], 4'hF);
-    TSK_REG_WRITE(xdma_bar, 16'h810, wr_dat[127:96], 4'hF);
-    TSK_REG_WRITE(xdma_bar, 16'h814, wr_dat[159:128], 4'hF);
-    TSK_REG_WRITE(xdma_bar, 16'h818, wr_dat[191:160], 4'hF);
-    TSK_REG_WRITE(xdma_bar, 16'h81C, wr_dat[223:192], 4'hF);
-    TSK_REG_WRITE(xdma_bar, 16'h820, wr_dat[255:224], 4'hF);
-
-    wr_dat[31:18] = 'h0; // reserved
-    wr_dat[17:7]  = 11'h0 | fnc[7:0]; // fnc
-    wr_dat[6:5]   = 2'h1; // MDMA_CTXT_CMD_WR
-    wr_dat[4:1]   = 4'hC; // QDMA_CTXT_SELC_FMAP
-    wr_dat[0]     = 'h0;
-    TSK_REG_WRITE(xdma_bar, 32'h844, wr_dat[31:0], 4'hF);
-
- //-------------- Clear HW CXTX for H2C and C2H first for Q1 ------------------------------------
- // Clear Prefetch Context First before anything else
- // [17:7] QID   01
- // [6:5 ] MDMA_CTXT_CMD_CLR=0 : 00
- // [4:1]  MDMA_CTXT_SELC_PFTCH = 7 : 0111
- // 0      BUSY : 0 
- //        00000000001_00_0111_0 : _1000_1110 : 0x8E
- wr_dat = {14'h0,axi_st_q[10:0],7'b0001110};
- board.RP.tx_usrapp.TSK_REG_WRITE(xdma_bar, 16'h844, wr_dat[31:0], 4'hF);
- // [17:7] QID   01
- // [6:5 ] MDMA_CTXT_CMD_CLR=0 : 00
- // [4:1]  MDMA_CTXT_SELC_WRB = 6 : 0110
- // 0      BUSY : 0 
- //        00000000001_00_0110_0 : _1000_1100 : 0x8C
- wr_dat = {14'h0,axi_st_q[10:0],7'b0001100};
- board.RP.tx_usrapp.TSK_REG_WRITE(xdma_bar, 16'h844, wr_dat[31:0], 4'hF);
- // [17:7] QID   01
- // [6:5 ] MDMA_CTXT_CMD_CLR=0 : 00
- // [4:1]  MDMA_CTXT_SELC_DSC_SW_H2C = 1 : 0001
- // 0      BUSY : 0 
- //        00000000001_00_0001_0 : _1000_0010 : 0x82
- wr_dat = {14'h0,axi_st_q[10:0],7'b0000010};
- board.RP.tx_usrapp.TSK_REG_WRITE(xdma_bar, 16'h844, wr_dat[31:0], 4'hF);
- // [17:7] QID   01
- // [6:5 ] MDMA_CTXT_CMD_CLR=0 : 00
- // [4:1]  MDMA_CTXT_SELC_DSC_SW_C2H = 0 : 0000
- // 0      BUSY : 0 
- //        00000000001_00_0000_0 : _1000_0000 : 0x80
- wr_dat = {14'h0,axi_st_q[10:0],7'b0000000};
- board.RP.tx_usrapp.TSK_REG_WRITE(xdma_bar, 16'h844, wr_dat[31:0], 4'hF);
- // [17:7] QID   01
- // [6:5 ] MDMA_CTXT_CMD_CLR=0 : 00
- // [4:1]  MDMA_CTXT_SELC_INT_COAL = 8 : 1000
- // 0      BUSY : 0 
- //        00000000001_00_1000_0 : _1001_0000 : 0x90
- wr_dat = {14'h0,axi_st_q[10:0],7'b0010000};
- board.RP.tx_usrapp.TSK_REG_WRITE(xdma_bar, 16'h844, wr_dat[31:0], 4'hF);
- // [17:7] QID   01
- // [6:5 ] MDMA_CTXT_CMD_CLR=0 : 00
- // [4:1]  MDMA_CTXT_SELC_DSC_HW_H2C = 3 : 0011
- // 0      BUSY : 0 
- //        00000000001_00_0011_0 : _1000_0110 : 0x86
- wr_dat = {14'h0,axi_st_q[10:0],7'b0000110};
- board.RP.tx_usrapp.TSK_REG_WRITE(xdma_bar, 16'h844, wr_dat[31:0], 4'hF);
-
- // [17:7] QID   01
- // [6:5 ] MDMA_CTXT_CMD_CLR=0 : 00
- // [4:1]  MDMA_CTXT_SELC_DSC_HW_C2H = 2 : 0010
- // 0      BUSY : 0 
- //        00000000001_00_0010_0 : _1000_0100 : 0x84
- wr_dat = {14'h0,axi_st_q[10:0],7'b0000100};
- board.RP.tx_usrapp.TSK_REG_WRITE(xdma_bar, 16'h844, wr_dat[31:0], 4'hF);
-
- $display ("******* Program C2H Global and Context values ******** \n");
- // Setup Stream H2C context 
- //-------------- Ind Dire CTXT MASK 0xffffffff for all 256 bits -------------------
-   board.RP.tx_usrapp.TSK_REG_WRITE(xdma_bar, 16'h824, 32'hffffffff, 4'hF);
-   board.RP.tx_usrapp.TSK_REG_WRITE(xdma_bar, 16'h828, 32'hffffffff, 4'hF);
-   board.RP.tx_usrapp.TSK_REG_WRITE(xdma_bar, 16'h82C, 32'hffffffff, 4'hF);
-   board.RP.tx_usrapp.TSK_REG_WRITE(xdma_bar, 16'h830, 32'hffffffff, 4'hF);
-   board.RP.tx_usrapp.TSK_REG_WRITE(xdma_bar, 16'h834, 32'hffffffff, 4'hF);
-   board.RP.tx_usrapp.TSK_REG_WRITE(xdma_bar, 16'h838, 32'hffffffff, 4'hF);
-   board.RP.tx_usrapp.TSK_REG_WRITE(xdma_bar, 16'h83C, 32'hffffffff, 4'hF);
-   board.RP.tx_usrapp.TSK_REG_WRITE(xdma_bar, 16'h840, 32'hffffffff, 4'hF);
-
- //-------------- Ind Dire CTXT AXI-ST H2C -------------------
- // ring size index is at 1
- // 
-   wr_dat[255:140] = 'd0;
-   wr_dat[139]     = 'd0;    // int_aggr
-   wr_dat[138:128] = 'd3;    // vec MSI-X Vector
-   wr_dat[127:64]  =  (64'h0 | H2C_ADDR); // dsc base
-   wr_dat[63]      =  1'b0;  // is_mm
-   wr_dat[62]      =  1'b0;  // mrkr_dis
-   wr_dat[61]      =  1'b0;  // irq_req
-   wr_dat[60]      =  1'b0;  // err_wb_sent
-   wr_dat[59:58]   =  2'b0;  // err        
-   wr_dat[57]      =  1'b0;  // irq_no_last
-   wr_dat[56:54]   =  3'h0;  // port_id
-   wr_dat[53]      =  1'b0;  // irq_en     
-   wr_dat[52]      =  1'b1;  // wbk_en     
-   wr_dat[51]      =  1'b0;  // mm_chn     
-   wr_dat[50]      =  dsc_bypass ? 1'b1 : 1'b0;  // bypass     
-   wr_dat[49:48]   =  2'b01; // dsc_sz, 16bytes     
-   wr_dat[47:44]   =  4'h1;  // rng_sz     
-   wr_dat[43:41]   =  3'h0;  // reserved
-   wr_dat[40:37]   =  4'h8;  // fetch_max
-   wr_dat[36]      =  1'b0;  // atc
-   wr_dat[35]      =  1'b1;  // wbi_intvl_en
-   wr_dat[34]      =  1'b1;  // wbi_chk    
-//   wr_dat[33]      =  1'b0;  // fcrd_en    
-   wr_dat[33]      =  1'b1;  // fcrd_en    
-   wr_dat[32]      =  1'b1;  // qen        
-   wr_dat[31:25]   =  7'h0;  // reserved
-   wr_dat[24:17]   =  {4'h0,pfTestIteration[3:0]}; // func_id        
-   wr_dat[16]      =  1'b0;  // irq_arm    
-   wr_dat[15:0]    =  16'b0; // pidx
-
-   board.RP.tx_usrapp.TSK_REG_WRITE(xdma_bar, 16'h804, wr_dat[31 :0], 4'hF);
-   board.RP.tx_usrapp.TSK_REG_WRITE(xdma_bar, 16'h808, wr_dat[63 :32], 4'hF);
-   board.RP.tx_usrapp.TSK_REG_WRITE(xdma_bar, 16'h80C, wr_dat[95 :64], 4'hF);
-   board.RP.tx_usrapp.TSK_REG_WRITE(xdma_bar, 16'h810, wr_dat[127:96], 4'hF);
-   board.RP.tx_usrapp.TSK_REG_WRITE(xdma_bar, 16'h814, wr_dat[159:128], 4'hF);
-   board.RP.tx_usrapp.TSK_REG_WRITE(xdma_bar, 16'h818, wr_dat[191:160], 4'hF);
-   board.RP.tx_usrapp.TSK_REG_WRITE(xdma_bar, 16'h81C, wr_dat[223:192], 4'hF);
-   board.RP.tx_usrapp.TSK_REG_WRITE(xdma_bar, 16'h820, wr_dat[255:224], 4'hF);
-
- //-------------- Ind Dire CTXT CMD 0x844 [17:7] Qid : 0 [17:7} : CMD MDMA_CTXT_CMD_WR=1 ---------    
- // [17:7] QID : 2
- // [6:5 ] MDMA_CTXT_CMD_WR=1 : 01
- // [4:1]  MDMA_CTXT_SELC_DSC_SW_H2C = 1 : 0001
- // 0      BUSY : 0 
- //        00000000001_01_0001_0 : 1010_0010 : 0xA2
- wr_dat = {14'h0,axi_st_q[10:0],7'b0100010};
- board.RP.tx_usrapp.TSK_REG_WRITE(xdma_bar, 16'h844, wr_dat[31:0], 4'hF);
-
- // AXI-ST H2C transfer
- //
- // dummy clear H2c match
-// board.RP.tx_usrapp.TSK_REG_WRITE(user_bar, 32'h0C, 32'h01, 4'hF);   // Dummy clear H2C match
- //-------------- Start DMA H2C tranfer ------------------------------------------------------
-   $display(" **** Start DMA H2C AXI-ST transfer ***\n");
-// Set Write Back interval to 16
-   board.RP.tx_usrapp.TSK_REG_WRITE(xdma_bar, 16'h250, 32'h32, 4'hF);
-
-   board.RP.tx_usrapp.TSK_REG_WRITE(user_bar, 32'hb0, 32'h10, 4'hF); // PIDX  limite
-
-   wr_add = QUEUE_PTR_PF_ADDR + (axi_st_q* 16) + 4;  // 32'h00006414
-   board.RP.tx_usrapp.TSK_REG_WRITE(xdma_bar, wr_add[31:0], 250, 4'hF);   // Write 1 PIDX
-
-    for(i=0;i<128;i=i+1)
-      board.RP.tx_usrapp.TSK_REG_WRITE(user_bar, 32'hb4, 1, 4'hF);   // Write 1 PIDX 
-
-    #10000000;
    $display("------AXI-ST H2C Completed--------\n");
  end
 
@@ -9043,7 +8896,7 @@ task COMPARE_TRANS_STATUS;
       status_found = 0;
       loop_count = 0;
       cidx = 0;
-      while  ((exp_cidx != cidx) && (loop_count < 10))begin
+      while  ((exp_cidx != cidx) && (loop_count < 20))begin
 	 loop_count = loop_count +1;
 	 wait (board.RP.m_axis_cq_tvalid == 1'b1) ;          //1st tvalid after data	 
 	
