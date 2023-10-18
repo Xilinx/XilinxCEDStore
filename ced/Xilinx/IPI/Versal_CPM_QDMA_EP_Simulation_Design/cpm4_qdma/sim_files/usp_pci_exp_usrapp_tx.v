@@ -6125,29 +6125,29 @@ task COMPARE_DATA_H2C;
     end
 
     //Sampling data payload on XDMA
-    @ (posedge board.EP.cpm_qdma_wrapper_i.cpm_qdma_i.versal_cips_0_NOC_CPM_PCIE_0_WVALID) ;//valid data comes at WVALID
+    @ (posedge board.EP.design_1_wrapper_i.design_1_i.versal_cips_0_NOC_CPM_PCIE_0_WVALID) ;//valid data comes at WVALID
       for (i=0; i<data_beat_count; i=i+1)   begin
-        @ (negedge board.EP.cpm_qdma_wrapper_i.cpm_qdma_i.versal_cips_0_cpm_pcie_noc_axi0_clk); //samples data WVALID and negedge of user_clk
+        @ (negedge board.EP.design_1_wrapper_i.design_1_i.versal_cips_0_cpm_pcie_noc_axi0_clk); //samples data WVALID and negedge of user_clk
 
-            if ( board.EP.cpm_qdma_wrapper_i.cpm_qdma_i.versal_cips_0_NOC_CPM_PCIE_0_WREADY ) begin //check for wready is high before sampling data
+            if ( board.EP.design_1_wrapper_i.design_1_i.versal_cips_0_NOC_CPM_PCIE_0_WREADY ) begin //check for wready is high before sampling data
 
                //128 bits width NOC I/F
-               READ_DATA[i] = {((board.EP.cpm_qdma_wrapper_i.cpm_qdma_i.versal_cips_0_NOC_CPM_PCIE_0_WSTRB[15] == 1'b1) ? board.EP.cpm_qdma_wrapper_i.cpm_qdma_i.versal_cips_0_NOC_CPM_PCIE_0_WDATA[127:120] : 8'h00),
-                               ((board.EP.cpm_qdma_wrapper_i.cpm_qdma_i.versal_cips_0_NOC_CPM_PCIE_0_WSTRB[14] == 1'b1) ? board.EP.cpm_qdma_wrapper_i.cpm_qdma_i.versal_cips_0_NOC_CPM_PCIE_0_WDATA[119:112] : 8'h00),
-                               ((board.EP.cpm_qdma_wrapper_i.cpm_qdma_i.versal_cips_0_NOC_CPM_PCIE_0_WSTRB[13] == 1'b1) ? board.EP.cpm_qdma_wrapper_i.cpm_qdma_i.versal_cips_0_NOC_CPM_PCIE_0_WDATA[111:104] : 8'h00),
-                               ((board.EP.cpm_qdma_wrapper_i.cpm_qdma_i.versal_cips_0_NOC_CPM_PCIE_0_WSTRB[12] == 1'b1) ? board.EP.cpm_qdma_wrapper_i.cpm_qdma_i.versal_cips_0_NOC_CPM_PCIE_0_WDATA[103:96] : 8'h00),
-                               ((board.EP.cpm_qdma_wrapper_i.cpm_qdma_i.versal_cips_0_NOC_CPM_PCIE_0_WSTRB[11] == 1'b1) ? board.EP.cpm_qdma_wrapper_i.cpm_qdma_i.versal_cips_0_NOC_CPM_PCIE_0_WDATA[95:88] : 8'h00),
-                               ((board.EP.cpm_qdma_wrapper_i.cpm_qdma_i.versal_cips_0_NOC_CPM_PCIE_0_WSTRB[10] == 1'b1) ? board.EP.cpm_qdma_wrapper_i.cpm_qdma_i.versal_cips_0_NOC_CPM_PCIE_0_WDATA[87:80] : 8'h00),
-                               ((board.EP.cpm_qdma_wrapper_i.cpm_qdma_i.versal_cips_0_NOC_CPM_PCIE_0_WSTRB[9] == 1'b1) ? board.EP.cpm_qdma_wrapper_i.cpm_qdma_i.versal_cips_0_NOC_CPM_PCIE_0_WDATA[79:72] : 8'h00),
-                               ((board.EP.cpm_qdma_wrapper_i.cpm_qdma_i.versal_cips_0_NOC_CPM_PCIE_0_WSTRB[8] == 1'b1) ? board.EP.cpm_qdma_wrapper_i.cpm_qdma_i.versal_cips_0_NOC_CPM_PCIE_0_WDATA[71:64] : 8'h00),
-                               ((board.EP.cpm_qdma_wrapper_i.cpm_qdma_i.versal_cips_0_NOC_CPM_PCIE_0_WSTRB[7] == 1'b1) ? board.EP.cpm_qdma_wrapper_i.cpm_qdma_i.versal_cips_0_NOC_CPM_PCIE_0_WDATA[63:56] : 8'h00),
-                               ((board.EP.cpm_qdma_wrapper_i.cpm_qdma_i.versal_cips_0_NOC_CPM_PCIE_0_WSTRB[6] == 1'b1) ? board.EP.cpm_qdma_wrapper_i.cpm_qdma_i.versal_cips_0_NOC_CPM_PCIE_0_WDATA[55:48] : 8'h00),
-                               ((board.EP.cpm_qdma_wrapper_i.cpm_qdma_i.versal_cips_0_NOC_CPM_PCIE_0_WSTRB[5] == 1'b1) ? board.EP.cpm_qdma_wrapper_i.cpm_qdma_i.versal_cips_0_NOC_CPM_PCIE_0_WDATA[47:40] : 8'h00),
-                               ((board.EP.cpm_qdma_wrapper_i.cpm_qdma_i.versal_cips_0_NOC_CPM_PCIE_0_WSTRB[4] == 1'b1) ? board.EP.cpm_qdma_wrapper_i.cpm_qdma_i.versal_cips_0_NOC_CPM_PCIE_0_WDATA[39:32] : 8'h00),
-                               ((board.EP.cpm_qdma_wrapper_i.cpm_qdma_i.versal_cips_0_NOC_CPM_PCIE_0_WSTRB[3] == 1'b1) ? board.EP.cpm_qdma_wrapper_i.cpm_qdma_i.versal_cips_0_NOC_CPM_PCIE_0_WDATA[31:24] : 8'h00),
-                               ((board.EP.cpm_qdma_wrapper_i.cpm_qdma_i.versal_cips_0_NOC_CPM_PCIE_0_WSTRB[2] == 1'b1) ? board.EP.cpm_qdma_wrapper_i.cpm_qdma_i.versal_cips_0_NOC_CPM_PCIE_0_WDATA[23:16] : 8'h00),
-                               ((board.EP.cpm_qdma_wrapper_i.cpm_qdma_i.versal_cips_0_NOC_CPM_PCIE_0_WSTRB[1] == 1'b1) ? board.EP.cpm_qdma_wrapper_i.cpm_qdma_i.versal_cips_0_NOC_CPM_PCIE_0_WDATA[15:8] : 8'h00),
-                               ((board.EP.cpm_qdma_wrapper_i.cpm_qdma_i.versal_cips_0_NOC_CPM_PCIE_0_WSTRB[0] == 1'b1) ? board.EP.cpm_qdma_wrapper_i.cpm_qdma_i.versal_cips_0_NOC_CPM_PCIE_0_WDATA[7:0] : 8'h00)};
+               READ_DATA[i] = {((board.EP.design_1_wrapper_i.design_1_i.versal_cips_0_NOC_CPM_PCIE_0_WSTRB[15] == 1'b1) ? board.EP.design_1_wrapper_i.design_1_i.versal_cips_0_NOC_CPM_PCIE_0_WDATA[127:120] : 8'h00),
+                               ((board.EP.design_1_wrapper_i.design_1_i.versal_cips_0_NOC_CPM_PCIE_0_WSTRB[14] == 1'b1) ? board.EP.design_1_wrapper_i.design_1_i.versal_cips_0_NOC_CPM_PCIE_0_WDATA[119:112] : 8'h00),
+                               ((board.EP.design_1_wrapper_i.design_1_i.versal_cips_0_NOC_CPM_PCIE_0_WSTRB[13] == 1'b1) ? board.EP.design_1_wrapper_i.design_1_i.versal_cips_0_NOC_CPM_PCIE_0_WDATA[111:104] : 8'h00),
+                               ((board.EP.design_1_wrapper_i.design_1_i.versal_cips_0_NOC_CPM_PCIE_0_WSTRB[12] == 1'b1) ? board.EP.design_1_wrapper_i.design_1_i.versal_cips_0_NOC_CPM_PCIE_0_WDATA[103:96] : 8'h00),
+                               ((board.EP.design_1_wrapper_i.design_1_i.versal_cips_0_NOC_CPM_PCIE_0_WSTRB[11] == 1'b1) ? board.EP.design_1_wrapper_i.design_1_i.versal_cips_0_NOC_CPM_PCIE_0_WDATA[95:88] : 8'h00),
+                               ((board.EP.design_1_wrapper_i.design_1_i.versal_cips_0_NOC_CPM_PCIE_0_WSTRB[10] == 1'b1) ? board.EP.design_1_wrapper_i.design_1_i.versal_cips_0_NOC_CPM_PCIE_0_WDATA[87:80] : 8'h00),
+                               ((board.EP.design_1_wrapper_i.design_1_i.versal_cips_0_NOC_CPM_PCIE_0_WSTRB[9] == 1'b1) ? board.EP.design_1_wrapper_i.design_1_i.versal_cips_0_NOC_CPM_PCIE_0_WDATA[79:72] : 8'h00),
+                               ((board.EP.design_1_wrapper_i.design_1_i.versal_cips_0_NOC_CPM_PCIE_0_WSTRB[8] == 1'b1) ? board.EP.design_1_wrapper_i.design_1_i.versal_cips_0_NOC_CPM_PCIE_0_WDATA[71:64] : 8'h00),
+                               ((board.EP.design_1_wrapper_i.design_1_i.versal_cips_0_NOC_CPM_PCIE_0_WSTRB[7] == 1'b1) ? board.EP.design_1_wrapper_i.design_1_i.versal_cips_0_NOC_CPM_PCIE_0_WDATA[63:56] : 8'h00),
+                               ((board.EP.design_1_wrapper_i.design_1_i.versal_cips_0_NOC_CPM_PCIE_0_WSTRB[6] == 1'b1) ? board.EP.design_1_wrapper_i.design_1_i.versal_cips_0_NOC_CPM_PCIE_0_WDATA[55:48] : 8'h00),
+                               ((board.EP.design_1_wrapper_i.design_1_i.versal_cips_0_NOC_CPM_PCIE_0_WSTRB[5] == 1'b1) ? board.EP.design_1_wrapper_i.design_1_i.versal_cips_0_NOC_CPM_PCIE_0_WDATA[47:40] : 8'h00),
+                               ((board.EP.design_1_wrapper_i.design_1_i.versal_cips_0_NOC_CPM_PCIE_0_WSTRB[4] == 1'b1) ? board.EP.design_1_wrapper_i.design_1_i.versal_cips_0_NOC_CPM_PCIE_0_WDATA[39:32] : 8'h00),
+                               ((board.EP.design_1_wrapper_i.design_1_i.versal_cips_0_NOC_CPM_PCIE_0_WSTRB[3] == 1'b1) ? board.EP.design_1_wrapper_i.design_1_i.versal_cips_0_NOC_CPM_PCIE_0_WDATA[31:24] : 8'h00),
+                               ((board.EP.design_1_wrapper_i.design_1_i.versal_cips_0_NOC_CPM_PCIE_0_WSTRB[2] == 1'b1) ? board.EP.design_1_wrapper_i.design_1_i.versal_cips_0_NOC_CPM_PCIE_0_WDATA[23:16] : 8'h00),
+                               ((board.EP.design_1_wrapper_i.design_1_i.versal_cips_0_NOC_CPM_PCIE_0_WSTRB[1] == 1'b1) ? board.EP.design_1_wrapper_i.design_1_i.versal_cips_0_NOC_CPM_PCIE_0_WDATA[15:8] : 8'h00),
+                               ((board.EP.design_1_wrapper_i.design_1_i.versal_cips_0_NOC_CPM_PCIE_0_WSTRB[0] == 1'b1) ? board.EP.design_1_wrapper_i.design_1_i.versal_cips_0_NOC_CPM_PCIE_0_WDATA[7:0] : 8'h00)};
                $display ("--- H2C data at QDMA = %h ---\n", READ_DATA[i]);
             end
       end
