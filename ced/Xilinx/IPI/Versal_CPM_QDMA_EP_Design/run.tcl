@@ -34,8 +34,8 @@ puts $board_name
 
 if [regexp "vck190" $board_name] {
 puts "INFO: VCK190 Board is selected."
-if {([lsearch $options CPM4_Preset.VALUE] == -1) || ([lsearch $options "CPM4_QDMA_Gen4x8_MM_ST"] != -1)} {
-puts "INFO: default CPM4_QDMA_Gen4x8_MM_ST preset is selected."
+if {([lsearch $options CPM4_Preset.VALUE] == -1) || ([lsearch $options "CPM4_QDMA_Gen4x8_MM_ST_Design"] != -1)} {
+puts "INFO: default CPM4_QDMA_Gen4x8_MM_ST_Design preset is selected."
 
 set files [list \
  [file normalize "${currentDir}/cpm4_qdma/src/exdes/ST_c2h.sv"] \
@@ -152,7 +152,7 @@ import_files -norecurse -fileset $obj $files
 
 # Set 'sources_1' fileset properties
 set obj [get_filesets sources_1]
-set_property -name "top" -value "${design_name}_wrapper" -objects $obj
+set_property -name "top" -value "design_1_wrapper" -objects $obj
 set_property -name "top_auto_set" -value "0" -objects $obj
 
 # Create 'constrs_1' fileset (if not found)
@@ -178,13 +178,13 @@ set obj [get_filesets constrs_1]
 set infile [open [file join [get_property directory [current_project]] [current_project].srcs sources_1 imports src exdes design_1_wrapper.sv]]
 set contents [read $infile]
 close $infile
-set contents [string map [list "design_1" "$design_name"] $contents]
+set contents [string map [list "design_1 " "$design_name "] $contents]
 
 set outfile  [open [file join [get_property directory [current_project]] [current_project].srcs sources_1 imports src exdes design_1_wrapper.sv] w]
 puts -nonewline $outfile $contents
 close $outfile
 
-} elseif {[regexp "CPM4_QDMA_Gen4x8_Performance_Design" $options]} {
+} elseif {[regexp "CPM4_QDMA_Gen4x8_MM_ST_Performance_Design" $options]} {
 set obj [get_filesets sources_1]
 set files [list \
  [file normalize "${currentDir}/cpm4_qdma_perf/src/exdes/ST_c2h.sv"] \
@@ -206,13 +206,13 @@ import_files -norecurse -fileset $obj $files
 
 # Set 'sources_1' fileset properties
 set obj [get_filesets sources_1]
-set_property -name "top" -value "${design_name}_wrapper" -objects $obj
+set_property -name "top" -value "design_1_wrapper" -objects $obj
 
 # None
 set infile [open [file join [get_property directory [current_project]] [current_project].srcs sources_1 imports exdes design_1_wrapper.sv]]
 set contents [read $infile]
 close $infile
-set contents [string map [list "design_1" "$design_name"] $contents]
+set contents [string map [list "design_1 " "$design_name "] $contents]
 
 set outfile  [open [file join [get_property directory [current_project]] [current_project].srcs sources_1 imports  exdes design_1_wrapper.sv] w]
 puts -nonewline $outfile $contents
@@ -244,8 +244,8 @@ set obj [get_filesets constrs_1]
 if [regexp "vpk120.*" $board_name] {
 puts $board_name
 puts "INFO: VPK120 Board is selected."
-if {([lsearch $options CPM5_Preset.VALUE] == -1) || ([lsearch $options "CPM5_QDMA_Gen4x8_MM_ST"] != -1)} {
-puts "INFO: default CPM5_QDMA_Gen4x8_MM_ST preset is selected."
+if {([lsearch $options CPM5_Preset.VALUE] == -1) || ([lsearch $options "CPM5_QDMA_Gen4x8_MM_ST_Design"] != -1)} {
+puts "INFO: default CPM5_QDMA_Gen4x8_MM_ST_Design preset is selected."
 set files [list \
  [file normalize "${currentDir}/cpm5_qdma_mm_st/src/exdes/axi_st_module.sv"]\
  [file normalize "${currentDir}/cpm5_qdma_mm_st/src/exdes/dsc_byp_c2h.sv"]\
@@ -267,16 +267,21 @@ set files [list \
 
 import_files -norecurse -fileset $obj $files
 
+set rtf_dir [file join $currentDir cpm5_qdma_mm_st/src/RTF]
+
+set_property  ip_repo_paths "$rtf_dir/pcie_qdma_mailbox_v1_0" [current_project]
+update_ip_catalog
+
 # Set 'sources_1' fileset properties
 set obj [get_filesets sources_1]
-set_property -name "top" -value "${design_name}_wrapper" -objects $obj
+set_property -name "top" -value "design_1_wrapper" -objects $obj
 set_property -name "top_auto_set" -value "0" -objects $obj
 
 # None
 set infile [open [file join [get_property directory [current_project]] [current_project].srcs sources_1 imports exdes design_1_wrapper.sv]]
 set contents [read $infile]
 close $infile
-set contents [string map [list "design_1" "$design_name"] $contents]
+set contents [string map [list "design_1 " "$design_name "] $contents]
 
 set outfile  [open [file join [get_property directory [current_project]] [current_project].srcs sources_1 imports  exdes design_1_wrapper.sv] w]
 puts -nonewline $outfile $contents
@@ -303,7 +308,7 @@ set obj [get_filesets constrs_1]
 
 set_property strategy Performance_Explore [get_runs impl_1]
 
-} elseif {[regexp "CPM5_QDMA_Dual_Ctrl_Gen4x8_MM_ST" $options]} {
+} elseif {[regexp "CPM5_QDMA_Dual_Gen4x8_MM_ST_Design" $options]} {
 set obj [get_filesets sources_1]
    set files [list \
  [file normalize "${currentDir}/cpm5_qdma_dual_ctrl/src/axi_st_module.sv"] \
@@ -326,18 +331,23 @@ set obj [get_filesets sources_1]
 
 import_files -norecurse -fileset $obj $files
 
+set rtf_dir [file join $currentDir cpm5_qdma_dual_ctrl/src/RTF]
+
+set_property  ip_repo_paths "$rtf_dir/pcie_qdma_mailbox_v1_0" [current_project]
+update_ip_catalog
+
 # Set 'sources_1' fileset file properties for local files
 # None
 
 # Set 'sources_1' fileset properties
 set obj [get_filesets sources_1]
-set_property -name "top" -value "${design_name}_wrapper" -objects $obj
+set_property -name "top" -value "design_1_wrapper" -objects $obj
 
 # None
 set infile [open [file join [get_property directory [current_project]] [current_project].srcs sources_1 imports src design_1_wrapper.sv]]
 set contents [read $infile]
 close $infile
-set contents [string map [list "design_1" "$design_name"] $contents]
+set contents [string map [list "design_1 " "$design_name "] $contents]
 
 set outfile  [open [file join [get_property directory [current_project]] [current_project].srcs sources_1 imports src design_1_wrapper.sv] w]
 puts -nonewline $outfile $contents
@@ -391,7 +401,7 @@ set_property STEPS.PLACE_DESIGN.TCL.PRE [get_files pre_place.tcl -of [get_filese
 # Set 'utils_1' fileset properties
 set obj [get_filesets utils_1]
  
-} elseif {[regexp "CPM5_QDMA_Gen4x8_ST_Only_Performance_Design" $options]} {
+} elseif {[regexp "CPM5_QDMA_Gen4x8_ST_Performance_Design" $options]} {
  set files [list \
  [file normalize "${currentDir}/cpm5_qdma_st_only/src/ST_c2h.sv"] \
  [file normalize "${currentDir}/cpm5_qdma_st_only/src/ST_c2h_cmpt.sv"] \
@@ -410,18 +420,23 @@ set obj [get_filesets utils_1]
 
 import_files -norecurse -fileset $obj $files
 
+set rtf_dir [file join $currentDir cpm5_qdma_st_only/src/RTF]
+
+set_property  ip_repo_paths "$rtf_dir/pcie_qdma_mailbox_v1_0" [current_project]
+update_ip_catalog
+
 # Set 'sources_1' fileset file properties for local files
 # None
 
 # Set 'sources_1' fileset properties
 set obj [get_filesets sources_1]
-set_property -name "top" -value "${design_name}_wrapper" -objects $obj
+set_property -name "top" -value "design_1_wrapper" -objects $obj
 
 # None
 set infile [open [file join [get_property directory [current_project]] [current_project].srcs sources_1 imports src design_1_wrapper.sv]]
 set contents [read $infile]
 close $infile
-set contents [string map [list "design_1" "$design_name"] $contents]
+set contents [string map [list "design_1 " "$design_name "] $contents]
 
 set outfile  [open [file join [get_property directory [current_project]] [current_project].srcs sources_1 imports src design_1_wrapper.sv] w]
 puts -nonewline $outfile $contents
@@ -466,7 +481,7 @@ set_property STEPS.PLACE_DESIGN.TCL.PRE [get_files pre_place.tcl -of [get_filese
 
 # Set 'utils_1' fileset properties
 set obj [get_filesets utils_1]
-} elseif {[regexp "CPM5_QDMA_Gen5x8_MM_Only_Performance_Design" $options]} {
+} elseif {[regexp "CPM5_QDMA_Gen5x8_MM_Performance_Design" $options]} {
 set board_part_name [get_property PART_NAME [current_board_part]]
 if [regexp "xcvp1202-vsva2785-2MHP-e-S" $board_part_name] {
 # Create 'sources_1' fileset (if not found)
@@ -485,13 +500,13 @@ import_files -norecurse -fileset $obj $files
 
 # Set 'sources_1' fileset properties
 set obj [get_filesets sources_1]
-set_property -name "top" -value "${design_name}_wrapper" -objects $obj
+set_property -name "top" -value "design_1_wrapper" -objects $obj
 
 # None
 set infile [open [file join [get_property directory [current_project]] [current_project].srcs sources_1 imports src design_1_wrapper.v]]
 set contents [read $infile]
 close $infile
-set contents [string map [list "design_1" "$design_name"] $contents]
+set contents [string map [list "design_1 " "$design_name "] $contents]
 
 set outfile  [open [file join [get_property directory [current_project]] [current_project].srcs sources_1 imports  src design_1_wrapper.v] w]
 puts -nonewline $outfile $contents
@@ -571,30 +586,30 @@ set use_cpm "CPM5"
 
 if [regexp "CPM4" $use_cpm] {
 puts "INFO: CPM4 preset is selected."
-if {([lsearch $options CPM4_Preset.VALUE] == -1) || ([lsearch $options "CPM4_QDMA_Gen4x8_MM_ST"] != -1)} {
-puts "INFO: CPM4_QDMA_Gen4x8_MM_ST preset is selected."
+if {([lsearch $options CPM4_Preset.VALUE] == -1) || ([lsearch $options "CPM4_QDMA_Gen4x8_MM_ST_Design"] != -1)} {
+puts "INFO: CPM4_QDMA_Gen4x8_MM_ST_Design preset is selected."
 source -notrace "$currentDir/create_cpm4.tcl"
-} elseif {([lsearch $options CPM4_Preset.VALUE] == -1) || ([lsearch $options "CPM4_QDMA_Gen4x8_Performance_Design"] != -1)} {
-puts "INFO: CPM4_QDMA_Gen4x8_Performance_Design preset is selected."
+} elseif {([lsearch $options CPM4_Preset.VALUE] == -1) || ([lsearch $options "CPM4_QDMA_Gen4x8_MM_ST_Performance_Design"] != -1)} {
+puts "INFO: CPM4_QDMA_Gen4x8_MM_ST_Performance_Design preset is selected."
 source -notrace "$currentDir/cpm4_qdma_perf/design_1_bd.tcl"
 }
 
-} elseif {([lsearch $options CPM5_Preset.VALUE] == -1) || ([lsearch $options "CPM5_QDMA_Gen4x8_MM_ST"] != -1)} {
-puts "INFO: CPM5_QDMA_Gen4x8_MM_ST preset is selected."
+} elseif {([lsearch $options CPM5_Preset.VALUE] == -1) || ([lsearch $options "CPM5_QDMA_Gen4x8_MM_ST_Design"] != -1)} {
+puts "INFO: CPM5_QDMA_Gen4x8_MM_ST_Design preset is selected."
 source -notrace "$currentDir/create_cpm5.tcl"
-} elseif {([lsearch $options CPM5_Preset.VALUE] == -1) || ([lsearch $options "CPM5_QDMA_Dual_Ctrl_Gen4x8_MM_ST"] != -1)} {
-puts "INFO: CPM5_QDMA_Dual_Ctrl_Gen4x8_MM_ST preset is selected."
+} elseif {([lsearch $options CPM5_Preset.VALUE] == -1) || ([lsearch $options "CPM5_QDMA_Dual_Gen4x8_MM_ST_Design"] != -1)} {
+puts "INFO: CPM5_QDMA_Dual_Gen4x8_MM_ST_Design preset is selected."
 source "$currentDir/cpm5_qdma_dual_ctrl/design_1_bd.tcl"
 puts "INFO: EP bd generated"
 regenerate_bd_layout
 
-} elseif {([lsearch $options CPM5_Preset.VALUE] == -1) || ([lsearch $options "CPM5_QDMA_Gen4x8_ST_Only_Performance_Design"] != -1)} {
-puts "INFO: CPM5_QDMA_Gen4x8_ST_Only_Performance_Design preset is selected."
+} elseif {([lsearch $options CPM5_Preset.VALUE] == -1) || ([lsearch $options "CPM5_QDMA_Gen4x8_ST_Performance_Design"] != -1)} {
+puts "INFO: CPM5_QDMA_Gen4x8_ST_Performance_Design preset is selected."
 source "$currentDir/cpm5_qdma_st_only/design_1_bd.tcl"
 puts "INFO: EP bd generated"
 regenerate_bd_layout
 
-} elseif {([lsearch $options CPM5_Preset.VALUE] == -1) || ([lsearch $options "CPM5_QDMA_Gen5x8_MM_Only_Performance_Design"] != -1)} {
+} elseif {([lsearch $options CPM5_Preset.VALUE] == -1) || ([lsearch $options "CPM5_QDMA_Gen5x8_MM_Performance_Design"] != -1)} {
 
 set board_part_name [get_property PART_NAME [current_board_part]]
 if [regexp "xcvp1202-vsva2785-2MHP-e-S" $board_part_name] {
