@@ -6,7 +6,7 @@
             "name": "cpm_qdma_ep_part",
             "display": "Versal CPM QDMA EP Design (Part based)",
             "revision": "1.0",
-            "description": "This is CPM QDMA EP Design",
+            "description": "This is CPM QDMA EP Gen5x8 Performance Design",
             "company": "xilinx.com",
             "company_display": "Xilinx",
             "author": "Sindhura",

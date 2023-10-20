@@ -4,7 +4,7 @@
   <Library>design</Library>
   <Name>cpm_qdma_ep_part</Name>
    <DisplayName>Versal CPM QDMA EP Design (Part based)</DisplayName>
-  <Description>This is CPM QDMA EP Design</Description>
+  <Description>This is CPM QDMA EP Gen5x8 Performance Design</Description>
    <Version>1.0</Version>
   <Design>init.tcl</Design>
   <Image>cpm_qdma_ep_part.PNG</Image>
