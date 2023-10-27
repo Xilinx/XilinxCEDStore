@@ -38,13 +38,13 @@ import_files -norecurse -fileset $obj $files
 
 # Set 'sources_1' fileset properties
 set obj [get_filesets sources_1]
-set_property -name "top" -value "${design_name}_wrapper" -objects $obj
+set_property -name "top" -value "design_1_wrapper" -objects $obj
 
 # None
 set infile [open [file join [get_property directory [current_project]] [current_project].srcs sources_1 imports src design_1_wrapper.v]]
 set contents [read $infile]
 close $infile
-set contents [string map [list "design_1" "$design_name"] $contents]
+set contents [string map [list "design_1 " "$design_name "] $contents]
 
 set outfile  [open [file join [get_property directory [current_project]] [current_project].srcs sources_1 imports src design_1_wrapper.v] w]
 puts -nonewline $outfile $contents
@@ -119,13 +119,13 @@ import_files -norecurse -fileset $obj $files
 
 # Set 'sources_1' fileset properties
 set obj [get_filesets sources_1]
-set_property -name "top" -value "${design_name}_wrapper" -objects $obj
+set_property -name "top" -value "design_1_wrapper" -objects $obj
 
 # None
 set infile [open [file join [get_property directory [current_project]] [current_project].srcs sources_1 imports src design_1_wrapper.sv]]
 set contents [read $infile]
 close $infile
-set contents [string map [list "design_1" "$design_name"] $contents]
+set contents [string map [list "design_1 " "$design_name "] $contents]
 
 set outfile  [open [file join [get_property directory [current_project]] [current_project].srcs sources_1 imports src design_1_wrapper.sv] w]
 puts -nonewline $outfile $contents
