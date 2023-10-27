@@ -45,19 +45,21 @@ set files [list \
  [file normalize "${currentDir}/cpm4_bmd/src/BMD_AXIST_RQ_WRITE_512.sv"] \
  [file normalize "${currentDir}/cpm4_bmd/src/BMD_AXIST_TO_CTRL.sv"] \
  [file normalize "${currentDir}/cpm4_bmd/src/pcie_app_versal_bmd.sv"] \
+ [file normalize "${currentDir}/cpm4_bmd/src/pcie_intf_defs_cpm5n.vh"] \
+ [file normalize "${currentDir}/cpm4_bmd/src/pcie_intf_defs_legacy.vh"] \
  [file normalize "${currentDir}/cpm4_bmd/src/design_1_wrapper.v"] \
 ]
 import_files -norecurse -fileset $obj $files
 
 # Set 'sources_1' fileset properties
 set obj [get_filesets sources_1]
-set_property -name "top" -value "${design_name}_wrapper" -objects $obj
+set_property -name "top" -value "design_1_wrapper" -objects $obj
 
 # None
 set infile [open [file join [get_property directory [current_project]] [current_project].srcs sources_1 imports src design_1_wrapper.v]]
 set contents [read $infile]
 close $infile
-set contents [string map [list "design_1" "$design_name"] $contents]
+set contents [string map [list "design_1 " "$design_name "] $contents]
 
 set outfile  [open [file join [get_property directory [current_project]] [current_project].srcs sources_1 imports src design_1_wrapper.v] w]
 puts -nonewline $outfile $contents
@@ -89,26 +91,6 @@ set files [list \
 ]
 
 import_files -norecurse -fileset $obj $files
-
-# None
-set infile [open [file join [get_property directory [current_project]] [current_project].srcs sim_1 imports sim_files board.v]]
-set contents [read $infile]
-close $infile
-set contents [string map [list "design_1" "$design_name"] $contents]
-
-set outfile  [open [file join [get_property directory [current_project]] [current_project].srcs sim_1 imports sim_files board.v] w]
-puts -nonewline $outfile $contents
-close $outfile
-
-# None
-set infile [open [file join [get_property directory [current_project]] [current_project].srcs sim_1 imports sim_files board_common.vh]]
-set contents [read $infile]
-close $infile
-set contents [string map [list "design_1" "$design_name"] $contents]
-
-set outfile  [open [file join [get_property directory [current_project]] [current_project].srcs sim_1 imports sim_files board_common.vh] w]
-puts -nonewline $outfile $contents
-close $outfile
 
 } else {
 
@@ -145,7 +127,7 @@ set prj [get_projects [current_project]]
 
 # Set 'sources_1' fileset properties
 set obj [get_filesets sources_1]
-set_property -name "top" -value "${design_name}_wrapper" -objects $obj
+set_property -name "top" -value "design_1_wrapper" -objects $obj
 
 # Create 'constrs_1' fileset (if not found)
 if {[string equal [get_filesets -quiet constrs_1] ""]} {
@@ -170,7 +152,7 @@ set obj [get_filesets constrs_1]
 set infile [open [file join [get_property directory [current_project]] [current_project].srcs sources_1 imports src design_1_wrapper.v]]
 set contents [read $infile]
 close $infile
-set contents [string map [list "design_1" "$design_name"] $contents]
+set contents [string map [list "design_1 " "$design_name "] $contents]
 
 set outfile  [open [file join [get_property directory [current_project]] [current_project].srcs sources_1 imports src design_1_wrapper.v] w]
 puts -nonewline $outfile $contents
@@ -218,15 +200,7 @@ set files [list \
 
 import_files -norecurse -fileset $obj $files
 
-# None
-set infile [open [file join [get_property directory [current_project]] [current_project].srcs sim_1 imports sim_files board.v]]
-set contents [read $infile]
-close $infile
-set contents [string map [list "design_1" "$design_name"] $contents]
 
-set outfile  [open [file join [get_property directory [current_project]] [current_project].srcs sim_1 imports sim_files board.v] w]
-puts -nonewline $outfile $contents
-close $outfile
 } else {
 puts "Warning: In CPM5, Gen5 Speed Configuration requires -2MHP or above Speed Grade Part. Since -2MP part is selected CED is not generated"
 }

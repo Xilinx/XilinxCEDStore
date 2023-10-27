@@ -137,7 +137,7 @@ begin
 
    board.RP.tx_usrapp.TSK_TX_CLK_EAT(10000);
 
-
+  
   $finish;
 end
 
@@ -640,42 +640,63 @@ begin
 
  $display("AttempT BMD\n");
     //DCSR - Assert Initiator Reset
-      board.RP.tx_usrapp.TSK_MEM64_WR(32'h0, 32'h00000001,4'hf); 
+      board.RP.tx_usrapp.TSK_MEM64_WR(32'h0, 32'h00000001,4'hf);
+      board.RP.tx_usrapp.TSK_MEM64_RD(32'h0);
+ 
 		  //DCSR - De-assert Initiator Reset
       board.RP.tx_usrapp.TSK_MEM64_WR(32'h0, 32'h00000000,4'hf);
+      board.RP.tx_usrapp.TSK_MEM64_RD(32'h0);
       
     
     // Start BMD Traffic Iter 1 /////////////////////
 
     //WDMATLPS
       board.RP.tx_usrapp.TSK_MEM64_WR(32'h0c, 32'h00000001,4'hf); // 32DW
+      board.RP.tx_usrapp.TSK_MEM64_RD(32'h0c);
+
     //Write DMA TLP Count 
       board.RP.tx_usrapp.TSK_MEM64_WR(32'h10, 32'h000C,4'hf);  // 1MB Transfer 
+
     // Read DMA TLP Count
-   //   board.RP.tx_usrapp.TSK_MEM32_RD(32'h10);  // 1MB Transfer 
+      board.RP.tx_usrapp.TSK_MEM64_RD(32'h10);        // 1MB Transfer 
     //Write DMA Pattern
       board.RP.tx_usrapp.TSK_MEM64_WR(32'h14, 32'h54535251,4'hf);                                 
+      board.RP.tx_usrapp.TSK_MEM64_RD(32'h14);
+     //READ DMA Pattern
+      board.RP.tx_usrapp.TSK_MEM64_WR(32'h18, 32'h54535251,4'hf);  
+      board.RP.tx_usrapp.TSK_MEM64_RD(32'h18);
     //RDMATLPS
       board.RP.tx_usrapp.TSK_MEM64_WR(32'h20, 32'h00000001,4'hf);
+      board.RP.tx_usrapp.TSK_MEM64_RD(32'h20);
     //RDMATPC
       board.RP.tx_usrapp.TSK_MEM64_WR(32'h24, 32'h01,4'hf);  
+      board.RP.tx_usrapp.TSK_MEM64_RD(32'h24);
     //DCSR2- Start Writes
-      board.RP.tx_usrapp.TSK_MEM64_WR(32'h4, 32'h00000001,4'hf);
+      board.RP.tx_usrapp.TSK_MEM64_WR(32'h4, 32'h00010001,4'hf);
       
       $display("[%t] : Start BMD Iterations at Gen5",$realtime);
 
-      #1000000  
+      //#1000000  
+   board.RP.tx_usrapp.TSK_TX_CLK_EAT(10000);
+
     //  wait(board.EP.pcie_app_uscale_i.BMD_AXIST.BMD_AXIST_EP.mwr_done);
+      board.RP.tx_usrapp.TSK_MEM64_RD(32'h4);
+
+
+if  (P_READ_DATA[31]) begin
+        $display("[%t] : TEST FAILED --- Completion data error", $realtime);
+   end
+   if (P_READ_DATA[8] == 1'b0) begin
+        $display("[%t] : TEST FAILED --- Write failed to complete", $realtime);
+   end
+   if (P_READ_DATA[24] == 1'b0) begin
+        $display("[%t] : TEST FAILED --- Read failed to complete", $realtime);
+   end
+   if  ((!P_READ_DATA[31]) && P_READ_DATA[8] && P_READ_DATA[24]) begin
+        $display("[%t] : TEST Passed Successfully", $realtime);
+   end
+
       $display("[%t] : BMD Iteration Complete at Gen5 ",$realtime);
       $finish;
 
-//    if(testError==1'b1)
-//    $display("[%t] : FAIL - Test FAILED due to previous error ",$realtime);
-
-
-    
-
-
-//    $display("[%t] : Finished transmission of PCI-Express TLPs", $realtime);
-//    $finish;
 end
