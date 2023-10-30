@@ -499,11 +499,11 @@
         "name": "cpm_pcie_qdma_ep",
         "display": "Versal CPM QDMA EP Design",
         "latest_revision": "1.0",
-        "commit_id": "2af90b6c2b284cb6485e6f3af34a04c06de1ad34",
+        "commit_id": "60ccca9641dd92d10ae4fe24eb4cef59db4f84af",
         "revisions": [
           {
             "revision": "1.0",
-            "commit_id": "2af90b6c2b284cb6485e6f3af34a04c06de1ad34",
+            "commit_id": "60ccca9641dd92d10ae4fe24eb4cef59db4f84af",
             "date": "25-09-2023:06:27:36",
             "history": "Added board Versal CPM QDMA EP Design v1.0"
           }
@@ -537,11 +537,11 @@
         "name": "cpm_bmd_ep",
         "display": "Versal CPM PCIE BMD EP Design",
         "latest_revision": "1.0",
-        "commit_id": "535f7933d3b30ef993e10ea9bccfbe18d973a653",
+        "commit_id": "60ccca9641dd92d10ae4fe24eb4cef59db4f84af",
         "revisions": [
           {
             "revision": "1.0",
-            "commit_id": "535f7933d3b30ef993e10ea9bccfbe18d973a653",
+            "commit_id": "60ccca9641dd92d10ae4fe24eb4cef59db4f84af",
             "date": "26-09-2023:04:57:56",
             "history": "Added board Versal CPM PCIE BMD EP Design v1.0"
           }
@@ -556,11 +556,11 @@
         "name": "cpm_bmd",
         "display": "Versal CPM PCIE BMD EP Simulation Design",
         "latest_revision": "1.0",
-        "commit_id": "5bd61a0edb29e66befb4b39f4504dddcd9042008",
+        "commit_id": "60ccca9641dd92d10ae4fe24eb4cef59db4f84af",
         "revisions": [
           {
             "revision": "1.0",
-            "commit_id": "5bd61a0edb29e66befb4b39f4504dddcd9042008",
+            "commit_id": "60ccca9641dd92d10ae4fe24eb4cef59db4f84af",
             "date": "03-10-2023:04:25:45",
             "history": "Added board Versal CPM PCIE BMD EP Simulation Design v1.0"
           }
@@ -575,11 +575,11 @@
         "name": "cpm_qdma",
         "display": "Versal CPM QDMA EP Simulation Design",
         "latest_revision": "1.0",
-        "commit_id": "2af90b6c2b284cb6485e6f3af34a04c06de1ad34",
+        "commit_id": "60ccca9641dd92d10ae4fe24eb4cef59db4f84af",
         "revisions": [
           {
             "revision": "1.0",
-            "commit_id": "2af90b6c2b284cb6485e6f3af34a04c06de1ad34",
+            "commit_id": "60ccca9641dd92d10ae4fe24eb4cef59db4f84af",
             "date": "03-10-2023:04:25:45",
             "history": "Added board Versal CPM QDMA EP Simulation Design v1.0"
           }
