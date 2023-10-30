@@ -70,9 +70,9 @@ else if (testname == "qdma_sriov_all")
 begin
   byte fnc = 8'h10;
   logic [10:0] qid = 11'h7;  
-//  board.RP.tx_usrapp.TSK_QDMA_H2C_MM (fnc[7:0], qid); 
+  board.RP.tx_usrapp.TSK_QDMA_H2C_MM (fnc[7:0], qid); 
   #100;
-//  board.RP.tx_usrapp.TSK_QDMA_C2H_MM (fnc[7:0], qid); 
+  board.RP.tx_usrapp.TSK_QDMA_C2H_MM (fnc[7:0], qid); 
   #100;
   board.RP.tx_usrapp.TSK_QDMA_H2C_ST (fnc[7:0], qid); 
   #100;

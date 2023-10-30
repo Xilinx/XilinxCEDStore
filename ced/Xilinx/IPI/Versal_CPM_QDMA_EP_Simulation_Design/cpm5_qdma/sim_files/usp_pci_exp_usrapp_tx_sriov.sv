@@ -128,6 +128,7 @@ localparam PF_USR_BAR_INDEX = 2; // PF USR BAR
 localparam VF_DMA_BAR_INDEX = 7; // VF DMA BAR 
 localparam VF_USR_BAR_INDEX = 9; // VF DMA BAR
 localparam NUM_PFS          = 3'h1 ; // starting form 0
+localparam MAX_PFS          = 5'h10 ; // Max PFs for CPM5 = 16
 localparam NUM_BAR_PER_FN   = 13;
 localparam QUEUE_PER_VF     = 8;
 localparam QUEUE_PER_PF     = 32;
@@ -297,8 +298,8 @@ reg [31:0] c2h_status = 32'h0;
 mode_t mode = new;
 initial begin
   // Interrupt 
-  mode.irq_en = 1'b0;
-  mode.irq_direct = 1'b0;
+  mode.irq_en = 1'b1;
+  mode.irq_direct = 1'b1;
   mode.irq_aggr = 1'b0;
   mode.irq_vec = 8'd4;
   assert ( !(mode.irq_direct && mode.irq_aggr) ) $display ("irq_direct and irq_addr cannot be enabled at the same time");
@@ -404,8 +405,8 @@ initial begin
   if ($value$plusargs("TESTNAME=%s", testname))
       $display("Running test {%0s}......", testname);
   else begin	
-//      testname = "qdma_sriov_all";
-      testname = "qdma_flr_test_0";
+      testname = "qdma_sriov_all";
+//      testname = "qdma_flr_test_0";
       $display("***********       Running QDMA test {%0s}    *******************", testname);
   end
 
@@ -460,7 +461,7 @@ begin
   //--------------------------------------------------------------------------
   //wait (board.RP.pcie_4_0_rport.user_lnk_up == 1);
   wait (board.RP.user_lnk_up == 1);
-  TSK_TX_CLK_EAT(50);
+  TSK_TX_CLK_EAT(100);
   $display("[%t] : Transaction Link Is Up...", $realtime);
 
   for(pf_i=0; pf_i<NUM_PFS; pf_i++) begin
@@ -473,7 +474,7 @@ begin
     $display("[%t] :   Set BME", $realtime);
     TSK_TX_TYPE0_CONFIGURATION_WRITE(DEFAULT_TAG, PCIE_CFG_CMD_A, 32'h07, 4'h1);
     DEFAULT_TAG = DEFAULT_TAG + 1;
-    TSK_TX_CLK_EAT(50);
+    TSK_TX_CLK_EAT(100);
 
     // Set Device Control Register of PF
     $display("[%t] :   Set Device Control Register", $realtime);
@@ -483,7 +484,7 @@ begin
 
     TSK_TX_TYPE0_CONFIGURATION_WRITE(DEFAULT_TAG, DEV_CTRL_REG_A[11:0], P_READ_DATA | (DEV_CAP_MAX_PAYLOAD_SUPPORTED * 32), 4'hF);
     DEFAULT_TAG = DEFAULT_TAG + 1;
-    TSK_TX_CLK_EAT(50);
+    TSK_TX_CLK_EAT(100);
 
     // Check if SR-IOV exist
     TSK_TX_TYPE0_CONFIGURATION_READ(DEFAULT_TAG, PCIE_CFG_SRIOV_CAP_A, 4'hF);
@@ -506,7 +507,7 @@ begin
     // Program Number VF of PF#fn_num
     TSK_TX_TYPE0_CONFIGURATION_WRITE(DEFAULT_TAG, PCIE_CFG_NUM_VFS_A, {16'h0000, TOTAL_VFS[pf_i]}, 4'h3);
     DEFAULT_TAG = DEFAULT_TAG + 1;
-    TSK_TX_CLK_EAT(50);
+    TSK_TX_CLK_EAT(100);
 
     // Set PF PCIe SRIOV Control register
     //   [4]: 1 // ARI Capable
@@ -515,14 +516,13 @@ begin
     $display("[%t] :   Set SRIOV Control Register (ARI Cap, VF MSE, VF enable)", $realtime);
     TSK_TX_TYPE0_CONFIGURATION_WRITE(DEFAULT_TAG, PCIE_CFG_SRIOV_CTRL_A, 32'h00000019, 4'h1);
     DEFAULT_TAG = DEFAULT_TAG + 1;
-    TSK_TX_CLK_EAT(50);
+    TSK_TX_CLK_EAT(1000);
 
     // Get NUM_VFs enabled per PF
     TSK_TX_TYPE0_CONFIGURATION_READ(DEFAULT_TAG, PCIE_CFG_NUM_VFS_A, 4'hF);
     DEFAULT_TAG = DEFAULT_TAG + 1;
     TSK_WAIT_FOR_READ_DATA;
-//    NUM_VFS[pf_i] = P_READ_DATA[15:0];
-    NUM_VFS[pf_i] = 4;
+    NUM_VFS[pf_i] = P_READ_DATA[15:0];
 
     // Check First VF Offset
     TSK_TX_TYPE0_CONFIGURATION_READ(DEFAULT_TAG, PCIE_CFG_1ST_VF_OFST_A, 4'h3);
@@ -537,7 +537,7 @@ begin
       // Set BME of VF
       TSK_TX_TYPE0_CONFIGURATION_WRITE(DEFAULT_TAG, PCIE_CFG_CMD_A, 32'h04, 4'h1);
       DEFAULT_TAG = DEFAULT_TAG + 1;
-      TSK_TX_CLK_EAT(50);       
+      TSK_TX_CLK_EAT(100);       
     end
 
   end
@@ -590,9 +590,9 @@ task TSK_SYSTEM_CONFIGURATION_CHECK;
       TSK_TX_TYPE0_CONFIGURATION_READ(DEFAULT_TAG, 12'h0, 4'hF);
       TSK_WAIT_FOR_READ_DATA;
 
-      if  (P_READ_DATA != {4'hb, pf_i[3:0], 8'h3F, 16'h10ee} ) begin//srinadh - updating device id check to b03f instead of 903f
+      if  (P_READ_DATA != {4'hb, pf_i[3:0], 8'h48, 16'h10ee} ) begin//Device ID for pf0 = xb048
         $display("[%t] :   Check Device/Vendor ID - FAILED", $realtime);
-        $display("[%t] :   Data Error Mismatch, Parameter Data %x != Read Data %x", $realtime, {4'h9, pf_i[3:0], 8'h3F, 16'h10ee}, P_READ_DATA);
+        $display("[%t] :   Data Error Mismatch, Parameter Data %x != Read Data %x", $realtime, {4'hb, pf_i[3:0], 8'h48, 16'h10ee}, P_READ_DATA);
         error_check = 1;
       end else begin
         $display("[%t] :   Check Device/Vendor ID - PASSED", $realtime);
@@ -656,7 +656,7 @@ task TSK_SYSTEM_CONFIGURATION_CHECK;
       $display("[%t] : SYSTEM CHECK PASSED", $realtime);
     end else begin
       $display("[%t] : SYSTEM CHECK FAILED", $realtime);
-//      $finish;
+      $finish;
     end
   end
 endtask
@@ -3027,7 +3027,7 @@ task TSK_BAR_SCAN;
         // Determine Range for bar_i
         TSK_TX_TYPE0_CONFIGURATION_WRITE(DEFAULT_TAG, pcie_bar_addr_t, P_ADDRESS_MASK, 4'hF);
         DEFAULT_TAG = DEFAULT_TAG + 1;
-        TSK_TX_CLK_EAT(50);
+        TSK_TX_CLK_EAT(100);
   
         // Read bar_i Range
         TSK_TX_TYPE0_CONFIGURATION_READ(DEFAULT_TAG, pcie_bar_addr_t, 4'hF);
@@ -3068,7 +3068,7 @@ task TSK_BAR_PROGRAM;
       for (int bar_i=0; bar_i<NUM_BAR_PER_FN; bar_i++) begin
         TSK_TX_TYPE0_CONFIGURATION_WRITE(DEFAULT_TAG, pcie_bar_addr_t, BAR_INIT_P_BAR[pf_i][bar_i][31:0], 4'hF);
         DEFAULT_TAG = DEFAULT_TAG + 1;
-        TSK_TX_CLK_EAT(50);
+        TSK_TX_CLK_EAT(100);
         pcie_bar_addr_t = pcie_bar_addr_t.next;
       end
 
@@ -3291,7 +3291,7 @@ task TSK_QDMA_WRITE;
 
       TSK_TX_MEMORY_WRITE_64(DEFAULT_TAG, DEFAULT_TC, 11'd1, addr_64 + addr[20:0] + addr_offset, 4'h0, byte_en, 1'b0);
     end
-    TSK_TX_CLK_EAT(50);
+    TSK_TX_CLK_EAT(100);
     DEFAULT_TAG = DEFAULT_TAG + 1;
     $display("[%t] :   Done register write!!" ,$realtime);  
 
@@ -3465,8 +3465,8 @@ task TSK_INIT_QDMA_MM_DATA_H2C;
       DATA_STORE[H2C_ADDR+i*32+17] = 8'h00;
       DATA_STORE[H2C_ADDR+i*32+18] = 8'h00;
       DATA_STORE[H2C_ADDR+i*32+19] = 8'h00;
-      DATA_STORE[H2C_ADDR+i*32+20] = 8'h00; // Dst add 64 bits [63:32]
-      DATA_STORE[H2C_ADDR+i*32+21] = 8'h00;
+      DATA_STORE[H2C_ADDR+i*32+20] = 8'h01; // Dst add 64 bits [63:32]
+      DATA_STORE[H2C_ADDR+i*32+21] = 8'h02;
       DATA_STORE[H2C_ADDR+i*32+22] = 8'h00;
       DATA_STORE[H2C_ADDR+i*32+23] = 8'h00;
       DATA_STORE[H2C_ADDR+i*32+24] = 8'h00; // 64 bits Reserved [31:0]
@@ -3512,8 +3512,8 @@ task TSK_INIT_QDMA_MM_DATA_C2H;
     DATA_STORE[C2H_ADDR+1] = 8'h00;
     DATA_STORE[C2H_ADDR+2] = 8'h00;
     DATA_STORE[C2H_ADDR+3] = 8'h00;
-    DATA_STORE[C2H_ADDR+4] = 8'h00; //-- Src add [63:32]
-    DATA_STORE[C2H_ADDR+5] = 8'h00;
+    DATA_STORE[C2H_ADDR+4] = 8'h01; //-- Src add [63:32]
+    DATA_STORE[C2H_ADDR+5] = 8'h02;
     DATA_STORE[C2H_ADDR+6] = 8'h00;
     DATA_STORE[C2H_ADDR+7] = 8'h00;
     DATA_STORE[C2H_ADDR+8] = DMA_BYTE_CNT[7:0]; // [71:64] len [7:0] 28bits
@@ -3936,7 +3936,7 @@ endtask
 
 
 /************************************************************
-Task : COMPARE_DATA_H2C -- from usp_pci_exp_usrapp_tx.v file -- Srinadh
+Task : COMPARE_DATA_H2C -- from usp_pci_exp_usrapp_tx.v file
 Inputs : Number of Payload Bytes 
 Outputs : None
 Description : Compare Data received at out of DMA with data sent from RP - user TB
@@ -4152,7 +4152,7 @@ task COMPARE_DATA_H2C;
                     end
                     DATA_STORE_512[i] = DATA_STORE_512[i] << (bof*8);
                     k   = k + burst_size;
-                    bof = ((bof + (burst_size * 8)) >= 64) ? 0 : (bof + burst_size);
+                    bof = (((bof + burst_size) * 8) >= 64) ? 0 : (bof + burst_size);
 
                     $display ("--- Data Stored in TB for H2C Transfer = %h ---\n", DATA_STORE_512[i]);
                   end
@@ -4166,7 +4166,7 @@ task COMPARE_DATA_H2C;
                     end
                     DATA_STORE_512[i] = DATA_STORE_512[i] << (bof*8);
                     k   = k + burst_size;
-                    bof = ((bof + (burst_size * 8)) >= 128) ? 0 : (bof + burst_size);
+                    bof = (((bof + burst_size) * 8) >= 128) ? 0 : (bof + burst_size);
 
                     $display ("-- Data Stored in TB for H2C Transfer = %h--\n", DATA_STORE_512[i]);
                   end
@@ -4180,7 +4180,7 @@ task COMPARE_DATA_H2C;
                     end
                     DATA_STORE_512[i] = DATA_STORE_512[i] << (bof*8);
                     k   = k + burst_size;
-                    bof = ((bof + (burst_size * 8)) >= 256) ? 0 : (bof + burst_size);
+                    bof = (((bof + burst_size) * 8) >= 256) ? 0 : (bof + burst_size);
                   
                     $display ("-- Data Stored in TB for H2C Transfer = %h--\n", DATA_STORE_512[i]);
                   end
@@ -4193,7 +4193,7 @@ task COMPARE_DATA_H2C;
                     end
                     DATA_STORE_512[i] = DATA_STORE_512[i] << (bof*8);
                     k   = k + burst_size;
-                    bof = ((bof + (burst_size * 8)) >= 512) ? 0 : (bof + burst_size);
+                    bof = (((bof + burst_size) * 8) >= 512) ? 0 : (bof + burst_size);
              
                     $display ("-- Data Stored in TB for H2C Transfer = %h--\n", DATA_STORE_512[i]);
                   end
@@ -4465,7 +4465,7 @@ task TSK_TEST_TO_FINISH;
     if (fnc < NUM_PFS) 
       TSK_QDMA_READ(pfn, PF_DMA_BAR_INDEX, PF_MB_MSIX_OFFSET + MDMA_PF_EXT_START_A + 32'h100);
     else
-      TSK_QDMA_READ(fnc, VF_DMA_BAR_INDEX, VF_MB_MSIX_OFFSET + MDMA_VF_EXT_START_A + 32'h100);
+      TSK_QDMA_READ(fnc, VF_DMA_BAR_INDEX, VF_MB_MSIX_OFFSET + (BAR_INIT_P_BAR_SIZE[pfn][VF_DMA_BAR_INDEX] * vfn) + MDMA_VF_EXT_START_A + 32'h100);
 
   end
 endtask
@@ -4603,7 +4603,7 @@ task TSK_SW_FLR;
     if (fnc < NUM_PFS)   
       TSK_QDMA_WRITE(pfn, PF_DMA_BAR_INDEX, PF_MB_MSIX_OFFSET + MDMA_PF_EXT_START_A + 32'h100 , 32'h1, 4'hF);
     else      
-      TSK_QDMA_WRITE(fnc, VF_DMA_BAR_INDEX, VF_MB_MSIX_OFFSET + MDMA_VF_EXT_START_A + 32'h100, 32'h1, 4'hF);
+      TSK_QDMA_WRITE(fnc, VF_DMA_BAR_INDEX, VF_MB_MSIX_OFFSET + (BAR_INIT_P_BAR_SIZE[pfn][VF_DMA_BAR_INDEX] * vfn) + MDMA_VF_EXT_START_A + 32'h100, 32'h1, 4'hF);
 
   end
 endtask
@@ -4647,18 +4647,18 @@ task TSK_PCIE_FLR;
     // Write 1 to Device_Control_Register[15] to initiate FLR
     TSK_TX_TYPE0_CONFIGURATION_WRITE(DEFAULT_TAG, DEV_CTRL_REG_A, 32'h0000_8000, 4'hF);
     DEFAULT_TAG = DEFAULT_TAG + 1;
-    TSK_TX_CLK_EAT(50);
+    TSK_TX_CLK_EAT(100);
 
     // Wait for 1000us
     $display("[%t] : Wait for 1000us ...", $realtime);
-    #10000000;
+    #50000000;
 
     // Verify FLR by reading BME of the targeted function
     // We don't differentiate VF or PF. Nor we don't perform any test afterward
     // This merely a simple test. NOT a full-fledged FLR functionality test
     TSK_TX_TYPE0_CONFIGURATION_READ(DEFAULT_TAG, PCIE_CFG_CMD_A, 4'h1);
     DEFAULT_TAG = DEFAULT_TAG + 1;
-    TSK_TX_CLK_EAT(50);
+    TSK_TX_CLK_EAT(100);
     if (P_READ_DATA[2] == 1'b1)
       $display("[%t] : ******************  ERROR: PCIE FLR FAILED - BME is not cleared  ******************", $realtime);
     else 
@@ -4945,15 +4945,15 @@ Inputs : function number
 Outputs : None
 Description : Set up QDMA config space & run H2C memory mapped test
 *************************************************************/
-/*
+
 task TSK_QDMA_H2C_MM;
 
   input [7:0] fnc;
   input [10:0] qid;    // relative qid; use for perform pointer update
 
   logic [11:0] q_count;
-  logic [10:0] q_base;
-  logic [10:0] hw_qid; // hw qid: use for global space reg access and user logic.
+  logic [11:0] q_base;
+  logic [11:0] hw_qid; // hw qid: use for global space reg access and user logic.
   logic [15:0] pidx ;
   logic [31:0] trq_sel_queue_addr;
   integer ptr_upt_dma_bar_idx;
@@ -4965,9 +4965,9 @@ task TSK_QDMA_H2C_MM;
   pidx =0;
   usr_bar_idx= 2;
     TSK_FIND_PF_VF_NUM(fnc);
-
-    if (fnc < 4) begin
-      $display ("\n[%t] : ************* Launching H2C MM for PF%0d ***************\n", $realtime, pfn);
+	
+    if (fnc < MAX_PFS) begin
+      $display ("\n[%t] : ************* Launching H2C MM for PF%0d, QID#%d ***************\n", $realtime, pfn, qid);
       trq_sel_queue_addr = 32'h18000;
       q_base = QUEUE_PER_PF * fnc;
       q_count = QUEUE_PER_PF;
@@ -4975,9 +4975,9 @@ task TSK_QDMA_H2C_MM;
       usr_bar_idx = PF_USR_BAR_INDEX;
     end
     else begin
-      $display ("\n[%t] : ************** Launching H2C MM for PF%0d, VF%0d ****************\n", $realtime, pfn, vfn);
+      $display ("\n[%t] : ************** Launching H2C MM for PF%0d, VF%0d, QID#%d ****************\n", $realtime, pfn, vfn, qid);
       trq_sel_queue_addr = 32'h3000;
-      q_base = QUEUE_PER_PF * NUM_PFS + (fnc-4) * QUEUE_PER_VF;
+      q_base = QUEUE_PER_PF * MAX_PFS + (fnc-MAX_PFS) * QUEUE_PER_VF;
       q_count = QUEUE_PER_VF;
       ptr_upt_dma_bar_idx = VF_DMA_BAR_INDEX;
       usr_bar_idx = VF_USR_BAR_INDEX;
@@ -4988,10 +4988,11 @@ task TSK_QDMA_H2C_MM;
     end
 
     hw_qid = qid + q_base;
-    if (mode.irq_en == 1'b1) begin
+	$display ("qid = %d, hw_qid = %d", qid, hw_qid);
+    /*if (mode.irq_en == 1'b1) begin
       TSK_ENABLE_MSIX (fnc);
       TSK_PROGRAM_MSIX_VEC_TABLE (fnc); 
-    end
+    end*/
 
     // Start set up the global space registers
     EP_BUS_DEV_FNS = {8'b0000_0001, pfn};     // ARI Enabled, Bus 1 Function 8'Bfn_num
@@ -5024,15 +5025,6 @@ task TSK_QDMA_H2C_MM;
     TSK_QDMA_WRITE(pfn, PF_DMA_BAR_INDEX, 32'h23C, RING_SIZE, 4'hF);
     TSK_QDMA_WRITE(pfn, PF_DMA_BAR_INDEX, 32'h240, RING_SIZE, 4'hF);
 
-    // Clear HW CXTX for H2C 
-    //   [17:7] QID  
-    //   [6:5 ] MDMA_CTXT_CMD_CLR=0 : 00
-    //   [4:1]  MDMA_CTXT_SELC_DSC_HW_H2C = 3 : 0011
-    //   0      BUSY : 0 
-    wr_dat[31:0] = {hw_qid, 2'h0, 4'b0011, 1'b0} | 32'h0;
-    TSK_QDMA_WRITE(pfn, PF_DMA_BAR_INDEX, 32'h844, wr_dat[31:0], 4'hF);
-
-
     // Ind Dire CTXT MASK
     //   0xffffffff for all 128 bits
     TSK_QDMA_WRITE(pfn, PF_DMA_BAR_INDEX, 32'h824, 32'hffffffff, 4'hF);
@@ -5043,6 +5035,14 @@ task TSK_QDMA_H2C_MM;
     TSK_QDMA_WRITE(pfn, PF_DMA_BAR_INDEX, 32'h838, 32'hffffffff, 4'hF);
     TSK_QDMA_WRITE(pfn, PF_DMA_BAR_INDEX, 32'h83C, 32'hffffffff, 4'hF);
     TSK_QDMA_WRITE(pfn, PF_DMA_BAR_INDEX, 32'h840, 32'hffffffff, 4'hF);
+	
+	// Clear HW CXTX for H2C 
+    //   [17:7] QID  
+    //   [6:5 ] MDMA_CTXT_CMD_CLR=0 : 00
+    //   [4:1]  MDMA_CTXT_SELC_DSC_HW_H2C = 3 : 0011
+    //   0      BUSY : 0 
+    wr_dat[31:0] = {hw_qid, 2'h0, 4'b0011, 1'b0} | 32'h0;
+    TSK_QDMA_WRITE(pfn, PF_DMA_BAR_INDEX, 32'h844, wr_dat[31:0], 4'hF);
 
     // Global Function MAP with in-direct programming
      wr_dat[31:0]   = 32'h0 | q_base;
@@ -5163,7 +5163,7 @@ task TSK_QDMA_H2C_MM;
         TSK_QDMA_READ(fnc, PF_DMA_BAR_INDEX, wr_add);  //Read PIDX pointer
 
         $display("[%t] : Comparing received H2C data", $realtime);
-        COMPARE_DATA_H2C({16'h0,DMA_BYTE_CNT});    //input payload bytes
+        COMPARE_DATA_H2C({16'h0,DMA_BYTE_CNT},768);    //input payload bytes 0x300 --> 768
 
         $display("[%t] : Checking writeback CIDX", $realtime);
         COMPARE_TRANS_STATUS(32'h000011E0, pidx); 
@@ -5176,11 +5176,10 @@ task TSK_QDMA_H2C_MM;
       $display ("[%t] : Iteration %0d --- H2C MM TEST PASSED ---\n",$realtime, iter);
       if (pidx == (RING_SIZE - 32'h2)) pidx = '0;
     end
-    #10000000;
+    //#10000000;
     $display ("[%t] : *********************** H2C MM TEST PASSED *********************** \n",$realtime);
   end
 endtask
-*/
 
 /************************************************************
 Task : TSK_QDMA_C2H_MM
@@ -5418,10 +5417,28 @@ task TSK_QDMA_H2C_ST;
 
     TSK_INIT_QDMA_ST_DATA_H2C;
 
+/*     
+    $display("\n[%t] : BAR_INIT_P_BAR[0][0] = 0x%x\n", $realtime, BAR_INIT_P_BAR[0][0]);
+    $display("\n[%t] : BAR_INIT_P_BAR[0][1] = 0x%x\n", $realtime, BAR_INIT_P_BAR[0][1]);
+    $display("\n[%t] : BAR_INIT_P_BAR[0][2] = 0x%x\n", $realtime, BAR_INIT_P_BAR[0][2]);
+    $display("\n[%t] : BAR_INIT_P_BAR[0][3] = 0x%x\n", $realtime, BAR_INIT_P_BAR[0][3]);
+    $display("\n[%t] : BAR_INIT_P_BAR[0][4] = 0x%x\n", $realtime, BAR_INIT_P_BAR[0][4]);
+    $display("\n[%t] : BAR_INIT_P_BAR[0][5] = 0x%x\n", $realtime, BAR_INIT_P_BAR[0][5]);
+    $display("\n[%t] : BAR_INIT_P_BAR[0][6] = 0x%x\n", $realtime, BAR_INIT_P_BAR[0][6]);
+    $display("\n[%t] : BAR_INIT_P_BAR[0][7] = 0x%x\n", $realtime, BAR_INIT_P_BAR[0][7]);
+    $display("\n[%t] : BAR_INIT_P_BAR[0][8] = 0x%x\n", $realtime, BAR_INIT_P_BAR[0][8]);
+    $display("\n[%t] : BAR_INIT_P_BAR[0][9] = 0x%x\n", $realtime, BAR_INIT_P_BAR[0][9]);
+    $display("\n[%t] : BAR_INIT_P_BAR[0][9] = 0x%x\n", $realtime, BAR_INIT_P_BAR[0][10]);
+
+    $display("\n[%t] : BAR_INIT_P_BAR_EN[0][7] = 0x%x\n", $realtime, BAR_INIT_P_BAR_ENABLED[0][7]);
+    $display("\n[%t] : BAR_INIT_P_BAR_EN[0][8] = 0x%x\n", $realtime, BAR_INIT_P_BAR_ENABLED[0][8]);
+    $display("\n[%t] : BAR_INIT_P_BAR_EN[0][9] = 0x%x\n", $realtime, BAR_INIT_P_BAR_ENABLED[0][9]);
+    $display("\n[%t] : BAR_INIT_P_BAR_EN[0][10] = 0x%x\n", $realtime, BAR_INIT_P_BAR_ENABLED[0][10]);
+     
     $display("\n[%t] : H2C Write to clear h2c match regiater in fun %0d, Bar = %d\n", $realtime, fnc, usr_bar_idx);
     EP_BUS_DEV_FNS = {8'b0000_0001, fnc[7:0]};     
     TSK_QDMA_WRITE(fnc, usr_bar_idx, 32'h0C, 32'h1, 4'hF);
-
+*/
     // Global programming through PF
     EP_BUS_DEV_FNS = {8'b0000_0001, pfn[7:0]};     // ARI Enabled, Bus 1 Function 8'Bfn_num
 
@@ -5547,7 +5564,7 @@ task TSK_QDMA_H2C_ST;
       // Clear match bit before each H2C ST transfer
       TSK_QDMA_WRITE(fnc, usr_bar_idx, 32'h0C, 32'h1, 4'hF);
 
-//      fork 
+      fork 
         // Transfer H2C for 1 dsc
         //  Update PIDX in H2C SW CTXT 
         //  There is no run bit for AXI-Stream, no need to arm them.
@@ -5557,19 +5574,17 @@ task TSK_QDMA_H2C_ST;
         TSK_QDMA_WRITE(fnc, ptr_upt_dma_bar_idx, wr_add[31:0], pidx, 4'hF);   
       
         $display("[%t] : Checking completion CIDX...", $realtime);
-       #100000;
-       
-//        COMPARE_TRANS_STATUS(32'h000001F0, pidx); 
-//      join
+        COMPARE_TRANS_STATUS(32'h000001F0, pidx); 
+      join
 
       // check for if data on user side matched what was expected.
-//      TSK_QDMA_READ (fnc, usr_bar_idx, 32'h10); 
-//      if (P_READ_DATA[0] == 1'b1) begin
-//        $display ("[%t] : Iteration %0d --- H2C ST TEST PASSED ---\n",$realtime, iter);
-//      end else begin
-//        $display ("[%t] : Iteration %0d --- H2C ST TEST FAILED --- ERROR: H2C ST Data Mis-Matches on Q number = %h\n",$realtime, iter, P_READ_DATA[10:4]);
-//        $finish;
-//      end
+      TSK_QDMA_READ (fnc, usr_bar_idx, 32'h10); 
+      if (P_READ_DATA[0] == 1'b1) begin
+        $display ("[%t] : Iteration %0d --- H2C ST TEST PASSED ---\n",$realtime, iter);
+      end else begin
+        $display ("[%t] : Iteration %0d --- H2C ST TEST FAILED --- ERROR: H2C ST Data Mis-Matches on Q number = %h\n",$realtime, iter, P_READ_DATA[10:4]);
+        $finish;
+      end
     end
     $display ("[%t] : *********************** H2C ST TEST PASSED ************************** \n",$realtime);
   end
