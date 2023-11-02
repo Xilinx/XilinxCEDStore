@@ -120,7 +120,7 @@ typedef enum logic [11:0] {
 
 parameter    Tcq = 1;
 localparam   [15:0] DMA_BYTE_CNT           = 16'h0080;
-localparam   [4:0] LINK_CAP_MAX_LINK_WIDTH = 5'd8;//srinadh -- updating width check to x8 instead of x16
+localparam   [4:0] LINK_CAP_MAX_LINK_WIDTH = 5'd8;
 localparam   [3:0] LINK_CAP_MAX_LINK_SPEED = 4'd8;
 localparam   [3:0] MAX_LINK_SPEED          = (LINK_CAP_MAX_LINK_SPEED==4'h8) ? 4'h4 : (LINK_CAP_MAX_LINK_SPEED==3'h4) ? 4'h3 : ((LINK_CAP_MAX_LINK_SPEED==3'h2) ? 4'h2 : 4'h1);
 localparam PF_DMA_BAR_INDEX = 0; // PF DMA BAR
@@ -6132,6 +6132,37 @@ task TSK_QDMA_C2H_ST;
     end
     $display ("[%t] : ***************** C2H ST TEST PASSED ******************** \n",$realtime);
   end
+endtask
+
+task TSK_USR_IRQ_TEST;
+input [7:0] usr_irq_in_fun;
+input [4:0] usr_irq_in_vec;
+input usr_irq;
+
+reg [31:0] user_interrupt;
+integer usr_bar_idx ;
+begin
+	
+	//TSK_FIND_PF_VF_NUM(usr_irq_in_fun);
+	usr_bar_idx= 2;   
+    if (usr_irq_in_fun < NUM_PFS) begin      
+      usr_bar_idx = PF_USR_BAR_INDEX; 
+	  $display ("[%t] Sending User Interrupt using PF%d \n",$realtime, pfn);
+	end
+    else begin
+	  usr_bar_idx = VF_USR_BAR_INDEX;  
+	  $display ("[%t] Sending User Interrupt using VF%d in PF%d\n",$realtime, vfn,pfn);
+	end
+      $display ("[%t] PF_USR_BAR_INDEX = %d, VF_USR_BAR_INDEX = %d ",$realtime, PF_USR_BAR_INDEX,VF_USR_BAR_INDEX);
+	user_interrupt = {12'h0,usr_irq_in_fun,3'h0,usr_irq_in_vec,3'h0,usr_irq};
+	//board.RP.tx_usrapp.TSK_REG_WRITE(user_bar, 32'h98,32'h1 , 4'hF);   
+	//board.RP.tx_usrapp.TSK_REG_WRITE(user_bar, 32'h9C,32'hFFFFFFFF , 4'hF);   
+	//board.RP.tx_usrapp.TSK_REG_WRITE(user_bar, 32'h94,32'h1 , 4'hF);   
+	//board.RP.tx_usrapp.TSK_REG_WRITE(usr_bar_idx, 32'h94,user_interrupt , 4'hF);   
+	
+	TSK_QDMA_WRITE(usr_irq_in_fun, usr_bar_idx, 32'h94, user_interrupt, 4'hF);
+ 
+end
 endtask
 
 endmodule // pci_exp_usrapp_tx

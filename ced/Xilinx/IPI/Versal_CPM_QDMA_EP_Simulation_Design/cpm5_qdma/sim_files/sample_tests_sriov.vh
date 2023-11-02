@@ -79,6 +79,35 @@ begin
   board.RP.tx_usrapp.TSK_QDMA_C2H_ST (fnc[7:0], qid); 
   $finish; 
 end
+else if (testname == "qdma_msix_test")
+begin
+
+   usr_irq = 1'b1;  
+   usr_irq_in_vec = 5'h0;  
+   
+   for(fnc=0; fnc < NUM_PFS; fnc = fnc + 1)
+	begin
+	$display ("###################################################################");
+	 TSK_FIND_PF_VF_NUM(fnc);
+	 TSK_ENABLE_MSIX (fnc);
+	 TSK_PROGRAM_MSIX_VEC_TABLE (fnc);	 
+	 board.RP.tx_usrapp.TSK_USR_IRQ_TEST(fnc, usr_irq_in_vec, usr_irq); 
+	end
+	
+	for(pf_i=0; pf_i < NUM_PFS; pf_i = pf_i + 1)
+	begin				
+		for(vf_i=0; vf_i < NUM_VFS[pf_i]; vf_i = vf_i + 1)
+		begin
+		fnc = pf_i + FIRST_VF_OFFSET[pf_i] + vf_i;		
+		TSK_FIND_PF_VF_NUM(fnc);
+		TSK_ENABLE_MSIX (fnc);			
+		TSK_PROGRAM_MSIX_VEC_TABLE(fnc);		
+		board.RP.tx_usrapp.TSK_USR_IRQ_TEST(fnc, usr_irq_in_vec, usr_irq); 		
+		end
+	end   
+   #10000;
+  $finish; 
+end
 /*
 else if(testname =="qdma_h2c_mm")
 begin
