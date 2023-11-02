@@ -1955,10 +1955,10 @@
       </xilinx:xpmLibraries>
       <xilinx:vendorURL>http://www.xilinx.com</xilinx:vendorURL>
       <xilinx:coreRevision>3</xilinx:coreRevision>
-      <xilinx:coreCreationDateTime>2023-10-19T10:32:06Z</xilinx:coreCreationDateTime>
+      <xilinx:coreCreationDateTime>2023-10-27T20:59:41Z</xilinx:coreCreationDateTime>
     </xilinx:coreExtensions>
     <xilinx:packagingInfo>
-      <xilinx:xilinxVersion>2024.1.0</xilinx:xilinxVersion>
+      <xilinx:xilinxVersion>2023.2</xilinx:xilinxVersion>
       <xilinx:checksum xilinx:scope="busInterfaces" xilinx:value="420ba733"/>
       <xilinx:checksum xilinx:scope="addressSpaces" xilinx:value="8a00fdae"/>
       <xilinx:checksum xilinx:scope="fileGroups" xilinx:value="9052755a"/>
