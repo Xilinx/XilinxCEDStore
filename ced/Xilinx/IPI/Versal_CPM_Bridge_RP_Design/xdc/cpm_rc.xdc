@@ -2,7 +2,7 @@ create_clock -period 10.000 -name DRPCLK [get_ports {gt_refclk0_0_clk_p}]
 #set_property PACKAGE_PIN AE42     [get_ports {get_ports gt_refclk0_0_clk_p}]
 #set_property IOSTANDARD  DIFF_SSTL12 [get_ports {get_ports gt_refclk0_0_clk_p}]
 
-create_clock -name sys_clk0_0_clk_p -period 5.000 [get_ports {sys_clk0_0_clk_p}]
+#create_clock -name sys_clk0_0_clk_p -period 5.000 [get_ports {sys_clk0_0_clk_p}]
 
 
 ## UART ports
