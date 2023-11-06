@@ -55,7 +55,7 @@ import_files -norecurse -fileset $obj $files
 
 set rtf_dir [file join $currentDir cpm5_qdma_g5x8_st_perf/src/RTF]
 
-set_property  ip_repo_paths "$rtf_dir/cpm5_v1_0" [current_project]
+set_property  ip_repo_paths "$rtf_dir" [current_project]
 update_ip_catalog
 
 # Set 'sources_1' fileset properties
@@ -129,7 +129,7 @@ import_files -norecurse -fileset $obj $files
 
 set rtf_dir [file join $currentDir cpm5_qdma_g5x8_dual_perf/src/RTF]
 
-set_property  ip_repo_paths "$rtf_dir/cpm5_v1_0" [current_project]
+set_property  ip_repo_paths "$rtf_dir" [current_project]
 update_ip_catalog
 
 # Set 'sources_1' fileset properties
