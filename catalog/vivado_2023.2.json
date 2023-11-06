@@ -461,11 +461,11 @@
         "name": "cpm_rp",
         "display": "Versal CPM Bridge RP Design",
         "latest_revision": "1.0",
-        "commit_id": "5c8c33fda0b096f54a5d2a2738affce8f78bd941",
+        "commit_id": "f233f1882aacfbd3ba5803fa59ae2e163b22ad71",
         "revisions": [
           {
             "revision": "1.0",
-            "commit_id": "5c8c33fda0b096f54a5d2a2738affce8f78bd941",
+            "commit_id": "f233f1882aacfbd3ba5803fa59ae2e163b22ad71",
             "date": "20-09-2023:09:17:32",
             "history": "Added board Versal CPM Bridge RP Design v1.0"
           }
@@ -537,11 +537,11 @@
         "name": "cpm_bmd_ep",
         "display": "Versal CPM PCIE BMD EP Design",
         "latest_revision": "1.0",
-        "commit_id": "60ccca9641dd92d10ae4fe24eb4cef59db4f84af",
+        "commit_id": "f233f1882aacfbd3ba5803fa59ae2e163b22ad71",
         "revisions": [
           {
             "revision": "1.0",
-            "commit_id": "60ccca9641dd92d10ae4fe24eb4cef59db4f84af",
+            "commit_id": "f233f1882aacfbd3ba5803fa59ae2e163b22ad71",
             "date": "26-09-2023:04:57:56",
             "history": "Added board Versal CPM PCIE BMD EP Design v1.0"
           }
