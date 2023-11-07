@@ -158,7 +158,7 @@ proc options2protocols {options} {
       if {[regexp {X\d+Y\d+} $ref_loc] == 0} {
         set my_q $ref_loc
         set ref_loc [dictDefault $options ${my_q}_ref.VALUE [lindex [get_reflocs $my_q] 0]]
-        set ref_freq [dict get $options ${my_q}_rr.VALUE]
+        set ref_freq [dictDefault $options ${my_q}_rr.VALUE [get_default_rr $my_q]]
         log "  located $ref_loc from $my_q"
       }
       
@@ -373,8 +373,8 @@ proc createDesign {design_name options} {
         }
         log "inst: $inst"
         puts $outputfile "set_property LOC ${coord} \[get_cells $inst\]"
-        puts $outputfile "create_clock -period ${period} \[get_pins -hierarchical -regexp ${inst}/CH0_TXOUTCLK\]"
-        puts $outputfile "create_clock -period ${period} \[get_pins -hierarchical -regexp ${inst}/CH0_RXOUTCLK\]"
+        #puts $outputfile "create_clock -period ${period} \[get_pins -hierarchical -regexp ${inst}/CH0_TXOUTCLK\]"
+        #puts $outputfile "create_clock -period ${period} \[get_pins -hierarchical -regexp ${inst}/CH0_RXOUTCLK\]"
         puts $outputfile ""
         incr idx
       }
