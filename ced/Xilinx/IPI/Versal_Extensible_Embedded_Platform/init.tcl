@@ -52,18 +52,23 @@ proc addOptions {DESIGNOBJ PROJECT_PARAM.BOARD_PART} {
 	lappend x [dict create name "Include_AIE" type "bool" value "false" enabled true]
     lappend x [dict create name "Clock_Options" type "string" value "clk_out1 200.000 0 true" enabled true]
     lappend x [dict create name "IRQS" type "string" value "15" value_list {"15 15_AXI_Masters_and_Interrupts,_Single_Interrupt_Controller" "32 32_AXI_Masters_and_Interrupts,_Single_Interrupt_Controller" "63 63_AXI_Masters_and_Interrupts,_Cascaded_Interrupt_Controller"} enabled true]
+	lappend x [dict create name "Include_BDC" type "bool" value "false" enabled true]
     return $x
 }
 
 proc addGUILayout {DESIGNOBJ PROJECT_PARAM.BOARD_PART} {
     set designObj $DESIGNOBJ
-    set page [ced::add_page -name "Page1" -display_name "2021.1 Configuration" -designObject $designObj -layout vertical]
+    set page [ced::add_page -name "Page1" -display_name "Versal_ext_platform Configuration" -designObject $designObj -layout vertical]
 
     set clocks [ced::add_group -name "Clocks" -display_name "Clocks"  -parent $page -visible true -designObject $designObj ]
     ced::add_custom_widget -name widget_Clocks -hierParam Clock_Options -class_name PlatformClocksWidget -parent $clocks $designObj
 	set text "Note : The requested clock frequencies are not verified until the design is generated. Clocking wizard restrictions will be applied.
-	User should check the 'Messages' window once the design is created to ensure that the selected clock frequencies are derived."
+	User should check the 'Messages' window once the design is created to ensure that the selected clock frequencies are derived.
+	If you are using vck190 board PL clocks should to be a multiple of AIE_clock (1250 MHZ)"
     ced::add_text -designObject $designObj -name Note -tclproc $text  -parent $clocks
+
+	set bdc [ced::add_group -name "BDC Block" -display_name "Choose this option if you wish to complete your design in Vivado after integrating Vitis based AIE and PL components in the design"  -parent $page -visible true -designObject $designObj ]
+	ced::add_param -name Include_BDC -display_name "BDC" -parent $bdc -designObject $designObj -widget checkbox
 
     ced::add_param -name IRQS -display_name "AXI Masters and Interrupts" -parent $page -designObject $designObj -widget radioGroup
 
@@ -181,3 +186,12 @@ gui_updater {PROJECT_PARAM.PART} {Include_DDR.VALUE Include_DDR.ENABLEMENT} {
 	}
 	
 }
+
+# gui_updater {PROJECT_PARAM.PART} {Include_BDC.VALUE Include_BDC.ENABLEMENT} {
+
+	# if { ${Include_BDC.VALUE} == true } {
+		# set Include_BDC.ENABLEMENT false
+		# set Include_BDC.VALUE true
+	# }
+	
+# }
