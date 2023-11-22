@@ -25,7 +25,7 @@ proc getSupportedParts {} {
 	
 	foreach item $mylist {
 	
-		if {![regexp "1" [[regexp "xcvp1402-vsvd2197" $item]||[regexp "xcvp1902-vsva6865" $item]]]} {
+		if {![regexp "1" [[regexp "xcvp1402-vsvd2197" $item]||[regexp "xcvp1902-vsva6865" $item]||[regexp "xcvm2152" $item]]]} {
 			lappend newitem $item 
 		}
 	}
