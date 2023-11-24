@@ -6,17 +6,18 @@ Testbench to exercise the same. Please use below version of tools to run the
 simulation
 
 Vivado Version  - 2023.2
+VCS Version     - U-2023.03-1
 Questa Version  - 2023.2
 
 - For launching the simulation, under Project Manager -> Settings -> Simulation
-	- Update Target Simulator as Questa
+	- Update Target Simulator as VCS/Questa
 	- Update Compiled Library Location
 	- Select Generate Simulation scripts only check box
 - Click on Run Simulation under Flow Navigator.
 - Above step will generate required script under 
-  <project_name>/<project_name>.sim/sim_1/behav/questa directory. 
+  <project_name>/<project_name>.sim/sim_1/behav/<vcs/questa> directory. 
   Go to the same directory
-  	% cd <project_name>/<project_name>.sim/sim_1/behav/questa
+  	% cd <project_name>/<project_name>.sim/sim_1/behav/<vcs/questa>
 - Execute the following scripts
 	% ./compile.sh
 	% ./elaborate.sh
