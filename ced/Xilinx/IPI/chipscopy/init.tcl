@@ -33,7 +33,7 @@ proc getSupportedParts {} {
 #  Only allow latest VCK190/VMK180/VCK120
 #
 proc getSupportedBoards {} {
-  set boards [list vck190 vmk180 vpk120]
+  set boards [list vck190 vmk180 vpk120 vhk158]
   set r [list]
   foreach b $boards {
     set p [lindex [get_board_parts *${b}:* -latest_file_version] 0]
@@ -107,12 +107,18 @@ proc createDesign {design_name options} {
       import_files -fileset constrs_1 -norecurse -flat "${currentDir}/timing.xdc"
       set_property used_in_synthesis false [get_files  ${proj_dir}/${proj_name}.srcs/constrs_1/imports/timing.xdc]
     }
+    vhk158 {
+      create_root_design_vhk158 ""
+      import_files -fileset constrs_1 -norecurse -flat "${currentDir}/xdc/versal_ibert_vhk158.xdc"
+      import_files -fileset constrs_1 -norecurse -flat "${currentDir}/timing.xdc"
+      set_property used_in_synthesis false [get_files  ${proj_dir}/${proj_name}.srcs/constrs_1/imports/timing.xdc]
+    }
   }
   
   make_wrapper -files [get_files ${proj_dir}/${proj_name}.srcs/sources_1/bd/${design_name}/${design_name}.bd] -top
   add_files -norecurse ${proj_dir}/${proj_name}.srcs/sources_1/bd/${design_name}/hdl/${design_name}_wrapper.v
   open_bd_design [get_bd_designs -filter {NAME == "chipscopy"}]
-  exec echo "PHASE_DONE" > ${proj_dir}/[current_project].srcs/[current_fileset]/bd/chipscopy/ip/chipscopy_noc_tg_0/chipscopy_noc_tg_0_synth_pattern.csv
+  # exec echo "PHASE_DONE" > ${proj_dir}/[current_project].srcs/[current_fileset]/bd/chipscopy/ip/chipscopy_noc_tg_0/chipscopy_noc_tg_0_synth_pattern.csv
 }
 
 
