@@ -112,7 +112,9 @@ proc addGUILayout {DESIGNOBJ PROJECT_PARAM.PART PROJECT_PARAM.PACKAGE PROJECT_PA
   set designObj $DESIGNOBJ
   set pkg ${PROJECT_PARAM.PACKAGE}
   set page_left [ced::add_page -name "Page1" -display_name "Left Side" -designObject $designObj -layout vertical] 
+  ced::add_text -name ced_warning_q_label_l -parent ${page_left} -designObject $designObj -tclproc "<i><b>IMPORTANT:</b> The Versal IBERT example design retains the default link coupling value (AC coupling) provided by the Transceiver Wizard instances in this design.\nIt is up to you, the user, to ensure that the link coupling mode set in the Transceiver Wizard IP instance(s) in this example design matches the link coupling mode\nused on your board to prevent potential damage to your device. For example, when using DC coupling on the link the internal AC coupling cap needs to be enabled.</i>" 
   set page_right [ced::add_page -name "Page2" -display_name "Right Side" -designObject $designObj -layout vertical]
+  ced::add_text -name ced_warning_q_label_r -parent ${page_right} -designObject $designObj -tclproc "<i><b>IMPORTANT:</b> The Versal IBERT example design retains the default link coupling value (AC coupling) provided by the Transceiver Wizard instances in this design.\nIt is up to you, the user, to ensure that the link coupling mode set in the Transceiver Wizard IP instance(s) in this example design matches the link coupling mode\nused on your board to prevent potential damage to your device. For example, when using DC coupling on the link the internal AC coupling cap needs to be enabled.</i>"
   log "in addGUILayout [get_gt_types]"
   foreach type [get_gt_types] {
     log "DOING TYPE $type"
