@@ -2,9 +2,9 @@
 ## Objective
 The Versal example design will show how to run AXI DMA standalone application example on vck190 and intended to demonstrate the AXI DMA standalone driver which is available as part of the Xilinx Vivado and Vitis.
 ## Required Hardware and Tools
-2020.2 Vivado and Vitis
+2023.1 Vivado and Vitis
 
-VCK190 ES1 
+VCK190 
 
 Boot Mode: JTAG
 ## Block Diagram
@@ -54,35 +54,35 @@ Boot Mode: JTAG
 
 ## Console log:
 
-#### [7.286837]Xilinx Versal Platform Loader and Manager
-#### [11.819406]Release 2020.2   Sep 21 2020  -  08:19:45
-#### [16.352565]Platform Version: v2.0 PMC: v2.0, PS: v2.0
-#### [20.969096]STDOUT: PS UART
-#### [23.320181]****************************************
-#### [27.809262] 23.287425 ms for PrtnNum: 1, Size: 2224 Bytes
-#### [32.725562]-------Loading Prtn No: 0x2
-#### [36.627740] 0.509784 ms for PrtnNum: 2, Size: 48 Bytes
-#### [40.786175]-------Loading Prtn No: 0x3
-#### [78.493881] 34.313018 ms for PrtnNum: 3, Size: 57136 Bytes
-#### [80.791728]-------Loading Prtn No: 0x4
-#### [84.200806] 0.016468 ms for PrtnNum: 4, Size: 2512 Bytes
-#### [89.020043]-------Loading Prtn No: 0x5
-#### [92.431356] 0.018187 ms for PrtnNum: 5, Size: 3424 Bytes
-#### [97.248925]-------Loading Prtn No: 0x6
-#### [100.653243] 0.011862 ms for PrtnNum: 6, Size: 80 Bytes
-#### [105.456287]+++++++Loading Image No: 0x2, Name: pl_cfi, Id: 0x18700000
-#### [111.439628]-------Loading Prtn No: 0x7
-#### [645.960959] 531.041762 ms for PrtnNum: 7, Size: 828160 Bytes
-#### [648.512065]-------Loading Prtn No: 0x8
-#### [906.054428] 254.060503 ms for PrtnNum: 8, Size: 379184 Bytes
-#### [908.644153]+++++++Loading Image No: 0x3, Name: fpd, Id: 0x0420C003
-#### [914.397656]-------Loading Prtn No: 0x9
-#### [918.296828] 0.421790 ms for PrtnNum: 9, Size: 976 Bytes
-#### [922.777659]***********Boot PDI Load: Done*************
-#### [927.522034]3503.136143 ms: ROM Time
-#### [930.694528]Total PLM Boot Time
+### 2023  -  07:57:05
+### [0.119]Platform Version: v2.0 PMC: v2.0, PS: v2.0
+### [0.161]BOOTMODE: 0x0, MULTIBOOT: 0x0
+### [0.191]****************************************
+### [0.417]Non Secure Boot
+### [3.313]PLM Initialization Time 
+### [3.342]***********Boot PDI Load: Started***********
+### [3.381]Loading PDI from SBI
+### [3.408]Monolithic/Master Device
+### [3.456]0.071 ms: PDI initialization time
+### [3.492]+++Loading Image#: 0x1, Name: lpd, Id: 0x04210002
+### [3.538]---Loading Partition#: 0x1, Id: 0xC
+### [54.667] 51.084 ms for Partition#: 0x1, Size: 3024 Bytes
+### [59.502]---Loading Partition#: 0x2, Id: 0xB
+### [107.676] 44.357 ms for Partition#: 0x2, Size: 64112 Bytes
+### [110.144]+++Loading Image#: 0x2, Name: pl_cfi, Id: 0x18700000
+### [115.297]---Loading Partition#: 0x3, Id: 0x3
+### [748.000] 628.801 ms for Partition#: 0x3, Size: 811264 Bytes
+### [750.459]---Loading Partition#: 0x4, Id: 0x5
+### [1187.352] 432.992 ms for Partition#: 0x4, Size: 577552 Bytes
+### [1189.906]+++Loading Image#: 0x3, Name: fpd, Id: 0x0420C003
+### [1195.056]---Loading Partition#: 0x5, Id: 0x8
+### [1199.441] 0.405 ms for Partition#: 0x5, Size: 1536 Bytes
+### [1204.061]***********Boot PDI Load: Done***********
+### [1208.521]3243.516 ms: ROM Time
+### [1211.306]Total PLM Boot Time 
 
-#### --- Entering main() ---
-#### Successfully ran XAxiDma_SimplePoll Example
-#### --- Exiting main() ---
+### --- Entering main() --- 
+### Successfully ran XAxiDma_SimplePoll Example
+### --- Exiting main() --- 
+
 
