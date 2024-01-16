@@ -187,11 +187,13 @@ gui_updater {PROJECT_PARAM.PART} {Include_DDR.VALUE Include_DDR.ENABLEMENT} {
 	
 }
 
-# gui_updater {PROJECT_PARAM.PART} {Include_BDC.VALUE Include_BDC.ENABLEMENT} {
+gui_updater {PROJECT_PARAM.BOARD_PART} {Include_BDC.VALUE Include_BDC.ENABLEMENT} {
 
-	# if { ${Include_BDC.VALUE} == true } {
-		# set Include_BDC.ENABLEMENT false
-		# set Include_BDC.VALUE true
-	# }
+	if {[regexp "vck190" ${PROJECT_PARAM.BOARD_PART}]||[regexp "vek280" ${PROJECT_PARAM.BOARD_PART}]} {
+		set Include_BDC.ENABLEMENT true
+		#set Include_BDC.VALUE true
+	} else {
+		set Include_BDC.ENABLEMENT false
+	}	
 	
-# }
+}
