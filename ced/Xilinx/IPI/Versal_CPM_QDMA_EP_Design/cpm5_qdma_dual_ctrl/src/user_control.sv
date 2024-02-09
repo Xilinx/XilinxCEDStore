@@ -383,7 +383,7 @@ module user_control
 
    logic c2h_status;
    always @(posedge axi_aclk) begin
-	c2h_status <= control_reg_c2h[5] & c2h_st_marker_rsp ? 1'b1 : control_reg_c2h[1] ? 1'b0 : c2h_status;
+	c2h_status <= control_reg_c2h[5] & c2h_st_marker_rsp ? 1'b1 : ~control_reg_c2h[5] ? 1'b0 : c2h_status;
    end
 
    always_comb begin
@@ -423,6 +423,7 @@ module user_control
 	32'h9C : m_axil_rdata  = {32'h0 | usr_irq_num[31:0]};
 	32'hA0 : m_axil_rdata  = {32'h0 | gen_qdma_reset};
 	32'hA4 : m_axil_rdata  = {32'h0 | vdm_msg_rd_dout};
+	32'hA8 : m_axil_rdata  = {29'h0, c2h_mm_marker_rsp, h2c_mm_marker_rsp, h2c_st_marker_rsp};
 	32'hFFFFFFFF: m_axil_rdata = {32'h0 | invalid_axilm_addr};
     default : m_axil_rdata  = m_axil_rdata_bram;
       endcase // case (m_axil_araddr[31:0]...
