@@ -511,8 +511,6 @@ proc create_root_design { parentCell } {
       PS_PCIE1_PERIPHERAL_ENABLE {0} \
       PS_PCIE2_PERIPHERAL_ENABLE {1} \
       PS_PCIE_EP_RESET1_IO {None} \
-      PS_PCIE_EP_RESET2_IO {PMC_MIO 39} \
-      PS_PCIE_RESET {ENABLE 1} \
       PS_USE_PMCPL_CLK0 {1} \
       SMON_ALARMS {Set_Alarms_On} \
       SMON_ENABLE_TEMP_AVERAGING {0} \
@@ -521,6 +519,11 @@ proc create_root_design { parentCell } {
     CONFIG.PS_PMC_CONFIG_APPLIED {1} \
   ] $versal_cips_0
 
+set board_part [get_property NAME [current_board_part]]
+if [regexp "vpk120_es:part0:1.3" $board_part] {
+set_property CONFIG.PS_PMC_CONFIG { PS_PCIE_EP_RESET2_IO {PMC_MIO 39} PS_PCIE_RESET {{ENABLE 1}} } [get_bd_cells versal_cips_0]
+} else {
+set_property CONFIG.PS_PMC_CONFIG { PS_PCIE_EP_RESET2_IO {PS_MIO 19} PS_PCIE_RESET {{ENABLE 1}} } [get_bd_cells versal_cips_0]}
 
   # Create interface connections
   connect_bd_intf_net -intf_net S_AXI_0_1 [get_bd_intf_ports S_AXIL] [get_bd_intf_pins axi_bram_ctrl_1/S_AXI]
