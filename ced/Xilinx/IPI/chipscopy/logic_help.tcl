@@ -407,3 +407,194 @@ proc create_hier_cell_noc_tg_bc { parentCell nameHier } {
   current_bd_instance $oldCurInst
 }
 
+# Hierarchical cell: noc_tg_bc
+proc create_hier_cell_hbm_noc_tg_bc { parentCell nameHier } {
+
+
+  variable script_folder
+
+  if { $parentCell eq "" || $nameHier eq "" } {
+     catch {common::send_gid_msg -ssname BD::TCL -id 2092 -severity "ERROR" "create_hier_cell_noc_tg_bc() - Empty argument(s)!"}
+     return
+  }
+
+  # Get object for parentCell
+  set parentObj [get_bd_cells $parentCell]
+  if { $parentObj == "" } {
+     catch {common::send_gid_msg -ssname BD::TCL -id 2090 -severity "ERROR" "Unable to find parent cell <$parentCell>!"}
+     return
+  }
+
+  # Make sure parentObj is hier blk
+  set parentType [get_property TYPE $parentObj]
+  if { $parentType ne "hier" } {
+     catch {common::send_gid_msg -ssname BD::TCL -id 2091 -severity "ERROR" "Parent <$parentObj> has TYPE = <$parentType>. Expected to be <hier>."}
+     return
+  }
+
+  # Save current instance; Restore later
+  set oldCurInst [current_bd_instance .]
+
+  # Set parent object as current
+  current_bd_instance $parentObj
+
+  # Create cell and set as current instance
+  set hier_obj [create_bd_cell -type hier $nameHier]
+  current_bd_instance $hier_obj
+
+  # Create interface pins
+  create_bd_intf_pin -mode Master -vlnv xilinx.com:interface:aximm_rtl:1.0 M_AXI
+
+  create_bd_intf_pin -mode Slave -vlnv xilinx.com:interface:aximm_rtl:1.0 S00_AXI
+
+  create_bd_intf_pin -mode Slave -vlnv xilinx.com:interface:aximm_rtl:1.0 SLOT_0_AXI
+
+  create_bd_intf_pin -mode Master -vlnv xilinx.com:interface:aximm_rtl:1.0 HBM00_AXI
+
+  create_bd_intf_pin -mode Master -vlnv xilinx.com:interface:aximm_rtl:1.0 HBM01_AXI
+
+
+
+
+  # Create pins
+  create_bd_pin -dir I -type rst aresetn
+  create_bd_pin -dir I -type clk clk
+  create_bd_pin -dir I -type clk pclk
+  create_bd_pin -dir I -type rst rst_n
+
+  # Create instance: axis_vio_0, and set properties
+  set axis_vio_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:axis_vio:1.0 axis_vio_0 ]
+  set_property -dict [ list \
+   CONFIG.C_NUM_PROBE_IN {6} \
+   CONFIG.C_NUM_PROBE_OUT {4} \
+ ] $axis_vio_0
+
+  # Create instance: noc_bc, and set properties
+  set noc_bc [ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_bram_ctrl:4.1 noc_bc ]
+
+  # Create instance: noc_bc_axis_ila_0, and set properties
+  set noc_bc_axis_ila_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:axis_ila:1.2 noc_bc_axis_ila_0 ]
+  set_property -dict [ list \
+   CONFIG.ALL_PROBE_SAME_MU_CNT {2} \
+   CONFIG.C_ADV_TRIGGER {true} \
+   CONFIG.C_BRAM_CNT {0} \
+   CONFIG.C_EN_STRG_QUAL {1} \
+   CONFIG.C_INPUT_PIPE_STAGES {2} \
+   CONFIG.C_MON_TYPE {Interface_Monitor} \
+   CONFIG.C_PROBE0_MU_CNT {2} \
+   CONFIG.C_SLOT_0_APC_EN {1} \
+   CONFIG.C_SLOT_0_APC_STS_EN {1} \
+   CONFIG.C_SLOT_0_AXI_AR_SEL_DATA {1} \
+   CONFIG.C_SLOT_0_AXI_AR_SEL_TRIG {1} \
+   CONFIG.C_SLOT_0_AXI_AW_SEL_DATA {1} \
+   CONFIG.C_SLOT_0_AXI_AW_SEL_TRIG {1} \
+   CONFIG.C_SLOT_0_AXI_B_SEL_DATA {1} \
+   CONFIG.C_SLOT_0_AXI_B_SEL_TRIG {1} \
+   CONFIG.C_SLOT_0_AXI_R_SEL_DATA {1} \
+   CONFIG.C_SLOT_0_AXI_R_SEL_TRIG {1} \
+   CONFIG.C_SLOT_0_AXI_W_SEL_DATA {1} \
+   CONFIG.C_SLOT_0_AXI_W_SEL_TRIG {1} \
+   CONFIG.C_SLOT_0_TXN_CNTR_EN {1} \
+ ] $noc_bc_axis_ila_0
+
+  # Create instance: noc_bc_bram, and set properties
+  set noc_bc_bram [ create_bd_cell -type ip -vlnv xilinx.com:ip:emb_mem_gen:1.0 noc_bc_bram ]
+  set_property -dict [ list \
+   CONFIG.MEMORY_TYPE {True_Dual_Port_RAM} \
+ ] $noc_bc_bram
+
+  # Create instance: noc_sim_trig, and set properties
+  set noc_sim_trig [ create_bd_cell -type ip -vlnv xilinx.com:ip:sim_trig:1.0 noc_sim_trig ]
+  set_property -dict [ list \
+   CONFIG.USER_DEBUG_INTF {EXTERNAL_AXI4_LITE} \
+   CONFIG.USER_NUM_AXI_TG {3} \
+   CONFIG.USER_TRAFFIC_SHAPING_EN {FALSE} \
+ ] $noc_sim_trig
+
+
+  # Create instance: ddr_tg, and set properties
+  set ddr_tg [ create_bd_cell -type ip -vlnv xilinx.com:ip:perf_axi_tg:1.0 ddr_tg ]
+  set_property -dict [list \
+    CONFIG.USER_C_AXI_RDATA_WIDTH {512} \
+    CONFIG.USER_C_AXI_READ_SIZE {1} \
+    CONFIG.USER_C_AXI_WDATA_VALUE { 0x00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000} \
+    CONFIG.USER_C_AXI_WDATA_WIDTH {512} \
+    CONFIG.USER_C_AXI_WRITE_SIZE {1} \
+    CONFIG.USER_DEBUG_INTF {TRUE} \
+    CONFIG.USER_PERF_TG {SYNTHESIZABLE} \
+    CONFIG.USER_SYNTH_DEFINED_PATTERN_CSV ${script_folder}/empty_traffic_spec.csv \
+    CONFIG.USER_TRAFFIC_SHAPING_EN {FALSE} \
+  ] $ddr_tg
+
+  # Create instance: smartconnect_0, and set properties
+  set smartconnect_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:smartconnect:1.0 smartconnect_0 ]
+  set_property -dict [ list \
+   CONFIG.NUM_MI {1} \
+   CONFIG.NUM_SI {1} \
+ ] $smartconnect_0
+
+  # Create instance: hbm_tg_0, and set properties
+  set hbm_tg_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:perf_axi_tg:1.0 hbm_tg_0 ]
+  set_property -dict [list \
+    CONFIG.USER_C_AXI_RDATA_WIDTH {256} \
+    CONFIG.USER_C_AXI_READ_SIZE {1} \
+    CONFIG.USER_C_AXI_WDATA_VALUE { 0x00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000} \
+    CONFIG.USER_C_AXI_WDATA_WIDTH {256} \
+    CONFIG.USER_C_AXI_WRITE_SIZE {1} \
+    CONFIG.USER_DEBUG_INTF {TRUE} \
+    CONFIG.USER_EN_VIO_STATUS_MONITOR {TRUE} \
+    CONFIG.USER_PERF_TG {SYNTHESIZABLE} \
+    CONFIG.USER_SYNTH_DEFINED_PATTERN_CSV ${script_folder}/empty_traffic_spec.csv \
+    CONFIG.USER_TRAFFIC_SHAPING_EN {FALSE} \
+  ] $hbm_tg_0
+
+  # Create instance: hbm_tg_1, and set properties
+  set hbm_tg_1 [ create_bd_cell -type ip -vlnv xilinx.com:ip:perf_axi_tg:1.0 hbm_tg_1 ]
+  set_property -dict [list \
+    CONFIG.USER_C_AXI_RDATA_WIDTH {256} \
+    CONFIG.USER_C_AXI_READ_SIZE {1} \
+    CONFIG.USER_C_AXI_WDATA_VALUE { 0x00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000} \
+    CONFIG.USER_C_AXI_WDATA_WIDTH {256} \
+    CONFIG.USER_C_AXI_WRITE_SIZE {1} \
+    CONFIG.USER_DEBUG_INTF {TRUE} \
+    CONFIG.USER_PERF_TG {SYNTHESIZABLE} \
+    CONFIG.USER_SYNTH_DEFINED_PATTERN_CSV ${script_folder}/empty_traffic_spec.csv \
+    CONFIG.USER_TRAFFIC_SHAPING_EN {FALSE} \
+  ] $hbm_tg_1
+
+ # Create interface connections
+  connect_bd_intf_net -intf_net Conn1 [get_bd_intf_pins S00_AXI] [get_bd_intf_pins smartconnect_0/S00_AXI]
+  connect_bd_intf_net -intf_net SLOT_0_AXI_1 [get_bd_intf_pins SLOT_0_AXI] [get_bd_intf_pins noc_bc/S_AXI]
+  connect_bd_intf_net -intf_net [get_bd_intf_nets SLOT_0_AXI_1] [get_bd_intf_pins SLOT_0_AXI] [get_bd_intf_pins noc_bc_axis_ila_0/SLOT_0_AXI]
+  connect_bd_intf_net -intf_net hbm_tg_0_M_AXI [get_bd_intf_pins HBM00_AXI] [get_bd_intf_pins hbm_tg_0/M_AXI]
+  connect_bd_intf_net -intf_net hbm_tg_1_M_AXI [get_bd_intf_pins HBM01_AXI] [get_bd_intf_pins hbm_tg_1/M_AXI]
+  connect_bd_intf_net -intf_net noc_bc_BRAM_PORTA [get_bd_intf_pins noc_bc/BRAM_PORTA] [get_bd_intf_pins noc_bc_bram/BRAM_PORTA]
+  connect_bd_intf_net -intf_net noc_bc_BRAM_PORTB [get_bd_intf_pins noc_bc/BRAM_PORTB] [get_bd_intf_pins noc_bc_bram/BRAM_PORTB]
+  connect_bd_intf_net -intf_net noc_sim_trig_MCSIO_OUT_00 [get_bd_intf_pins noc_sim_trig/MCSIO_OUT_00] [get_bd_intf_pins ddr_tg/MCSIO_IN]
+  connect_bd_intf_net -intf_net noc_sim_trig_MCSIO_OUT_01 [get_bd_intf_pins noc_sim_trig/MCSIO_OUT_01] [get_bd_intf_pins hbm_tg_0/MCSIO_IN]
+  connect_bd_intf_net -intf_net noc_sim_trig_MCSIO_OUT_02 [get_bd_intf_pins hbm_tg_1/MCSIO_IN] [get_bd_intf_pins noc_sim_trig/MCSIO_OUT_02]
+  connect_bd_intf_net -intf_net noc_tg_M_AXI [get_bd_intf_pins M_AXI] [get_bd_intf_pins ddr_tg/M_AXI]
+  connect_bd_intf_net -intf_net smartconnect_0_M00_AXI [get_bd_intf_pins noc_sim_trig/AXI4_LITE] [get_bd_intf_pins smartconnect_0/M00_AXI]
+
+  # Create port connections
+  connect_bd_net -net aresetn_1 [get_bd_pins aresetn] [get_bd_pins smartconnect_0/aresetn]
+  connect_bd_net -net axis_vio_0_probe_out2 [get_bd_pins axis_vio_0/probe_out2] [get_bd_pins hbm_tg_0/tg_rst_n]
+  connect_bd_net -net axis_vio_0_probe_out3 [get_bd_pins axis_vio_0/probe_out3] [get_bd_pins hbm_tg_1/tg_rst_n]
+  connect_bd_net -net clk_1 [get_bd_pins clk] [get_bd_pins ddr_tg/clk] [get_bd_pins hbm_tg_0/clk] [get_bd_pins hbm_tg_1/clk]
+  connect_bd_net -net hbm_tg_0_axi_tg_done [get_bd_pins hbm_tg_0/axi_tg_done] [get_bd_pins axis_vio_0/probe_in2] [get_bd_pins noc_sim_trig/all_done_01]
+  connect_bd_net -net hbm_tg_0_axi_tg_error [get_bd_pins hbm_tg_0/axi_tg_error] [get_bd_pins axis_vio_0/probe_in3]
+  connect_bd_net -net hbm_tg_1_axi_tg_done [get_bd_pins hbm_tg_1/axi_tg_done] [get_bd_pins axis_vio_0/probe_in4] [get_bd_pins noc_sim_trig/all_done_02]
+  connect_bd_net -net hbm_tg_1_axi_tg_error [get_bd_pins hbm_tg_1/axi_tg_error] [get_bd_pins axis_vio_0/probe_in5]
+  connect_bd_net -net noc_sim_trig_rst_n [get_bd_pins axis_vio_0/probe_out0] [get_bd_pins noc_sim_trig/rst_n]
+  connect_bd_net -net noc_sim_trig_trig_00 [get_bd_pins noc_sim_trig/trig_00] [get_bd_pins ddr_tg/axi_tg_start]
+  connect_bd_net -net noc_sim_trig_trig_01 [get_bd_pins noc_sim_trig/trig_01] [get_bd_pins hbm_tg_0/axi_tg_start]
+  connect_bd_net -net noc_sim_trig_trig_02 [get_bd_pins noc_sim_trig/trig_02] [get_bd_pins hbm_tg_1/axi_tg_start]
+  connect_bd_net -net noc_tg_axi_tg_done [get_bd_pins ddr_tg/axi_tg_done] [get_bd_pins axis_vio_0/probe_in0] [get_bd_pins noc_sim_trig/all_done_00]
+  connect_bd_net -net noc_tg_axi_tg_error [get_bd_pins ddr_tg/axi_tg_error] [get_bd_pins axis_vio_0/probe_in1]
+  connect_bd_net -net noc_tg_tg_rst_n [get_bd_pins axis_vio_0/probe_out1] [get_bd_pins ddr_tg/tg_rst_n]
+  connect_bd_net -net proc_sys_reset_0_peripheral_aresetn [get_bd_pins rst_n] [get_bd_pins noc_bc/s_axi_aresetn] [get_bd_pins noc_bc_axis_ila_0/resetn]
+  connect_bd_net -net versal_cips_0_pl0_ref_clk [get_bd_pins pclk] [get_bd_pins axis_vio_0/clk] [get_bd_pins noc_bc/s_axi_aclk] [get_bd_pins noc_bc_axis_ila_0/clk] [get_bd_pins noc_sim_trig/pclk] [get_bd_pins ddr_tg/pclk] [get_bd_pins smartconnect_0/aclk] [get_bd_pins hbm_tg_0/pclk] [get_bd_pins hbm_tg_1/pclk]
+
+  # Restore current instance
+  current_bd_instance $oldCurInst
+}
