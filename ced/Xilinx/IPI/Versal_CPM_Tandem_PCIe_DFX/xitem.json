@@ -1,0 +1,38 @@
+{
+    "config": {
+      "items": [
+        {
+          "infra": {
+            "name": "Versal_CPM_Tandem_PCIe_DFX",
+            "display": "Versal CPM Tandem PCIe and DFX",
+            "revision": "2.0",
+            "description": "",
+            "company": "xilinx.com",
+            "company_display": "Xilinx",
+            "author": "dmichele",
+            "contributors": [
+              {
+                "group": "Xilinx",
+                "url": "www.xilinx.com"
+              }
+            ],
+            "category": "Versal",
+            "website": "www.xilinx.com",
+            "is_active" : true, 
+            "search-keywords": [
+              "Versal",
+              "CPM",
+              "PCIe",
+              "xilinx.com",
+              "example",
+              "tandem",
+              "dfx",
+              "Design Function eXchange"
+            ]
+          }
+        }
+      ]
+    },
+    "_major" : 1,
+    "_minor" : 0
+}

@@ -1,0 +1,3 @@
+######### Extensible Embedded Platform example design_S50 change log ##############
+2022.2 changes 
+versal part_support_SV60

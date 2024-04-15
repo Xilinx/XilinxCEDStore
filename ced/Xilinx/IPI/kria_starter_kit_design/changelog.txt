@@ -1,0 +1,3 @@
+######### Kria ExampleDesign example design change log ##############
+2024.1 Changes 
+Initial version
