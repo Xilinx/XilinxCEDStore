@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<ExampleDesign>
+  <Vendor>xilinx.com</Vendor>
+  <Library>design</Library>
+  <Name>cpm_qdma</Name>
+   <DisplayName>Versal CPM QDMA EP Simulation Design</DisplayName>
+  <Description>This is CPM QDMA EP Gen4x8 Simulation Design. It allows generating CPM4 and CPM5 versions for VCK190 and VPK120 respectively based on the board selected</Description>
+   <Version>1.0</Version>
+  <Design>init.tcl</Design>
+  <Image>cpm_qdma.PNG</Image>
+   <DesignType>IPI</DesignType>
+</ExampleDesign>

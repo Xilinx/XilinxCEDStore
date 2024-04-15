@@ -1,0 +1,33 @@
+{
+    "config": {
+      "items": [
+        {
+          "infra": {
+            "name": "cpm5n_bmd",
+            "display": "Versal CPM5N BMD Design",
+            "revision": "1.0",
+            "description": "This is CPM5N Gen5x16 BMD Simulation only Design.",
+            "company": "xilinx.com",
+            "company_display": "Xilinx",
+            "author": "Sindhura",
+            "contributors": [
+              {
+                "group": "Xilinx",
+                "url": "www.xilinx.com"
+              }
+            ],
+            "category": "PCIe",
+            "website": "www.xilinx.com",
+            "is_active" : true, 
+            "search-keywords": [
+              "Versal CPM5N BMD Design",
+              "xilinx.com",
+              "example"             
+            ]
+          }
+        }
+      ]
+    },
+    "_major" : 1,
+    "_minor" : 0
+}

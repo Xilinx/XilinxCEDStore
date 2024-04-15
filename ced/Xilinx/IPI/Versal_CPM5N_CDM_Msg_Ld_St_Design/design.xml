@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<ExampleDesign>
+  <Vendor>xilinx.com</Vendor>
+  <Library>design</Library>
+  <Name>cpm5n_cdm_msgldst</Name>
+   <DisplayName>Versal CPM5N CDM Msg Ld St Design</DisplayName>
+  <Description>This is Versal CPM5N CDM Msg Ld St Gen5x16 Simulation design.</Description>
+   <Version>1.0</Version>
+  <Design>init.tcl</Design>
+  <Image>cpm5n_cdm_msgldst.PNG</Image>
+   <DesignType>IPI</DesignType>
+</ExampleDesign>

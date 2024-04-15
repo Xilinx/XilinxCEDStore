@@ -1,0 +1,7 @@
+######### Versal CPM Tandem PCIe CED change log ##############
+# 2024.1 Changes 
+- Name Versal_CPM_Tandem_PCIe -> Versal_CPM_Tandem_PCIe_DFX
+- Added checkbox to GUI to enable DFX for 2 small reconfigurable partitions 
+  in the PL
+# 2022.2 Changes 
+- Initial version
