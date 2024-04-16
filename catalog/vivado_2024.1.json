@@ -214,11 +214,11 @@
         "name": "cpm_rp",
         "display": "Versal CPM Bridge RP Design",
         "latest_revision": "1.0",
-        "commit_id": "e78953a2a540b149d37c73c7f83505e6ffcade1a",
+        "commit_id": "8943f88b50709b070c3020f2b3771c0c3d51ccb3",
         "revisions": [
           {
             "revision": "1.0",
-            "commit_id": "e78953a2a540b149d37c73c7f83505e6ffcade1a",
+            "commit_id": "8943f88b50709b070c3020f2b3771c0c3d51ccb3",
             "date": "15-04-2024:09:30:50",
             "history": "Added board Versal CPM Bridge RP Design v1.0"
           }
