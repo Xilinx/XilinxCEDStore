@@ -250,10 +250,7 @@ set files [list \
 ]
 import_files -norecurse -fileset $obj $files
 
-set rtf_dir [file join $currentDir cpm5_qdma/src/RTF]
 
-set_property  ip_repo_paths "$rtf_dir/pcie_qdma_mailbox_v1_0" [current_project]
-update_ip_catalog
 
 # Set 'sources_1' fileset properties
 set obj [get_filesets sources_1]

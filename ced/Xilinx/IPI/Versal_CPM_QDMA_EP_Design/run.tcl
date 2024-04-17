@@ -267,10 +267,6 @@ set files [list \
 
 import_files -norecurse -fileset $obj $files
 
-set rtf_dir [file join $currentDir cpm5_qdma_mm_st/src/RTF]
-
-set_property  ip_repo_paths "$rtf_dir/pcie_qdma_mailbox_v1_0" [current_project]
-update_ip_catalog
 
 # Set 'sources_1' fileset properties
 set obj [get_filesets sources_1]
@@ -331,10 +327,7 @@ set obj [get_filesets sources_1]
 
 import_files -norecurse -fileset $obj $files
 
-set rtf_dir [file join $currentDir cpm5_qdma_dual_ctrl/src/RTF]
 
-set_property  ip_repo_paths "$rtf_dir/pcie_qdma_mailbox_v1_0" [current_project]
-update_ip_catalog
 
 # Set 'sources_1' fileset file properties for local files
 # None
@@ -420,10 +413,7 @@ set obj [get_filesets utils_1]
 
 import_files -norecurse -fileset $obj $files
 
-set rtf_dir [file join $currentDir cpm5_qdma_st_only/src/RTF]
 
-set_property  ip_repo_paths "$rtf_dir/pcie_qdma_mailbox_v1_0" [current_project]
-update_ip_catalog
 
 # Set 'sources_1' fileset file properties for local files
 # None
