@@ -18,15 +18,15 @@ loaded from an external device interface and programmed to the device after
 power is stable and reset is deasserted. It is recommended to only use the
 tandem PCIe configuration method if your system requires it.
 
-Previous generations of Xilinx devices used the Xilinx MCAP Vendor Specific 
+Previous generations of AMD devices used the AMD MCAP Vendor Specific 
 Extended Capability (VSEC) to enable the tandem PCIe solution, which 
 relied on PCIe CfgWr TLPs and a hardened connection to the configuration 
 engine to actually transfer the bitstream data to the device. While using
 the MCAP VSEC is still an option for Versal devices, it is not recommended 
-due to its slow throughput. For improved performance, the Xilinx DMAs should 
-be employed, namely QDMA. For devices containing CPM5, the Xilinx QDMA is the
+due to its slow throughput. For improved performance, the AMD DMAs should 
+be employed, namely QDMA. For devices containing CPM5, the AMD QDMA is the
 only hardened DMA engine available, while devices containing CPM4 may use 
-either the Xilinx QDMA or XDMA engine. Detailed information about CPM and the
+either the AMD QDMA or XDMA engine. Detailed information about CPM and the
 DMA engines can be found in PG346 and PG347. The programming datapath from CPM
 to the configuration engine must now go through the NOC, so there are required
 design elements that must be properly enabled and connected using Vivado. All
