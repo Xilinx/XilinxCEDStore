@@ -1,0 +1,29 @@
+﻿<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+
+<ExampleDesign>
+
+<Vendor>xilinx.com</Vendor>
+
+<Library>design</Library>
+
+<Name>Versal_CPM_Tandem_PCIe_DFX</Name>
+
+<DisplayName>Versal CPM Tandem PCIe and DFX</DisplayName>
+
+<Description>This example design is provided as a reference to display the tandem PCIe configuration method, which is a required feature when a Versal bitstream is exceedingly large, and the design contains a PCIe endpoint, such that the device will not be ready to enumerate at 120 ms after power is applied and configuration begins, which is a violation of the PCIe specifications.  The Tandem PCIe configuration method has been present in several generations of Xilinx devices, but the underlying datapath connections and mechanisms are significantly different in Versal devices as compared to previous generations.  More details about Versal tandem solutions can be found in PG346 or PG347.
+
+The provided design contains CPM Controller 0 configured to function as a Gen4x8 PCIe endpoint and provides the required connections to the PMC's Slave Boot Interface (SBI), which will use the Xilinx QDMA as the mechanism to transfer the Stage 2 bitstream to be programmed to the device.  In addition to the SBI target, a BRAM can be used as the source and destination of memory mapped DMAs and streaming DMAs are enabled as well.  There is also an embedded debug subsystem that contains an ILA and VIO connected to a small counter in the design.
+ 
+The associated driver required to employ this feature associated with this design is found in the QDMA directory: https://github.com/Xilinx/dma_ip_drivers
+
+In addition, the design is equipped to demonstrate the Dynamic Function eXchange (DFX) feature, which can be optionally enabled by checkbox.  The partial bitstream images in this demonstration are intended to be delivered to the device over the PCIe link to the SBI in the same manner that the Stage 2 bitstreams are delivered, via QDMA.  Successful transfer of partial bitstreams can be easily verified through design context across the PCIe link or by examining VIO output in the Vivado GUI.  Refer to the README.txt file imported into the project in the utils_1 fileset for project specific details and UG909 for more information on DFX.
+</Description>
+
+<Version>2.0</Version>
+
+<Design>init.tcl</Design>
+
+<Image>versal_tpcie.png</Image>
+
+</ExampleDesign>
+
