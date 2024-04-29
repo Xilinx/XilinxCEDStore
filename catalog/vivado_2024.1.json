@@ -703,6 +703,25 @@
           "metadata_file": "xitem.json"
         },
         "company": "xilinx.com"
+      },
+      {
+        "name": "two_port_switch",
+        "display": "Versal CPM5 Two Port Switch Design",
+        "latest_revision": "1.0",
+        "commit_id": "053cd5f4b45a03609895d9e05c493c46c76482f0",
+        "revisions": [
+          {
+            "revision": "1.0",
+            "commit_id": "053cd5f4b45a03609895d9e05c493c46c76482f0",
+            "date": "29-04-2024:04:59:28",
+            "history": "Added board Versal CPM5 Two Port Switch Design v1.0"
+          }
+        ],
+        "config": {
+          "root": "ced/Xilinx/IPI/Versal_CPM5_Two_Port_Switch_Design",
+          "metadata_file": "xitem.json"
+        },
+        "company": "xilinx.com"
       }
     ],
     "categories": [
