@@ -154,63 +154,6 @@
         "company": "xilinx.com"
       },
       {
-        "name": "cpm5n_bmd",
-        "display": "Versal CPM5N BMD Design",
-        "latest_revision": "1.0",
-        "commit_id": "c509b810c435cc13e0be2862065aa59231218e56",
-        "revisions": [
-          {
-            "revision": "1.0",
-            "commit_id": "c509b810c435cc13e0be2862065aa59231218e56",
-            "date": "26-04-2024:10:55:53",
-            "history": "Added board Versal CPM5N BMD Design v1.0"
-          }
-        ],
-        "config": {
-          "root": "ced/Xilinx/IPI/Versal_CPM5N_BMD_Design",
-          "metadata_file": "xitem.json"
-        },
-        "company": "xilinx.com"
-      },
-      {
-        "name": "cpm5n_cdm_msgldst",
-        "display": "Versal CPM5N CDM Msg Ld St Design",
-        "latest_revision": "1.0",
-        "commit_id": "c509b810c435cc13e0be2862065aa59231218e56",
-        "revisions": [
-          {
-            "revision": "1.0",
-            "commit_id": "c509b810c435cc13e0be2862065aa59231218e56",
-            "date": "26-04-2024:10:55:53",
-            "history": "Added board Versal CPM5N CDM Msg Ld St Design v1.0"
-          }
-        ],
-        "config": {
-          "root": "ced/Xilinx/IPI/Versal_CPM5N_CDM_Msg_Ld_St_Design",
-          "metadata_file": "xitem.json"
-        },
-        "company": "xilinx.com"
-      },
-      {
-        "name": "cpm5n_csi_uport",
-        "display": "Versal CPM5N CSI Uport Design",
-        "latest_revision": "1.0",
-        "commit_id": "c509b810c435cc13e0be2862065aa59231218e56",
-        "revisions": [
-          {
-            "revision": "1.0",
-            "commit_id": "c509b810c435cc13e0be2862065aa59231218e56",
-            "date": "26-04-2024:10:55:53",
-            "history": "Added board Versal CPM5N CSI Uport Design v1.0"
-          }
-        ],
-        "config": {
-          "root": "ced/Xilinx/IPI/Versal_CPM5N_CSI_Uport_Design",
-          "metadata_file": "xitem.json"
-        },
-        "company": "xilinx.com"
-      },
-      {
         "name": "cpm_rp",
         "display": "Versal CPM Bridge RP Design",
         "latest_revision": "1.0",
@@ -233,11 +176,11 @@
         "name": "cpm_bmd_ep",
         "display": "Versal CPM PCIE BMD EP Design",
         "latest_revision": "1.0",
-        "commit_id": "c509b810c435cc13e0be2862065aa59231218e56",
+        "commit_id": "33495ce5dc2521cd687acbd11acd49d74fe6459a",
         "revisions": [
           {
             "revision": "1.0",
-            "commit_id": "c509b810c435cc13e0be2862065aa59231218e56",
+            "commit_id": "33495ce5dc2521cd687acbd11acd49d74fe6459a",
             "date": "26-04-2024:10:55:53",
             "history": "Added board Versal CPM PCIE BMD EP Design v1.0"
           }
