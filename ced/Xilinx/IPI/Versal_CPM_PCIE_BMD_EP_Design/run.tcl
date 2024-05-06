@@ -234,6 +234,32 @@ set_property -name "file_type" -value "XDC" -objects $file_obj
 # Set 'constrs_1' fileset properties
 set obj [get_filesets constrs_1]
 
+# Create 'sim_1' fileset (if not found)
+if {[string equal [get_filesets -quiet sim_1] ""]} {
+  create_fileset -simset sim_1
+}
+
+# Set 'sim_1' fileset object
+set obj [get_filesets sim_1]
+# Import local files from the original project
+
+set files [list \
+ [file normalize "${currentDir}/cpm5_bmd_g5x8_ep/sim_files/board_common.vh"]\
+ [file normalize "${currentDir}/cpm5_bmd_g5x8_ep/sim_files/pci_exp_usrapp_cfg.v"]\
+ [file normalize "${currentDir}/cpm5_bmd_g5x8_ep/sim_files/pci_exp_expect_tasks.vh"]\
+ [file normalize "${currentDir}/cpm5_bmd_g5x8_ep/sim_files/pci_exp_usrapp_com.v"]\
+ [file normalize "${currentDir}/cpm5_bmd_g5x8_ep/sim_files/pci_exp_usrapp_rx.v"]\
+ [file normalize "${currentDir}/cpm5_bmd_g5x8_ep/sim_files/sample_tests.vh"]\
+ [file normalize "${currentDir}/cpm5_bmd_g5x8_ep/sim_files/tests.vh"]\
+ [file normalize "${currentDir}/cpm5_bmd_g5x8_ep/sim_files/pci_exp_usrapp_tx.v"]\
+ [file normalize "${currentDir}/cpm5_bmd_g5x8_ep/sim_files/sys_clk_gen.v"]\
+ [file normalize "${currentDir}/cpm5_bmd_g5x8_ep/sim_files/sys_clk_gen_ds.v"]\
+ [file normalize "${currentDir}/cpm5_bmd_g5x8_ep/sim_files/xilinx_pcie5_versal_rp.sv"]\
+ [file normalize "${currentDir}/cpm5_bmd_g5x8_ep/sim_files/board.v"]\
+]
+
+import_files -norecurse -fileset $obj $files
+
 } else {
 puts "Warning: No design created as -2MP variant of VPK120 board is selected.
       The Gen5 speed is supported for -2MHP or above speed grade part.
@@ -285,7 +311,57 @@ regenerate_bd_layout
 validate_bd_design
 save_bd_design
 
+puts "INFO: EP bd generated"
+
+source  "$currentDir/cpm5_bmd_g5x8_ep/design_rp_bd.tcl"
+regenerate_bd_layout
+validate_bd_design
+save_bd_design
+# Set synthesis property to be non-OOC
+set_property synth_checkpoint_mode None [get_files design_rp.bd]
+generate_target all [get_files design_rp.bd]
+puts "INFO: RP bd generated"
+close_bd_design [get_bd_designs design_rp]
+
+set_property used_in simulation [get_files design_rp.bd]
+
+regenerate_bd_layout
+
+open_bd_design [get_bd_files $design_name]
+
+    set_property USER_COMMENTS.comment_0 {} [current_bd_design]
+    set_property USER_COMMENTS.comment0 {Next Steps:
+    1. Refer to https://github.com/Xilinx/XilinxCEDStore/tree/2024.1/ced/Xilinx/IPI/Versal_CPM_PCIE_BMD_EP_Design/readme.txt} [current_bd_design]
+
+    regenerate_bd_layout -layout_string {
+   "ActiveEmotionalView":"Default View",
+   "comment_0":"Next Steps:
+    1. Refer to https://github.com/Xilinx/XilinxCEDStore/tree/2024.1/ced/Xilinx/IPI/Versal_CPM_PCIE_BMD_EP_Design/readme.txt",
+   "commentid":"comment_0|",
+   "font_comment_0":"18",
+   "guistr":"# # String gsaved with Nlview 7.0r4  2019-12-20 bk=1.5203 VDI=41 GEI=36 GUI=JA:10.0 TLS
+    #  -string -flagsOSRD
+    preplace cgraphic comment_0 place right -1200 -130 textcolor 4 linecolor 3
+    ",
+   "linktoobj_comment_0":"",
+   "linktotype_comment_0":"bd_design" }
+ 
+validate_bd_design
+save_bd_design
+
 puts "INFO: design generation completed successfully"
+
+# Set 'sim_1' fileset properties
+set obj [get_filesets sim_1]
+
+set_property target_simulator Questa [current_project]
+set_property top board [get_filesets sim_1]
+set_property top_lib xil_defaultlib [get_filesets sim_1]
+
+set_property -name "questa.elaborate.vopt.more_options" -value "+nospecify +notimingchecks" -objects $obj
+set_property -name "questa.simulate.log_all_signals" -value "1" -objects $obj
+set_property -name "questa.simulate.runtime" -value "all" -objects $obj
+set_property -name "questa.simulate.vsim.more_options" -value "+notimingchecks" -objects $obj
 
 } else {
     
