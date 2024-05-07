@@ -16,8 +16,6 @@ if {([lsearch $options CPM5_Preset.VALUE] == -1) || ([lsearch $options "Gen5x4_S
 
 puts "INFO: Gen5x4_Switch_Combination_1* preset is selected."
 
-puts "TBD: USP Design"
-
 # Set 'sources_1' fileset object
 set obj [get_filesets sources_1]
 set files [list \
@@ -229,8 +227,8 @@ puts "design_sim_rp_bd generated"
 source  "$currentDir/usp_two_port/dsp_plpcie_bd.tcl"
 puts "dsp_plpcie_bd generated" 
 
-set_property strategy Flow_PerfOptimized_high [get_runs synth_1]
-set_property strategy Performance_ExploreWithRemap [get_runs impl_1]
+#set_property strategy Flow_PerfOptimized_high [get_runs synth_1]
+#set_property strategy Performance_ExploreWithRemap [get_runs impl_1]
 
 set_property used_in simulation [get_files design_ep.bd]
 set_property used_in simulation [get_files design_sim_rp.bd]
