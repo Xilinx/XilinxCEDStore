@@ -202,7 +202,9 @@ import_files -norecurse -fileset $obj $files
 
 
 } else {
-puts "Warning: In CPM5, Gen5 Speed Configuration requires -2MHP or above Speed Grade Part. Since -2MP part is selected CED is not generated"
+puts "Warning: No design created as -2MP variant of VPK120 board is selected.
+      The Gen5 speed is supported for -2MHP or above speed grade part.
+      Please select VPK120 board with -2MHP speed grade variant under \"switch part\" selection while choosing the board part."
 }
 }
 
@@ -266,24 +268,18 @@ puts "INFO: RP bd generated"
 
 set_property used_in simulation  [get_files  design_rp.bd]
 
-} else {
-puts "Warning: In CPM5, Gen5 Speed Configuration requires -2MHP or above Speed Grade Part. Since -2MP part is selected CED is not generated"
-}
-
-}
-
 regenerate_bd_layout
 
 open_bd_design [get_bd_files $design_name]
 
     set_property USER_COMMENTS.comment_0 {} [current_bd_design]
     set_property USER_COMMENTS.comment0 {Next Steps:
-    1. Refer to https://github.com/Xilinx/XilinxCEDStore/tree/2023.2/ced/Xilinx/IPI/Versal_CPM_PCIE_BMD_Simulation_Design/readme.txt} [current_bd_design]
+    1. Refer to https://github.com/Xilinx/XilinxCEDStore/tree/2024.1/ced/Xilinx/IPI/Versal_CPM_PCIE_BMD_Simulation_Design/readme.txt} [current_bd_design]
 
     regenerate_bd_layout -layout_string {
    "ActiveEmotionalView":"Default View",
    "comment_0":"Next Steps:
-    1. Refer to https://github.com/Xilinx/XilinxCEDStore/tree/2023.2/ced/Xilinx/IPI/Versal_CPM_PCIE_BMD_Simulation_Design/readme.txt",
+    1. Refer to https://github.com/Xilinx/XilinxCEDStore/tree/2024.1/ced/Xilinx/IPI/Versal_CPM_PCIE_BMD_Simulation_Design/readme.txt",
    "commentid":"comment_0|",
    "font_comment_0":"18",
    "guistr":"# # String gsaved with Nlview 7.0r4  2019-12-20 bk=1.5203 VDI=41 GEI=36 GUI=JA:10.0 TLS
@@ -298,8 +294,6 @@ save_bd_design
  
 puts "INFO: design generation completed successfully"
 
-
-
 # Set 'sim_1' fileset properties
 set obj [get_filesets sim_1]
 
@@ -312,6 +306,39 @@ set_property -name "questa.simulate.log_all_signals" -value "1" -objects $obj
 set_property -name "questa.simulate.runtime" -value "all" -objects $obj
 set_property -name "questa.simulate.vsim.more_options" -value "+notimingchecks" -objects $obj
 
+} else {
+
+open_bd_design [get_bd_files $design_name]
+
+    set_property USER_COMMENTS.comment_0 {} [current_bd_design]
+    set_property USER_COMMENTS.comment0 {Warning: No design created as -2MP variant of VPK120 board is selected.
+    The Gen5 speed is supported for -2MHP or above speed grade part.
+    Please select VPK120 board with -2MHP speed grade variant under switch part selection while choosing the board part.} [current_bd_design]
+
+    regenerate_bd_layout -layout_string {
+   "ActiveEmotionalView":"Default View",
+   "comment_0":"Warning: No design created as -2MP variant of VPK120 board is selected.
+    The Gen5 speed is supported for -2MHP or above speed grade part.
+    Please select VPK120 board with -2MHP speed grade variant under switch part selection while choosing the board part.",
+   "commentid":"comment_0|",
+   "font_comment_0":"18",
+   "guistr":"# # String gsaved with Nlview 7.0r4  2019-12-20 bk=1.5203 VDI=41 GEI=36 GUI=JA:10.0 TLS
+    #  -string -flagsOSRD
+    preplace cgraphic comment_0 place right -1200 -130 textcolor 4 linecolor 3
+    ",
+   "linktoobj_comment_0":"",
+   "linktotype_comment_0":"bd_design" }
+
+generate_target all [get_files $design_name]
+
+regenerate_bd_layout
+
+validate_bd_design
+save_bd_design
+
+}
+
+}
 
 }
 
