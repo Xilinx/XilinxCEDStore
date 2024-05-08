@@ -124,7 +124,8 @@ proc create_root_design { parentCell } {
       PS_BOARD_INTERFACE {Custom} \
       PS_PCIE1_PERIPHERAL_ENABLE {0} \
       PS_PCIE2_PERIPHERAL_ENABLE {1} \
-      PS_PCIE_EP_RESET2_IO {PMC_MIO 39} \
+      PS_PCIE_EP_RESET1_IO {None} \
+      PS_PCIE_EP_RESET2_IO {PS_MIO 19} \
       PS_PCIE_RESET {ENABLE 1} \
       SMON_ALARMS {Set_Alarms_On} \
       SMON_ENABLE_TEMP_AVERAGING {0} \

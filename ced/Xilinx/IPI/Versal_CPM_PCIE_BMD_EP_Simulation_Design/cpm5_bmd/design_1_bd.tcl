@@ -311,7 +311,7 @@ proc create_root_design { parentCell } {
       PS_BOARD_INTERFACE {Custom} \
       PS_PCIE1_PERIPHERAL_ENABLE {1} \
       PS_PCIE2_PERIPHERAL_ENABLE {0} \
-      PS_PCIE_EP_RESET1_IO {PMC_MIO 38} \
+      PS_PCIE_EP_RESET1_IO {PS_MIO 18} \
       PS_PCIE_EP_RESET2_IO {None} \
       PS_PCIE_PERIPHERAL_ENABLE {0} \
       PS_PCIE_RESET {{ENABLE 1}} \
