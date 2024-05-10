@@ -29,10 +29,6 @@ set script_folder [_tcl::get_script_folder]
 # project, but make sure you do not have an existing project
 # <./myproj/project_1.xpr> in the current working folder.
 
-set list_projs [get_projects -quiet]
-if { $list_projs eq "" } {
-   create_project project_1 myproj -part xcvp1202-vsva2785-2MHP-e-S
-}
 
 
 # CHANGE DESIGN NAME HERE
@@ -669,7 +665,9 @@ proc create_root_design { parentCell } {
       CPM_PCIE1_TL_PF_ENABLE_REG {4} \
     } \
     CONFIG.PS_PMC_CONFIG { \
-      PS_PCIE_EP_RESET2_IO {PMC_MIO 39} \
+      PS_PCIE_EP_RESET1_IO {None} \
+      PS_PCIE_EP_RESET2_IO {PS_MIO 19} \
+
       PMC_CRP_PL0_REF_CTRL_FREQMHZ {250} \
       PS_USE_PMCPL_CLK0 {1} \
     } \

@@ -98,11 +98,6 @@ if { ${design_name_1} eq "" } {
 
 }
 
-  # Add USER_COMMENTS on $design_name_1
-  set_property USER_COMMENTS.comment0 "Next Steps:
-    1. Refer to https://github.com/Xilinx/XilinxCEDStore/tree/2023.2/ced/Xilinx/IPI/Versal_CPM_QDMA_EP_Design/readme.txt" [get_bd_designs $design_name_1]
-
-common::send_gid_msg -ssname BD::TCL -id 2005 -severity "INFO" "Currently the variable <design_name_1> is equal to \"$design_name_1\"."
 
 if { $nRet != 0 } {
    catch {common::send_gid_msg -ssname BD::TCL -id 2006 -severity "ERROR" $errMsg}
@@ -851,6 +846,7 @@ proc create_root_design { parentCell } {
       PS_CRL_CPM_TOPSW_REF_CTRL_FREQMHZ {1000} \
       PS_PCIE1_PERIPHERAL_ENABLE {0} \
       PS_PCIE2_PERIPHERAL_ENABLE {1} \
+      PS_PCIE_EP_RESET1_IO {None} \
       PS_PCIE_EP_RESET2_IO {PS_MIO 19} \
       PS_PCIE_RESET {ENABLE 1} \
       PS_USE_PMCPL_CLK0 {1} \

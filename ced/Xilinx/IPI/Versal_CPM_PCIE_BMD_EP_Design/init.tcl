@@ -11,7 +11,8 @@ proc getSupportedBoards {} {
 }
 
 proc addOptions {DESIGNOBJ PROJECT_PARAM.BOARD_PART} {
-	lappend x [dict create name "Preset" type "string" value "CPM4" value_list {"CPM4" "CPM5"} enabled true]
+        lappend x [dict create name "CPM_Config" type "string" value "CPM4" value_list {"CPM4" "CPM5"} enabled true]
+        lappend x [dict create name "CPM5_Preset" type "string" value "CPM5_PCIE_Gen4x8_BMD_Design" value_list {CPM5_PCIE_Gen4x8_BMD_Design CPM5_PCIE_Gen5x8_BMD_Design} enabled true]
 	return $x
 }
 
@@ -19,21 +20,37 @@ proc addGUILayout {DESIGNOBJ PROJECT_PARAM.BOARD_PART} {
 	set designObj $DESIGNOBJ
 	#place to define GUI layout for options
 	set page [ced::add_page -name "Page1" -display_name "Configuration" -designObject $designObj -layout vertical]	
-	ced::add_param -name Preset -parent $page -designObject $designObj  -widget radioGroup 
-    set imageVar [ced::add_image -name Image -parent $page -designObject $designObj -width 500 -height 300 -layout vertical]
+        set left_panel [ced::add_panel -name left_panel -parent $page -designObject $designObj]
+        set right_panel [ced::add_panel -name right_panel -parent $page -designObject $designObj]
+
+	ced::add_param -name CPM_Config -parent $left_panel -designObject $designObj  -widget radioGroup 
+
+        #set combinedPanel [ced::add_panel -name combinedPanel -parent $right_panel -designObject $designObj]
+        ced::add_param -name CPM5_Preset  -parent $right_panel -designObject $designObj -widget radioGroup
+
 }
 
-gui_updater {PROJECT_PARAM.BOARD_PART} {Preset.VISIBLE Preset.ENABLEMENT Preset.VALUE} {
-set Preset.DISPLAYNAME "CIPS CPM Configurations"
+
+gui_updater {PROJECT_PARAM.BOARD_PART} {CPM_Config.VISIBLE CPM_Config.ENABLEMENT CPM_Config.VALUE} {
+set CPM_Config.DISPLAYNAME "CIPS CPM Configurations"
 if { [regexp "vck190" ${PROJECT_PARAM.BOARD_PART}]} {
-#set Preset.VISIBLE true
-set Preset.ENABLEMENT false
-set Preset.VALUE CPM4
+#set CPM_Config.VISIBLE true
+set CPM_Config.ENABLEMENT false
+set CPM_Config.VALUE CPM4
 } else {
-#set Preset.VISIBLE false
-set Preset.ENABLEMENT false
-set Preset.VALUE CPM5
+#set CPM_Config.VISIBLE false
+set CPM_Config.ENABLEMENT false
+set CPM_Config.VALUE CPM5
 }
 }
 
-
+gui_updater {PROJECT_PARAM.BOARD_PART} {CPM5_Preset.VISIBLE CPM5_Preset.ENABLEMENT} {
+set CPM_Config.DISPLAYNAME "CIPS CPM Configurations"
+if { [regexp "vck190" ${PROJECT_PARAM.BOARD_PART}]} {
+set CPM5_Preset.ENABLEMENT false
+set CPM5_Preset.VISIBLE false
+} else {
+set CPM5_Preset.ENABLEMENT true
+set CPM5_Preset.VISIBLE true
+}
+}

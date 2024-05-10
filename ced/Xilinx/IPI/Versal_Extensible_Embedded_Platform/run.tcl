@@ -725,14 +725,14 @@ if { $bdc eq "true" } {
 			\t --> AI Engine control path is connected to CIPS
 			\t --> V++ will connect AI Engine data path automatically
 			\t --> Execute TCL command : launch_simulation -scripts_only ,to establish the sim_1 source set hierarchy after successful design creation.
-			\t --> For Next steps, Refer to README.md https://github.com/Xilinx/XilinxCEDStore/tree/2023.2/ced/Xilinx/IPI/Versal_Extensible_Embedded_Platform/README.md}  [current_bd_design]
+			\t --> For Next steps, Refer to README.md https://github.com/Xilinx/XilinxCEDStore/tree/2024.1/ced/Xilinx/IPI/Versal_Extensible_Embedded_Platform/README.md}  [current_bd_design]
 		} else {
 			
 			set_property USER_COMMENTS.comment0 {\t \t ======================= >>>>>>>>> An Example Versal Extensible Embedded Platform <<<<<<<<< =======================
 			\t Note:
 			\t --> Board preset applied to CIPS and memory controller settings
 			\t --> Execute TCL command : launch_simulation -scripts_only ,to establish the sim_1 source set hierarchy after successful design creation.
-			\t --> For Next steps, Refer to README.md https://github.com/Xilinx/XilinxCEDStore/tree/2023.2/ced/Xilinx/IPI/Versal_Extensible_Embedded_Platform/README.md}  [current_bd_design] 
+			\t --> For Next steps, Refer to README.md https://github.com/Xilinx/XilinxCEDStore/tree/2024.1/ced/Xilinx/IPI/Versal_Extensible_Embedded_Platform/README.md}  [current_bd_design] 
 		}
 	
 	} else {
@@ -747,7 +747,7 @@ if { $bdc eq "true" } {
 			\t --> BD has VIPs on the accelerator SmartConnect IPs because IPI platform can't handle export with no slaves on SmartConnect IP.
 			\t \t \t \t \t \t \t Hence VIPs are there to have at least one slave on a smart connect
 			\t --> Execute TCL command : launch_simulation -scripts_only ,to establish the sim_1 source set hierarchy after successful design creation.
-			\t --> For Next steps, Refer to README.md https://github.com/Xilinx/XilinxCEDStore/tree/2023.2/ced/Xilinx/IPI/Versal_Extensible_Embedded_Platform/README.md}  [current_bd_design]
+			\t --> For Next steps, Refer to README.md https://github.com/Xilinx/XilinxCEDStore/tree/2024.1/ced/Xilinx/IPI/Versal_Extensible_Embedded_Platform/README.md}  [current_bd_design]
 		} else {
 			
 			set_property USER_COMMENTS.comment0 {\t \t ======================= >>>>>>>>> An Example Versal Extensible Embedded Platform <<<<<<<<< =======================
@@ -756,7 +756,7 @@ if { $bdc eq "true" } {
 			\t --> BD has VIPs on the accelerator SmartConnect IPs because IPI platform can't handle export with no slaves on SmartConnect IP.
 			\t \t \t \t \t \t \t Hence VIPs are there to have at least one slave on a smart connect
 			\t --> Execute TCL command : launch_simulation -scripts_only ,to establish the sim_1 source set hierarchy after successful design creation.
-			\t --> For Next steps, Refer to README.md https://github.com/Xilinx/XilinxCEDStore/tree/2023.2/ced/Xilinx/IPI/Versal_Extensible_Embedded_Platform/README.md}  [current_bd_design] 
+			\t --> For Next steps, Refer to README.md https://github.com/Xilinx/XilinxCEDStore/tree/2024.1/ced/Xilinx/IPI/Versal_Extensible_Embedded_Platform/README.md}  [current_bd_design] 
 		}
 	}
 	
@@ -774,7 +774,7 @@ if { $bdc eq "true" } {
 				\t --> AI Engine control path is connected to CIPS
 				\t --> V++ will connect AI Engine data path automatically
 				\t --> Execute TCL command : launch_simulation -scripts_only ,to establish the sim_1 source set hierarchy after successful design creation.
-				\t --> For Next steps, Refer to README.md https://github.com/Xilinx/XilinxCEDStore/tree/2023.2/ced/Xilinx/IPI/Versal_Extensible_Embedded_Platform/README.md",
+				\t --> For Next steps, Refer to README.md https://github.com/Xilinx/XilinxCEDStore/tree/2024.1/ced/Xilinx/IPI/Versal_Extensible_Embedded_Platform/README.md",
 			   "commentid":"comment_0|",
 			   "font_comment_0":"14",
 			   "guistr":"# # String gsaved with Nlview 7.0r4  2019-12-20 bk=1.5203 VDI=41 GEI=36 GUI=JA:10.0 TLS
@@ -791,7 +791,7 @@ if { $bdc eq "true" } {
 				\t Note:
 				\t --> Board preset applied to CIPS and memory controller
 				\t --> Execute TCL command : launch_simulation -scripts_only ,to establish the sim_1 source set hierarchy after successful design creation.
-				\t --> For Next steps, Refer to README.md https://github.com/Xilinx/XilinxCEDStore/tree/2023.2/ced/Xilinx/IPI/Versal_Extensible_Embedded_Platform/README.md",
+				\t --> For Next steps, Refer to README.md https://github.com/Xilinx/XilinxCEDStore/tree/2024.1/ced/Xilinx/IPI/Versal_Extensible_Embedded_Platform/README.md",
 			   "commentid":"comment_0|",
 			   "font_comment_0":"14",
 			   "guistr":"# # String gsaved with Nlview 7.0r4  2019-12-20 bk=1.5203 VDI=41 GEI=36 GUI=JA:10.0 TLS
@@ -815,7 +815,7 @@ if { $bdc eq "true" } {
 				\t --> BD has VIPs on the accelerator SmartConnect IPs because IPI platform can't handle export with no slaves on SmartConnect IP.
 				\t \t \t \t \t \t \t Hence VIPs are there to have at least one slave on a smart connect
 				\t --> Execute TCL command : launch_simulation -scripts_only ,to establish the sim_1 source set hierarchy after successful design creation.
-				\t --> For Next steps, Refer to README.md https://github.com/Xilinx/XilinxCEDStore/tree/2023.2/ced/Xilinx/IPI/Versal_Extensible_Embedded_Platform/README.md",
+				\t --> For Next steps, Refer to README.md https://github.com/Xilinx/XilinxCEDStore/tree/2024.1/ced/Xilinx/IPI/Versal_Extensible_Embedded_Platform/README.md",
 			   "commentid":"comment_0|",
 			   "font_comment_0":"14",
 			   "guistr":"# # String gsaved with Nlview 7.0r4  2019-12-20 bk=1.5203 VDI=41 GEI=36 GUI=JA:10.0 TLS
@@ -834,7 +834,7 @@ if { $bdc eq "true" } {
 				\t --> BD has VIPs on the accelerator SmartConnect IPs because IPI platform can't handle export with no slaves on SmartConnect IP.
 				\t \t \t \t \t \t \t Hence VIPs are there to have at least one slave on a smart connect
 				\t --> Execute TCL command : launch_simulation -scripts_only ,to establish the sim_1 source set hierarchy after successful design creation.
-				\t --> For Next steps, Refer to README.md https://github.com/Xilinx/XilinxCEDStore/tree/2023.2/ced/Xilinx/IPI/Versal_Extensible_Embedded_Platform/README.md",
+				\t --> For Next steps, Refer to README.md https://github.com/Xilinx/XilinxCEDStore/tree/2024.1/ced/Xilinx/IPI/Versal_Extensible_Embedded_Platform/README.md",
 			   "commentid":"comment_0|",
 			   "font_comment_0":"14",
 			   "guistr":"# # String gsaved with Nlview 7.0r4  2019-12-20 bk=1.5203 VDI=41 GEI=36 GUI=JA:10.0 TLS

@@ -574,7 +574,7 @@ proc create_root_design { parentCell } {
       PS_PCIE1_PERIPHERAL_ENABLE {0} \
       PS_PCIE2_PERIPHERAL_ENABLE {1} \
       PS_PCIE_EP_RESET1_IO {None} \
-      PS_PCIE_EP_RESET2_IO {PMC_MIO 39} \
+      PS_PCIE_EP_RESET2_IO {PS_MIO 19} \
       PS_PCIE_RESET {{ENABLE 1}} \
       PS_PL_CONNECTIVITY_MODE {Custom} \
       PS_USE_M_AXI_FPD {1} \

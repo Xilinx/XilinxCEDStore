@@ -5,9 +5,9 @@ This package contains the CPM - PCIe BMD Example Design along with the
 Testbench to exercise the same. Please use below version of tools to run the
 simulation
 
-Vivado Version  - 2023.2 
-VCS Version     - U-2023.03-1
-Questa Version  - 2023.2
+Vivado Version  - 2024.1 
+VCS Version     - U-2023.03-SP2
+Questa Version  - 2023.3
 
 - For launching the simulation, under Project Manager -> Settings -> Simulation
 	- Update Target Simulator as VCS/Questa
