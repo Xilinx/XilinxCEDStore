@@ -156,7 +156,7 @@ proc create_root_design { parentCell design_name temp_options} {
    CONFIG.DATA_WIDTH {128} \
    CONFIG.R_TRAFFIC_CLASS {BEST_EFFORT} \
    CONFIG.W_TRAFFIC_CLASS {BEST_EFFORT} \
-   CONFIG.CONNECTIONS {M03_AXI { read_bw {1720} write_bw {1720} read_avg_burst {4} write_avg_burst {4}} M01_AXI { read_bw {3000} write_bw {3000} read_avg_burst {4} write_avg_burst {4}} M02_AXI { read_bw {1000} write_bw {1000} read_avg_burst {4} write_avg_burst {4}} M00_AXI { read_bw {3000} write_bw {3000}}} \
+   CONFIG.CONNECTIONS {M03_AXI { read_bw {1000} write_bw {1000} read_avg_burst {4} write_avg_burst {4}} M01_AXI { read_bw {1000} write_bw {1000} read_avg_burst {4} write_avg_burst {4}} M02_AXI { read_bw {500} write_bw {500} read_avg_burst {4} write_avg_burst {4}} M00_AXI { read_bw {1000} write_bw {1000}}} \
    CONFIG.DEST_IDS {M03_AXI:0x140:M01_AXI:0x40:M02_AXI:0x0:M00_AXI:0x80} \
    CONFIG.REMAPS { M00_AXI {{0x0 0x201_C000_0000 64K}}} \
    CONFIG.CATEGORY {ps_pcie} \
@@ -166,7 +166,7 @@ proc create_root_design { parentCell design_name temp_options} {
    CONFIG.DATA_WIDTH {128} \
    CONFIG.R_TRAFFIC_CLASS {BEST_EFFORT} \
    CONFIG.W_TRAFFIC_CLASS {BEST_EFFORT} \
-   CONFIG.CONNECTIONS {M03_AXI { read_bw {1720} write_bw {1720} read_avg_burst {4} write_avg_burst {4}} M01_AXI { read_bw {3000} write_bw {3000} read_avg_burst {4} write_avg_burst {4}} M02_AXI { read_bw {1000} write_bw {1000} read_avg_burst {4} write_avg_burst {4}} M00_AXI { read_bw {3000} write_bw {3000} read_avg_burst {4} write_avg_burst {4}}} \
+   CONFIG.CONNECTIONS {M03_AXI { read_bw {1000} write_bw {1000} read_avg_burst {4} write_avg_burst {4}} M01_AXI { read_bw {1000} write_bw {1000} read_avg_burst {4} write_avg_burst {4}} M02_AXI { read_bw {500} write_bw {500} read_avg_burst {4} write_avg_burst {4}} M00_AXI { read_bw {1000} write_bw {1000} read_avg_burst {4} write_avg_burst {4}}} \
    CONFIG.DEST_IDS {M03_AXI:0x140:M01_AXI:0x40:M02_AXI:0x0:M00_AXI:0x80} \
    CONFIG.REMAPS { M00_AXI {{0x0 0x201_C000_0000 64K}}} \
    CONFIG.CATEGORY {ps_pcie} \
@@ -174,7 +174,7 @@ proc create_root_design { parentCell design_name temp_options} {
 
   set_property -dict [ list \
    CONFIG.DATA_WIDTH {128} \
-   CONFIG.CONNECTIONS {M01_AXI { read_bw {1720} write_bw {1720} read_avg_burst {4} write_avg_burst {4}} M02_AXI { read_bw {1720} write_bw {1720} read_avg_burst {4} write_avg_burst {4}} M00_AXI { read_bw {1720} write_bw {1720} read_avg_burst {4} write_avg_burst {4}} } \
+   CONFIG.CONNECTIONS {M01_AXI { read_bw {1500} write_bw {1500} read_avg_burst {4} write_avg_burst {4}} M02_AXI { read_bw {500} write_bw {500} read_avg_burst {4} write_avg_burst {4}} M00_AXI { read_bw {1000} write_bw {1000} read_avg_burst {4} write_avg_burst {4}} } \
    CONFIG.DEST_IDS {M01_AXI:0x40:M02_AXI:0x0:M00_AXI:0x80} \
    CONFIG.REMAPS { M00_AXI {{0x0 0x201_C000_0000 64K}}} \
    CONFIG.CATEGORY {ps_pmc} \
