@@ -123,6 +123,8 @@ set bCheckIPs 1
 if { $bCheckIPs == 1 } {
    set list_check_ips "\ 
 xilinx.com:ip:versal_cips:*\
+xilinx.com:ip:axis_register_slice:*\
+xilinx.com:ip:xlconstant:*\
 "
 
    set list_ips_missing ""
@@ -240,8 +242,6 @@ proc create_root_design { parentCell } {
 
   set pcie0_transmit_fc_0 [ create_bd_intf_port -mode Master -vlnv xilinx.com:interface:pcie3_transmit_fc_rtl:1.0 pcie0_transmit_fc_0 ]
 
-  set pcie0_pipe_rp_0 [ create_bd_intf_port -mode Master -vlnv xilinx.com:interface:pcie_ext_pipe_rtl:1.0 pcie0_pipe_rp_0 ]
-
 
   # Create ports
   set cpm_cor_irq_0 [ create_bd_port -dir O -type intr cpm_cor_irq_0 ]
@@ -286,10 +286,14 @@ proc create_root_design { parentCell } {
       DESIGN_MODE {1} \
       PCIE_APERTURES_DUAL_ENABLE {0} \
       PCIE_APERTURES_SINGLE_ENABLE {0} \
+      PMC_GPIO_EMIO_PERIPHERAL_ENABLE {0} \
+      PMC_MIO32 {{AUX_IO 0} {DIRECTION in} {DRIVE_STRENGTH 8mA} {OUTPUT_DATA default} {PULL pullup} {SCHMITT 0} {SLEW slow} {USAGE Unassigned}} \
+      PMC_MIO_EN_FOR_PL_PCIE {0} \
       PS_BOARD_INTERFACE {Custom} \
+      PS_GPIO_EMIO_PERIPHERAL_ENABLE {0} \
       PS_PCIE1_PERIPHERAL_ENABLE {1} \
       PS_PCIE2_PERIPHERAL_ENABLE {0} \
-      PS_PCIE_EP_RESET1_IO {PS_MIO 18} \
+      PS_PCIE_EP_RESET1_IO {PMC_MIO 38} \
       PS_PCIE_RESET {ENABLE 1} \
       SMON_ALARMS {Set_Alarms_On} \
       SMON_ENABLE_TEMP_AVERAGING {0} \
@@ -299,22 +303,69 @@ proc create_root_design { parentCell } {
   ] $versal_cips_0
 
 
+  # Create instance: axis_register_slice_0, and set properties
+  set axis_register_slice_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:axis_register_slice axis_register_slice_0 ]
+  set_property -dict [list \
+    CONFIG.HAS_TKEEP {1} \
+    CONFIG.HAS_TLAST {1} \
+    CONFIG.TDATA_NUM_BYTES {64} \
+    CONFIG.TUSER_WIDTH {161} \
+  ] $axis_register_slice_0
+
+
+  # Create instance: axis_register_slice_1, and set properties
+  set axis_register_slice_1 [ create_bd_cell -type ip -vlnv xilinx.com:ip:axis_register_slice axis_register_slice_1 ]
+  set_property -dict [list \
+    CONFIG.HAS_TKEEP {1} \
+    CONFIG.HAS_TLAST {1} \
+    CONFIG.TDATA_NUM_BYTES {64} \
+    CONFIG.TUSER_WIDTH {231} \
+  ] $axis_register_slice_1
+
+
+  # Create instance: xlconstant_0, and set properties
+  set xlconstant_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:xlconstant xlconstant_0 ]
+
+  # Create instance: axis_register_slice_2, and set properties
+  set axis_register_slice_2 [ create_bd_cell -type ip -vlnv xilinx.com:ip:axis_register_slice axis_register_slice_2 ]
+  set_property -dict [list \
+    CONFIG.HAS_TKEEP {1} \
+    CONFIG.HAS_TLAST {1} \
+    CONFIG.TDATA_NUM_BYTES {64} \
+    CONFIG.TUSER_WIDTH {183} \
+  ] $axis_register_slice_2
+
+
+  # Create instance: axis_register_slice_3, and set properties
+  set axis_register_slice_3 [ create_bd_cell -type ip -vlnv xilinx.com:ip:axis_register_slice axis_register_slice_3 ]
+  set_property -dict [list \
+    CONFIG.HAS_TKEEP {1} \
+    CONFIG.HAS_TLAST {1} \
+    CONFIG.TDATA_NUM_BYTES {64} \
+    CONFIG.TUSER_WIDTH {81} \
+  ] $axis_register_slice_3
+
+
   # Create interface connections
+  connect_bd_intf_net -intf_net axis_register_slice_0_M_AXIS [get_bd_intf_ports pcie0_m_axis_rc_0] [get_bd_intf_pins axis_register_slice_0/M_AXIS]
+  connect_bd_intf_net -intf_net axis_register_slice_1_M_AXIS [get_bd_intf_ports pcie0_m_axis_cq_0] [get_bd_intf_pins axis_register_slice_1/M_AXIS]
+  connect_bd_intf_net -intf_net axis_register_slice_2_M_AXIS [get_bd_intf_pins versal_cips_0/pcie0_s_axis_rq] [get_bd_intf_pins axis_register_slice_2/M_AXIS]
+  connect_bd_intf_net -intf_net axis_register_slice_3_M_AXIS [get_bd_intf_pins versal_cips_0/pcie0_s_axis_cc] [get_bd_intf_pins axis_register_slice_3/M_AXIS]
   connect_bd_intf_net -intf_net gt_refclk0_0_1 [get_bd_intf_ports gt_refclk0_0] [get_bd_intf_pins versal_cips_0/gt_refclk0]
   connect_bd_intf_net -intf_net pcie0_cfg_control_0_1 [get_bd_intf_ports pcie0_cfg_control_0] [get_bd_intf_pins versal_cips_0/pcie0_cfg_control]
   connect_bd_intf_net -intf_net pcie0_cfg_interrupt_0_1 [get_bd_intf_ports pcie0_cfg_interrupt_0] [get_bd_intf_pins versal_cips_0/pcie0_cfg_interrupt]
   connect_bd_intf_net -intf_net pcie0_cfg_mgmt_0_1 [get_bd_intf_ports pcie0_cfg_mgmt_0] [get_bd_intf_pins versal_cips_0/pcie0_cfg_mgmt]
   connect_bd_intf_net -intf_net pcie0_cfg_msi_0_1 [get_bd_intf_ports pcie0_cfg_msi_0] [get_bd_intf_pins versal_cips_0/pcie0_cfg_msi]
-  connect_bd_intf_net -intf_net pcie0_s_axis_cc_0_1 [get_bd_intf_ports pcie0_s_axis_cc_0] [get_bd_intf_pins versal_cips_0/pcie0_s_axis_cc]
-  connect_bd_intf_net -intf_net pcie0_s_axis_rq_0_1 [get_bd_intf_ports pcie0_s_axis_rq_0] [get_bd_intf_pins versal_cips_0/pcie0_s_axis_rq]
+  connect_bd_intf_net -intf_net pcie0_s_axis_cc_0_1 [get_bd_intf_ports pcie0_s_axis_cc_0] [get_bd_intf_pins axis_register_slice_3/S_AXIS]
+  connect_bd_intf_net -intf_net pcie0_s_axis_rq_0_1 [get_bd_intf_ports pcie0_s_axis_rq_0] [get_bd_intf_pins axis_register_slice_2/S_AXIS]
   connect_bd_intf_net -intf_net versal_cips_0_PCIE0_GT [get_bd_intf_ports PCIE0_GT_0] [get_bd_intf_pins versal_cips_0/PCIE0_GT]
   connect_bd_intf_net -intf_net versal_cips_0_pcie0_cfg_ext [get_bd_intf_ports pcie0_cfg_ext_0] [get_bd_intf_pins versal_cips_0/pcie0_cfg_ext]
   connect_bd_intf_net -intf_net versal_cips_0_pcie0_cfg_fc [get_bd_intf_ports pcie0_cfg_fc_0] [get_bd_intf_pins versal_cips_0/pcie0_cfg_fc]
   connect_bd_intf_net -intf_net versal_cips_0_pcie0_cfg_msg_recd [get_bd_intf_ports pcie0_cfg_msg_recd_0] [get_bd_intf_pins versal_cips_0/pcie0_cfg_msg_recd]
   connect_bd_intf_net -intf_net versal_cips_0_pcie0_cfg_msg_tx [get_bd_intf_ports pcie0_cfg_msg_tx_0] [get_bd_intf_pins versal_cips_0/pcie0_cfg_msg_tx]
   connect_bd_intf_net -intf_net versal_cips_0_pcie0_cfg_status [get_bd_intf_ports pcie0_cfg_status_0] [get_bd_intf_pins versal_cips_0/pcie0_cfg_status]
-  connect_bd_intf_net -intf_net versal_cips_0_pcie0_m_axis_cq [get_bd_intf_ports pcie0_m_axis_cq_0] [get_bd_intf_pins versal_cips_0/pcie0_m_axis_cq]
-  connect_bd_intf_net -intf_net versal_cips_0_pcie0_m_axis_rc [get_bd_intf_ports pcie0_m_axis_rc_0] [get_bd_intf_pins versal_cips_0/pcie0_m_axis_rc]
+  connect_bd_intf_net -intf_net versal_cips_0_pcie0_m_axis_cq [get_bd_intf_pins versal_cips_0/pcie0_m_axis_cq] [get_bd_intf_pins axis_register_slice_1/S_AXIS]
+  connect_bd_intf_net -intf_net versal_cips_0_pcie0_m_axis_rc [get_bd_intf_pins versal_cips_0/pcie0_m_axis_rc] [get_bd_intf_pins axis_register_slice_0/S_AXIS]
   connect_bd_intf_net -intf_net versal_cips_0_pcie0_transmit_fc [get_bd_intf_ports pcie0_transmit_fc_0] [get_bd_intf_pins versal_cips_0/pcie0_transmit_fc]
 
   # Create port connections
@@ -323,9 +374,10 @@ proc create_root_design { parentCell } {
   connect_bd_net -net versal_cips_0_cpm_cor_irq [get_bd_pins versal_cips_0/cpm_cor_irq] [get_bd_ports cpm_cor_irq_0]
   connect_bd_net -net versal_cips_0_cpm_misc_irq [get_bd_pins versal_cips_0/cpm_misc_irq] [get_bd_ports cpm_misc_irq_0]
   connect_bd_net -net versal_cips_0_cpm_uncor_irq [get_bd_pins versal_cips_0/cpm_uncor_irq] [get_bd_ports cpm_uncor_irq_0]
-  connect_bd_net -net versal_cips_0_pcie0_user_clk [get_bd_pins versal_cips_0/pcie0_user_clk] [get_bd_ports pcie0_user_clk_0]
+  connect_bd_net -net versal_cips_0_pcie0_user_clk [get_bd_pins versal_cips_0/pcie0_user_clk] [get_bd_ports pcie0_user_clk_0] [get_bd_pins axis_register_slice_0/aclk] [get_bd_pins axis_register_slice_1/aclk] [get_bd_pins axis_register_slice_2/aclk] [get_bd_pins axis_register_slice_3/aclk]
   connect_bd_net -net versal_cips_0_pcie0_user_lnk_up [get_bd_pins versal_cips_0/pcie0_user_lnk_up] [get_bd_ports pcie0_user_lnk_up_0]
   connect_bd_net -net versal_cips_0_pcie0_user_reset [get_bd_pins versal_cips_0/pcie0_user_reset] [get_bd_ports pcie0_user_reset_0]
+  connect_bd_net -net xlconstant_0_dout [get_bd_pins xlconstant_0/dout] [get_bd_pins axis_register_slice_1/aresetn] [get_bd_pins axis_register_slice_0/aresetn] [get_bd_pins axis_register_slice_2/aresetn] [get_bd_pins axis_register_slice_3/aresetn]
 
   # Create address segments
 

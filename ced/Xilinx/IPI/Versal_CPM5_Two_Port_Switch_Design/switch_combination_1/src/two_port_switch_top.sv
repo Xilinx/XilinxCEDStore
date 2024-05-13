@@ -391,6 +391,7 @@ module two_port_switch_top #(
   wire usp_pcie0_user_clk_0;
   wire usp_pcie0_user_lnk_up_0;
   wire usp_pcie0_user_reset_0;
+  wire usp_pl_pcie1_resetn_0;
 
   // Internal Signals for Switch Logic
 
@@ -638,7 +639,7 @@ module two_port_switch_top #(
   );
   OBUF sys_reset_n_obuf (
       .O(sys_rst_o),
-      .I(sys_rst_user)
+      .I(usp_pl_pcie1_resetn_0)
   );
 
   // USP BD Instantiate
@@ -805,6 +806,7 @@ module two_port_switch_top #(
           .pcie0_user_clk_0(usp_pcie0_user_clk_0),
           .pcie0_user_lnk_up_0(usp_pcie0_user_lnk_up_0),
           .pcie0_user_reset_0(usp_pcie0_user_reset_0),
+          .pl_pcie1_resetn_0(usp_pl_pcie1_resetn_0),
           .pcie0_pipe_ep_0_commands_in(usp_pcie0_pipe_ep_0_commands_in),
           .pcie0_pipe_ep_0_commands_out(usp_pcie0_pipe_ep_0_commands_out),
           .pcie0_pipe_ep_0_rx_0(usp_pcie0_pipe_ep_0_rx_0),
@@ -1001,7 +1003,8 @@ module two_port_switch_top #(
           .pcie0_transmit_fc_0_nph_av(usp_pcie0_transmit_fc_0_nph_av),
           .pcie0_user_clk_0(usp_pcie0_user_clk_0),
           .pcie0_user_lnk_up_0(usp_pcie0_user_lnk_up_0),
-          .pcie0_user_reset_0(usp_pcie0_user_reset_0)//,
+          .pcie0_user_reset_0(usp_pcie0_user_reset_0),
+          .pl_pcie1_resetn_0(usp_pl_pcie1_resetn_0)//,
           // .pcie0_pipe_ep_0_commands_in(),
           // .pcie0_pipe_ep_0_commands_out(),
           // .pcie0_pipe_ep_0_rx_0(),

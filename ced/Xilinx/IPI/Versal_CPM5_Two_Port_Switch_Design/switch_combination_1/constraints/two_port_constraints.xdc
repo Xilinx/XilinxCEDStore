@@ -9,7 +9,7 @@ create_clock -period 10.000 -name sys_clk_dsp [get_ports {dsp_pcie_refclk_clk_p}
 #create_clock -period 10.000 -name sys_clk_gt_dsp [get_pins {gen_ext_pipe_sim_dsp.switch_dsp/refclk_ibuf/U0/USE_IBUFDS_GTE5.GEN_IBUFDS_GTE5[0].IBUFDS_GTE5_I/O}]
 
 set_property PACKAGE_PIN T31 [get_ports sys_rst]
-set_property PACKAGE_PIN K35 [get_ports sys_rst_o]
+set_property PACKAGE_PIN P33 [get_ports sys_rst_o]
 
 set_property IOSTANDARD LVCMOS15 [get_ports sys_rst]
 set_property IOSTANDARD LVCMOS15 [get_ports sys_rst_o]

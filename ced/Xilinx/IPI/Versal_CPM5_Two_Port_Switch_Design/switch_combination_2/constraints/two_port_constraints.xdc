@@ -1,13 +1,13 @@
-#create_property PF0_PL32_CAP_NEXTPTR cell -type string
+create_property PF0_PL32_CAP_NEXTPTR cell -type string
 # create_property PF0_CLASS_CODE cell -type string
 ###############################################################################
 # User Time Names / User Time Groups / Time Specs
 ###############################################################################
-create_clock -period 10.000 -name sys_clk_usp [get_ports {usp_pcie_refclk_clk_p}]
+create_clock -period 10.000 -name sys_clk_usp [get_ports usp_pcie_refclk_clk_p]
 #create_clock -period 10.000 -name sys_clk_gt_usp [get_pins {gen_ext_pipe_sim_usp.switch_usp/refclk_ibuf/U0/USE_IBUFDS_GTE5.GEN_IBUFDS_GTE5[0].IBUFDS_GTE5_I/O}]
 
 set_property PACKAGE_PIN T31 [get_ports sys_rst]
-set_property PACKAGE_PIN K35 [get_ports sys_rst_o]
+set_property PACKAGE_PIN P33 [get_ports sys_rst_o]
 
 set_property IOSTANDARD LVCMOS15 [get_ports sys_rst]
 set_property IOSTANDARD LVCMOS15 [get_ports sys_rst_o]
@@ -45,9 +45,9 @@ set_property BITSTREAM.GENERAL.COMPRESS true [current_design]
 set_property BITSTREAM.GENERAL.WRITE0FRAMES No [current_design]
 set_property BITSTREAM.GENERAL.PROCESSALLVEAMS true [current_design]
 
-set_clock_groups -name async0 -asynchronous -group [get_clocks {sys_clk_usp }] -group [get_clocks GT_REFCLK0]
+set_clock_groups -name async0 -asynchronous -group [get_clocks sys_clk_usp] -group [get_clocks GT_REFCLK0]
 
-set_clock_groups -name async1 -asynchronous -group [get_clocks {sys_clk_usp }] -group [list [get_clocks -of [get_pins {gen_ext_pipe_sim_usp.switch_usp/pcie_phy/inst/diablo_gt_phy_wrapper/gt_top_i/diablo_gt_phy_wrapper/phy_clk_i/bufg_gt_pclk/O gen_ext_pipe_sim_usp.switch_usp/pcie_phy/inst/diablo_gt_phy_wrapper/gt_top_i/diablo_gt_phy_wrapper/phy_clk_i/bufg_gt_userclk/O}]] [get_clocks ch0_txoutclk]]
+set_clock_groups -name async1 -asynchronous -group [get_clocks sys_clk_usp] -group [list [get_clocks -of [get_pins {gen_ext_pipe_sim_usp.switch_usp/pcie_phy/inst/diablo_gt_phy_wrapper/gt_top_i/diablo_gt_phy_wrapper/phy_clk_i/bufg_gt_pclk/O gen_ext_pipe_sim_usp.switch_usp/pcie_phy/inst/diablo_gt_phy_wrapper/gt_top_i/diablo_gt_phy_wrapper/phy_clk_i/bufg_gt_userclk/O}]] [get_clocks ch0_txoutclk]]
 
 
 
@@ -59,7 +59,7 @@ set_clock_groups -name async1 -asynchronous -group [get_clocks {sys_clk_usp }] -
 
 
 
-#set_property PF0_PL32_CAP_NEXTPTR 12'h000 [get_cells gen_ext_pipe_sim_usp.switch_usp/pcie_versal_0/inst/serial_pcie_top.pcie_5_0_pipe_inst/pcie_5_0_e5_inst]
+set_property PF0_PL32_CAP_NEXTPTR 12'h000 [get_cells gen_ext_pipe_sim_usp.switch_usp/pcie_versal_0/inst/serial_pcie_top.pcie_5_0_pipe_inst/pcie_5_0_e5_inst]
 
 
 

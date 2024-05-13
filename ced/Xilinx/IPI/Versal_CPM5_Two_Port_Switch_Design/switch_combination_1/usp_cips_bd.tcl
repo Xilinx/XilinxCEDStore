@@ -242,8 +242,6 @@ proc create_root_design { parentCell } {
 
   set pcie0_transmit_fc_0 [ create_bd_intf_port -mode Master -vlnv xilinx.com:interface:pcie3_transmit_fc_rtl:1.0 pcie0_transmit_fc_0 ]
 
-  set pcie0_pipe_ep_0 [ create_bd_intf_port -mode Slave -vlnv xilinx.com:interface:pcie_ext_pipe_rtl:1.0 pcie0_pipe_ep_0 ]
-
 
   # Create ports
   set cpm_cor_irq_0 [ create_bd_port -dir O -type intr cpm_cor_irq_0 ]
@@ -293,7 +291,7 @@ proc create_root_design { parentCell } {
       PS_BOARD_INTERFACE {Custom} \
       PS_PCIE1_PERIPHERAL_ENABLE {1} \
       PS_PCIE2_PERIPHERAL_ENABLE {0} \
-      PS_PCIE_EP_RESET1_IO {PS_MIO 18} \
+      PS_PCIE_EP_RESET1_IO {PMC_MIO 38} \
       PS_PCIE_RESET {ENABLE 1} \
       SMON_ALARMS {Set_Alarms_On} \
       SMON_ENABLE_TEMP_AVERAGING {0} \

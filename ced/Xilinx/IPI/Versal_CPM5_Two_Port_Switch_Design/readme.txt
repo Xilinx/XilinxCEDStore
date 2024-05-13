@@ -1,11 +1,11 @@
 ##############################################################################
-		CPM - PCIe BMD Example Design
+		CPM - Two Port Switch Example Design
 ##############################################################################
-This package contains the CPM - PCIe BMD Example Design along with the
+This package contains the CPM - Two Port Switch Example Design along with the
 Testbench to exercise the same. Please use below version of tools to run the
 simulation
 
-Vivado Version  - 2024.1 
+Vivado Version  - 2024.1
 VCS Version     - U-2023.03-SP2
 Questa Version  - 2023.3
 
@@ -25,6 +25,8 @@ Questa Version  - 2023.3
   
 
 NOTE : 
-1. The integrated testcase simulation will run for ~650us
-2. BMD g5x8 design will not support xcvp1202-vsva2785-2MP-e-S board part
+ The reset from the Upstream Port in the Switch Design is placed on pin P33 
+ (J344, pin 9) of the board as defined in the constraints file. The customers 
+ must physically route this reset to the Downstream Port and its link partner.
+
 ##############################################################################

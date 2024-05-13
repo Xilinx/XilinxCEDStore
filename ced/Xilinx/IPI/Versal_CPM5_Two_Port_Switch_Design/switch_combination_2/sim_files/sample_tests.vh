@@ -161,11 +161,11 @@ $display("[%t] : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : :
   board.RP.tx_usrapp.TSK_MEM32_RD(32'h218);
 
   //TLP RD Address
-  board.RP.tx_usrapp.TSK_MEM32_WR(32'h21c, 32'h00000000,4'hf);
+  board.RP.tx_usrapp.TSK_MEM32_WR(32'h21c, 32'h00000008,4'hf);
   board.RP.tx_usrapp.TSK_MEM32_RD(32'h21c);
 
   //TLP RD Size
-  board.RP.tx_usrapp.TSK_MEM32_WR(32'h220, 32'h00000020,4'hf);//40 // 20
+  board.RP.tx_usrapp.TSK_MEM32_WR(32'h220, 32'h00000004,4'hf);//40 // 20
   board.RP.tx_usrapp.TSK_MEM32_RD(32'h220);
 
   //TLP RD Count
