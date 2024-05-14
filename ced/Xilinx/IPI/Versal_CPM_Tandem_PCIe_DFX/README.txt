@@ -69,12 +69,36 @@ for ease of use.
   5. Reboot the host system 
   6. Load the QDMA driver(s) 
 
+     !! IMPORTANT !! 
+     All of the subsequent steps are easily captured in the CED's scripts.tar
+     tarball. Simply expand it on your host system and run the scripts 
+     directly instead of copying all of these commands one by one.
+
     $> modprobe qdma-pf //physical functions
     $> modprobe qdma-vf //virtual functions (if necessary)
 
+     To confirm that everything has been successful so far, issue the below
+     command and confirm that the output line is present that shows that the
+     QDMA driver has been successfully attached to the device. If the output
+     line is not present, STOP and debug the issue, as this is a required
+     preliminary step.
+ 
+    $> lspci -vd 10ee:
+          ...
+          ...
+          Kernel drive in use: qdma-pf
+          ...
+
+     Note the BDF assigned to your device, which is system specific. For the
+     purpose of this example, assume that the BDF is b3:00.0, as it can be
+     seen in the commands shown here. If using the provided scripts embedded
+     in the scripts.tar file, you will need to specify your system's BDF in 
+     the script or via BDF environment variable. If copying the commands 
+     shown in this README, replace b3:00.0 with your system's BDF.
+
   7. Using sysfs, set the max number of queue pairs. This is set to 3 in this
      example because there will be 3 queues for data transfer: 1 H2C and 1 C2H
-     memory mapped, and 1 H2C streaming. Assume the B:D.F is b3:00.0.
+     memory mapped, and 1 H2C streaming.
 
     $> echo 3 > /sys/bus/pci/devices/0000:b3:00.0/qdma/qmax
 
@@ -97,25 +121,27 @@ for ease of use.
   10. Transfer the stage two bitstream to the device to be programmed, 
       targeting the SBI FIFO using address 0x102100000 
 
-    $> dma-to-device -d /dev/qdmab30000-MM-0 -f <stage2.pdi> -s <size> -a 0x102100000
+    $> dma-to-device -d /dev/qdmab3000-MM-0 -f <stage2.pdi> -s <size> -a 0x102100000
 
       !! IMPORTANT !! 
       If a device with CPM4 (not CPM5) is selected for this CED, it is required to 
       remove the driver (rmmod qdma-pf), then go back to Step 6 to re-initialize 
       the driver after loading the stage two bitstream to the device.
 
-  11. (Optional) Perform H2C and C2H MM DMAs to BRAM and H2C ST DMA to the PL
+  11. (Optional) Perform H2C and C2H MM DMAs to/from BRAM and H2C ST DMA to the PL
       to verify that the stage two has successfully been programmed to the
       device
  
-    // H2C MM DMA to BRAM
-    $> dma-to-device -d /dev/qdmab30000-MM-0 -f /dev/urandom -s 32 -a 0x0 -c 1
-    // H2C MM DMA from BRAM
-    $> dma-from-device -d /dev/qdmab30000-MM-1 -f frombram.raw -s 32 -a 0x0 -c 1
-    // H2C ST DMA to PL
-    $> dma-to-device -d /dev/qdmab30000-ST-2 -f /dev/urandom -s 64 
+    // H2C MM DMA to BRAM (32B of random data written to card)
+    $> dma-to-device -d /dev/qdmab3000-MM-0 -f /dev/urandom -s 32 -a 0x0 -c 1
+    // C2H MM DMA from BRAM (32B of data read from card and saved to frombram.raw file)
+    $> dma-from-device -d /dev/qdmab3000-MM-1 -f frombram.raw -s 32 -a 0x0 -c 1
+    $> hexdump frombram.raw //examine the data from card
+    // H2C ST DMA to PL (64B of random data written to card)
 
-DESIGN FUNCTION EXCHANGE (DFX)
+    $> dma-to-device -d /dev/qdmab3000-ST-2 -f /dev/urandom -s 64 
+
+DYNAMIC FUNCTION EXCHANGE (DFX)
 
 This example design may optionally be generated to include scripts and settings
 to demonstrate the DFX feature, which is used to create partial bitstream(s) for
@@ -146,7 +172,7 @@ IP core input connected to the counter output, it is easy to see which module
 implementation has been programmed to the device by simply confirming whether 
 all 16 bits are changing or only 8 bits.
 
-The second reconfigurable parition is inserted between the write data path of
+The second reconfigurable partition is inserted between the write data path of
 the addressable BRAM in the design. By default, it is a simple passthrough, but
 the alternative implementation reverses the data, nibble-by-nibble. For 
 example, writing 0x76543210 to the BRAM will return 0x01234567 when read. This
