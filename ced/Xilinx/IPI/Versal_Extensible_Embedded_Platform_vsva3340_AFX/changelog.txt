@@ -1,3 +1,0 @@
-######### Extensible Embedded Platform example design_VSVA3340 AFX change log ##############
-2022.2 changes 
-versal_ext_emb_platform part based CED support for package VSVA3340 AFX 

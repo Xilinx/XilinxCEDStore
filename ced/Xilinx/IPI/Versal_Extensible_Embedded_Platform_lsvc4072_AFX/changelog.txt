@@ -1,3 +1,0 @@
-######### Extensible Embedded Platform example design_lsvc4072 AFX change log ##############
-2022.2 changes 
-versal part_support_lsvc4072_AFX
