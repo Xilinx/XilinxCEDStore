@@ -257,6 +257,7 @@ proc create_root_design { parentCell } {
 
   set pcie0_user_lnk_up_0 [ create_bd_port -dir O pcie0_user_lnk_up_0 ]
   set pcie0_user_reset_0 [ create_bd_port -dir O -type rst pcie0_user_reset_0 ]
+  set pl_pcie1_resetn_0 [ create_bd_port -dir O -type rst pl_pcie1_resetn_0 ]
 
   # Create instance: versal_cips_0, and set properties
   set versal_cips_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:versal_cips versal_cips_0 ]
@@ -288,10 +289,12 @@ proc create_root_design { parentCell } {
       DESIGN_MODE {1} \
       PCIE_APERTURES_DUAL_ENABLE {0} \
       PCIE_APERTURES_SINGLE_ENABLE {0} \
+      PMC_MIO_EN_FOR_PL_PCIE {1} \
       PS_BOARD_INTERFACE {Custom} \
       PS_PCIE1_PERIPHERAL_ENABLE {1} \
       PS_PCIE2_PERIPHERAL_ENABLE {0} \
       PS_PCIE_EP_RESET1_IO {PMC_MIO 38} \
+      PS_PCIE_EP_RESET2_IO {PMC_MIO 39} \
       PS_PCIE_RESET {ENABLE 1} \
       SMON_ALARMS {Set_Alarms_On} \
       SMON_ENABLE_TEMP_AVERAGING {0} \
@@ -351,6 +354,7 @@ proc create_root_design { parentCell } {
   connect_bd_net -net versal_cips_0_pcie0_user_clk [get_bd_pins versal_cips_0/pcie0_user_clk] [get_bd_ports pcie0_user_clk_0] [get_bd_pins axis_register_slice_0/aclk] [get_bd_pins axis_register_slice_1/aclk] [get_bd_pins axis_register_slice_3/aclk] [get_bd_pins axis_register_slice_2/aclk]
   connect_bd_net -net versal_cips_0_pcie0_user_lnk_up [get_bd_pins versal_cips_0/pcie0_user_lnk_up] [get_bd_ports pcie0_user_lnk_up_0]
   connect_bd_net -net versal_cips_0_pcie0_user_reset [get_bd_pins versal_cips_0/pcie0_user_reset] [get_bd_ports pcie0_user_reset_0]
+  connect_bd_net -net versal_cips_0_pl_pcie1_resetn [get_bd_pins versal_cips_0/pl_pcie1_resetn] [get_bd_ports pl_pcie1_resetn_0]
   connect_bd_net -net xlconstant_0_dout [get_bd_pins xlconstant_0/dout] [get_bd_pins axis_register_slice_0/aresetn] [get_bd_pins axis_register_slice_1/aresetn] [get_bd_pins axis_register_slice_3/aresetn] [get_bd_pins axis_register_slice_2/aresetn]
 
   # Create address segments
