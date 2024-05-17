@@ -1,3 +1,19 @@
+# ########################################################################
+# Copyright (C) 2023, Advanced Micro Devices Inc - All rights reserved
+
+# Licensed under the Apache License, Version 2.0 (the "License"). You may
+# not use this file except in compliance with the License. A copy of the
+# License is located at
+
+ # http://www.apache.org/licenses/LICENSE-2.0
+
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations
+# under the License.
+# ########################################################################
+
 proc createDesign {design_name options} {
 
 # Set the reference directory for source file relative paths (by default the value is script directory path)
@@ -76,7 +92,7 @@ set_property USER_COMMENTS.comment0 {An Example Versal DFX Extensible Embedded P
 	--> Board preset applied to CIPS and memory controller settings
 	--> BD has VIPs on the accelerator SmartConnect IPs because IPI platform can't handle export with no slaves on SmartConnect IP.
 			Hence VIPs are there to have at least one slave on a smart connect.
-	--> For Next steps, Refer to README.md https://github.com/Xilinx/XilinxCEDStore/tree/2023.2/ced/Xilinx/IPI/versal_dfx/README.md}  [current_bd_design] 
+	--> For Next steps, Refer to README.md https://github.com/Xilinx/XilinxCEDStore/tree/2024.1/ced/Xilinx/IPI/versal_dfx/README.md}  [current_bd_design] 
 regenerate_bd_layout -layout_string {
 		   "ActiveEmotionalView":"Default View",
 		   "comment_0":"An Example Versal DFX Extensible Embedded Platform
@@ -84,7 +100,7 @@ regenerate_bd_layout -layout_string {
 			--> Board preset applied to CIPS and memory controller.
 			--> BD has VIPs on the accelerator SmartConnect IPs because IPI platform can't handle export with no slaves on SmartConnect IP.
 					Hence VIPs are there to have at least one slave on a smart connect.
-			--> For Next steps, Refer to README.md https://github.com/Xilinx/XilinxCEDStore/tree/2023.2/ced/Xilinx/IPI/versal_dfx/README.md ",
+			--> For Next steps, Refer to README.md https://github.com/Xilinx/XilinxCEDStore/tree/2024.1/ced/Xilinx/IPI/versal_dfx/README.md ",
 		   "commentid":"comment_0|",
 		   "font_comment_0":"14",
 		   "guistr":"# # String gsaved with Nlview 7.0r4  2019-12-20 bk=1.5203 VDI=41 GEI=36 GUI=JA:10.0 TLS

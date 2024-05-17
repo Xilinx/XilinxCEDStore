@@ -9,7 +9,7 @@ Refer to AR# 75889 for CIPS VIP release notes and known issues. https://www.xili
 
 
 Required Hardware and Tools
-2022.2 Vivado
+2024.1 Vivado
 No hardware is required.
 
 ## Block Diagram

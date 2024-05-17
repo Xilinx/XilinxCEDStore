@@ -9,7 +9,7 @@ This design comes with common hardware features on the VCK190 board like AI Engi
 
 Required Hardware and Tools:
 
-2023.2 Vivado
+2024.1 Vivado
 
 Versal AI Core Series VCK190 Evaluation Kit is required.
 
