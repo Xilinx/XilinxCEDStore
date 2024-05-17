@@ -81,11 +81,11 @@
         "name": "TMR_Microblaze",
         "display": "TMR Microblaze Example Design",
         "latest_revision": "1.0",
-        "commit_id": "c509b810c435cc13e0be2862065aa59231218e56",
+        "commit_id": "dd338eea95800f78fa7df57ec93cf725f9d15b6f",
         "revisions": [
           {
             "revision": "1.0",
-            "commit_id": "c509b810c435cc13e0be2862065aa59231218e56",
+            "commit_id": "dd338eea95800f78fa7df57ec93cf725f9d15b6f",
             "date": "26-04-2024:10:55:53",
             "history": "Added board TMR Microblaze Example Design v1.0"
           }
@@ -328,11 +328,11 @@
         "name": "ext_platform",
         "display": "Versal Extensible Embedded Platform",
         "latest_revision": "1.0",
-        "commit_id": "a82c15a2a08afe09f1f52e752ed2d5f783733799",
+        "commit_id": "dd338eea95800f78fa7df57ec93cf725f9d15b6f",
         "revisions": [
           {
             "revision": "1.0",
-            "commit_id": "a82c15a2a08afe09f1f52e752ed2d5f783733799",
+            "commit_id": "dd338eea95800f78fa7df57ec93cf725f9d15b6f",
             "date": "26-04-2024:10:55:53",
             "history": "Added board Versal Extensible Embedded Platform v1.0"
           }
@@ -347,11 +347,11 @@
         "name": "ext_platform_part",
         "display": "Versal Extensible Embedded Platform part_support",
         "latest_revision": "1.0",
-        "commit_id": "c509b810c435cc13e0be2862065aa59231218e56",
+        "commit_id": "dd338eea95800f78fa7df57ec93cf725f9d15b6f",
         "revisions": [
           {
             "revision": "1.0",
-            "commit_id": "c509b810c435cc13e0be2862065aa59231218e56",
+            "commit_id": "dd338eea95800f78fa7df57ec93cf725f9d15b6f",
             "date": "26-04-2024:10:55:53",
             "history": "Added board Versal Extensible Embedded Platform part_support v1.0"
           }
@@ -442,11 +442,11 @@
         "name": "soc_vip",
         "display": "Versal ACAP CIPS PS VIP",
         "latest_revision": "1.0",
-        "commit_id": "c509b810c435cc13e0be2862065aa59231218e56",
+        "commit_id": "dd338eea95800f78fa7df57ec93cf725f9d15b6f",
         "revisions": [
           {
             "revision": "1.0",
-            "commit_id": "c509b810c435cc13e0be2862065aa59231218e56",
+            "commit_id": "dd338eea95800f78fa7df57ec93cf725f9d15b6f",
             "date": "26-04-2024:10:55:53",
             "history": "Added board Versal ACAP CIPS PS VIP v1.0"
           }
@@ -499,11 +499,11 @@
         "name": "versal_dfx_platform",
         "display": "Versal DFX Extensible Embedded Platform",
         "latest_revision": "1.0",
-        "commit_id": "c509b810c435cc13e0be2862065aa59231218e56",
+        "commit_id": "dd338eea95800f78fa7df57ec93cf725f9d15b6f",
         "revisions": [
           {
             "revision": "1.0",
-            "commit_id": "c509b810c435cc13e0be2862065aa59231218e56",
+            "commit_id": "dd338eea95800f78fa7df57ec93cf725f9d15b6f",
             "date": "26-04-2024:10:55:53",
             "history": "Added board Versal DFX Extensible Embedded Platform v1.0"
           }
