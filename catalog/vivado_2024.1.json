@@ -480,11 +480,11 @@
         "name": "kria_starter_kit",
         "display": "Kria Starter Kit Example design",
         "latest_revision": "1.0",
-        "commit_id": "c509b810c435cc13e0be2862065aa59231218e56",
+        "commit_id": "92bbc499ebc34babf07a873d42183ed6821c844e",
         "revisions": [
           {
             "revision": "1.0",
-            "commit_id": "c509b810c435cc13e0be2862065aa59231218e56",
+            "commit_id": "92bbc499ebc34babf07a873d42183ed6821c844e",
             "date": "26-04-2024:10:55:53",
             "history": "Added board Kria Starter Kit Example design v1.0"
           }
