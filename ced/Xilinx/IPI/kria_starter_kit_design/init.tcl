@@ -45,9 +45,9 @@ proc addGUILayout {DESIGNOBJ PROJECT_PARAM.BOARD_PART} {
   set Preset.DISPLAYNAME "Kria SOM Starter Kit Configurations"
   if { ${Preset.VALUE} == "Default_Bitstream"} {
      set Preset.ENABLEMENT true
-     set Image.IMAGE_PATH "microblaze-application-processor.png"
+     set Image.IMAGE_PATH "kria_option1.png"
   } elseif { ${Preset.VALUE} == "BRAM_GPIO"} {
 	 set Preset.ENABLEMENT true
-	 set Image.IMAGE_PATH "microblaze-microcontroller.png"
+	 set Image.IMAGE_PATH "kria_option2.png"
   }
 }
