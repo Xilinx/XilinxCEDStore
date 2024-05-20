@@ -13,13 +13,13 @@
 <Description>
 This design offers a MPSoC subsystem that can be targeted for the following use cases.
 
-Default Bitstream :
+1. Default Bitstream :
 
-   Default bitstream loaded by Kria Starter Kit Linux OSes. Contains no functional logic PL design and only provides a EMIO mapping for supporting active fan control pin.
+     Default bitstream loaded by Kria Starter Kit Linux OS. Contains no functional logic PL design and              only provides a EMIO mapping for supporting active fan control pin.
 
-BRAM and GPIO Example Bitstream :
+2. BRAM and GPIO Example Bitstream :
 
-   This is a simple bitstream design for Starter Kits that contains a BRAM and AXI-GPIO IPs that can be used for new customers wanting a simplified bitstream that they can use for low-level validation of the HW/SW interface and dynamic bitstream management on target. Users can test proper functionality of the bitstream in system with simple write and readback validation of the BRAM, and physical GPIO toggling controls.
+     This is a simple bitstream design for Starter Kits that contains a BRAM and AXI-GPIO IPs that can be        used for new customers wanting a simplified bitstream that they can use for low-level validation of          the HW/SW interface and dynamic bitstream management on target. Users can test proper                     functionality of the bitstream in system with simple write and readback validation of the BRAM, and         physical GPIO toggling controls.
 
 </Description>
 
