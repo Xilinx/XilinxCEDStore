@@ -141,8 +141,8 @@ $display("[%t] : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : :
   board.RP.tx_usrapp.TSK_MEM32_RD(32'h200);
 
   // TLP Write Address
-  board.RP.tx_usrapp.TSK_MEM32_WR(32'h208, 32'hABCD0004,4'hf);
-  board.RP.tx_usrapp.TSK_MEM32_RD(32'h208);
+  //board.RP.tx_usrapp.TSK_MEM32_WR(32'h208, 32'hABCD0004,4'hf);
+  //board.RP.tx_usrapp.TSK_MEM32_RD(32'h208);
 
   //TLP WR Size
   board.RP.tx_usrapp.TSK_MEM32_WR(32'h20c, 32'h00000004,4'hf);//20 //0a
@@ -161,15 +161,15 @@ $display("[%t] : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : :
   board.RP.tx_usrapp.TSK_MEM32_RD(32'h218);
 
   //TLP RD Address
-  board.RP.tx_usrapp.TSK_MEM32_WR(32'h21c, 32'h00000008,4'hf);
-  board.RP.tx_usrapp.TSK_MEM32_RD(32'h21c);
+  //board.RP.tx_usrapp.TSK_MEM32_WR(32'h21c, 32'h00000008,4'hf);
+  //board.RP.tx_usrapp.TSK_MEM32_RD(32'h21c);
 
   //TLP RD Size
   board.RP.tx_usrapp.TSK_MEM32_WR(32'h220, 32'h00000004,4'hf);//40 // 20
   board.RP.tx_usrapp.TSK_MEM32_RD(32'h220);
 
   //TLP RD Count
-  board.RP.tx_usrapp.TSK_MEM32_WR(32'h224, 32'h02,4'hf);  // 0000000d // 0a
+  board.RP.tx_usrapp.TSK_MEM32_WR(32'h224, 32'h08,4'hf);  // 0000000d // 0a
   board.RP.tx_usrapp.TSK_MEM32_RD(32'h224);
 
   //board.RP.tx_usrapp.TSK_MEM32_WR(32'h238, 32'h00,4'hf);  // 0000000d
@@ -187,17 +187,17 @@ $display("[%t] : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : :
 
   board.RP.tx_usrapp.TSK_MEM32_RD(32'h204);
 
-   //if  (P_READ_DATA[31]) begin
-   //     $display("[%t] : TEST FAILED --- Completion data error", $realtime);
-   //end
+   if  (P_READ_DATA[31]) begin
+        $display("[%t] : TEST FAILED --- Completion data error", $realtime);
+   end
    if (P_READ_DATA[8] == 1'b0) begin
         $display("[%t] : TEST FAILED --- Write failed to complete", $realtime);
    end
    if (P_READ_DATA[24] == 1'b0) begin
         $display("[%t] : TEST FAILED --- Read failed to complete", $realtime);
    end
-   //if  ((!P_READ_DATA[31]) && P_READ_DATA[8] && P_READ_DATA[24]) begin
-   if  (P_READ_DATA[8] && P_READ_DATA[24]) begin
+   
+   if  ((!P_READ_DATA[31]) && P_READ_DATA[8] && P_READ_DATA[24]) begin
         $display("[%t] : TEST Passed Successfully", $realtime);
    end
 

@@ -2244,7 +2244,9 @@ end
             TSK_TX_SYNCHRONIZE(0, 0, 0, `SYNC_CC_RDY);
             //-----------------------------------------------------------------------\\
             // Start of First Data Beat
-            data_axis_i        =  {
+             data_axis_i        = {13{32'h54535251}};
+              data_pcie_i        = {13{32'h51525354}};
+            /*data_axis_i        =  {
                                    DATA_STORE_2[ram_ptr +51], DATA_STORE_2[ram_ptr +50], DATA_STORE_2[ram_ptr +49],
                                    DATA_STORE_2[ram_ptr +48], DATA_STORE_2[ram_ptr +47], DATA_STORE_2[ram_ptr +46],
                                    DATA_STORE_2[ram_ptr +45], DATA_STORE_2[ram_ptr +44], DATA_STORE_2[ram_ptr +43],
@@ -2284,7 +2286,7 @@ end
                                    DATA_STORE_2[ram_ptr +45], DATA_STORE_2[ram_ptr +46], DATA_STORE_2[ram_ptr +47],
                                    DATA_STORE_2[ram_ptr +48], DATA_STORE_2[ram_ptr +49], DATA_STORE_2[ram_ptr +50],
                                    DATA_STORE_2[ram_ptr +51]
-                                  };
+                                  };*/
 
             s_axis_cc_tuser   <= #(Tcq) {(AXISTEN_IF_CC_PARITY_CHECK ? s_axis_cc_tparity : 32'b0),1'b0};
             s_axis_cc_tdata   <= #(Tcq) {
