@@ -126,17 +126,17 @@ puts "INFO: Platform creation completed!"
 #Importing Placement Files
 # import_files -fileset utils_1 -norecurse ./../data/qor_scripts/prohibit_select_bli_bels_for_hold.tcl
 # 
-# import_files -fileset constrs_1 -norecurse ./../data/pblock.xdc
+# import_files -fileset constrs_1 -norecurse ./../data/pblock_update3.xdc
 
 set script_dir [file join $currentDir data qor_scripts prohibit_select_bli_bels_for_hold.tcl]
 import_files -fileset utils_1 -norecurse $script_dir
 set_property platform.run.steps.place_design.tcl.pre [get_files prohibit_select_bli_bels_for_hold.tcl] [current_project]
 
 
-#import pblock.xdc file 
-set originalTBFile [file join $currentDir data pblock.xdc]
+#import pblock_update3.xdc file 
+set originalTBFile [file join $currentDir data pblock_update3.xdc]
 set bd_path [file join [get_property directory [current_project]] [current_project].srcs sources_1 bd $design_name]
-set tempTBFile [file join $bd_path pblock.xdc]
+set tempTBFile [file join $bd_path pblock_update3.xdc]
  
 set infile [open $originalTBFile]
 set contents [read $infile]

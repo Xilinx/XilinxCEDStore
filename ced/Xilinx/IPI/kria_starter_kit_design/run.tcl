@@ -60,6 +60,13 @@ if {$prst == "Default_Bitstream" } {
   CONFIG.PSU__USE__M_AXI_GP1 {0} \
   CONFIG.PSU__TTC0__WAVEOUT__ENABLE {1} \
   CONFIG.PSU__TTC0__WAVEOUT__IO {EMIO} ]  [get_bd_cells zynq_ultra_ps_e_0]
+ 
+ if {($board_name == "k26c")||($board_name == "k26i")} {
+  set_property -dict [list \
+  CONFIG.PSU__UART0__PERIPHERAL__ENABLE {0} \
+  CONFIG.PSU__UART1__PERIPHERAL__ENABLE {1} \
+  CONFIG.PSU__UART1__PERIPHERAL__IO {MIO 36 .. 37} \
+] [get_bd_cells zynq_ultra_ps_e_0] }
   
 # Create port connections
   connect_bd_net -net xlslice_0_Dout [get_bd_ports fan_en_b] [get_bd_pins xlslice_0/Dout]
@@ -203,7 +210,7 @@ set xdc [file join $currentDir xdc pmod_gpio.xdc] }
 } elseif {$board_name == "kd240_som"} {
 set xdc [file join $currentDir xdc kd240_default.xdc]
 
-} elseif {$board_name == "kr260_som"} {
+} elseif {($board_name == "kr260_som")||($board_name == "k24c")||($board_name == "k24i")||($board_name == "k26c")||($board_name == "k26i")} {
 set xdc [file join $currentDir xdc default.xdc]
 }
 

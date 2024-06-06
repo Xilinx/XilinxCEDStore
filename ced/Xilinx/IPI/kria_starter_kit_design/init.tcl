@@ -24,7 +24,7 @@ proc getSupportedParts {} {
 }
 
 proc getSupportedBoards {} {
-   return [get_board_parts -filter {(BOARD_NAME =~"*_som*"&& VENDOR_NAME=="xilinx.com")} -latest_file_version]
+   return [get_board_parts -filter {(BOARD_NAME =~"*_som*"&& VENDOR_NAME=="xilinx.com")||(BOARD_NAME =~"*k26*"&& VENDOR_NAME=="xilinx.com")||(BOARD_NAME =~"*k24*"&& VENDOR_NAME=="xilinx.com")} -latest_file_version]
 }
 
 proc addOptions {DESIGNOBJ PROJECT_PARAM.BOARD_PART} {
@@ -44,7 +44,12 @@ proc addGUILayout {DESIGNOBJ PROJECT_PARAM.BOARD_PART} {
  updater {PROJECT_PARAM.BOARD_PART Preset.VALUE} {Image.IMAGE_PATH Preset.ENABLEMENT Preset.DISPLAYNAME} {
   set Preset.DISPLAYNAME "Kria SOM Starter Kit Configurations"
   if { ${Preset.VALUE} == "Default_Bitstream"} {
+	if {[regexp "_som" ${PROJECT_PARAM.BOARD_PART}]} {
      set Preset.ENABLEMENT true
+	 } else {
+	 set Preset.ENABLEMENT false
+	 set Preset.VALUE Default_Bitstream
+	 }
      set Image.IMAGE_PATH "kria_option1.png"
   } elseif { ${Preset.VALUE} == "BRAM_GPIO"} {
 	 set Preset.ENABLEMENT true
