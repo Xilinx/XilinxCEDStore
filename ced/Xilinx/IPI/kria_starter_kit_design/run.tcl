@@ -207,10 +207,10 @@ set xdc [file join $currentDir xdc default.xdc]
 } else {
 set xdc [file join $currentDir xdc pmod_gpio.xdc] }
 
-} elseif {$board_name == "kd240_som"} {
+} elseif {($board_name == "kd240_som")||($board_name == "k24c")||($board_name == "k24i")} {
 set xdc [file join $currentDir xdc kd240_default.xdc]
 
-} elseif {($board_name == "kr260_som")||($board_name == "k24c")||($board_name == "k24i")||($board_name == "k26c")||($board_name == "k26i")} {
+} elseif {($board_name == "kr260_som")||($board_name == "k26c")||($board_name == "k26i")} {
 set xdc [file join $currentDir xdc default.xdc]
 }
 
