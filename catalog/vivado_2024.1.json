@@ -480,11 +480,11 @@
         "name": "kria_starter_kit",
         "display": "Kria Starter Kit Example design",
         "latest_revision": "1.0",
-        "commit_id": "92bbc499ebc34babf07a873d42183ed6821c844e",
+        "commit_id": "50b92f9df4c7554b7dbd86005dc429e7e140da9c",
         "revisions": [
           {
             "revision": "1.0",
-            "commit_id": "92bbc499ebc34babf07a873d42183ed6821c844e",
+            "commit_id": "50b92f9df4c7554b7dbd86005dc429e7e140da9c",
             "date": "26-04-2024:10:55:53",
             "history": "Added board Kria Starter Kit Example design v1.0"
           }
@@ -499,11 +499,11 @@
         "name": "versal_dfx_platform",
         "display": "Versal DFX Extensible Embedded Platform",
         "latest_revision": "1.0",
-        "commit_id": "dd338eea95800f78fa7df57ec93cf725f9d15b6f",
+        "commit_id": "50b92f9df4c7554b7dbd86005dc429e7e140da9c",
         "revisions": [
           {
             "revision": "1.0",
-            "commit_id": "dd338eea95800f78fa7df57ec93cf725f9d15b6f",
+            "commit_id": "50b92f9df4c7554b7dbd86005dc429e7e140da9c",
             "date": "26-04-2024:10:55:53",
             "history": "Added board Versal DFX Extensible Embedded Platform v1.0"
           }
