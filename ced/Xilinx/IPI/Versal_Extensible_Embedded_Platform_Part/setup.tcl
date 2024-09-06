@@ -26,14 +26,9 @@ set_property target_language Verilog [current_project]
 
 set fpga_part [get_property PART [current_project ]]
 set part_family [get_property FAMILY $fpga_part]
- # if {([regexp "versalnet" $part_family] == 1) && ([regexp "xcvn" $fpga_part] == 1) }
-# source "$currentDir/run_ksb.tcl"
-#  else 
+if {[regexp "xcvm2152" $fpga_part]} {
+	source "$currentDir/run_ps_wizard.tcl"
+} else { 
 source "$currentDir/run.tcl"
-
-
 }
-
-
-
-
+}

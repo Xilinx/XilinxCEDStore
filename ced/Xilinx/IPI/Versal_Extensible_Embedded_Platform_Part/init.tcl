@@ -25,7 +25,7 @@ proc getSupportedParts {} {
 	
 	foreach item $mylist {
 	# Filtered out unsupported parts
-		if {![regexp "1" [[regexp "xcvp1402-vsvd2197" $item]||[regexp "xcvp1902" $item]||[regexp "xcvm2152" $item]||[regexp "xcvn3716" $item]]]} {
+		if {![regexp "1" [[regexp "xcvp1402-vsvd2197" $item]||[regexp "xcvp1902" $item]||[regexp "xcvn3716" $item]]]} {
 			lappend newitem $item 
 		}
 	}
@@ -162,10 +162,17 @@ gui_updater {PROJECT_PARAM.PART} {Include_AIE.VISIBLE Include_AIE.ENABLEMENT Inc
 	set V_Part [debug::dump_part_properties [get_parts ${PROJECT_PARAM.PART}]]
 	
 	foreach get_aie_prop $V_Part {
+		
 		if {([regexp "AIE_ENGINE" [lindex $get_aie_prop 1 ]] == 1) && ([lindex $get_aie_prop 3 ] != 0) } {
 			#set Include_AIE.VISIBLE true
 			set Include_AIE.ENABLEMENT true
 			set Include_BDC.ENABLEMENT true
+			set Include_AIE.VALUE true
+			set gui_flag 1
+		} elseif {([regexp "AIE2PS_CORE" [lindex $get_aie_prop 1 ]] == 1) && ([lindex $get_aie_prop 3 ] != 0)} {
+			#set Include_AIE.VISIBLE true
+			set Include_AIE.ENABLEMENT true
+			set Include_BDC.ENABLEMENT false
 			set Include_AIE.VALUE true
 			set gui_flag 1
 		} elseif {$gui_flag == 0} {
