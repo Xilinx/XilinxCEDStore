@@ -133,6 +133,7 @@ module qdma_stm_lpbk #(
             c2h_hdr_beat.qid                = h2c_hdr_beat.qid;
             c2h_hdr_beat.flow_id            = h2c_hdr_beat.flow_id;
             c2h_hdr_beat.tdest              = h2c_hdr_beat.tdest;
+            c2h_hdr_beat.rsv3               = h2c_hdr_beat.rsv3;
             c2h_hdr_beat.cmp.tmh.pkt_len    = h2c_hdr_beat.cdh_slot_0.tmh.pld_len;
             c2h_hdr_beat.cmp.tmh.eot        = h2c_hdr_beat.cdh_slot_0.tmh.eot;
             c2h_hdr_beat.cmp.tmh.usr_int    = 1'b0; //NOTE: Hardcoded to 0

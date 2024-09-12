@@ -245,7 +245,8 @@ module  qdma_stm_c2h_stub #(
 
                 //held CTX
                 hld_ctx_nxt.qid                         = hdr_beat.qid;
-                hld_ctx_nxt.pkt_len                     = hdr_beat.cmp.tmh.pkt_len;
+//                hld_ctx_nxt.pkt_len                     = hdr_beat.cmp.tmh.pkt_len;
+                hld_ctx_nxt.pkt_len                     = hdr_beat.rsv3;
                 hld_ctx_nxt.usr_int                     = hdr_beat.cmp.tmh.usr_int;
 
                 //initialize remaining pkt len with pkt_len
@@ -253,7 +254,8 @@ module  qdma_stm_c2h_stub #(
 
                 //cmp_fifo data+parity
                 cmp_fifo_in_data.data.cmp_ent.usr_data  = $bits(cmp_fifo_in_data.data.cmp_ent.usr_data)'(hdr_beat.cmp.cmp_data_0);
-                cmp_fifo_in_data.data.cmp_ent.len       = hdr_beat.cmp.tmh.pkt_len;
+//                cmp_fifo_in_data.data.cmp_ent.len       = hdr_beat.cmp.tmh.pkt_len;
+                cmp_fifo_in_data.data.cmp_ent.len       = hdr_beat.rsv3;
                 cmp_fifo_in_data.data.cmp_ent.desc_used = 1'b1; //We always send PLD+CMPT
                 cmp_fifo_in_data.data.cmp_size          = WRB_DSC_16B_EXDES; //NOTE: Design limitation. Hardcoded
                 cmp_fifo_in_data.ctrl.user_trig         = hdr_beat.cmp.tmh.usr_int;
