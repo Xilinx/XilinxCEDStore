@@ -195,6 +195,7 @@ module  qdma_stm_h2c_stub #(
                     hdr_beat.flow_id        = inp_fifo_out_data.tuser.qid; //NOTE: Hardcoded: flow_id = qid[5:0]
                     hdr_beat.tdest          = inp_fifo_out_data.tuser.qid; //NOTE: Hardcoded: tdest = qid[5:0]
                     hdr_beat.cdh_slot_0.tmh = inp_fifo_out_data.tuser.mdata;
+                    hdr_beat.rsv3           = inp_fifo_out_data.tuser.mdata[31:16];
 
                     out_axis_tuser_nxt      = 1;
                     out_axis_tlast_nxt      = 0;

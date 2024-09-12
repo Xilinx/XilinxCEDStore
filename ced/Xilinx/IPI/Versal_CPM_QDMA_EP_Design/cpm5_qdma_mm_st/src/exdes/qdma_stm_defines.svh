@@ -57,7 +57,8 @@
     `define QDMA_STM_DEFINES_SVH
  
   typedef logic [511:0]                           mdma_int_tdata_exdes_t;
-  typedef logic [10:0]                            mdma_qid_exdes_t;
+//  typedef logic [10:0]                            mdma_qid_exdes_t;
+  typedef logic [11:0]                            mdma_qid_exdes_t;
   typedef logic [15:0]                            mdma_dma_buf_len_exdes_t;
 
     typedef struct packed {
@@ -85,7 +86,7 @@
         logic [9:0]             rsv2;
         logic [5:0]             flow_id;
         logic [4:0]             rsv1;
-        logic [10:0]            qid;
+        logic [11:0]            qid;
     } h2c_stub_hdr_beat_t;
 
     typedef struct packed {
@@ -111,7 +112,7 @@
         logic [9:0]             rsv2;
         logic [5:0]             flow_id;
         logic [4:0]             rsv1;
-        logic [10:0]            qid;
+        logic [11:0]            qid;
     } c2h_stub_hdr_beat_t;
 
     typedef struct packed {
