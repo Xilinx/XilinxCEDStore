@@ -1,1 +1,3 @@
-PHASE_DONE
+# Any Line starts with # will be commented out,,,,,,,,,,,,,,,,,,,,,,
+TG_NUM,cmd,txn_count,start_delay,inter_beat_delay,wdata_pattern,wdata_pat_value,data_integrity,dest_id,base_addr,high_addr,addr_incr_by,axi_addr,axi_len,axi_size,axi_id,axi_burst,axi_lock,axi_cache,axi_prot,axi_qos,axi_region,axi_user
+,PHASE_DONE,,,,,,,,,,,,,,,,,,,,,
