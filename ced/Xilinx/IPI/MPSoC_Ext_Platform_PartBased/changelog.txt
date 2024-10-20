@@ -1,0 +1,4 @@
+######### MPSoC Extensible Platform (Part based) ExampleDesign example design change log ##############
+2022.2 Changes 
+Initial version
+Added user note to clock gui options 

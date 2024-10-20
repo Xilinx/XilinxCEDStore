@@ -1,0 +1,33 @@
+{
+    "config": {
+      "items": [
+        {
+          "infra": {
+            "name": "ps_noc2_exdes_res",
+            "display": "Versal PS NOC2 Example design (part support)",
+            "revision": "1.0",
+            "description": "An example design for Versal Prime devices",
+            "company": "xilinx.com",
+            "company_display": "Xilinx",
+            "author": "skemidi",
+            "contributors": [
+              {
+                "group": "Xilinx",
+                "url": "www.xilinx.com"
+              }
+            ],
+            "category": "Versal",
+            "website": "www.xilinx.com",
+            "is_active" : true, 
+            "search-keywords": [
+              "ext_platform_part",
+              "xilinx.com",
+              "example"             
+            ]
+          }
+        }
+      ]
+    },
+    "_major" : 1,
+    "_minor" : 0
+}

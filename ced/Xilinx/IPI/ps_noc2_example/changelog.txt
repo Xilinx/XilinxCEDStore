@@ -1,0 +1,3 @@
+######### Extensible Embedded Platform example design change log ##############
+2024.1 
+Initial design for l20 device
