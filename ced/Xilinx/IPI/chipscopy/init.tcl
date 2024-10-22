@@ -33,7 +33,20 @@ proc getSupportedParts {} {
 #  Only allow latest VCK190/VMK180/VCK120
 #
 proc getSupportedBoards {} {
-  set boards [list vck190 vmk180 vpk120 vhk158]
+#  set boards [list vck190 vmk180 vpk120 vhk158]
+  set boards [list]
+  if {[string length [get_board_parts -filter {BOARD_NAME=~"*vck190" && VENDOR_NAME=="xilinx.com"}]] != 0 } {
+    lappend boards "vck190"
+  } 
+  if {[string length [get_board_parts -filter {BOARD_NAME=~"*vmk180" && VENDOR_NAME=="xilinx.com"}]] != 0 } {
+    lappend boards "vmk180"
+  } 
+  if {[string length [get_board_parts -filter {BOARD_NAME=~"*vpk120" && VENDOR_NAME=="xilinx.com"}]] != 0 } {
+    lappend boards "vpk120"
+  } 
+  if {[string length [get_board_parts -filter {BOARD_NAME=~"*vhk158" && VENDOR_NAME=="xilinx.com"}]] != 0 } {
+    lappend boards "vhk158"
+  }
   set r [list]
   foreach b $boards {
     set p [lindex [get_board_parts *${b}:* -latest_file_version] 0]
