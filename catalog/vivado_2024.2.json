@@ -62,11 +62,11 @@
         "name": "microblaze_v_preset",
         "display": "MicroBlaze V Design Presets",
         "latest_revision": "1.0",
-        "commit_id": "5258441b859a8a655b24e4e80fbebea3cb885a39",
+        "commit_id": "6fc37676a7e7ee80f30119f94535cbb8c54d0162",
         "revisions": [
           {
             "revision": "1.0",
-            "commit_id": "5258441b859a8a655b24e4e80fbebea3cb885a39",
+            "commit_id": "6fc37676a7e7ee80f30119f94535cbb8c54d0162",
             "date": "21-10-2024:18:11:37",
             "history": "Added board MicroBlaze V Design Presets v1.0"
           }
@@ -347,11 +347,11 @@
         "name": "ext_platform",
         "display": "Versal Extensible Embedded Platform",
         "latest_revision": "1.0",
-        "commit_id": "5258441b859a8a655b24e4e80fbebea3cb885a39",
+        "commit_id": "6fc37676a7e7ee80f30119f94535cbb8c54d0162",
         "revisions": [
           {
             "revision": "1.0",
-            "commit_id": "5258441b859a8a655b24e4e80fbebea3cb885a39",
+            "commit_id": "6fc37676a7e7ee80f30119f94535cbb8c54d0162",
             "date": "21-10-2024:18:11:37",
             "history": "Added board Versal Extensible Embedded Platform v1.0"
           }
@@ -442,11 +442,11 @@
         "name": "cips_ddr_pl_debug",
         "display": "CIPS DDR PL Debug",
         "latest_revision": "1.0",
-        "commit_id": "5258441b859a8a655b24e4e80fbebea3cb885a39",
+        "commit_id": "6fc37676a7e7ee80f30119f94535cbb8c54d0162",
         "revisions": [
           {
             "revision": "1.0",
-            "commit_id": "5258441b859a8a655b24e4e80fbebea3cb885a39",
+            "commit_id": "6fc37676a7e7ee80f30119f94535cbb8c54d0162",
             "date": "21-10-2024:18:11:37",
             "history": "Added board CIPS DDR PL Debug v1.0"
           }
@@ -461,11 +461,11 @@
         "name": "soc_vip",
         "display": "Versal Adaptive SOC CIPS PS VIP",
         "latest_revision": "1.0",
-        "commit_id": "5258441b859a8a655b24e4e80fbebea3cb885a39",
+        "commit_id": "6fc37676a7e7ee80f30119f94535cbb8c54d0162",
         "revisions": [
           {
             "revision": "1.0",
-            "commit_id": "5258441b859a8a655b24e4e80fbebea3cb885a39",
+            "commit_id": "6fc37676a7e7ee80f30119f94535cbb8c54d0162",
             "date": "21-10-2024:18:11:37",
             "history": "Added board Versal Adaptive SOC CIPS PS VIP v1.0"
           }
@@ -556,11 +556,11 @@
         "name": "versal_mb_preset",
         "display": "Versal MicroBlaze Design Presets",
         "latest_revision": "1.0",
-        "commit_id": "5258441b859a8a655b24e4e80fbebea3cb885a39",
+        "commit_id": "6fc37676a7e7ee80f30119f94535cbb8c54d0162",
         "revisions": [
           {
             "revision": "1.0",
-            "commit_id": "5258441b859a8a655b24e4e80fbebea3cb885a39",
+            "commit_id": "6fc37676a7e7ee80f30119f94535cbb8c54d0162",
             "date": "21-10-2024:18:11:37",
             "history": "Added board Versal MicroBlaze Design Presets v1.0"
           }
@@ -575,11 +575,11 @@
         "name": "versal_mb_v_preset",
         "display": "Versal MicroBlaze V Design Presets",
         "latest_revision": "1.0",
-        "commit_id": "5258441b859a8a655b24e4e80fbebea3cb885a39",
+        "commit_id": "6fc37676a7e7ee80f30119f94535cbb8c54d0162",
         "revisions": [
           {
             "revision": "1.0",
-            "commit_id": "5258441b859a8a655b24e4e80fbebea3cb885a39",
+            "commit_id": "6fc37676a7e7ee80f30119f94535cbb8c54d0162",
             "date": "21-10-2024:18:11:37",
             "history": "Added board Versal MicroBlaze V Design Presets v1.0"
           }
