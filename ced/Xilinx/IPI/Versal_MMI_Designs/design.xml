@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<ExampleDesign>
+<Vendor>xilinx.com</Vendor>
+<Library>design</Library>
+<Name>versal_mmi</Name>
+<DisplayName>Versal MMI Example Designs</DisplayName>
+<Description>
+This Example Design offers PS Wizard Subsystem which is targeted for MMI Display Controller and MMI USB designs.
+Display Controller is Configured with Functional Operating Mode and Has Option to select Different Presentation Modes-Non_Live, Live, Mixed
+USB is configured with USB3.2 Enabled.
+</Description>
+<Version>1.0</Version>
+<Design>init.tcl</Design>
+<DesignType>IPI</DesignType>
+<Image></Image>
+</ExampleDesign>

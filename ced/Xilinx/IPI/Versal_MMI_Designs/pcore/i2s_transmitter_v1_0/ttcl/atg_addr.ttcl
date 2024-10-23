@@ -1,0 +1,12 @@
+<: ;#Component and file information :>
+<: set ComponentName [getComponentNameString] :>
+<: setOutputDirectory [ttcl_string_concat $ComponentName "/example_design"] :>
+<: setFileName [ttcl_string_concat "atg_addr"] :>
+<: setFileExtension ".coe" :>
+; Initialization file for a
+; 32-bit wide
+memory_initialization_radix = 2;
+memory_initialization_vector =
+00000000000000000000000000100000,
+00000000000000000000000000001000,
+11111111111111111111111111111111
