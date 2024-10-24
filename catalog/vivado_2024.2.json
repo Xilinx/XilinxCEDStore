@@ -665,6 +665,25 @@
           "metadata_file": "xitem.json"
         },
         "company": "xilinx.com"
+      },
+      {
+        "name": "Versal_MMI_Designs",
+        "display": "Versal MMI Designs",
+        "latest_revision": "1.0",
+        "commit_id": "d1f64c7508a681eb5f56841bff4f3b46a7553cbb",
+        "revisions": [
+          {
+            "revision": "1.0",
+            "commit_id": "d1f64c7508a681eb5f56841bff4f3b46a7553cbb",
+            "date": "24-10-2024:11:19:44",
+            "history": "Added board Versal MMI Designs v1.0"
+          }
+        ],
+        "config": {
+          "root": "ced/Xilinx/IPI/Versal_MMI_Designs",
+          "metadata_file": "xitem.json"
+        },
+        "company": "xilinx.com"
       }
     ],
     "categories": [
