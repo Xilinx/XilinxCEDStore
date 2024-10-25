@@ -9,7 +9,27 @@
 # Hierarchical cell: pl_video_s0p0
 proc create_hier_cell_pl_video_s0p0 { parentCell nameHier } {
 
+  variable script_folder
+
+  if { $parentCell eq "" || $nameHier eq "" } {
+     catch {common::send_gid_msg -ssname BD::TCL -id 2092 -severity "ERROR" "create_hier_cell_pl_video_s0p0() - Empty argument(s)!"}
+     return
+  }
+
+  # Get object for parentCell
   set parentObj [get_bd_cells $parentCell]
+  if { $parentObj == "" } {
+     catch {common::send_gid_msg -ssname BD::TCL -id 2090 -severity "ERROR" "Unable to find parent cell <$parentCell>!"}
+     return
+  }
+
+  # Make sure parentObj is hier blk
+  set parentType [get_property TYPE $parentObj]
+  if { $parentType ne "hier" } {
+     catch {common::send_gid_msg -ssname BD::TCL -id 2091 -severity "ERROR" "Parent <$parentObj> has TYPE = <$parentType>. Expected to be <hier>."}
+     return
+  }
+
   # Save current instance; Restore later
   set oldCurInst [current_bd_instance .]
 
@@ -183,8 +203,26 @@ proc create_hier_cell_pl_video_s0p0 { parentCell nameHier } {
 # Hierarchical cell: pl_audio_out
 proc create_hier_cell_pl_audio_out { parentCell nameHier } {
 
+  variable script_folder
+
+  if { $parentCell eq "" || $nameHier eq "" } {
+     catch {common::send_gid_msg -ssname BD::TCL -id 2092 -severity "ERROR" "create_hier_cell_pl_audio_out() - Empty argument(s)!"}
+     return
+  }
+
   # Get object for parentCell
   set parentObj [get_bd_cells $parentCell]
+  if { $parentObj == "" } {
+     catch {common::send_gid_msg -ssname BD::TCL -id 2090 -severity "ERROR" "Unable to find parent cell <$parentCell>!"}
+     return
+  }
+
+  # Make sure parentObj is hier blk
+  set parentType [get_property TYPE $parentObj]
+  if { $parentType ne "hier" } {
+     catch {common::send_gid_msg -ssname BD::TCL -id 2091 -severity "ERROR" "Parent <$parentObj> has TYPE = <$parentType>. Expected to be <hier>."}
+     return
+  }
 
   # Save current instance; Restore later
   set oldCurInst [current_bd_instance .]
@@ -301,8 +339,26 @@ proc create_hier_cell_pl_audio_out { parentCell nameHier } {
 # Hierarchical cell: rst_module
 proc create_hier_cell_rst_module { parentCell nameHier } {
 
+  variable script_folder
+
+  if { $parentCell eq "" || $nameHier eq "" } {
+     catch {common::send_gid_msg -ssname BD::TCL -id 2092 -severity "ERROR" "create_hier_cell_rst_module() - Empty argument(s)!"}
+     return
+  }
+
   # Get object for parentCell
   set parentObj [get_bd_cells $parentCell]
+  if { $parentObj == "" } {
+     catch {common::send_gid_msg -ssname BD::TCL -id 2090 -severity "ERROR" "Unable to find parent cell <$parentCell>!"}
+     return
+  }
+
+  # Make sure parentObj is hier blk
+  set parentType [get_property TYPE $parentObj]
+  if { $parentType ne "hier" } {
+     catch {common::send_gid_msg -ssname BD::TCL -id 2091 -severity "ERROR" "Parent <$parentObj> has TYPE = <$parentType>. Expected to be <hier>."}
+     return
+  }
 
   # Save current instance; Restore later
   set oldCurInst [current_bd_instance .]
@@ -391,9 +447,26 @@ proc create_hier_cell_rst_module { parentCell nameHier } {
 # Hierarchical cell: dc_pl_out_pipeline
 proc create_hier_cell_dc_pl_out_pipeline { parentCell nameHier } {
 
+  variable script_folder
+
+  if { $parentCell eq "" || $nameHier eq "" } {
+     catch {common::send_gid_msg -ssname BD::TCL -id 2092 -severity "ERROR" "create_hier_cell_dc_pl_out_pipeline() - Empty argument(s)!"}
+     return
+  }
 
   # Get object for parentCell
   set parentObj [get_bd_cells $parentCell]
+  if { $parentObj == "" } {
+     catch {common::send_gid_msg -ssname BD::TCL -id 2090 -severity "ERROR" "Unable to find parent cell <$parentCell>!"}
+     return
+  }
+
+  # Make sure parentObj is hier blk
+  set parentType [get_property TYPE $parentObj]
+  if { $parentType ne "hier" } {
+     catch {common::send_gid_msg -ssname BD::TCL -id 2091 -severity "ERROR" "Parent <$parentObj> has TYPE = <$parentType>. Expected to be <hier>."}
+     return
+  }
 
   # Save current instance; Restore later
   set oldCurInst [current_bd_instance .]
@@ -610,8 +683,27 @@ proc create_hier_cell_dc_pl_out_pipeline { parentCell nameHier } {
 # Hierarchical cell: dc_in_out
 proc create_hier_cell_dc_in_out { parentCell nameHier } {
 
+  variable script_folder
+
+  if { $parentCell eq "" || $nameHier eq "" } {
+     catch {common::send_gid_msg -ssname BD::TCL -id 2092 -severity "ERROR" "create_hier_cell_dc_in_out() - Empty argument(s)!"}
+     return
+  }
+
   # Get object for parentCell
   set parentObj [get_bd_cells $parentCell]
+  if { $parentObj == "" } {
+     catch {common::send_gid_msg -ssname BD::TCL -id 2090 -severity "ERROR" "Unable to find parent cell <$parentCell>!"}
+     return
+  }
+
+  # Make sure parentObj is hier blk
+  set parentType [get_property TYPE $parentObj]
+  if { $parentType ne "hier" } {
+     catch {common::send_gid_msg -ssname BD::TCL -id 2091 -severity "ERROR" "Parent <$parentObj> has TYPE = <$parentType>. Expected to be <hier>."}
+     return
+  }
+
   # Save current instance; Restore later
   set oldCurInst [current_bd_instance .]
 
@@ -774,7 +866,7 @@ proc create_hier_cell_dc_in_out { parentCell nameHier } {
   connect_bd_net -net ap_rst_n_1  [get_bd_pins rst_module/peripheral_aresetn] \
   [get_bd_pins dc_pl_out_pipeline/ap_rst_n] \
   [get_bd_pins axi_gpio_alpha_bypass_en/s_axi_aresetn] \
-  [get_bd_pins axi_gpio_0/s_axi_aresetn]
+  [get_bd_pins axi_gpio_0/s_axi_aresetn] \
   [get_bd_pins axi_gpio_1/s_axi_aresetn]
   connect_bd_net -net axi_gpio_0_gpio_io_o  [get_bd_pins axi_gpio_0/gpio_io_o] \
   [get_bd_pins xlslice_0/Din] \
@@ -789,7 +881,7 @@ proc create_hier_cell_dc_in_out { parentCell nameHier } {
   [get_bd_pins dc_pl_out_pipeline/aclk] \
   [get_bd_pins rst_module/slowest_sync_clk] \
   [get_bd_pins rst_module/slowest_sync_clk1] \
-  [get_bd_pins axi_gpio_0/s_axi_aclk]
+  [get_bd_pins axi_gpio_0/s_axi_aclk] \
   [get_bd_pins axi_gpio_1/s_axi_aclk]
   connect_bd_net -net dc_pl_out_pipeline_irq  [get_bd_pins dc_pl_out_pipeline/irq] \
   [get_bd_pins irq]
@@ -846,7 +938,26 @@ proc create_hier_cell_dc_in_out { parentCell nameHier } {
 # Procedure to create entire design; Provide argument to make
 # procedure reusable. If parentCell is "", will use root.
 proc create_root_design { parentCell design_name } {
+
+  variable script_folder
+
+  if { $parentCell eq "" } {
+     set parentCell [get_bd_cells /]
+  }
+
+  # Get object for parentCell
   set parentObj [get_bd_cells $parentCell]
+  if { $parentObj == "" } {
+     catch {common::send_gid_msg -ssname BD::TCL -id 2090 -severity "ERROR" "Unable to find parent cell <$parentCell>!"}
+     return
+  }
+
+  # Make sure parentObj is hier blk
+  set parentType [get_property TYPE $parentObj]
+  if { $parentType ne "hier" } {
+     catch {common::send_gid_msg -ssname BD::TCL -id 2091 -severity "ERROR" "Parent <$parentObj> has TYPE = <$parentType>. Expected to be <hier>."}
+     return
+  }
 
   # Save current instance; Restore later
   set oldCurInst [current_bd_instance .]
@@ -1563,7 +1674,7 @@ NON_KSB DDRMC5_SELF_REFRESH DISABLE DDRMC5_LBDQ_SWAP false DDRMC5_CAL_MASK_POLL 
 
   # Restore current instance
   current_bd_instance $oldCurInst
-set_msg_config -suppress -id {BD 41-237} -string {{CRITICAL WARNING: [BD 41-237] Bus Interface property TDATA_NUM_BYTES does not match between /dc_in_out/dc_pl_out_pipeline/pl_video_s0p0/v_frmbuf_wr_0/s_axis_video(9) and /dc_in_out/dc_pl_out_pipeline/pl_video_s0p0/nativevideo_axis_bridge/m_axis_video(24)} } 
+  set_msg_config -suppress -id {BD 41-237} -string {{CRITICAL WARNING: [BD 41-237] Bus Interface property TDATA_NUM_BYTES does not match between /dc_in_out/dc_pl_out_pipeline/pl_video_s0p0/v_frmbuf_wr_0/s_axis_video(9) and /dc_in_out/dc_pl_out_pipeline/pl_video_s0p0/nativevideo_axis_bridge/m_axis_video(24)} }
 
   validate_bd_design
   save_bd_design
