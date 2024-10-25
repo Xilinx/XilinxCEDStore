@@ -49,8 +49,8 @@ proc create_hier_cell_pl_video_s0p0 { parentCell nameHier } {
   set_property -dict [list \
     CONFIG.C_ALL_INPUTS {1} \
     CONFIG.C_ALL_INPUTS_2 {1} \
-    CONFIG.C_GPIO2_WIDTH {32} \
-    CONFIG.C_GPIO_WIDTH {32} \
+    CONFIG.C_GPIO2_WIDTH {17} \
+    CONFIG.C_GPIO_WIDTH {17} \
     CONFIG.C_IS_DUAL {1} \
   ] $axi_gpio_1
 
@@ -377,6 +377,8 @@ proc create_hier_cell_avtpg_s0 { parentCell nameHier } {
 
   # Create instance: nativevideo_axis_bridge_1, and set properties
   set nativevideo_axis_bridge_1 [ create_bd_cell -type ip -vlnv xilinx.com:ip:dp_videoaxi4s_bridge nativevideo_axis_bridge_1 ]
+  set_property CONFIG.C_PPC {2} $nativevideo_axis_bridge_1
+
 
   # Create instance: v_tc_0, and set properties
   set v_tc_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:v_tc v_tc_0 ]
@@ -406,6 +408,14 @@ proc create_hier_cell_avtpg_s0 { parentCell nameHier } {
     CONFIG.CONST_VAL {0} \
     CONFIG.CONST_WIDTH {1} \
   ] $xlconstant_3
+
+
+  # Create instance: xlslice_0, and set properties
+  set xlslice_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:xlslice:1.0 xlslice_0 ]
+  set_property -dict [list \
+    CONFIG.DIN_FROM {47} \
+    CONFIG.DIN_WIDTH {144} \
+  ] $xlslice_0
 
 
   # Create interface connections
@@ -443,7 +453,7 @@ proc create_hier_cell_avtpg_s0 { parentCell nameHier } {
   connect_bd_net -net axis_nativevideo_bridge_tx_vid_hsync  [get_bd_pins axis_nativevideo_bridge/tx_vid_hsync] \
   [get_bd_pins nativevideo_axis_bridge_1/vid_hsync]
   connect_bd_net -net axis_nativevideo_bridge_tx_vid_pixel  [get_bd_pins axis_nativevideo_bridge/tx_vid_pixel] \
-  [get_bd_pins nativevideo_axis_bridge_1/vid_pixel0]
+  [get_bd_pins xlslice_0/Din]
   connect_bd_net -net axis_nativevideo_bridge_tx_vid_reset  [get_bd_pins axis_nativevideo_bridge/tx_vid_reset] \
   [get_bd_pins nativevideo_axis_bridge_1/vid_reset]
   connect_bd_net -net axis_nativevideo_bridge_tx_vid_vsync  [get_bd_pins axis_nativevideo_bridge/tx_vid_vsync] \
@@ -532,6 +542,8 @@ proc create_hier_cell_avtpg_s0 { parentCell nameHier } {
   connect_bd_net -net xlconstant_3_dout  [get_bd_pins xlconstant_3/dout] \
   [get_bd_pins axis_nativevideo_bridge/rst] \
   [get_bd_pins axis_nativevideo_bridge/soft_reset]
+  connect_bd_net -net xlslice_0_Dout  [get_bd_pins xlslice_0/Dout] \
+  [get_bd_pins nativevideo_axis_bridge_1/vid_pixel0]
 
   # Restore current instance
   current_bd_instance $oldCurInst
@@ -608,8 +620,8 @@ proc create_hier_cell_avtpg_vp1 { parentCell nameHier } {
   set_property -dict [list \
     CONFIG.C_ALL_INPUTS {1} \
     CONFIG.C_ALL_INPUTS_2 {1} \
-    CONFIG.C_GPIO2_WIDTH {32} \
-    CONFIG.C_GPIO_WIDTH {32} \
+    CONFIG.C_GPIO2_WIDTH {17} \
+    CONFIG.C_GPIO_WIDTH {17} \
     CONFIG.C_IS_DUAL {1} \
   ] $axi_gpio_0
 
@@ -730,6 +742,14 @@ proc create_hier_cell_avtpg_vp1 { parentCell nameHier } {
   ] $xlconstant_3
 
 
+  # Create instance: xlslice_0, and set properties
+  set xlslice_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:xlslice:1.0 xlslice_0 ]
+  set_property -dict [list \
+    CONFIG.DIN_FROM {47} \
+    CONFIG.DIN_WIDTH {72} \
+  ] $xlslice_0
+
+
   # Create interface connections
   connect_bd_intf_net -intf_net Conn1 [get_bd_intf_pins ctrl] [get_bd_intf_pins v_tc_0/ctrl]
   connect_bd_intf_net -intf_net Conn2 [get_bd_intf_pins av_axi] [get_bd_intf_pins av_pat_gen_0/av_axi]
@@ -772,7 +792,7 @@ proc create_hier_cell_avtpg_vp1 { parentCell nameHier } {
   [get_bd_pins xlconcat_2/In1]
   connect_bd_net -net axis_nativevideo_bridge_tx_vid_pixel  [get_bd_pins axis_nativevideo_bridge/tx_vid_pixel] \
   [get_bd_pins tx_vid_pixel] \
-  [get_bd_pins nativevideo_axis_bridge_2/vid_pixel0]
+  [get_bd_pins xlslice_0/Din]
   connect_bd_net -net axis_nativevideo_bridge_tx_vid_reset  [get_bd_pins axis_nativevideo_bridge/tx_vid_reset] \
   [get_bd_pins nativevideo_axis_bridge_2/vid_reset]
   connect_bd_net -net axis_nativevideo_bridge_tx_vid_vsync  [get_bd_pins axis_nativevideo_bridge/tx_vid_vsync] \
@@ -865,6 +885,8 @@ proc create_hier_cell_avtpg_vp1 { parentCell nameHier } {
   [get_bd_pins v_tc_0/fsync_in]
   connect_bd_net -net xlconstant_2_dout  [get_bd_pins xlconstant_2/dout] \
   [get_bd_pins util_vector_logic_7/Op2]
+  connect_bd_net -net xlslice_0_Dout  [get_bd_pins xlslice_0/Dout] \
+  [get_bd_pins nativevideo_axis_bridge_2/vid_pixel0]
 
   # Restore current instance
   current_bd_instance $oldCurInst
@@ -933,8 +955,8 @@ proc create_hier_cell_avtpg_vp0 { parentCell nameHier } {
   set_property -dict [list \
     CONFIG.C_ALL_INPUTS {1} \
     CONFIG.C_ALL_INPUTS_2 {1} \
-    CONFIG.C_GPIO2_WIDTH {32} \
-    CONFIG.C_GPIO_WIDTH {32} \
+    CONFIG.C_GPIO2_WIDTH {17} \
+    CONFIG.C_GPIO_WIDTH {17} \
     CONFIG.C_IS_DUAL {1} \
   ] $axi_gpio_0
 
@@ -987,6 +1009,14 @@ proc create_hier_cell_avtpg_vp0 { parentCell nameHier } {
   ] $xlconstant_3
 
 
+  # Create instance: xlslice_0, and set properties
+  set xlslice_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:xlslice:1.0 xlslice_0 ]
+  set_property -dict [list \
+    CONFIG.DIN_FROM {47} \
+    CONFIG.DIN_WIDTH {72} \
+  ] $xlslice_0
+
+
   # Create interface connections
   connect_bd_intf_net -intf_net Conn1 [get_bd_intf_pins ctrl] [get_bd_intf_pins v_tc_0/ctrl]
   connect_bd_intf_net -intf_net Conn2 [get_bd_intf_pins av_axi] [get_bd_intf_pins av_pat_gen_0/av_axi]
@@ -1024,7 +1054,7 @@ proc create_hier_cell_avtpg_vp0 { parentCell nameHier } {
   [get_bd_pins nativevideo_axis_bridge_1/vid_hsync] \
   [get_bd_pins xlconcat_0/In1]
   connect_bd_net -net axis_nativevideo_bridge_tx_vid_pixel  [get_bd_pins axis_nativevideo_bridge/tx_vid_pixel] \
-  [get_bd_pins nativevideo_axis_bridge_1/vid_pixel0]
+  [get_bd_pins xlslice_0/Din]
   connect_bd_net -net axis_nativevideo_bridge_tx_vid_reset  [get_bd_pins axis_nativevideo_bridge/tx_vid_reset] \
   [get_bd_pins nativevideo_axis_bridge_1/vid_reset]
   connect_bd_net -net axis_nativevideo_bridge_tx_vid_vsync  [get_bd_pins axis_nativevideo_bridge/tx_vid_vsync] \
@@ -1096,6 +1126,8 @@ proc create_hier_cell_avtpg_vp0 { parentCell nameHier } {
   connect_bd_net -net xlconstant_3_dout  [get_bd_pins xlconstant_3/dout] \
   [get_bd_pins axis_nativevideo_bridge/rst] \
   [get_bd_pins axis_nativevideo_bridge/soft_reset]
+  connect_bd_net -net xlslice_0_Dout  [get_bd_pins xlslice_0/Dout] \
+  [get_bd_pins nativevideo_axis_bridge_1/vid_pixel0]
 
   # Restore current instance
   current_bd_instance $oldCurInst
@@ -1677,7 +1709,7 @@ proc create_hier_cell_dc_in_out { parentCell nameHier } {
   create_bd_pin -dir I vid_vsync1_0
   create_bd_pin -dir I -from 71 -to 0 Din
   create_bd_pin -dir I dcm_locked
-  create_bd_pin -dir O -from 6 -to 0 dout6
+  create_bd_pin -dir O -from 10 -to 0 dout6
   create_bd_pin -dir I -type clk s_axi_aclk
   create_bd_pin -dir I -type clk vid_clk_0
   create_bd_pin -dir O lrclk_out
@@ -1707,7 +1739,11 @@ proc create_hier_cell_dc_in_out { parentCell nameHier } {
   set axi_gpio_1 [ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_gpio axi_gpio_1 ]
   set_property -dict [list \
     CONFIG.C_ALL_OUTPUTS {1} \
-    CONFIG.C_IS_DUAL {0} \
+    CONFIG.C_ALL_OUTPUTS_2 {1} \
+    CONFIG.C_DOUT_DEFAULT_2 {0x00000005} \
+    CONFIG.C_GPIO2_WIDTH {3} \
+    CONFIG.C_GPIO_WIDTH {32} \
+    CONFIG.C_IS_DUAL {1} \
   ] $axi_gpio_1
 
 
@@ -1768,6 +1804,7 @@ proc create_hier_cell_dc_in_out { parentCell nameHier } {
   set_property -dict [list \
     CONFIG.C_ALL_OUTPUTS {1} \
     CONFIG.C_ALL_OUTPUTS_2 {1} \
+    CONFIG.C_GPIO2_WIDTH {6} \
     CONFIG.C_GPIO_WIDTH {2} \
     CONFIG.C_IS_DUAL {1} \
   ] $axi_gpio_alpha_bypass_en
@@ -1776,15 +1813,22 @@ proc create_hier_cell_dc_in_out { parentCell nameHier } {
   # Create instance: xlconcat_0, and set properties
   set xlconcat_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:xlconcat xlconcat_0 ]
   set_property -dict [list \
-    CONFIG.IN0_WIDTH {1} \
+    CONFIG.IN0_WIDTH {2} \
     CONFIG.IN1_WIDTH {1} \
     CONFIG.IN2_WIDTH {5} \
-    CONFIG.NUM_PORTS {3} \
+    CONFIG.IN3_WIDTH {3} \
+    CONFIG.NUM_PORTS {4} \
   ] $xlconcat_0
 
 
   # Create instance: xlslice_7, and set properties
   set xlslice_7 [ create_bd_cell -type ip -vlnv xilinx.com:ip:xlslice xlslice_7 ]
+  set_property -dict [list \
+    CONFIG.DIN_FROM {5} \
+    CONFIG.DIN_TO {5} \
+    CONFIG.DIN_WIDTH {6} \
+  ] $xlslice_7
+
 
   # Create instance: smartconnect_0, and set properties
   set smartconnect_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:smartconnect smartconnect_0 ]
@@ -1793,6 +1837,15 @@ proc create_hier_cell_dc_in_out { parentCell nameHier } {
     CONFIG.NUM_MI {4} \
     CONFIG.NUM_SI {1} \
   ] $smartconnect_0
+
+
+  # Create instance: xlslice_8, and set properties
+  set xlslice_8 [ create_bd_cell -type ip -vlnv xilinx.com:ip:xlslice:1.0 xlslice_8 ]
+  set_property -dict [list \
+    CONFIG.DIN_FROM {4} \
+    CONFIG.DIN_TO {0} \
+    CONFIG.DIN_WIDTH {6} \
+  ] $xlslice_8
 
 
   # Create interface connections
@@ -1840,12 +1893,14 @@ proc create_hier_cell_dc_in_out { parentCell nameHier } {
   [get_bd_pins xlslice_1/Din] \
   [get_bd_pins xlslice_2/Din] \
   [get_bd_pins xlslice_3/Din]
+  connect_bd_net -net axi_gpio_1_gpio2_io_o  [get_bd_pins axi_gpio_1/gpio2_io_o] \
+  [get_bd_pins xlconcat_0/In3]
   connect_bd_net -net axi_gpio_1_gpio_io_o1  [get_bd_pins axi_gpio_1/gpio_io_o] \
   [get_bd_pins dc_input_pipeline/TPG_GEN_EN] \
   [get_bd_pins dc_input_pipeline/TPG_GEN_EN_0]
   connect_bd_net -net axi_gpio_2_gpio2_io_o  [get_bd_pins axi_gpio_alpha_bypass_en/gpio2_io_o] \
   [get_bd_pins xlslice_7/Din] \
-  [get_bd_pins xlconcat_0/In2]
+  [get_bd_pins xlslice_8/Din]
   connect_bd_net -net axi_gpio_2_gpio_io_o  [get_bd_pins axi_gpio_alpha_bypass_en/gpio_io_o] \
   [get_bd_pins xlconcat_0/In0]
   connect_bd_net -net clk_wiz_pl_vid_1x_clk  [get_bd_pins s_axi_aclk1] \
@@ -1936,6 +1991,8 @@ proc create_hier_cell_dc_in_out { parentCell nameHier } {
   [get_bd_pins dc_pl_out_pipeline/color_format]
   connect_bd_net -net xlslice_7_Dout  [get_bd_pins xlslice_7/Dout] \
   [get_bd_pins xlconcat_0/In1]
+  connect_bd_net -net xlslice_8_Dout  [get_bd_pins xlslice_8/Dout] \
+  [get_bd_pins xlconcat_0/In2]
 
   # Restore current instance
   current_bd_instance $oldCurInst
@@ -2236,6 +2293,7 @@ NON_KSB DDRMC5_SELF_REFRESH DISABLE DDRMC5_LBDQ_SWAP false DDRMC5_CAL_MASK_POLL 
     CONFIG.C_ALL_INPUTS {1} \
     CONFIG.C_ALL_OUTPUTS_2 {1} \
     CONFIG.C_GPIO2_WIDTH {3} \
+    CONFIG.C_GPIO_WIDTH {19} \
     CONFIG.C_IS_DUAL {1} \
   ] $axi_gpio_0
 
@@ -2445,10 +2503,10 @@ NON_KSB DDRMC5_SELF_REFRESH DISABLE DDRMC5_LBDQ_SWAP false DDRMC5_CAL_MASK_POLL 
   [get_bd_pins ps_wizard_0/dp_external_custom_event2]
 
   # Create address segments
-  assign_bd_address -offset 0x00000000 -range 0x80000000 -target_address_space [get_bd_addr_spaces ps_wizard_0/mmi_0_mmi_dc_0] [get_bd_addr_segs axi_noc2_0/DDR_MC_PORT01/C0_DDR_CH0_LEGACY] -force
-  assign_bd_address -offset 0x000800000000 -range 0x80000000 -target_address_space [get_bd_addr_spaces ps_wizard_0/mmi_0_mmi_dc_0] [get_bd_addr_segs axi_noc2_0/DDR_MC_PORT01/C0_DDR_CH0_MED] -force
-  assign_bd_address -offset 0x00000000 -range 0x80000000 -target_address_space [get_bd_addr_spaces ps_wizard_0/mmi_0_mmi_gpu_0] [get_bd_addr_segs axi_noc2_0/DDR_MC_PORT01/C0_DDR_CH0_LEGACY] -force
-  assign_bd_address -offset 0x000800000000 -range 0x80000000 -target_address_space [get_bd_addr_spaces ps_wizard_0/mmi_0_mmi_gpu_0] [get_bd_addr_segs axi_noc2_0/DDR_MC_PORT01/C0_DDR_CH0_MED] -force
+  assign_bd_address -offset 0x00000000 -range 0x80000000 -target_address_space [get_bd_addr_spaces ps_wizard_0/mmi_0_mmi_dc_0] [get_bd_addr_segs axi_noc2_0/DDR_MC_PORTS/DDR_CH0_LEGACY] -force
+  assign_bd_address -offset 0x000800000000 -range 0x80000000 -target_address_space [get_bd_addr_spaces ps_wizard_0/mmi_0_mmi_dc_0] [get_bd_addr_segs axi_noc2_0/DDR_MC_PORTS/DDR_CH0_MED] -force
+  assign_bd_address -offset 0x00000000 -range 0x80000000 -target_address_space [get_bd_addr_spaces ps_wizard_0/mmi_0_mmi_gpu_0] [get_bd_addr_segs axi_noc2_0/DDR_MC_PORTS/DDR_CH0_LEGACY] -force
+  assign_bd_address -offset 0x000800000000 -range 0x80000000 -target_address_space [get_bd_addr_spaces ps_wizard_0/mmi_0_mmi_gpu_0] [get_bd_addr_segs axi_noc2_0/DDR_MC_PORTS/DDR_CH0_MED] -force
   assign_bd_address -offset 0xB0500000 -range 0x00010000 -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_cortexa78_0] [get_bd_addr_segs dc_in_out/dc_input_pipeline/avtpg_vp1/av_pat_gen_0/av_axi/Reg] -force
   assign_bd_address -offset 0xB0400000 -range 0x00010000 -with_name SEG_av_pat_gen_0_Reg_1 -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_cortexa78_0] [get_bd_addr_segs dc_in_out/dc_input_pipeline/avtpg_s0/av_pat_gen_0/av_axi/Reg] -force
   assign_bd_address -offset 0xB04D0000 -range 0x00010000 -with_name SEG_av_pat_gen_0_Reg_2 -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_cortexa78_0] [get_bd_addr_segs dc_in_out/dc_input_pipeline/avtpg_vp0/av_pat_gen_0/av_axi/Reg] -force
@@ -2462,8 +2520,8 @@ NON_KSB DDRMC5_SELF_REFRESH DISABLE DDRMC5_LBDQ_SWAP false DDRMC5_CAL_MASK_POLL 
   assign_bd_address -offset 0xB05C0000 -range 0x00010000 -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_cortexa78_0] [get_bd_addr_segs dc_in_out/axi_gpio_alpha_bypass_en/S_AXI/Reg] -force
   assign_bd_address -offset 0xB0530000 -range 0x00010000 -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_cortexa78_0] [get_bd_addr_segs dc_in_out/dc_input_pipeline/axi_gpio_dual_ppc/S_AXI/Reg] -force
   assign_bd_address -offset 0xB0560000 -range 0x00010000 -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_cortexa78_0] [get_bd_addr_segs dc_in_out/dc_input_pipeline/axi_gpio_vidformat/S_AXI/Reg] -force
-  assign_bd_address -offset 0x00000000 -range 0x80000000 -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_cortexa78_0] [get_bd_addr_segs axi_noc2_0/DDR_MC_PORT01/C0_DDR_CH0_LEGACY] -force
-  assign_bd_address -offset 0x000800000000 -range 0x80000000 -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_cortexa78_0] [get_bd_addr_segs axi_noc2_0/DDR_MC_PORT01/C0_DDR_CH0_MED] -force
+  assign_bd_address -offset 0x00000000 -range 0x80000000 -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_cortexa78_0] [get_bd_addr_segs axi_noc2_0/DDR_MC_PORTS/DDR_CH0_LEGACY] -force
+  assign_bd_address -offset 0x000800000000 -range 0x80000000 -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_cortexa78_0] [get_bd_addr_segs axi_noc2_0/DDR_MC_PORTS/DDR_CH0_MED] -force
   assign_bd_address -offset 0xB0570000 -range 0x00010000 -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_cortexa78_0] [get_bd_addr_segs dc_in_out/dc_pl_out_pipeline/pl_audio_out/i2s_receiver_0/s_axi_ctrl/Reg] -force
   assign_bd_address -offset 0xB0420000 -range 0x00010000 -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_cortexa78_0] [get_bd_addr_segs dc_in_out/dc_input_pipeline/avtpg_s0/i2s_transmitter_0/s_axi_ctrl/Reg] -force
   assign_bd_address -offset 0xB0590000 -range 0x00010000 -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_cortexa78_0] [get_bd_addr_segs dc_in_out/dc_pl_out_pipeline/pl_video_s0p0/v_frmbuf_wr_0/s_axi_CTRL/Reg] -force
@@ -2483,8 +2541,8 @@ NON_KSB DDRMC5_SELF_REFRESH DISABLE DDRMC5_LBDQ_SWAP false DDRMC5_CAL_MASK_POLL 
   assign_bd_address -offset 0xB05C0000 -range 0x00010000 -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_cortexa78_1] [get_bd_addr_segs dc_in_out/axi_gpio_alpha_bypass_en/S_AXI/Reg] -force
   assign_bd_address -offset 0xB0530000 -range 0x00010000 -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_cortexa78_1] [get_bd_addr_segs dc_in_out/dc_input_pipeline/axi_gpio_dual_ppc/S_AXI/Reg] -force
   assign_bd_address -offset 0xB0560000 -range 0x00010000 -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_cortexa78_1] [get_bd_addr_segs dc_in_out/dc_input_pipeline/axi_gpio_vidformat/S_AXI/Reg] -force
-  assign_bd_address -offset 0x00000000 -range 0x80000000 -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_cortexa78_1] [get_bd_addr_segs axi_noc2_0/DDR_MC_PORT01/C0_DDR_CH0_LEGACY] -force
-  assign_bd_address -offset 0x000800000000 -range 0x80000000 -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_cortexa78_1] [get_bd_addr_segs axi_noc2_0/DDR_MC_PORT01/C0_DDR_CH0_MED] -force
+  assign_bd_address -offset 0x00000000 -range 0x80000000 -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_cortexa78_1] [get_bd_addr_segs axi_noc2_0/DDR_MC_PORTS/DDR_CH0_LEGACY] -force
+  assign_bd_address -offset 0x000800000000 -range 0x80000000 -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_cortexa78_1] [get_bd_addr_segs axi_noc2_0/DDR_MC_PORTS/DDR_CH0_MED] -force
   assign_bd_address -offset 0xB0570000 -range 0x00010000 -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_cortexa78_1] [get_bd_addr_segs dc_in_out/dc_pl_out_pipeline/pl_audio_out/i2s_receiver_0/s_axi_ctrl/Reg] -force
   assign_bd_address -offset 0xB0420000 -range 0x00010000 -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_cortexa78_1] [get_bd_addr_segs dc_in_out/dc_input_pipeline/avtpg_s0/i2s_transmitter_0/s_axi_ctrl/Reg] -force
   assign_bd_address -offset 0xB0590000 -range 0x00010000 -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_cortexa78_1] [get_bd_addr_segs dc_in_out/dc_pl_out_pipeline/pl_video_s0p0/v_frmbuf_wr_0/s_axi_CTRL/Reg] -force
@@ -2504,8 +2562,8 @@ NON_KSB DDRMC5_SELF_REFRESH DISABLE DDRMC5_LBDQ_SWAP false DDRMC5_CAL_MASK_POLL 
   assign_bd_address -offset 0xB05C0000 -range 0x00010000 -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_cortexa78_2] [get_bd_addr_segs dc_in_out/axi_gpio_alpha_bypass_en/S_AXI/Reg] -force
   assign_bd_address -offset 0xB0530000 -range 0x00010000 -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_cortexa78_2] [get_bd_addr_segs dc_in_out/dc_input_pipeline/axi_gpio_dual_ppc/S_AXI/Reg] -force
   assign_bd_address -offset 0xB0560000 -range 0x00010000 -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_cortexa78_2] [get_bd_addr_segs dc_in_out/dc_input_pipeline/axi_gpio_vidformat/S_AXI/Reg] -force
-  assign_bd_address -offset 0x00000000 -range 0x80000000 -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_cortexa78_2] [get_bd_addr_segs axi_noc2_0/DDR_MC_PORT01/C0_DDR_CH0_LEGACY] -force
-  assign_bd_address -offset 0x000800000000 -range 0x80000000 -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_cortexa78_2] [get_bd_addr_segs axi_noc2_0/DDR_MC_PORT01/C0_DDR_CH0_MED] -force
+  assign_bd_address -offset 0x00000000 -range 0x80000000 -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_cortexa78_2] [get_bd_addr_segs axi_noc2_0/DDR_MC_PORTS/DDR_CH0_LEGACY] -force
+  assign_bd_address -offset 0x000800000000 -range 0x80000000 -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_cortexa78_2] [get_bd_addr_segs axi_noc2_0/DDR_MC_PORTS/DDR_CH0_MED] -force
   assign_bd_address -offset 0xB0570000 -range 0x00010000 -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_cortexa78_2] [get_bd_addr_segs dc_in_out/dc_pl_out_pipeline/pl_audio_out/i2s_receiver_0/s_axi_ctrl/Reg] -force
   assign_bd_address -offset 0xB0420000 -range 0x00010000 -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_cortexa78_2] [get_bd_addr_segs dc_in_out/dc_input_pipeline/avtpg_s0/i2s_transmitter_0/s_axi_ctrl/Reg] -force
   assign_bd_address -offset 0xB0590000 -range 0x00010000 -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_cortexa78_2] [get_bd_addr_segs dc_in_out/dc_pl_out_pipeline/pl_video_s0p0/v_frmbuf_wr_0/s_axi_CTRL/Reg] -force
@@ -2525,8 +2583,8 @@ NON_KSB DDRMC5_SELF_REFRESH DISABLE DDRMC5_LBDQ_SWAP false DDRMC5_CAL_MASK_POLL 
   assign_bd_address -offset 0xB05C0000 -range 0x00010000 -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_cortexa78_3] [get_bd_addr_segs dc_in_out/axi_gpio_alpha_bypass_en/S_AXI/Reg] -force
   assign_bd_address -offset 0xB0530000 -range 0x00010000 -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_cortexa78_3] [get_bd_addr_segs dc_in_out/dc_input_pipeline/axi_gpio_dual_ppc/S_AXI/Reg] -force
   assign_bd_address -offset 0xB0560000 -range 0x00010000 -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_cortexa78_3] [get_bd_addr_segs dc_in_out/dc_input_pipeline/axi_gpio_vidformat/S_AXI/Reg] -force
-  assign_bd_address -offset 0x00000000 -range 0x80000000 -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_cortexa78_3] [get_bd_addr_segs axi_noc2_0/DDR_MC_PORT01/C0_DDR_CH0_LEGACY] -force
-  assign_bd_address -offset 0x000800000000 -range 0x80000000 -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_cortexa78_3] [get_bd_addr_segs axi_noc2_0/DDR_MC_PORT01/C0_DDR_CH0_MED] -force
+  assign_bd_address -offset 0x00000000 -range 0x80000000 -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_cortexa78_3] [get_bd_addr_segs axi_noc2_0/DDR_MC_PORTS/DDR_CH0_LEGACY] -force
+  assign_bd_address -offset 0x000800000000 -range 0x80000000 -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_cortexa78_3] [get_bd_addr_segs axi_noc2_0/DDR_MC_PORTS/DDR_CH0_MED] -force
   assign_bd_address -offset 0xB0570000 -range 0x00010000 -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_cortexa78_3] [get_bd_addr_segs dc_in_out/dc_pl_out_pipeline/pl_audio_out/i2s_receiver_0/s_axi_ctrl/Reg] -force
   assign_bd_address -offset 0xB0420000 -range 0x00010000 -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_cortexa78_3] [get_bd_addr_segs dc_in_out/dc_input_pipeline/avtpg_s0/i2s_transmitter_0/s_axi_ctrl/Reg] -force
   assign_bd_address -offset 0xB0590000 -range 0x00010000 -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_cortexa78_3] [get_bd_addr_segs dc_in_out/dc_pl_out_pipeline/pl_video_s0p0/v_frmbuf_wr_0/s_axi_CTRL/Reg] -force
@@ -2546,8 +2604,8 @@ NON_KSB DDRMC5_SELF_REFRESH DISABLE DDRMC5_LBDQ_SWAP false DDRMC5_CAL_MASK_POLL 
   assign_bd_address -offset 0xB05C0000 -range 0x00010000 -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_cortexa78_4] [get_bd_addr_segs dc_in_out/axi_gpio_alpha_bypass_en/S_AXI/Reg] -force
   assign_bd_address -offset 0xB0530000 -range 0x00010000 -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_cortexa78_4] [get_bd_addr_segs dc_in_out/dc_input_pipeline/axi_gpio_dual_ppc/S_AXI/Reg] -force
   assign_bd_address -offset 0xB0560000 -range 0x00010000 -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_cortexa78_4] [get_bd_addr_segs dc_in_out/dc_input_pipeline/axi_gpio_vidformat/S_AXI/Reg] -force
-  assign_bd_address -offset 0x00000000 -range 0x80000000 -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_cortexa78_4] [get_bd_addr_segs axi_noc2_0/DDR_MC_PORT01/C0_DDR_CH0_LEGACY] -force
-  assign_bd_address -offset 0x000800000000 -range 0x80000000 -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_cortexa78_4] [get_bd_addr_segs axi_noc2_0/DDR_MC_PORT01/C0_DDR_CH0_MED] -force
+  assign_bd_address -offset 0x00000000 -range 0x80000000 -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_cortexa78_4] [get_bd_addr_segs axi_noc2_0/DDR_MC_PORTS/DDR_CH0_LEGACY] -force
+  assign_bd_address -offset 0x000800000000 -range 0x80000000 -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_cortexa78_4] [get_bd_addr_segs axi_noc2_0/DDR_MC_PORTS/DDR_CH0_MED] -force
   assign_bd_address -offset 0xB0570000 -range 0x00010000 -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_cortexa78_4] [get_bd_addr_segs dc_in_out/dc_pl_out_pipeline/pl_audio_out/i2s_receiver_0/s_axi_ctrl/Reg] -force
   assign_bd_address -offset 0xB0420000 -range 0x00010000 -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_cortexa78_4] [get_bd_addr_segs dc_in_out/dc_input_pipeline/avtpg_s0/i2s_transmitter_0/s_axi_ctrl/Reg] -force
   assign_bd_address -offset 0xB0590000 -range 0x00010000 -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_cortexa78_4] [get_bd_addr_segs dc_in_out/dc_pl_out_pipeline/pl_video_s0p0/v_frmbuf_wr_0/s_axi_CTRL/Reg] -force
@@ -2567,8 +2625,8 @@ NON_KSB DDRMC5_SELF_REFRESH DISABLE DDRMC5_LBDQ_SWAP false DDRMC5_CAL_MASK_POLL 
   assign_bd_address -offset 0xB05C0000 -range 0x00010000 -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_cortexa78_5] [get_bd_addr_segs dc_in_out/axi_gpio_alpha_bypass_en/S_AXI/Reg] -force
   assign_bd_address -offset 0xB0530000 -range 0x00010000 -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_cortexa78_5] [get_bd_addr_segs dc_in_out/dc_input_pipeline/axi_gpio_dual_ppc/S_AXI/Reg] -force
   assign_bd_address -offset 0xB0560000 -range 0x00010000 -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_cortexa78_5] [get_bd_addr_segs dc_in_out/dc_input_pipeline/axi_gpio_vidformat/S_AXI/Reg] -force
-  assign_bd_address -offset 0x00000000 -range 0x80000000 -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_cortexa78_5] [get_bd_addr_segs axi_noc2_0/DDR_MC_PORT01/C0_DDR_CH0_LEGACY] -force
-  assign_bd_address -offset 0x000800000000 -range 0x80000000 -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_cortexa78_5] [get_bd_addr_segs axi_noc2_0/DDR_MC_PORT01/C0_DDR_CH0_MED] -force
+  assign_bd_address -offset 0x00000000 -range 0x80000000 -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_cortexa78_5] [get_bd_addr_segs axi_noc2_0/DDR_MC_PORTS/DDR_CH0_LEGACY] -force
+  assign_bd_address -offset 0x000800000000 -range 0x80000000 -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_cortexa78_5] [get_bd_addr_segs axi_noc2_0/DDR_MC_PORTS/DDR_CH0_MED] -force
   assign_bd_address -offset 0xB0570000 -range 0x00010000 -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_cortexa78_5] [get_bd_addr_segs dc_in_out/dc_pl_out_pipeline/pl_audio_out/i2s_receiver_0/s_axi_ctrl/Reg] -force
   assign_bd_address -offset 0xB0420000 -range 0x00010000 -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_cortexa78_5] [get_bd_addr_segs dc_in_out/dc_input_pipeline/avtpg_s0/i2s_transmitter_0/s_axi_ctrl/Reg] -force
   assign_bd_address -offset 0xB0590000 -range 0x00010000 -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_cortexa78_5] [get_bd_addr_segs dc_in_out/dc_pl_out_pipeline/pl_video_s0p0/v_frmbuf_wr_0/s_axi_CTRL/Reg] -force
@@ -2588,8 +2646,8 @@ NON_KSB DDRMC5_SELF_REFRESH DISABLE DDRMC5_LBDQ_SWAP false DDRMC5_CAL_MASK_POLL 
   assign_bd_address -offset 0xB05C0000 -range 0x00010000 -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_cortexa78_6] [get_bd_addr_segs dc_in_out/axi_gpio_alpha_bypass_en/S_AXI/Reg] -force
   assign_bd_address -offset 0xB0530000 -range 0x00010000 -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_cortexa78_6] [get_bd_addr_segs dc_in_out/dc_input_pipeline/axi_gpio_dual_ppc/S_AXI/Reg] -force
   assign_bd_address -offset 0xB0560000 -range 0x00010000 -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_cortexa78_6] [get_bd_addr_segs dc_in_out/dc_input_pipeline/axi_gpio_vidformat/S_AXI/Reg] -force
-  assign_bd_address -offset 0x00000000 -range 0x80000000 -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_cortexa78_6] [get_bd_addr_segs axi_noc2_0/DDR_MC_PORT01/C0_DDR_CH0_LEGACY] -force
-  assign_bd_address -offset 0x000800000000 -range 0x80000000 -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_cortexa78_6] [get_bd_addr_segs axi_noc2_0/DDR_MC_PORT01/C0_DDR_CH0_MED] -force
+  assign_bd_address -offset 0x00000000 -range 0x80000000 -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_cortexa78_6] [get_bd_addr_segs axi_noc2_0/DDR_MC_PORTS/DDR_CH0_LEGACY] -force
+  assign_bd_address -offset 0x000800000000 -range 0x80000000 -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_cortexa78_6] [get_bd_addr_segs axi_noc2_0/DDR_MC_PORTS/DDR_CH0_MED] -force
   assign_bd_address -offset 0xB0570000 -range 0x00010000 -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_cortexa78_6] [get_bd_addr_segs dc_in_out/dc_pl_out_pipeline/pl_audio_out/i2s_receiver_0/s_axi_ctrl/Reg] -force
   assign_bd_address -offset 0xB0420000 -range 0x00010000 -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_cortexa78_6] [get_bd_addr_segs dc_in_out/dc_input_pipeline/avtpg_s0/i2s_transmitter_0/s_axi_ctrl/Reg] -force
   assign_bd_address -offset 0xB0590000 -range 0x00010000 -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_cortexa78_6] [get_bd_addr_segs dc_in_out/dc_pl_out_pipeline/pl_video_s0p0/v_frmbuf_wr_0/s_axi_CTRL/Reg] -force
@@ -2609,8 +2667,8 @@ NON_KSB DDRMC5_SELF_REFRESH DISABLE DDRMC5_LBDQ_SWAP false DDRMC5_CAL_MASK_POLL 
   assign_bd_address -offset 0xB05C0000 -range 0x00010000 -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_cortexa78_7] [get_bd_addr_segs dc_in_out/axi_gpio_alpha_bypass_en/S_AXI/Reg] -force
   assign_bd_address -offset 0xB0530000 -range 0x00010000 -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_cortexa78_7] [get_bd_addr_segs dc_in_out/dc_input_pipeline/axi_gpio_dual_ppc/S_AXI/Reg] -force
   assign_bd_address -offset 0xB0560000 -range 0x00010000 -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_cortexa78_7] [get_bd_addr_segs dc_in_out/dc_input_pipeline/axi_gpio_vidformat/S_AXI/Reg] -force
-  assign_bd_address -offset 0x00000000 -range 0x80000000 -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_cortexa78_7] [get_bd_addr_segs axi_noc2_0/DDR_MC_PORT01/C0_DDR_CH0_LEGACY] -force
-  assign_bd_address -offset 0x000800000000 -range 0x80000000 -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_cortexa78_7] [get_bd_addr_segs axi_noc2_0/DDR_MC_PORT01/C0_DDR_CH0_MED] -force
+  assign_bd_address -offset 0x00000000 -range 0x80000000 -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_cortexa78_7] [get_bd_addr_segs axi_noc2_0/DDR_MC_PORTS/DDR_CH0_LEGACY] -force
+  assign_bd_address -offset 0x000800000000 -range 0x80000000 -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_cortexa78_7] [get_bd_addr_segs axi_noc2_0/DDR_MC_PORTS/DDR_CH0_MED] -force
   assign_bd_address -offset 0xB0570000 -range 0x00010000 -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_cortexa78_7] [get_bd_addr_segs dc_in_out/dc_pl_out_pipeline/pl_audio_out/i2s_receiver_0/s_axi_ctrl/Reg] -force
   assign_bd_address -offset 0xB0420000 -range 0x00010000 -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_cortexa78_7] [get_bd_addr_segs dc_in_out/dc_input_pipeline/avtpg_s0/i2s_transmitter_0/s_axi_ctrl/Reg] -force
   assign_bd_address -offset 0xB0590000 -range 0x00010000 -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_cortexa78_7] [get_bd_addr_segs dc_in_out/dc_pl_out_pipeline/pl_video_s0p0/v_frmbuf_wr_0/s_axi_CTRL/Reg] -force
@@ -2630,7 +2688,7 @@ NON_KSB DDRMC5_SELF_REFRESH DISABLE DDRMC5_LBDQ_SWAP false DDRMC5_CAL_MASK_POLL 
   assign_bd_address -offset 0xB05C0000 -range 0x00010000 -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_cortexr52_0] [get_bd_addr_segs dc_in_out/axi_gpio_alpha_bypass_en/S_AXI/Reg] -force
   assign_bd_address -offset 0xB0530000 -range 0x00010000 -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_cortexr52_0] [get_bd_addr_segs dc_in_out/dc_input_pipeline/axi_gpio_dual_ppc/S_AXI/Reg] -force
   assign_bd_address -offset 0xB0560000 -range 0x00010000 -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_cortexr52_0] [get_bd_addr_segs dc_in_out/dc_input_pipeline/axi_gpio_vidformat/S_AXI/Reg] -force
-  assign_bd_address -offset 0x00000000 -range 0x80000000 -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_cortexr52_0] [get_bd_addr_segs axi_noc2_0/DDR_MC_PORT01/C0_DDR_CH0_LEGACY] -force
+  assign_bd_address -offset 0x00000000 -range 0x80000000 -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_cortexr52_0] [get_bd_addr_segs axi_noc2_0/DDR_MC_PORTS/DDR_CH0_LEGACY] -force
   assign_bd_address -offset 0xB0570000 -range 0x00010000 -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_cortexr52_0] [get_bd_addr_segs dc_in_out/dc_pl_out_pipeline/pl_audio_out/i2s_receiver_0/s_axi_ctrl/Reg] -force
   assign_bd_address -offset 0xB0420000 -range 0x00010000 -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_cortexr52_0] [get_bd_addr_segs dc_in_out/dc_input_pipeline/avtpg_s0/i2s_transmitter_0/s_axi_ctrl/Reg] -force
   assign_bd_address -offset 0xB0590000 -range 0x00010000 -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_cortexr52_0] [get_bd_addr_segs dc_in_out/dc_pl_out_pipeline/pl_video_s0p0/v_frmbuf_wr_0/s_axi_CTRL/Reg] -force
@@ -2650,7 +2708,7 @@ NON_KSB DDRMC5_SELF_REFRESH DISABLE DDRMC5_LBDQ_SWAP false DDRMC5_CAL_MASK_POLL 
   assign_bd_address -offset 0xB05C0000 -range 0x00010000 -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_cortexr52_1] [get_bd_addr_segs dc_in_out/axi_gpio_alpha_bypass_en/S_AXI/Reg] -force
   assign_bd_address -offset 0xB0530000 -range 0x00010000 -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_cortexr52_1] [get_bd_addr_segs dc_in_out/dc_input_pipeline/axi_gpio_dual_ppc/S_AXI/Reg] -force
   assign_bd_address -offset 0xB0560000 -range 0x00010000 -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_cortexr52_1] [get_bd_addr_segs dc_in_out/dc_input_pipeline/axi_gpio_vidformat/S_AXI/Reg] -force
-  assign_bd_address -offset 0x00000000 -range 0x80000000 -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_cortexr52_1] [get_bd_addr_segs axi_noc2_0/DDR_MC_PORT01/C0_DDR_CH0_LEGACY] -force
+  assign_bd_address -offset 0x00000000 -range 0x80000000 -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_cortexr52_1] [get_bd_addr_segs axi_noc2_0/DDR_MC_PORTS/DDR_CH0_LEGACY] -force
   assign_bd_address -offset 0xB0570000 -range 0x00010000 -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_cortexr52_1] [get_bd_addr_segs dc_in_out/dc_pl_out_pipeline/pl_audio_out/i2s_receiver_0/s_axi_ctrl/Reg] -force
   assign_bd_address -offset 0xB0420000 -range 0x00010000 -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_cortexr52_1] [get_bd_addr_segs dc_in_out/dc_input_pipeline/avtpg_s0/i2s_transmitter_0/s_axi_ctrl/Reg] -force
   assign_bd_address -offset 0xB0590000 -range 0x00010000 -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_cortexr52_1] [get_bd_addr_segs dc_in_out/dc_pl_out_pipeline/pl_video_s0p0/v_frmbuf_wr_0/s_axi_CTRL/Reg] -force
@@ -2670,7 +2728,7 @@ NON_KSB DDRMC5_SELF_REFRESH DISABLE DDRMC5_LBDQ_SWAP false DDRMC5_CAL_MASK_POLL 
   assign_bd_address -offset 0xB05C0000 -range 0x00010000 -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_cortexr52_2] [get_bd_addr_segs dc_in_out/axi_gpio_alpha_bypass_en/S_AXI/Reg] -force
   assign_bd_address -offset 0xB0530000 -range 0x00010000 -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_cortexr52_2] [get_bd_addr_segs dc_in_out/dc_input_pipeline/axi_gpio_dual_ppc/S_AXI/Reg] -force
   assign_bd_address -offset 0xB0560000 -range 0x00010000 -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_cortexr52_2] [get_bd_addr_segs dc_in_out/dc_input_pipeline/axi_gpio_vidformat/S_AXI/Reg] -force
-  assign_bd_address -offset 0x00000000 -range 0x80000000 -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_cortexr52_2] [get_bd_addr_segs axi_noc2_0/DDR_MC_PORT01/C0_DDR_CH0_LEGACY] -force
+  assign_bd_address -offset 0x00000000 -range 0x80000000 -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_cortexr52_2] [get_bd_addr_segs axi_noc2_0/DDR_MC_PORTS/DDR_CH0_LEGACY] -force
   assign_bd_address -offset 0xB0570000 -range 0x00010000 -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_cortexr52_2] [get_bd_addr_segs dc_in_out/dc_pl_out_pipeline/pl_audio_out/i2s_receiver_0/s_axi_ctrl/Reg] -force
   assign_bd_address -offset 0xB0420000 -range 0x00010000 -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_cortexr52_2] [get_bd_addr_segs dc_in_out/dc_input_pipeline/avtpg_s0/i2s_transmitter_0/s_axi_ctrl/Reg] -force
   assign_bd_address -offset 0xB0590000 -range 0x00010000 -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_cortexr52_2] [get_bd_addr_segs dc_in_out/dc_pl_out_pipeline/pl_video_s0p0/v_frmbuf_wr_0/s_axi_CTRL/Reg] -force
@@ -2690,7 +2748,7 @@ NON_KSB DDRMC5_SELF_REFRESH DISABLE DDRMC5_LBDQ_SWAP false DDRMC5_CAL_MASK_POLL 
   assign_bd_address -offset 0xB05C0000 -range 0x00010000 -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_cortexr52_3] [get_bd_addr_segs dc_in_out/axi_gpio_alpha_bypass_en/S_AXI/Reg] -force
   assign_bd_address -offset 0xB0530000 -range 0x00010000 -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_cortexr52_3] [get_bd_addr_segs dc_in_out/dc_input_pipeline/axi_gpio_dual_ppc/S_AXI/Reg] -force
   assign_bd_address -offset 0xB0560000 -range 0x00010000 -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_cortexr52_3] [get_bd_addr_segs dc_in_out/dc_input_pipeline/axi_gpio_vidformat/S_AXI/Reg] -force
-  assign_bd_address -offset 0x00000000 -range 0x80000000 -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_cortexr52_3] [get_bd_addr_segs axi_noc2_0/DDR_MC_PORT01/C0_DDR_CH0_LEGACY] -force
+  assign_bd_address -offset 0x00000000 -range 0x80000000 -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_cortexr52_3] [get_bd_addr_segs axi_noc2_0/DDR_MC_PORTS/DDR_CH0_LEGACY] -force
   assign_bd_address -offset 0xB0570000 -range 0x00010000 -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_cortexr52_3] [get_bd_addr_segs dc_in_out/dc_pl_out_pipeline/pl_audio_out/i2s_receiver_0/s_axi_ctrl/Reg] -force
   assign_bd_address -offset 0xB0420000 -range 0x00010000 -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_cortexr52_3] [get_bd_addr_segs dc_in_out/dc_input_pipeline/avtpg_s0/i2s_transmitter_0/s_axi_ctrl/Reg] -force
   assign_bd_address -offset 0xB0590000 -range 0x00010000 -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_cortexr52_3] [get_bd_addr_segs dc_in_out/dc_pl_out_pipeline/pl_video_s0p0/v_frmbuf_wr_0/s_axi_CTRL/Reg] -force
@@ -2710,7 +2768,7 @@ NON_KSB DDRMC5_SELF_REFRESH DISABLE DDRMC5_LBDQ_SWAP false DDRMC5_CAL_MASK_POLL 
   assign_bd_address -offset 0xB05C0000 -range 0x00010000 -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_cortexr52_4] [get_bd_addr_segs dc_in_out/axi_gpio_alpha_bypass_en/S_AXI/Reg] -force
   assign_bd_address -offset 0xB0530000 -range 0x00010000 -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_cortexr52_4] [get_bd_addr_segs dc_in_out/dc_input_pipeline/axi_gpio_dual_ppc/S_AXI/Reg] -force
   assign_bd_address -offset 0xB0560000 -range 0x00010000 -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_cortexr52_4] [get_bd_addr_segs dc_in_out/dc_input_pipeline/axi_gpio_vidformat/S_AXI/Reg] -force
-  assign_bd_address -offset 0x00000000 -range 0x80000000 -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_cortexr52_4] [get_bd_addr_segs axi_noc2_0/DDR_MC_PORT01/C0_DDR_CH0_LEGACY] -force
+  assign_bd_address -offset 0x00000000 -range 0x80000000 -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_cortexr52_4] [get_bd_addr_segs axi_noc2_0/DDR_MC_PORTS/DDR_CH0_LEGACY] -force
   assign_bd_address -offset 0xB0570000 -range 0x00010000 -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_cortexr52_4] [get_bd_addr_segs dc_in_out/dc_pl_out_pipeline/pl_audio_out/i2s_receiver_0/s_axi_ctrl/Reg] -force
   assign_bd_address -offset 0xB0420000 -range 0x00010000 -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_cortexr52_4] [get_bd_addr_segs dc_in_out/dc_input_pipeline/avtpg_s0/i2s_transmitter_0/s_axi_ctrl/Reg] -force
   assign_bd_address -offset 0xB0590000 -range 0x00010000 -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_cortexr52_4] [get_bd_addr_segs dc_in_out/dc_pl_out_pipeline/pl_video_s0p0/v_frmbuf_wr_0/s_axi_CTRL/Reg] -force
@@ -2730,7 +2788,7 @@ NON_KSB DDRMC5_SELF_REFRESH DISABLE DDRMC5_LBDQ_SWAP false DDRMC5_CAL_MASK_POLL 
   assign_bd_address -offset 0xB05C0000 -range 0x00010000 -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_cortexr52_5] [get_bd_addr_segs dc_in_out/axi_gpio_alpha_bypass_en/S_AXI/Reg] -force
   assign_bd_address -offset 0xB0530000 -range 0x00010000 -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_cortexr52_5] [get_bd_addr_segs dc_in_out/dc_input_pipeline/axi_gpio_dual_ppc/S_AXI/Reg] -force
   assign_bd_address -offset 0xB0560000 -range 0x00010000 -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_cortexr52_5] [get_bd_addr_segs dc_in_out/dc_input_pipeline/axi_gpio_vidformat/S_AXI/Reg] -force
-  assign_bd_address -offset 0x00000000 -range 0x80000000 -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_cortexr52_5] [get_bd_addr_segs axi_noc2_0/DDR_MC_PORT01/C0_DDR_CH0_LEGACY] -force
+  assign_bd_address -offset 0x00000000 -range 0x80000000 -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_cortexr52_5] [get_bd_addr_segs axi_noc2_0/DDR_MC_PORTS/DDR_CH0_LEGACY] -force
   assign_bd_address -offset 0xB0570000 -range 0x00010000 -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_cortexr52_5] [get_bd_addr_segs dc_in_out/dc_pl_out_pipeline/pl_audio_out/i2s_receiver_0/s_axi_ctrl/Reg] -force
   assign_bd_address -offset 0xB0420000 -range 0x00010000 -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_cortexr52_5] [get_bd_addr_segs dc_in_out/dc_input_pipeline/avtpg_s0/i2s_transmitter_0/s_axi_ctrl/Reg] -force
   assign_bd_address -offset 0xB0590000 -range 0x00010000 -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_cortexr52_5] [get_bd_addr_segs dc_in_out/dc_pl_out_pipeline/pl_video_s0p0/v_frmbuf_wr_0/s_axi_CTRL/Reg] -force
@@ -2750,7 +2808,7 @@ NON_KSB DDRMC5_SELF_REFRESH DISABLE DDRMC5_LBDQ_SWAP false DDRMC5_CAL_MASK_POLL 
   assign_bd_address -offset 0xB05C0000 -range 0x00010000 -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_cortexr52_6] [get_bd_addr_segs dc_in_out/axi_gpio_alpha_bypass_en/S_AXI/Reg] -force
   assign_bd_address -offset 0xB0530000 -range 0x00010000 -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_cortexr52_6] [get_bd_addr_segs dc_in_out/dc_input_pipeline/axi_gpio_dual_ppc/S_AXI/Reg] -force
   assign_bd_address -offset 0xB0560000 -range 0x00010000 -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_cortexr52_6] [get_bd_addr_segs dc_in_out/dc_input_pipeline/axi_gpio_vidformat/S_AXI/Reg] -force
-  assign_bd_address -offset 0x00000000 -range 0x80000000 -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_cortexr52_6] [get_bd_addr_segs axi_noc2_0/DDR_MC_PORT01/C0_DDR_CH0_LEGACY] -force
+  assign_bd_address -offset 0x00000000 -range 0x80000000 -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_cortexr52_6] [get_bd_addr_segs axi_noc2_0/DDR_MC_PORTS/DDR_CH0_LEGACY] -force
   assign_bd_address -offset 0xB0570000 -range 0x00010000 -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_cortexr52_6] [get_bd_addr_segs dc_in_out/dc_pl_out_pipeline/pl_audio_out/i2s_receiver_0/s_axi_ctrl/Reg] -force
   assign_bd_address -offset 0xB0420000 -range 0x00010000 -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_cortexr52_6] [get_bd_addr_segs dc_in_out/dc_input_pipeline/avtpg_s0/i2s_transmitter_0/s_axi_ctrl/Reg] -force
   assign_bd_address -offset 0xB0590000 -range 0x00010000 -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_cortexr52_6] [get_bd_addr_segs dc_in_out/dc_pl_out_pipeline/pl_video_s0p0/v_frmbuf_wr_0/s_axi_CTRL/Reg] -force
@@ -2770,7 +2828,7 @@ NON_KSB DDRMC5_SELF_REFRESH DISABLE DDRMC5_LBDQ_SWAP false DDRMC5_CAL_MASK_POLL 
   assign_bd_address -offset 0xB05C0000 -range 0x00010000 -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_cortexr52_7] [get_bd_addr_segs dc_in_out/axi_gpio_alpha_bypass_en/S_AXI/Reg] -force
   assign_bd_address -offset 0xB0530000 -range 0x00010000 -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_cortexr52_7] [get_bd_addr_segs dc_in_out/dc_input_pipeline/axi_gpio_dual_ppc/S_AXI/Reg] -force
   assign_bd_address -offset 0xB0560000 -range 0x00010000 -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_cortexr52_7] [get_bd_addr_segs dc_in_out/dc_input_pipeline/axi_gpio_vidformat/S_AXI/Reg] -force
-  assign_bd_address -offset 0x00000000 -range 0x80000000 -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_cortexr52_7] [get_bd_addr_segs axi_noc2_0/DDR_MC_PORT01/C0_DDR_CH0_LEGACY] -force
+  assign_bd_address -offset 0x00000000 -range 0x80000000 -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_cortexr52_7] [get_bd_addr_segs axi_noc2_0/DDR_MC_PORTS/DDR_CH0_LEGACY] -force
   assign_bd_address -offset 0xB0570000 -range 0x00010000 -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_cortexr52_7] [get_bd_addr_segs dc_in_out/dc_pl_out_pipeline/pl_audio_out/i2s_receiver_0/s_axi_ctrl/Reg] -force
   assign_bd_address -offset 0xB0420000 -range 0x00010000 -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_cortexr52_7] [get_bd_addr_segs dc_in_out/dc_input_pipeline/avtpg_s0/i2s_transmitter_0/s_axi_ctrl/Reg] -force
   assign_bd_address -offset 0xB0590000 -range 0x00010000 -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_cortexr52_7] [get_bd_addr_segs dc_in_out/dc_pl_out_pipeline/pl_video_s0p0/v_frmbuf_wr_0/s_axi_CTRL/Reg] -force
@@ -2790,7 +2848,7 @@ NON_KSB DDRMC5_SELF_REFRESH DISABLE DDRMC5_LBDQ_SWAP false DDRMC5_CAL_MASK_POLL 
   assign_bd_address -offset 0xB05C0000 -range 0x00010000 -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_cortexr52_8] [get_bd_addr_segs dc_in_out/axi_gpio_alpha_bypass_en/S_AXI/Reg] -force
   assign_bd_address -offset 0xB0530000 -range 0x00010000 -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_cortexr52_8] [get_bd_addr_segs dc_in_out/dc_input_pipeline/axi_gpio_dual_ppc/S_AXI/Reg] -force
   assign_bd_address -offset 0xB0560000 -range 0x00010000 -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_cortexr52_8] [get_bd_addr_segs dc_in_out/dc_input_pipeline/axi_gpio_vidformat/S_AXI/Reg] -force
-  assign_bd_address -offset 0x00000000 -range 0x80000000 -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_cortexr52_8] [get_bd_addr_segs axi_noc2_0/DDR_MC_PORT01/C0_DDR_CH0_LEGACY] -force
+  assign_bd_address -offset 0x00000000 -range 0x80000000 -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_cortexr52_8] [get_bd_addr_segs axi_noc2_0/DDR_MC_PORTS/DDR_CH0_LEGACY] -force
   assign_bd_address -offset 0xB0570000 -range 0x00010000 -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_cortexr52_8] [get_bd_addr_segs dc_in_out/dc_pl_out_pipeline/pl_audio_out/i2s_receiver_0/s_axi_ctrl/Reg] -force
   assign_bd_address -offset 0xB0420000 -range 0x00010000 -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_cortexr52_8] [get_bd_addr_segs dc_in_out/dc_input_pipeline/avtpg_s0/i2s_transmitter_0/s_axi_ctrl/Reg] -force
   assign_bd_address -offset 0xB0590000 -range 0x00010000 -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_cortexr52_8] [get_bd_addr_segs dc_in_out/dc_pl_out_pipeline/pl_video_s0p0/v_frmbuf_wr_0/s_axi_CTRL/Reg] -force
@@ -2810,7 +2868,7 @@ NON_KSB DDRMC5_SELF_REFRESH DISABLE DDRMC5_LBDQ_SWAP false DDRMC5_CAL_MASK_POLL 
   assign_bd_address -offset 0xB05C0000 -range 0x00010000 -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_cortexr52_9] [get_bd_addr_segs dc_in_out/axi_gpio_alpha_bypass_en/S_AXI/Reg] -force
   assign_bd_address -offset 0xB0530000 -range 0x00010000 -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_cortexr52_9] [get_bd_addr_segs dc_in_out/dc_input_pipeline/axi_gpio_dual_ppc/S_AXI/Reg] -force
   assign_bd_address -offset 0xB0560000 -range 0x00010000 -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_cortexr52_9] [get_bd_addr_segs dc_in_out/dc_input_pipeline/axi_gpio_vidformat/S_AXI/Reg] -force
-  assign_bd_address -offset 0x00000000 -range 0x80000000 -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_cortexr52_9] [get_bd_addr_segs axi_noc2_0/DDR_MC_PORT01/C0_DDR_CH0_LEGACY] -force
+  assign_bd_address -offset 0x00000000 -range 0x80000000 -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_cortexr52_9] [get_bd_addr_segs axi_noc2_0/DDR_MC_PORTS/DDR_CH0_LEGACY] -force
   assign_bd_address -offset 0xB0570000 -range 0x00010000 -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_cortexr52_9] [get_bd_addr_segs dc_in_out/dc_pl_out_pipeline/pl_audio_out/i2s_receiver_0/s_axi_ctrl/Reg] -force
   assign_bd_address -offset 0xB0420000 -range 0x00010000 -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_cortexr52_9] [get_bd_addr_segs dc_in_out/dc_input_pipeline/avtpg_s0/i2s_transmitter_0/s_axi_ctrl/Reg] -force
   assign_bd_address -offset 0xB0590000 -range 0x00010000 -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_cortexr52_9] [get_bd_addr_segs dc_in_out/dc_pl_out_pipeline/pl_video_s0p0/v_frmbuf_wr_0/s_axi_CTRL/Reg] -force
@@ -2830,8 +2888,8 @@ NON_KSB DDRMC5_SELF_REFRESH DISABLE DDRMC5_LBDQ_SWAP false DDRMC5_CAL_MASK_POLL 
   assign_bd_address -offset 0xB05C0000 -range 0x00010000 -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_dma_pmc_0] [get_bd_addr_segs dc_in_out/axi_gpio_alpha_bypass_en/S_AXI/Reg] -force
   assign_bd_address -offset 0xB0530000 -range 0x00010000 -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_dma_pmc_0] [get_bd_addr_segs dc_in_out/dc_input_pipeline/axi_gpio_dual_ppc/S_AXI/Reg] -force
   assign_bd_address -offset 0xB0560000 -range 0x00010000 -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_dma_pmc_0] [get_bd_addr_segs dc_in_out/dc_input_pipeline/axi_gpio_vidformat/S_AXI/Reg] -force
-  assign_bd_address -offset 0x00000000 -range 0x80000000 -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_dma_pmc_0] [get_bd_addr_segs axi_noc2_0/DDR_MC_PORT01/C0_DDR_CH0_LEGACY] -force
-  assign_bd_address -offset 0x000800000000 -range 0x80000000 -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_dma_pmc_0] [get_bd_addr_segs axi_noc2_0/DDR_MC_PORT01/C0_DDR_CH0_MED] -force
+  assign_bd_address -offset 0x00000000 -range 0x80000000 -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_dma_pmc_0] [get_bd_addr_segs axi_noc2_0/DDR_MC_PORTS/DDR_CH0_LEGACY] -force
+  assign_bd_address -offset 0x000800000000 -range 0x80000000 -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_dma_pmc_0] [get_bd_addr_segs axi_noc2_0/DDR_MC_PORTS/DDR_CH0_MED] -force
   assign_bd_address -offset 0xB0570000 -range 0x00010000 -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_dma_pmc_0] [get_bd_addr_segs dc_in_out/dc_pl_out_pipeline/pl_audio_out/i2s_receiver_0/s_axi_ctrl/Reg] -force
   assign_bd_address -offset 0xB0420000 -range 0x00010000 -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_dma_pmc_0] [get_bd_addr_segs dc_in_out/dc_input_pipeline/avtpg_s0/i2s_transmitter_0/s_axi_ctrl/Reg] -force
   assign_bd_address -offset 0xB0590000 -range 0x00010000 -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_dma_pmc_0] [get_bd_addr_segs dc_in_out/dc_pl_out_pipeline/pl_video_s0p0/v_frmbuf_wr_0/s_axi_CTRL/Reg] -force
@@ -2851,8 +2909,8 @@ NON_KSB DDRMC5_SELF_REFRESH DISABLE DDRMC5_LBDQ_SWAP false DDRMC5_CAL_MASK_POLL 
   assign_bd_address -offset 0xB05C0000 -range 0x00010000 -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_dma_pmc_1] [get_bd_addr_segs dc_in_out/axi_gpio_alpha_bypass_en/S_AXI/Reg] -force
   assign_bd_address -offset 0xB0530000 -range 0x00010000 -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_dma_pmc_1] [get_bd_addr_segs dc_in_out/dc_input_pipeline/axi_gpio_dual_ppc/S_AXI/Reg] -force
   assign_bd_address -offset 0xB0560000 -range 0x00010000 -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_dma_pmc_1] [get_bd_addr_segs dc_in_out/dc_input_pipeline/axi_gpio_vidformat/S_AXI/Reg] -force
-  assign_bd_address -offset 0x00000000 -range 0x80000000 -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_dma_pmc_1] [get_bd_addr_segs axi_noc2_0/DDR_MC_PORT01/C0_DDR_CH0_LEGACY] -force
-  assign_bd_address -offset 0x000800000000 -range 0x80000000 -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_dma_pmc_1] [get_bd_addr_segs axi_noc2_0/DDR_MC_PORT01/C0_DDR_CH0_MED] -force
+  assign_bd_address -offset 0x00000000 -range 0x80000000 -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_dma_pmc_1] [get_bd_addr_segs axi_noc2_0/DDR_MC_PORTS/DDR_CH0_LEGACY] -force
+  assign_bd_address -offset 0x000800000000 -range 0x80000000 -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_dma_pmc_1] [get_bd_addr_segs axi_noc2_0/DDR_MC_PORTS/DDR_CH0_MED] -force
   assign_bd_address -offset 0xB0570000 -range 0x00010000 -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_dma_pmc_1] [get_bd_addr_segs dc_in_out/dc_pl_out_pipeline/pl_audio_out/i2s_receiver_0/s_axi_ctrl/Reg] -force
   assign_bd_address -offset 0xB0420000 -range 0x00010000 -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_dma_pmc_1] [get_bd_addr_segs dc_in_out/dc_input_pipeline/avtpg_s0/i2s_transmitter_0/s_axi_ctrl/Reg] -force
   assign_bd_address -offset 0xB0590000 -range 0x00010000 -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_dma_pmc_1] [get_bd_addr_segs dc_in_out/dc_pl_out_pipeline/pl_video_s0p0/v_frmbuf_wr_0/s_axi_CTRL/Reg] -force
@@ -2872,8 +2930,8 @@ NON_KSB DDRMC5_SELF_REFRESH DISABLE DDRMC5_LBDQ_SWAP false DDRMC5_CAL_MASK_POLL 
   assign_bd_address -offset 0xB05C0000 -range 0x00010000 -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_dpc] [get_bd_addr_segs dc_in_out/axi_gpio_alpha_bypass_en/S_AXI/Reg] -force
   assign_bd_address -offset 0xB0530000 -range 0x00010000 -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_dpc] [get_bd_addr_segs dc_in_out/dc_input_pipeline/axi_gpio_dual_ppc/S_AXI/Reg] -force
   assign_bd_address -offset 0xB0560000 -range 0x00010000 -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_dpc] [get_bd_addr_segs dc_in_out/dc_input_pipeline/axi_gpio_vidformat/S_AXI/Reg] -force
-  assign_bd_address -offset 0x00000000 -range 0x80000000 -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_dpc] [get_bd_addr_segs axi_noc2_0/DDR_MC_PORT01/C0_DDR_CH0_LEGACY] -force
-  assign_bd_address -offset 0x000800000000 -range 0x80000000 -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_dpc] [get_bd_addr_segs axi_noc2_0/DDR_MC_PORT01/C0_DDR_CH0_MED] -force
+  assign_bd_address -offset 0x00000000 -range 0x80000000 -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_dpc] [get_bd_addr_segs axi_noc2_0/DDR_MC_PORTS/DDR_CH0_LEGACY] -force
+  assign_bd_address -offset 0x000800000000 -range 0x80000000 -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_dpc] [get_bd_addr_segs axi_noc2_0/DDR_MC_PORTS/DDR_CH0_MED] -force
   assign_bd_address -offset 0xB0570000 -range 0x00010000 -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_dpc] [get_bd_addr_segs dc_in_out/dc_pl_out_pipeline/pl_audio_out/i2s_receiver_0/s_axi_ctrl/Reg] -force
   assign_bd_address -offset 0xB0420000 -range 0x00010000 -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_dpc] [get_bd_addr_segs dc_in_out/dc_input_pipeline/avtpg_s0/i2s_transmitter_0/s_axi_ctrl/Reg] -force
   assign_bd_address -offset 0xB0590000 -range 0x00010000 -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_dpc] [get_bd_addr_segs dc_in_out/dc_pl_out_pipeline/pl_video_s0p0/v_frmbuf_wr_0/s_axi_CTRL/Reg] -force
@@ -2893,8 +2951,8 @@ NON_KSB DDRMC5_SELF_REFRESH DISABLE DDRMC5_LBDQ_SWAP false DDRMC5_CAL_MASK_POLL 
   assign_bd_address -offset 0xB05C0000 -range 0x00010000 -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_lpd_dma_0] [get_bd_addr_segs dc_in_out/axi_gpio_alpha_bypass_en/S_AXI/Reg] -force
   assign_bd_address -offset 0xB0530000 -range 0x00010000 -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_lpd_dma_0] [get_bd_addr_segs dc_in_out/dc_input_pipeline/axi_gpio_dual_ppc/S_AXI/Reg] -force
   assign_bd_address -offset 0xB0560000 -range 0x00010000 -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_lpd_dma_0] [get_bd_addr_segs dc_in_out/dc_input_pipeline/axi_gpio_vidformat/S_AXI/Reg] -force
-  assign_bd_address -offset 0x00000000 -range 0x80000000 -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_lpd_dma_0] [get_bd_addr_segs axi_noc2_0/DDR_MC_PORT01/C0_DDR_CH0_LEGACY] -force
-  assign_bd_address -offset 0x000800000000 -range 0x80000000 -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_lpd_dma_0] [get_bd_addr_segs axi_noc2_0/DDR_MC_PORT01/C0_DDR_CH0_MED] -force
+  assign_bd_address -offset 0x00000000 -range 0x80000000 -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_lpd_dma_0] [get_bd_addr_segs axi_noc2_0/DDR_MC_PORTS/DDR_CH0_LEGACY] -force
+  assign_bd_address -offset 0x000800000000 -range 0x80000000 -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_lpd_dma_0] [get_bd_addr_segs axi_noc2_0/DDR_MC_PORTS/DDR_CH0_MED] -force
   assign_bd_address -offset 0xB0570000 -range 0x00010000 -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_lpd_dma_0] [get_bd_addr_segs dc_in_out/dc_pl_out_pipeline/pl_audio_out/i2s_receiver_0/s_axi_ctrl/Reg] -force
   assign_bd_address -offset 0xB0420000 -range 0x00010000 -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_lpd_dma_0] [get_bd_addr_segs dc_in_out/dc_input_pipeline/avtpg_s0/i2s_transmitter_0/s_axi_ctrl/Reg] -force
   assign_bd_address -offset 0xB0590000 -range 0x00010000 -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_lpd_dma_0] [get_bd_addr_segs dc_in_out/dc_pl_out_pipeline/pl_video_s0p0/v_frmbuf_wr_0/s_axi_CTRL/Reg] -force
@@ -2914,8 +2972,8 @@ NON_KSB DDRMC5_SELF_REFRESH DISABLE DDRMC5_LBDQ_SWAP false DDRMC5_CAL_MASK_POLL 
   assign_bd_address -offset 0xB05C0000 -range 0x00010000 -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_pmc_0] [get_bd_addr_segs dc_in_out/axi_gpio_alpha_bypass_en/S_AXI/Reg] -force
   assign_bd_address -offset 0xB0530000 -range 0x00010000 -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_pmc_0] [get_bd_addr_segs dc_in_out/dc_input_pipeline/axi_gpio_dual_ppc/S_AXI/Reg] -force
   assign_bd_address -offset 0xB0560000 -range 0x00010000 -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_pmc_0] [get_bd_addr_segs dc_in_out/dc_input_pipeline/axi_gpio_vidformat/S_AXI/Reg] -force
-  assign_bd_address -offset 0x00000000 -range 0x80000000 -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_pmc_0] [get_bd_addr_segs axi_noc2_0/DDR_MC_PORT01/C0_DDR_CH0_LEGACY] -force
-  assign_bd_address -offset 0x000800000000 -range 0x80000000 -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_pmc_0] [get_bd_addr_segs axi_noc2_0/DDR_MC_PORT01/C0_DDR_CH0_MED] -force
+  assign_bd_address -offset 0x00000000 -range 0x80000000 -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_pmc_0] [get_bd_addr_segs axi_noc2_0/DDR_MC_PORTS/DDR_CH0_LEGACY] -force
+  assign_bd_address -offset 0x000800000000 -range 0x80000000 -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_pmc_0] [get_bd_addr_segs axi_noc2_0/DDR_MC_PORTS/DDR_CH0_MED] -force
   assign_bd_address -offset 0xB0570000 -range 0x00010000 -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_pmc_0] [get_bd_addr_segs dc_in_out/dc_pl_out_pipeline/pl_audio_out/i2s_receiver_0/s_axi_ctrl/Reg] -force
   assign_bd_address -offset 0xB0420000 -range 0x00010000 -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_pmc_0] [get_bd_addr_segs dc_in_out/dc_input_pipeline/avtpg_s0/i2s_transmitter_0/s_axi_ctrl/Reg] -force
   assign_bd_address -offset 0xB0590000 -range 0x00010000 -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_pmc_0] [get_bd_addr_segs dc_in_out/dc_pl_out_pipeline/pl_video_s0p0/v_frmbuf_wr_0/s_axi_CTRL/Reg] -force
@@ -2935,19 +2993,19 @@ NON_KSB DDRMC5_SELF_REFRESH DISABLE DDRMC5_LBDQ_SWAP false DDRMC5_CAL_MASK_POLL 
   assign_bd_address -offset 0xB05C0000 -range 0x00010000 -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_ppu_0] [get_bd_addr_segs dc_in_out/axi_gpio_alpha_bypass_en/S_AXI/Reg] -force
   assign_bd_address -offset 0xB0530000 -range 0x00010000 -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_ppu_0] [get_bd_addr_segs dc_in_out/dc_input_pipeline/axi_gpio_dual_ppc/S_AXI/Reg] -force
   assign_bd_address -offset 0xB0560000 -range 0x00010000 -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_ppu_0] [get_bd_addr_segs dc_in_out/dc_input_pipeline/axi_gpio_vidformat/S_AXI/Reg] -force
-  assign_bd_address -offset 0x00000000 -range 0x80000000 -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_ppu_0] [get_bd_addr_segs axi_noc2_0/DDR_MC_PORT01/C0_DDR_CH0_LEGACY] -force
+  assign_bd_address -offset 0x00000000 -range 0x80000000 -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_ppu_0] [get_bd_addr_segs axi_noc2_0/DDR_MC_PORTS/DDR_CH0_LEGACY] -force
   assign_bd_address -offset 0xB0570000 -range 0x00010000 -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_ppu_0] [get_bd_addr_segs dc_in_out/dc_pl_out_pipeline/pl_audio_out/i2s_receiver_0/s_axi_ctrl/Reg] -force
   assign_bd_address -offset 0xB0420000 -range 0x00010000 -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_ppu_0] [get_bd_addr_segs dc_in_out/dc_input_pipeline/avtpg_s0/i2s_transmitter_0/s_axi_ctrl/Reg] -force
   assign_bd_address -offset 0xB0590000 -range 0x00010000 -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_ppu_0] [get_bd_addr_segs dc_in_out/dc_pl_out_pipeline/pl_video_s0p0/v_frmbuf_wr_0/s_axi_CTRL/Reg] -force
   assign_bd_address -offset 0xB0510000 -range 0x00010000 -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_ppu_0] [get_bd_addr_segs dc_in_out/dc_input_pipeline/avtpg_vp1/v_tc_0/ctrl/Reg] -force
   assign_bd_address -offset 0xB0410000 -range 0x00010000 -with_name SEG_v_tc_0_Reg_1 -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_ppu_0] [get_bd_addr_segs dc_in_out/dc_input_pipeline/avtpg_s0/v_tc_0/ctrl/Reg] -force
   assign_bd_address -offset 0xB04E0000 -range 0x00010000 -with_name SEG_v_tc_0_Reg_2 -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_ppu_0] [get_bd_addr_segs dc_in_out/dc_input_pipeline/avtpg_vp0/v_tc_0/ctrl/Reg] -force
-  assign_bd_address -offset 0x00000000 -range 0x80000000 -target_address_space [get_bd_addr_spaces dc_in_out/dc_pl_out_pipeline/pl_audio_out/audio_formatter_0/m_axi_s2mm] [get_bd_addr_segs axi_noc2_0/DDR_MC_PORT01/C0_DDR_CH0_LEGACY] -force
-  assign_bd_address -offset 0x000800000000 -range 0x80000000 -target_address_space [get_bd_addr_spaces dc_in_out/dc_pl_out_pipeline/pl_audio_out/audio_formatter_0/m_axi_s2mm] [get_bd_addr_segs axi_noc2_0/DDR_MC_PORT01/C0_DDR_CH0_MED] -force
-  assign_bd_address -offset 0x00000000 -range 0x80000000 -target_address_space [get_bd_addr_spaces dc_in_out/dc_pl_out_pipeline/pl_video_s0p0/v_frmbuf_wr_0/Data_m_axi_mm_video] [get_bd_addr_segs axi_noc2_0/DDR_MC_PORT01/C0_DDR_CH0_LEGACY] -force
+  assign_bd_address -offset 0x00000000 -range 0x80000000 -target_address_space [get_bd_addr_spaces dc_in_out/dc_pl_out_pipeline/pl_audio_out/audio_formatter_0/m_axi_s2mm] [get_bd_addr_segs axi_noc2_0/DDR_MC_PORTS/DDR_CH0_LEGACY] -force
+  assign_bd_address -offset 0x000800000000 -range 0x80000000 -target_address_space [get_bd_addr_spaces dc_in_out/dc_pl_out_pipeline/pl_audio_out/audio_formatter_0/m_axi_s2mm] [get_bd_addr_segs axi_noc2_0/DDR_MC_PORTS/DDR_CH0_MED] -force
+  assign_bd_address -offset 0x00000000 -range 0x80000000 -target_address_space [get_bd_addr_spaces dc_in_out/dc_pl_out_pipeline/pl_video_s0p0/v_frmbuf_wr_0/Data_m_axi_mm_video] [get_bd_addr_segs axi_noc2_0/DDR_MC_PORTS/DDR_CH0_LEGACY] -force
 
   # Exclude Address Segments
-  exclude_bd_addr_seg -target_address_space [get_bd_addr_spaces dc_in_out/dc_pl_out_pipeline/pl_video_s0p0/v_frmbuf_wr_0/Data_m_axi_mm_video] [get_bd_addr_segs axi_noc2_0/DDR_MC_PORT01/C0_DDR_CH0_MED]
+  exclude_bd_addr_seg -target_address_space [get_bd_addr_spaces dc_in_out/dc_pl_out_pipeline/pl_video_s0p0/v_frmbuf_wr_0/Data_m_axi_mm_video] [get_bd_addr_segs axi_noc2_0/DDR_MC_PORTS/DDR_CH0_MED]
   exclude_bd_addr_seg -target_address_space [get_bd_addr_spaces ps_wizard_0/mmi_0_mmi_gpu_0] [get_bd_addr_segs dc_in_out/dc_input_pipeline/avtpg_s0/av_pat_gen_0/av_axi/Reg]
   exclude_bd_addr_seg -target_address_space [get_bd_addr_spaces ps_wizard_0/mmi_0_mmi_gpu_0] [get_bd_addr_segs dc_in_out/dc_input_pipeline/avtpg_vp0/av_pat_gen_0/av_axi/Reg]
   exclude_bd_addr_seg -target_address_space [get_bd_addr_spaces ps_wizard_0/mmi_0_mmi_gpu_0] [get_bd_addr_segs dc_in_out/dc_input_pipeline/avtpg_vp1/av_pat_gen_0/av_axi/Reg]
@@ -2967,17 +3025,17 @@ NON_KSB DDRMC5_SELF_REFRESH DISABLE DDRMC5_LBDQ_SWAP false DDRMC5_CAL_MASK_POLL 
   exclude_bd_addr_seg -target_address_space [get_bd_addr_spaces ps_wizard_0/mmi_0_mmi_gpu_0] [get_bd_addr_segs dc_in_out/dc_input_pipeline/avtpg_vp0/v_tc_0/ctrl/Reg]
   exclude_bd_addr_seg -target_address_space [get_bd_addr_spaces ps_wizard_0/mmi_0_mmi_gpu_0] [get_bd_addr_segs dc_in_out/dc_input_pipeline/avtpg_s0/v_tc_0/ctrl/Reg]
   exclude_bd_addr_seg -target_address_space [get_bd_addr_spaces ps_wizard_0/mmi_0_mmi_gpu_0] [get_bd_addr_segs dc_in_out/dc_input_pipeline/avtpg_vp1/v_tc_0/ctrl/Reg]
-  exclude_bd_addr_seg -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_cortexr52_0] [get_bd_addr_segs axi_noc2_0/DDR_MC_PORT01/C0_DDR_CH0_MED]
-  exclude_bd_addr_seg -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_cortexr52_1] [get_bd_addr_segs axi_noc2_0/DDR_MC_PORT01/C0_DDR_CH0_MED]
-  exclude_bd_addr_seg -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_cortexr52_2] [get_bd_addr_segs axi_noc2_0/DDR_MC_PORT01/C0_DDR_CH0_MED]
-  exclude_bd_addr_seg -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_cortexr52_3] [get_bd_addr_segs axi_noc2_0/DDR_MC_PORT01/C0_DDR_CH0_MED]
-  exclude_bd_addr_seg -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_cortexr52_4] [get_bd_addr_segs axi_noc2_0/DDR_MC_PORT01/C0_DDR_CH0_MED]
-  exclude_bd_addr_seg -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_cortexr52_5] [get_bd_addr_segs axi_noc2_0/DDR_MC_PORT01/C0_DDR_CH0_MED]
-  exclude_bd_addr_seg -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_cortexr52_6] [get_bd_addr_segs axi_noc2_0/DDR_MC_PORT01/C0_DDR_CH0_MED]
-  exclude_bd_addr_seg -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_cortexr52_7] [get_bd_addr_segs axi_noc2_0/DDR_MC_PORT01/C0_DDR_CH0_MED]
-  exclude_bd_addr_seg -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_cortexr52_8] [get_bd_addr_segs axi_noc2_0/DDR_MC_PORT01/C0_DDR_CH0_MED]
-  exclude_bd_addr_seg -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_cortexr52_9] [get_bd_addr_segs axi_noc2_0/DDR_MC_PORT01/C0_DDR_CH0_MED]
-  exclude_bd_addr_seg -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_ppu_0] [get_bd_addr_segs axi_noc2_0/DDR_MC_PORT01/C0_DDR_CH0_MED]
+  exclude_bd_addr_seg -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_cortexr52_0] [get_bd_addr_segs axi_noc2_0/DDR_MC_PORTS/DDR_CH0_MED]
+  exclude_bd_addr_seg -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_cortexr52_1] [get_bd_addr_segs axi_noc2_0/DDR_MC_PORTS/DDR_CH0_MED]
+  exclude_bd_addr_seg -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_cortexr52_2] [get_bd_addr_segs axi_noc2_0/DDR_MC_PORTS/DDR_CH0_MED]
+  exclude_bd_addr_seg -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_cortexr52_3] [get_bd_addr_segs axi_noc2_0/DDR_MC_PORTS/DDR_CH0_MED]
+  exclude_bd_addr_seg -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_cortexr52_4] [get_bd_addr_segs axi_noc2_0/DDR_MC_PORTS/DDR_CH0_MED]
+  exclude_bd_addr_seg -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_cortexr52_5] [get_bd_addr_segs axi_noc2_0/DDR_MC_PORTS/DDR_CH0_MED]
+  exclude_bd_addr_seg -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_cortexr52_6] [get_bd_addr_segs axi_noc2_0/DDR_MC_PORTS/DDR_CH0_MED]
+  exclude_bd_addr_seg -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_cortexr52_7] [get_bd_addr_segs axi_noc2_0/DDR_MC_PORTS/DDR_CH0_MED]
+  exclude_bd_addr_seg -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_cortexr52_8] [get_bd_addr_segs axi_noc2_0/DDR_MC_PORTS/DDR_CH0_MED]
+  exclude_bd_addr_seg -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_cortexr52_9] [get_bd_addr_segs axi_noc2_0/DDR_MC_PORTS/DDR_CH0_MED]
+  exclude_bd_addr_seg -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_ppu_0] [get_bd_addr_segs axi_noc2_0/DDR_MC_PORTS/DDR_CH0_MED]
 
 
   # Restore current instance
