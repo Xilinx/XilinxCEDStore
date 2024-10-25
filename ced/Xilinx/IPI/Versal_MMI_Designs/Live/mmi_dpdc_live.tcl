@@ -3227,6 +3227,7 @@ NON_KSB DDRMC5_SELF_REFRESH DISABLE DDRMC5_LBDQ_SWAP false DDRMC5_CAL_MASK_POLL 
 
   # Restore current instance
   current_bd_instance $oldCurInst
+set_msg_config -suppress -id {BD 41-237} -string {{CRITICAL WARNING: [BD 41-237] Bus Interface property TDATA_NUM_BYTES does not match between /dc_in_out/dc_pl_out_pipeline/pl_video_s0p0/v_frmbuf_wr_0/s_axis_video(9) and /dc_in_out/dc_pl_out_pipeline/pl_video_s0p0/nativevideo_axis_bridge/m_axis_video(24)} } 
 
   validate_bd_design
   save_bd_design
