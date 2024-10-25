@@ -39,18 +39,6 @@ if {$prst == "Default_Bitstream" } {
 	puts "INFO: Default_Bitstream preset is enabled" 
 } else {
 	puts "INFO: BRAM_GPIO preset is enabled" }
-	
-  # Create ports
-  set fan_en_b [ create_bd_port -dir O -from 0 -to 0 fan_en_b ]
-
-  # Create instance: xlslice_0, and set properties
-  set xlslice_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:xlslice xlslice_0 ]
-  set_property -dict [ list \
-   CONFIG.DIN_FROM {2} \
-   CONFIG.DIN_TO {2} \
-   CONFIG.DIN_WIDTH {3} \
-   CONFIG.DOUT_WIDTH {1} \
- ] $xlslice_0
 
   set zynq_ultra_ps_e_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:zynq_ultra_ps_e zynq_ultra_ps_e_0 ] 
   
@@ -67,10 +55,23 @@ if {$prst == "Default_Bitstream" } {
   CONFIG.PSU__UART1__PERIPHERAL__ENABLE {1} \
   CONFIG.PSU__UART1__PERIPHERAL__IO {MIO 36 .. 37} \
 ] [get_bd_cells zynq_ultra_ps_e_0] }
-  
+
+if {($board_name != "k26c") && ($board_name != "k26i")&&($board_name != "k24c")&&($board_name != "k24i")} {
+  # Create ports
+  set fan_en_b [ create_bd_port -dir O -from 0 -to 0 fan_en_b ]
+
+  # Create instance: xlslice_0, and set properties
+  set xlslice_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:xlslice xlslice_0 ]
+  set_property -dict [ list \
+   CONFIG.DIN_FROM {2} \
+   CONFIG.DIN_TO {2} \
+   CONFIG.DIN_WIDTH {3} \
+   CONFIG.DOUT_WIDTH {1} \
+ ] $xlslice_0 
+
 # Create port connections
   connect_bd_net -net xlslice_0_Dout [get_bd_ports fan_en_b] [get_bd_pins xlslice_0/Dout]
-  connect_bd_net -net zynq_ultra_ps_e_0_emio_ttc0_wave_o [get_bd_pins xlslice_0/Din] [get_bd_pins zynq_ultra_ps_e_0/emio_ttc0_wave_o]
+  connect_bd_net -net zynq_ultra_ps_e_0_emio_ttc0_wave_o [get_bd_pins xlslice_0/Din] [get_bd_pins zynq_ultra_ps_e_0/emio_ttc0_wave_o] }
 
 #if {[lsearch $options "BRAM_GPIO"] != -1} 
 if {$prst == "BRAM_GPIO" } {
@@ -207,14 +208,15 @@ set xdc [file join $currentDir xdc default.xdc]
 } else {
 set xdc [file join $currentDir xdc pmod_gpio.xdc] }
 
-} elseif {($board_name == "kd240_som")||($board_name == "k24c")||($board_name == "k24i")} {
+} elseif {($board_name == "kd240_som")} {
 set xdc [file join $currentDir xdc kd240_default.xdc]
 
-} elseif {($board_name == "kr260_som")||($board_name == "k26c")||($board_name == "k26i")} {
+} elseif {($board_name == "kr260_som")} {
 set xdc [file join $currentDir xdc default.xdc]
 }
 
-import_files -fileset constrs_1 -norecurse $xdc
+if {($board_name != "k26c") && ($board_name != "k26i")&&($board_name != "k24c")&&($board_name != "k24i")} {
+import_files -fileset constrs_1 -norecurse $xdc }
 
 set_property platform.board_id $design_name [current_project]  
 set_property platform.extensible false [current_project]
