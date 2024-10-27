@@ -46,11 +46,13 @@ proc addGUILayout {DESIGNOBJ PROJECT_PARAM.BOARD_PART} {
   if { ${Preset.VALUE} == "Default_Bitstream"} {
 	if {[regexp "_som" ${PROJECT_PARAM.BOARD_PART}]} {
      set Preset.ENABLEMENT true
+	 set Image.IMAGE_PATH "kria_option1.png"
 	 } else {
 	 set Preset.ENABLEMENT false
 	 set Preset.VALUE Default_Bitstream
+	 set Image.IMAGE_PATH "kria_option3.png"
 	 }
-     set Image.IMAGE_PATH "kria_option1.png"
+     
   } elseif { ${Preset.VALUE} == "BRAM_GPIO"} {
 	 set Preset.ENABLEMENT true
 	 set Image.IMAGE_PATH "kria_option2.png"
