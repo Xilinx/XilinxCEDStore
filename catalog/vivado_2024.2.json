@@ -670,11 +670,11 @@
         "name": "Versal_MMI_Designs",
         "display": "Versal MMI Designs",
         "latest_revision": "1.0",
-        "commit_id": "bbbcda1141fc57eefac2906846b5b014591ed09f",
+        "commit_id": "ef0f0160f5d65573a2d9a6982e31a43ecb9f9e3f",
         "revisions": [
           {
             "revision": "1.0",
-            "commit_id": "bbbcda1141fc57eefac2906846b5b014591ed09f",
+            "commit_id": "ef0f0160f5d65573a2d9a6982e31a43ecb9f9e3f",
             "date": "24-10-2024:11:19:44",
             "history": "Added board Versal MMI Designs v1.0"
           }
