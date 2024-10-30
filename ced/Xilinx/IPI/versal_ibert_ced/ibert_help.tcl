@@ -502,16 +502,29 @@ proc createDesign {design_name options} {
       set type [get_quad_type [dict get $protocols $i quad0]]
       set width [get_${type}_width $line_rate]
       puts $outputfile "# ${name} : ${line_rate} Gbps with $refclk_freq MHz"
+      set slr_number [lindex [split $name _] 2]
+      set slr_number [lindex [split $slr_number X] 0]
       log "name: ${name}"
+      set total_quads [dict get $protocols $i num_quads]
+      set total_quads_temp [dict get $protocols $i num_quads]
       for {set j 0} {$j < [dict get $protocols $i num_quads]} {incr j} {
         set coord [dict get $protocols $i quad$j]
         log "coord: $coord"
         set period [expr 1 / ($line_rate * 1.0 / $width) ]
-
-        if {$idx == 0} {
-          set inst "${design_name}_i/gt_quad_base/inst/quad_inst"
+	if {$device eq "xcvp1902" && ($slr_number eq "S1" || $slr_number eq "S2")} {
+          set idx_p80 [expr $idx + [expr $total_quads_temp - 1]]
+          if {$idx_p80 == 0} {
+            set inst "${design_name}_i/gt_quad_base/inst/quad_inst"
+          } else {
+            set inst "${design_name}_i/gt_quad_base_${idx_p80}/inst/quad_inst"
+          }
+          set total_quads_temp [expr $total_quads_temp - 2]
         } else {
-          set inst "${design_name}_i/gt_quad_base_${idx}/inst/quad_inst"
+          if {$idx == 0} {
+            set inst "${design_name}_i/gt_quad_base/inst/quad_inst"
+          } else {
+            set inst "${design_name}_i/gt_quad_base_${idx}/inst/quad_inst"
+          }
         }
         log "inst: $inst"
         puts $outputfile "set_property LOC ${coord} \[get_cells $inst\]"
