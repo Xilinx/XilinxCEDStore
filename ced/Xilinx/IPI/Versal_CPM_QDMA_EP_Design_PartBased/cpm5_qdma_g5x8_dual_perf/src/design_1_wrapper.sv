@@ -155,12 +155,17 @@ module design_1_wrapper #
   //  AXI Interface                                                                                                 //
   //----------------------------------------------------------------------------------------------------------------//
   wire user_clk;
-  wire axi_aclk;
   wire axi_aresetn;
+  wire                phy_ready; // Not currently used
 
   //----------------------------------------------------------------------------------------------------------------//
   //    System(SYS) Interface                                                                                       //
   //----------------------------------------------------------------------------------------------------------------//
+
+
+
+
+
 
 
   //-- AXI Master Write Address Channel
@@ -176,11 +181,11 @@ module design_1_wrapper #
   wire                           m_axi_awready;
 
   //-- AXI Master Write Data Channel
-  wire [C_M_AXI_DATA_WIDTH-1:0]      m_axi_wdata;
-  wire [(C_M_AXI_DATA_WIDTH/8)-1:0]  m_axi_wstrb;
-  wire                               m_axi_wlast;
-  wire                               m_axi_wvalid;
-  wire                               m_axi_wready;
+  wire [C_M_AXI_DATA_WIDTH-1:0]     m_axi_wdata;
+  wire [(C_M_AXI_DATA_WIDTH/8)-1:0] m_axi_wstrb;
+  wire                              m_axi_wlast;
+  wire                              m_axi_wvalid;
+  wire                              m_axi_wready;
 
   //-- AXI Master Write Response Channel
   wire                           m_axi_bvalid;
@@ -206,10 +211,8 @@ module design_1_wrapper #
   wire [1:0]                     m_axi_rresp;
   wire                           m_axi_rvalid;
   wire                           m_axi_rready;
-  wire                           m_axi_rlast;
-
-
-  //////////////////////////////////////////////////  LITE
+  
+//////////////////////////////////////////////////  LITE
   //-- AXI Master Write Address Channel
   wire [31:0] dma0_m_axil_awaddr;
   wire [2:0]  dma0_m_axil_awprot;
@@ -272,7 +275,7 @@ module design_1_wrapper #
 
   // MDMA signals
   wire   [C_DATA_WIDTH-1:0]   dma0_m_axis_h2c_tdata;
-  wire   [CRC_WIDTH-1:0]      dma0_m_axis_h2c_tcrc;
+  wire   [CRC_WIDTH-1:0]      dma0_m_axis_h2c_tcrc; //TBD
   wire   [11:0]               dma0_m_axis_h2c_tuser_qid;
   wire   [2:0]                dma0_m_axis_h2c_tuser_port_id;
   wire                        dma0_m_axis_h2c_tuser_err;
@@ -313,6 +316,48 @@ module design_1_wrapper #
   wire 	dma0_s_axis_c2h_cmpt_ctrl_user_trig;
   wire [2:0]	dma0_s_axis_c2h_cmpt_ctrl_col_idx;
   wire [2:0]	dma0_s_axis_c2h_cmpt_ctrl_err_idx;
+
+    wire          dma0_tm_dsc_sts_vld;
+    wire          dma0_tm_dsc_sts_qen;
+    wire          dma0_tm_dsc_sts_byp;
+    wire          dma0_tm_dsc_sts_dir;
+    wire          dma0_tm_dsc_sts_mm;
+    wire          dma0_tm_dsc_sts_error;
+    wire  [11:0]  dma0_tm_dsc_sts_qid;
+    wire  [15:0]  dma0_tm_dsc_sts_avl;
+    wire          dma0_tm_dsc_sts_qinv;
+    wire          dma0_tm_dsc_sts_irq_arm;
+    wire          dma0_tm_dsc_sts_rdy;
+
+  // Descriptor credit In
+  wire          dma0_dsc_crdt_in_vld;
+  wire          dma0_dsc_crdt_in_rdy;
+  wire          dma0_dsc_crdt_in_dir;
+  wire          dma0_dsc_crdt_in_fence;
+  wire [11:0]   dma0_dsc_crdt_in_qid;
+  wire [15:0]   dma0_dsc_crdt_in_crdt;
+
+ // Report the DROP case
+    wire          dma0_axis_c2h_status_drop;
+    wire          dma0_axis_c2h_status_last;
+    wire          dma0_axis_c2h_status_valid;
+    wire          dma0_axis_c2h_status_cmp;
+    wire          dma0_axis_c2h_status_error;
+    wire [11:0]   dma0_axis_c2h_status_qid;
+
+    wire [7:0]    dma0_qsts_out_op;
+    wire [63:0]   dma0_qsts_out_data;
+    wire [2:0]    dma0_qsts_out_port_id;
+    wire [12:0]   dma0_qsts_out_qid;
+    wire          dma0_qsts_out_vld;
+    wire          dma0_qsts_out_rdy;
+
+    wire          dma0_st_rx_msg_rdy;
+    wire          dma0_st_rx_msg_valid;
+    wire          dma0_st_rx_msg_last;
+    wire [31:0]   dma0_st_rx_msg_data;
+
+   
 
   // Descriptor Bypass Out for qdma
   wire  [255:0] dma0_h2c_byp_out_dsc;
@@ -400,58 +445,19 @@ module design_1_wrapper #
   wire  [1:0]   dma0_c2h_byp_in_st_csh_at;
   wire          dma0_c2h_byp_in_st_csh_vld;
   wire          dma0_c2h_byp_in_st_csh_rdy;
-
-  wire          dma0_usr_irq_in_vld;
-  wire [10 : 0] dma0_usr_irq_in_vec;
-  wire [11 : 0] dma0_usr_irq_in_fnc;
-  wire          dma0_usr_irq_out_ack;
-  wire          dma0_usr_irq_out_fail;
-
-    wire          dma0_st_rx_msg_rdy;
-    wire          dma0_st_rx_msg_valid;
-    wire          dma0_st_rx_msg_last;
-    wire [31:0]   dma0_st_rx_msg_data;
-
-    wire          dma0_tm_dsc_sts_vld;
-    wire          dma0_tm_dsc_sts_qen;
-    wire          dma0_tm_dsc_sts_byp;
-    wire          dma0_tm_dsc_sts_dir;
-    wire          dma0_tm_dsc_sts_mm;
-    wire          dma0_tm_dsc_sts_error;
-    wire  [11:0]  dma0_tm_dsc_sts_qid;
-    wire  [15:0]  dma0_tm_dsc_sts_avl;
-    wire          dma0_tm_dsc_sts_qinv;
-    wire          dma0_tm_dsc_sts_irq_arm;
-    wire          dma0_tm_dsc_sts_rdy;
-
-  // Descriptor credit In
-  wire          dma0_dsc_crdt_in_vld;
-  wire          dma0_dsc_crdt_in_rdy;
-  wire          dma0_dsc_crdt_in_dir;
-  wire          dma0_dsc_crdt_in_fence;
-  wire [11:0]   dma0_dsc_crdt_in_qid;
-  wire [15:0]   dma0_dsc_crdt_in_crdt;
-
-  // Report the DROP case
-    wire          dma0_axis_c2h_status_drop;
-    wire          dma0_axis_c2h_status_last;
-    wire          dma0_axis_c2h_status_valid;
-    wire          dma0_axis_c2h_status_cmp;
-    wire          dma0_axis_c2h_status_error;
-    wire [11:0]   dma0_axis_c2h_status_qid;
-    wire [7:0]    dma0_qsts_out_op;
-    wire [63:0]   dma0_qsts_out_data;
-    wire [2:0]    dma0_qsts_out_port_id;
-    wire [12:0]   dma0_qsts_out_qid;
-    wire          dma0_qsts_out_vld;
-    wire          dma0_qsts_out_rdy;
-
   // FLR
   wire [11:0] dma0_usr_flr_fnc;
   wire        dma0_usr_flr_set;
   wire        dma0_usr_flr_clr;
   wire [11:0] dma0_usr_flr_done_fnc;
   wire        dma0_usr_flr_done_vld;
+  wire          dma0_usr_irq_in_vld;
+  wire [10 : 0] dma0_usr_irq_in_vec;
+  wire [11 : 0] dma0_usr_irq_in_fnc;
+  wire          dma0_usr_irq_out_ack;
+  wire          dma0_usr_irq_out_fail;
+
+
 
   // DMA1 signals
   wire   [C_DATA_WIDTH-1:0]   dma1_m_axis_h2c_tdata;
@@ -637,47 +643,6 @@ module design_1_wrapper #
   wire        dma1_usr_flr_clr;
   wire [11:0] dma1_usr_flr_done_fnc;
   wire        dma1_usr_flr_done_vld;
-//--------------------------------------------------------------------------
-   
-   wire [11:0]                        S_AXI_0_araddr;
-   wire [2:0]                         S_AXI_0_arprot;
-   wire                               S_AXI_0_arready;
-   wire                               S_AXI_0_arvalid;
-   wire [11:0]                        S_AXI_0_awaddr;
-   wire [2:0]                         S_AXI_0_awprot;
-   wire                               S_AXI_0_awready;
-   wire                               S_AXI_0_awvalid;
-   wire                               S_AXI_0_bready;
-   wire [1:0]                         S_AXI_0_bresp;
-   wire                               S_AXI_0_bvalid;
-   wire [31:0]                        S_AXI_0_rdata;
-   wire                               S_AXI_0_rready;
-   wire [1:0]                         S_AXI_0_rresp;
-   wire                               S_AXI_0_rvalid;
-   wire [31:0]                        S_AXI_0_wdata;
-   wire                               S_AXI_0_wready;
-   wire [3:0]                         S_AXI_0_wstrb;
-   wire                               S_AXI_0_wvalid;
-
-   wire [11:0]                        S_AXI_1_araddr;
-   wire [2:0]                         S_AXI_1_arprot;
-   wire                               S_AXI_1_arready;
-   wire                               S_AXI_1_arvalid;
-   wire [11:0]                        S_AXI_1_awaddr;
-   wire [2:0]                         S_AXI_1_awprot;
-   wire                               S_AXI_1_awready;
-   wire                               S_AXI_1_awvalid;
-   wire                               S_AXI_1_bready;
-   wire [1:0]                         S_AXI_1_bresp;
-   wire                               S_AXI_1_bvalid;
-   wire [31:0]                        S_AXI_1_rdata;
-   wire                               S_AXI_1_rready;
-   wire [1:0]                         S_AXI_1_rresp;
-   wire                               S_AXI_1_rvalid;
-   wire [31:0]                        S_AXI_1_wdata;
-   wire                               S_AXI_1_wready;
-   wire [3:0]                         S_AXI_1_wstrb;
-   wire                               S_AXI_1_wvalid;
 //-----------------------------------------------------------------------
    //    
   design_1 design_1_i 
@@ -850,7 +815,8 @@ module design_1_wrapper #
       .dma0_axis_c2h_status_0_qid  (dma0_axis_c2h_status_qid   ),
       .dma0_axis_c2h_status_0_valid(dma0_axis_c2h_status_valid ),
       .dma0_axis_c2h_status_0_status_cmp  (dma0_axis_c2h_status_cmp   ),
-      .dma0_axis_c2h_status_0_error(dma0_axis_c2h_status_error ),
+      .dma0_axis_c2h_status_0_error(), //TBD
+      //.dma0_axis_c2h_status_0_error(dma0_axis_c2h_status_error ),
       .dma0_axis_c2h_status_0_last (dma0_axis_c2h_status_last  ),
 
       .dma0_axis_c2h_dmawr_0_cmp    (dma0_axis_c2h_dmawr_cmp), //TODO
@@ -880,6 +846,7 @@ module design_1_wrapper #
       .dma0_st_rx_msg_0_tready   (dma0_st_rx_msg_rdy ),
       .dma0_st_rx_msg_0_tvalid   (dma0_st_rx_msg_valid ),
 
+      .dma0_tm_dsc_sts_0_pidx    (                   ),
       .dma0_tm_dsc_sts_0_avl     (dma0_tm_dsc_sts_avl     ),
       .dma0_tm_dsc_sts_0_byp     (dma0_tm_dsc_sts_byp     ),
       .dma0_tm_dsc_sts_0_dir     (dma0_tm_dsc_sts_dir     ),
@@ -892,7 +859,6 @@ module design_1_wrapper #
       .dma0_tm_dsc_sts_0_qinv    (dma0_tm_dsc_sts_qinv    ),
       .dma0_tm_dsc_sts_0_rdy     (dma0_tm_dsc_sts_rdy     ),
       .dma0_tm_dsc_sts_0_valid   (dma0_tm_dsc_sts_vld   ),
-      .dma0_tm_dsc_sts_0_pidx    (                   ),
 
       .dma0_c2h_byp_out_0_cidx            (dma0_c2h_byp_out_cidx),
       .dma0_c2h_byp_out_0_dsc             (dma0_c2h_byp_out_dsc),
@@ -1150,6 +1116,7 @@ module design_1_wrapper #
       .dma1_c2h_byp_in_mm_0_0_func        (dma1_c2h_byp_in_mm_func),
       .dma1_c2h_byp_in_mm_0_0_len         (dma1_c2h_byp_in_mm_len),
       .dma1_c2h_byp_in_mm_0_0_mrkr_req    (dma1_c2h_byp_in_mm_mrkr_req),
+      .dma1_c2h_byp_in_mm_0_0_no_dma      (dma1_c2h_byp_in_mm_no_dma),
       .dma1_c2h_byp_in_mm_0_0_port_id     (dma1_c2h_byp_in_mm_port_id),
       .dma1_c2h_byp_in_mm_0_0_qid         (dma1_c2h_byp_in_mm_qid),
       .dma1_c2h_byp_in_mm_0_0_radr        (dma1_c2h_byp_in_mm_radr),
@@ -1162,13 +1129,14 @@ module design_1_wrapper #
       .dma1_c2h_byp_in_mm_1_0_func        ('h0),
       .dma1_c2h_byp_in_mm_1_0_len         ('h0),
       .dma1_c2h_byp_in_mm_1_0_mrkr_req    ('h0),
+      .dma1_c2h_byp_in_mm_1_0_no_dma      ('h0),
       .dma1_c2h_byp_in_mm_1_0_port_id     ('h0),
       .dma1_c2h_byp_in_mm_1_0_qid         ('h0),
-      .dma1_c2h_byp_in_mm_1_0_radr        ('h0),
+      .dma1_c2h_byp_in_mm_1_0_radr        (64'h0),
       .dma1_c2h_byp_in_mm_1_0_ready       ( ),
       .dma1_c2h_byp_in_mm_1_0_sdi         ('h0),
       .dma1_c2h_byp_in_mm_1_0_valid       ('h0),
-      .dma1_c2h_byp_in_mm_1_0_wadr        ('h0),
+      .dma1_c2h_byp_in_mm_1_0_wadr        (64'h0),
       .dma1_h2c_byp_in_mm_0_0_cidx        (dma1_h2c_byp_in_mm_cidx),
       .dma1_h2c_byp_in_mm_0_0_error       (dma1_h2c_byp_in_mm_error),
       .dma1_h2c_byp_in_mm_0_0_func        (dma1_h2c_byp_in_mm_func),
@@ -1190,11 +1158,11 @@ module design_1_wrapper #
       .dma1_h2c_byp_in_mm_1_0_no_dma      ('h0),
       .dma1_h2c_byp_in_mm_1_0_port_id     ('h0),
       .dma1_h2c_byp_in_mm_1_0_qid         ('h0),
-      .dma1_h2c_byp_in_mm_1_0_radr        ('h0),
+      .dma1_h2c_byp_in_mm_1_0_radr        (64'h0),
       .dma1_h2c_byp_in_mm_1_0_ready       ( ),
       .dma1_h2c_byp_in_mm_1_0_sdi         ('h0),
       .dma1_h2c_byp_in_mm_1_0_valid       ('h0),
-      .dma1_h2c_byp_in_mm_1_0_wadr        ('h0),
+      .dma1_h2c_byp_in_mm_1_0_wadr        (64'h0),
 
       .dma1_qsts_out_0_data     (dma1_qsts_out_data     ),
       .dma1_qsts_out_0_op       (dma1_qsts_out_op       ),
@@ -1216,9 +1184,7 @@ module design_1_wrapper #
       .usr_irq_1_vec           (dma1_usr_irq_in_vec ),
 
       .dma1_axi_aresetn_0(dma1_axi_aresetn),
-
-      .dma0_intrfc_resetn_0 (dma0_gen_user_reset_n),
-	
+      .dma0_intrfc_resetn_0 (dma0_gen_user_reset_n),// TBD
       .cpm_cor_irq_0(),
       .cpm_misc_irq_0(),
       .cpm_uncor_irq_0(),
@@ -1226,10 +1192,6 @@ module design_1_wrapper #
       .cpm_irq1_0('d0)
 
       );
-
-
-
-
 
   // DMA taget application for DMA0
   qdma_app #(
@@ -1432,11 +1394,7 @@ module design_1_wrapper #
   .dsc_crdt_in_fence      (dma0_dsc_crdt_in_fence),
   .dsc_crdt_in_qid        (dma0_dsc_crdt_in_qid),
   .dsc_crdt_in_crdt       (dma0_dsc_crdt_in_crdt),
-
-
-      .leds()
-
-  );
+  .leds() );
 
    
 

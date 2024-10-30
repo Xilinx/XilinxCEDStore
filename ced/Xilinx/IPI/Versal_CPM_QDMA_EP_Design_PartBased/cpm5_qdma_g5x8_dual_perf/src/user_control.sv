@@ -99,8 +99,8 @@ module user_control #(
   input 			axis_c2h_drop_valid,
   input 			c2h_st_marker_rsp,
   output reg [3:0] 		dsc_bypass,
-  output wire [6:0]             pfch_byp_tag,
-  output wire [11:0]            pfch_byp_tag_qid,
+  output wire [6:0] 		pfch_byp_tag,
+  output wire [11:0] 		pfch_byp_tag_qid,
 
   // user flr and IRD
   input [11:0] 			usr_flr_fnc,
@@ -141,7 +141,7 @@ module user_control #(
   input [10:0] 			requeue_qid,
   output 			requeue_rdy,
   output reg [16-1:0] 		dbg_userctrl_credits,
-  output reg [15:0] 		sdi_count_reg,  // default set to 64
+  output reg [15:0] 		sdi_count_reg, // default set to 64
   
   // Performance counter signals
   output reg [C_CNTR_WIDTH-1:0] user_cntr_max,
@@ -159,6 +159,20 @@ module user_control #(
   input [C_CNTR_WIDTH-1:0] 	h2c_idle_cnts,
   input [C_CNTR_WIDTH-1:0] 	h2c_busy_cnts,
   input [C_CNTR_WIDTH-1:0] 	h2c_actv_cnts,
+
+  // debug counters
+  input [10:0] 			c2h_data_cnt_q0,
+  input [10:0] 			c2h_data_cnt_q1,
+  input [10:0] 			c2h_data_cnt_q2,
+  input [10:0] 			c2h_data_cnt_q3,
+  input [10:0] 			c2h_cmpt_cnt_q0,
+  input [10:0] 			c2h_cmpt_cnt_q1,
+  input [10:0] 			c2h_cmpt_cnt_q2,
+  input [10:0] 			c2h_cmpt_cnt_q3,
+  input [10:0] 			c2h_bypin_cnt_q0,
+  input [10:0] 			c2h_bypin_cnt_q1,
+  input [10:0] 			c2h_bypin_cnt_q2,
+  input [10:0] 			c2h_bypin_cnt_q3,
   
   // l3fwd latency signals
   output reg [C_CNTR_WIDTH-1:0] user_l3fwd_max,
@@ -436,6 +450,12 @@ module user_control #(
       16'h120: m_axil_rdata  <= (32'h0 | sum_latency[63:32]);
       16'h124: m_axil_rdata  <= (32'h0 | num_pkt_rcvd[31:0]);
       16'h128: m_axil_rdata  <= (32'h0 | num_pkt_rcvd[63:32]);
+      16'h130: m_axil_rdata  <= (32'h0 | {c2h_data_cnt_q1, 5'b0, c2h_data_cnt_q0});
+      16'h134: m_axil_rdata  <= (32'h0 | {c2h_data_cnt_q3, 5'b0, c2h_data_cnt_q2});
+      16'h138: m_axil_rdata  <= (32'h0 | {c2h_cmpt_cnt_q1, 5'b0, c2h_cmpt_cnt_q0});
+      16'h13C: m_axil_rdata  <= (32'h0 | {c2h_cmpt_cnt_q3, 5'b0, c2h_cmpt_cnt_q2});
+      16'h140: m_axil_rdata  <= (32'h0 | {c2h_bypin_cnt_q1, 5'b0, c2h_bypin_cnt_q0});
+      16'h144: m_axil_rdata  <= (32'h0 | {c2h_bypin_cnt_q3, 5'b0, c2h_bypin_cnt_q2});
       default : m_axil_rdata <= 32'h0;
     endcase // case (m_axil_araddr[31:0]...
   end // always_comb begin

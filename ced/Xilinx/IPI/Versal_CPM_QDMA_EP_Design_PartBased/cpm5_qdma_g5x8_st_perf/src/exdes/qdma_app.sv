@@ -72,6 +72,7 @@ module qdma_app #(
   parameter C_M_KEEP_WIDTH              = (C_M_AXI_DATA_WIDTH / 32),
   parameter C_XDMA_NUM_CHNL             = 4,
 
+  parameter BYTE_CREDIT                 = 2048,  // DESCRIPTOR size from application
   parameter MAX_DATA_WIDTH              = 512,
   parameter C_H2C_TUSER_WIDTH           = 55,
   parameter CRC_WIDTH                   = 32,
@@ -326,37 +327,8 @@ module qdma_app #(
 
   // AXIS C2H packet wire
 
-   wire [C_DATA_WIDTH-1:0] 	     s_axis_c2h_tdata_int;
-   wire 			     s_axis_c2h_ctrl_marker_int;
-   wire [2 :0] 			     s_axis_c2h_ctrl_port_id_int;
-   wire [15:0] 			     s_axis_c2h_ctrl_len_int;
    wire [10:0] 			     s_axis_c2h_ctrl_qid_int ;
-   wire [6:0] 			     s_axis_c2h_ctrl_ecc_int ;
-   wire 			     s_axis_c2h_ctrl_has_cmpt_int ;
-   wire [CRC_WIDTH-1:0] 	     s_axis_c2h_tcrc_int;
-   
-   wire 			     s_axis_c2h_tvalid_lpbk;
-   wire 			     s_axis_c2h_tlast_lpbk;
-   wire [$clog2(C_DATA_WIDTH/8)-1:0] s_axis_c2h_mty_lpbk;
-   wire 			     s_axis_c2h_tvalid_int;
-   wire 			     s_axis_c2h_tlast_int;
-   wire [5:0] 			     s_axis_c2h_mty_int;
-   
-   // AXIS C2H tuser wire
-   wire 			     s_axis_c2h_cmpt_tvalid_int;
-   wire [511:0] 		     s_axis_c2h_cmpt_tdata_int;
-   wire [1:0] 			     s_axis_c2h_cmpt_size_int;
-   wire [15:0] 			     s_axis_c2h_cmpt_dpar_int;
-   wire 			     s_axis_c2h_cmpt_tready_int;
-
    wire [10:0] 			     s_axis_c2h_cmpt_ctrl_qid_int;
-   wire [1:0] 			     s_axis_c2h_cmpt_ctrl_cmpt_type_int;
-   wire [15:0] 			     s_axis_c2h_cmpt_ctrl_wait_pld_pkt_id_int;
-   wire 			     s_axis_c2h_cmpt_ctrl_marker_int;
-   wire 			     s_axis_c2h_cmpt_ctrl_user_trig_int;
-   wire [2:0] 			     s_axis_c2h_cmpt_ctrl_col_idx_int;
-   wire [2:0] 			     s_axis_c2h_cmpt_ctrl_err_idx_int;
-
 
    wire [10:0] 			       c2h_num_pkt;
    wire [11:0] 			       c2h_st_qid;
@@ -380,7 +352,7 @@ module qdma_app #(
    wire 			       st_loopback;
    wire [1:0] 			       c2h_dsc_bypass;
    wire 			       h2c_dsc_bypass;
-   (* mark_debug = "TRUE" *)wire [3:0] 			       dsc_bypass;
+   wire [3:0] 			       dsc_bypass;
    wire [6:0]                          pfch_byp_tag;
    wire [11:0]                         pfch_byp_tag_qid;
    wire [15:0]                         sdi_count_reg;
@@ -409,6 +381,10 @@ module qdma_app #(
    wire                              h2c_requeue_rdy;
    wire 			     s_axis_c2h_ctrl_dis_cmpt;
    wire [10:0] 			     dsc_crdt_in_qid_int;
+
+   (* mark_debug = "true" *) logic [10:0] c2h_data_cnt_q0, c2h_data_cnt_q1, c2h_data_cnt_q2, c2h_data_cnt_q3;
+   (* mark_debug = "true" *) logic [10:0] c2h_cmpt_cnt_q0, c2h_cmpt_cnt_q1, c2h_cmpt_cnt_q2, c2h_cmpt_cnt_q3;
+   (* mark_debug = "true" *) logic [10:0] c2h_bypin_cnt_q0, c2h_bypin_cnt_q1, c2h_bypin_cnt_q2, c2h_bypin_cnt_q3;
 
    assign s_axis_c2h_ctrl_has_cmpt = ~s_axis_c2h_ctrl_dis_cmpt;
    assign s_axis_c2h_cmpt_ctrl_qid = 13'h0 | s_axis_c2h_cmpt_ctrl_qid_int;
@@ -522,7 +498,19 @@ module qdma_app #(
     .h2c_idle_cnts                  ( h2c_idle_cnts      ),
     .h2c_busy_cnts                  ( h2c_busy_cnts      ),
     .h2c_actv_cnts                  ( h2c_actv_cnts      ),
-    
+
+    .c2h_data_cnt_q0                ( c2h_data_cnt_q0 ),
+    .c2h_data_cnt_q1                ( c2h_data_cnt_q1 ),
+    .c2h_data_cnt_q2                ( c2h_data_cnt_q2 ),
+    .c2h_data_cnt_q3                ( c2h_data_cnt_q3 ),
+    .c2h_cmpt_cnt_q0                ( c2h_cmpt_cnt_q0 ),
+    .c2h_cmpt_cnt_q1                ( c2h_cmpt_cnt_q1 ),
+    .c2h_cmpt_cnt_q2                ( c2h_cmpt_cnt_q2 ),
+    .c2h_cmpt_cnt_q3                ( c2h_cmpt_cnt_q3 ),
+    .c2h_bypin_cnt_q0               ( c2h_bypin_cnt_q0 ),
+    .c2h_bypin_cnt_q1               ( c2h_bypin_cnt_q1 ),
+    .c2h_bypin_cnt_q2               ( c2h_bypin_cnt_q2 ),
+    .c2h_bypin_cnt_q3               ( c2h_bypin_cnt_q3 ),
     // l3fwd latency signals
     .user_l3fwd_max                 ( user_l3fwd_max     ),
     .user_l3fwd_en                  ( user_l3fwd_en      ),
@@ -541,6 +529,7 @@ module qdma_app #(
     .QID_MAX                        ( QID_MAX            ),
     .TM_DSC_BITS                    ( TM_DSC_BITS        ),
     .CRC_WIDTH                      ( CRC_WIDTH          ),
+    .BYTE_CREDIT                    ( BYTE_CREDIT        ),
     .C_CNTR_WIDTH                   ( C_CNTR_WIDTH       )
   ) axi_st_module_i (
     .user_reset_n                   ( user_resetn & gen_user_reset_n ),
@@ -585,7 +574,6 @@ module qdma_app #(
     .s_axis_c2h_ctrl_user_trig      ( s_axis_c2h_ctrl_user_trig   ),
     .s_axis_c2h_ctrl_dis_cmpt       ( s_axis_c2h_ctrl_dis_cmpt    ),   // disable write back, write back not valid
     .s_axis_c2h_ctrl_imm_data       ( s_axis_c2h_ctrl_imm_data    ),   // immediate data, 1 = data in transfer, 0 = no data in transfer
-    .s_axis_c2h_ctrl_ecc            ( s_axis_c2h_ctrl_ecc         ),
     .s_axis_c2h_tvalid              ( s_axis_c2h_tvalid           ),
     .s_axis_c2h_tready              ( s_axis_c2h_tready           ),
     .s_axis_c2h_tlast               ( s_axis_c2h_tlast            ),
@@ -670,6 +658,105 @@ module qdma_app #(
   // Marker Response
   assign c2h_st_marker_rsp = (qsts_out_vld & (qsts_out_op == 8'b0)) ? 1'b1 : 1'b0;
 
+  // C2H Control ECC genearation
+   wire [56:0] 	ecc_gen_datain;
+   wire [56:0] 	ecc_data_out;
+   wire [6:0] 	ecc_gen_chkout_int;
+
+   assign s_axis_c2h_ctrl_port_id = 3'h0;
+
+   assign s_axis_c2h_ctrl_ecc = ecc_gen_chkout_int;
+
+   assign ecc_gen_datain = { 17'h0,                             // reserved
+			     1'b0,                              // var_desc
+			     1'b0,                              // drop_req
+			     1'b0,                              // num_buf_ov
+			     4'b0,                              // host_id
+			     s_axis_c2h_ctrl_has_cmpt,      //
+			     s_axis_c2h_ctrl_marker,        // marker
+			     s_axis_c2h_ctrl_port_id,       // port_id
+			     s_axis_c2h_ctrl_qid,           // Qid is 12 bits
+			     s_axis_c2h_ctrl_len};
+
+
+  qdma_ecc_enc #(
+    //.C_FAMILY("virtexuplus"),
+    //.C_COMPONENT_NAME("ecc_0"),
+    //.C_ECC_MODE(0),
+    //.C_ECC_TYPE(0),
+    .C_DATA_WIDTH(57),
+    .C_CHK_BIT_WIDTH(7),
+    .C_REG_INPUT(0),
+    .C_REG_OUTPUT(0),
+    .C_PIPELINE(0),
+    .C_USE_CLKEN(0)
+  ) c2h_ctrl_ecc_enc_int (
+    .ecc_clk(1'b0),
+    .ecc_reset(1'b0),
+    .ecc_enc_clk_en_in(1'b1),
+    .ecc_enc_data_in(ecc_gen_datain),           // input data
+    .ecc_enc_data_out(ecc_data_out),            // output data
+    .ecc_enc_chk_bits_out(ecc_gen_chkout_int)    // output check bits
+    );
+
+
+   // C2H data and CMPT counter for debug.
+   //
+   
+   always @(posedge user_clk) begin
+      if (~user_resetn & gen_user_reset_n) begin
+	 c2h_data_cnt_q0 <= 0;
+	 c2h_data_cnt_q1 <= 0;
+	 c2h_data_cnt_q2 <= 0;
+	 c2h_data_cnt_q3 <= 0;
+      end
+      else
+	 if (s_axis_c2h_tvalid & s_axis_c2h_tready & s_axis_c2h_tlast) begin
+	   case (s_axis_c2h_ctrl_qid)
+	     12'h0 : c2h_data_cnt_q0 <= c2h_data_cnt_q0 + 1;
+	     12'h1 : c2h_data_cnt_q1 <= c2h_data_cnt_q1 + 1;
+	     12'h2 : c2h_data_cnt_q2 <= c2h_data_cnt_q2 + 1;
+	     12'h3 : c2h_data_cnt_q3 <= c2h_data_cnt_q3 + 1;
+	   endcase // case s_axis_c2h_ctrl_qid[2
+	 end
+   end // always @ (posedge usr_clk)
+
+   always @(posedge user_clk) begin
+      if (~user_resetn & gen_user_reset_n) begin
+	 c2h_cmpt_cnt_q0 <= 0;
+	 c2h_cmpt_cnt_q1 <= 0;
+	 c2h_cmpt_cnt_q2 <= 0;
+	 c2h_cmpt_cnt_q3 <= 0;
+      end
+      else
+	 if (s_axis_c2h_cmpt_tvalid & s_axis_c2h_cmpt_tready) begin
+	   case (s_axis_c2h_cmpt_ctrl_qid)
+	     12'h0 : c2h_cmpt_cnt_q0 <= c2h_cmpt_cnt_q0 + 1;
+	     12'h1 : c2h_cmpt_cnt_q1 <= c2h_cmpt_cnt_q1 + 1;
+	     12'h2 : c2h_cmpt_cnt_q2 <= c2h_cmpt_cnt_q2 + 1;
+	     12'h3 : c2h_cmpt_cnt_q3 <= c2h_cmpt_cnt_q3 + 1;
+	   endcase // case s_axis_c2h_cmpt_ctrl_qid[2
+	 end
+   end // always @ (posedge usr_clk)
+
+   always @(posedge user_clk) begin
+      if (~user_resetn & gen_user_reset_n) begin
+	 c2h_bypin_cnt_q0 <= 0;
+	 c2h_bypin_cnt_q1 <= 0;
+	 c2h_bypin_cnt_q2 <= 0;
+	 c2h_bypin_cnt_q3 <= 0;
+      end
+      else
+	 if (c2h_byp_in_st_csh_vld & c2h_byp_in_st_csh_rdy) begin
+	   case (c2h_byp_in_st_csh_qid)
+	     12'h0 : c2h_bypin_cnt_q0 <= c2h_bypin_cnt_q0 + 1;
+	     12'h1 : c2h_bypin_cnt_q1 <= c2h_bypin_cnt_q1 + 1;
+	     12'h2 : c2h_bypin_cnt_q2 <= c2h_bypin_cnt_q2 + 1;
+	     12'h3 : c2h_bypin_cnt_q3 <= c2h_bypin_cnt_q3 + 1;
+	   endcase // case (c2h_byp_in_st_csh_qid)
+	 end
+   end // always @ (posedge user_clk)
+   
   dsc_byp_h2c dsc_byp_h2c_i
     (
      .clk                     (user_clk),

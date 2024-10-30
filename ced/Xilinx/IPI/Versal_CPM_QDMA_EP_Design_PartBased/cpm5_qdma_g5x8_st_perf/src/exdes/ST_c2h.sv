@@ -403,9 +403,19 @@ assign start_gen = (((~int_vld[0]) | start_txs) & (knob[2] | knob[4] | credit_vl
 assign start_txs = (((~valid) | ready) & sop) ? 1'b1 : 1'b0;
 
 assign isel_btt     = knob[3] ? rand_num[0 +: ($clog2(MAX_CRDT * BYTE_CREDIT))] : dbg_userctrl_credits[0 +: ($clog2(MAX_CRDT * BYTE_CREDIT))];
-assign txs_desc_amt_raw = (|(isel_btt % BYTE_CREDIT)) ? ((isel_btt / BYTE_CREDIT) + 1) : (isel_btt / BYTE_CREDIT); // $ceil(isel_btt / BYTE_CREDIT)
-assign txs_desc_amt = (txs_desc_amt_raw > credit_in) ? 1 : txs_desc_amt_raw;
 
+/*--------------------------------------------------------------------   */
+// /*Fixing the BYTE_CREDIT to 2048 and desc values are set to 1.
+   // This is for timing closure only.
+   // With this fix we can not do andy transfers more then 2048 Bytes. */
+//assign txs_desc_amt_raw = (|(isel_btt % BYTE_CREDIT)) ? ((isel_btt / BYTE_CREDIT) + 1) : (isel_btt / BYTE_CREDIT); // $ceil(isel_btt / BYTE_CREDIT)
+//assign txs_desc_amt = (txs_desc_amt_raw > credit_in) ? 1 : txs_desc_amt_raw;
+assign txs_desc_amt_raw = 1; // $ceil(isel_btt / BYTE_CREDIT)
+assign txs_desc_amt = 1;
+
+/*--------------------------------------------------------------------   */
+   
+   
 // QID + BTT Pipeline
 always @(posedge user_clk) begin
   if (~user_reset_n) begin
@@ -642,7 +652,8 @@ xpm_fifo_axis #(
   .PACKET_FIFO("false"),          // String
   .PROG_EMPTY_THRESH(1024),       // DECIMAL -- Not used
 //  .PROG_FULL_THRESH(2048-(BYTE_CREDIT/DATA_WIDTH)-1), // DECIMAL -- When asserted, FIFO only have spot for one descriptor left.
-  .PROG_FULL_THRESH(2048-(4096/512)-1), // DECIMAL -- Hard code value because smaller BYTE_CREDIT makes the limit too high and XPM doesn't support > 2043
+  .PROG_FULL_THRESH(2048-(4096/(512/8))-1), // DECIMAL -- Hard code value because smaller BYTE_CREDIT makes the limit too high and XPM doesn't support > 2043
+//  .PROG_FULL_THRESH(80), // DECIMAL -- Hard code value because smaller BYTE_CREDIT makes the limit too high and XPM doesn't support > 2043
   .RD_DATA_COUNT_WIDTH(11),       // DECIMAL
   .RELATED_CLOCKS(0),             // DECIMAL
   .TDATA_WIDTH(DATA_WIDTH),       // DECIMAL
