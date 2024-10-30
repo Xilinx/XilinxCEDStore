@@ -31,7 +31,7 @@ proc get_latest_board_parts {} {
 # lappend Versal_boardparts [get_board_parts *${v_part}:part0* -latest_file_version]
 # }
 # set V_board_unique [lsort -unique $Versal_boardparts]
-set V_board_unique [get_board_parts -filter {(BOARD_NAME =~"*vck190*" && VENDOR_NAME=="xilinx.com")||(BOARD_NAME =~"*vek280*" && VENDOR_NAME=="xilinx.com")||(BOARD_NAME =~"*vhk158*" && VENDOR_NAME=="xilinx.com")||(BOARD_NAME =~"*vmk180*" && VENDOR_NAME=="xilinx.com")||(BOARD_NAME =~"*vpk120*" && VENDOR_NAME=="xilinx.com")||(BOARD_NAME =~"*vpk180*" && VENDOR_NAME=="xilinx.com")} -latest_file_version]
+set V_board_unique [get_board_parts -filter {(BOARD_NAME =~"*vck190*" && VENDOR_NAME=="xilinx.com")||(BOARD_NAME =~"*vek280*" && VENDOR_NAME=="xilinx.com")||(BOARD_NAME =~"*vmk180*" && VENDOR_NAME=="xilinx.com")||(BOARD_NAME =~"*vpk120*" && VENDOR_NAME=="xilinx.com")||(BOARD_NAME =~"*vpk180*" && VENDOR_NAME=="xilinx.com")} -latest_file_version]
 return $V_board_unique
 }
 # ****************************************************************************************************
