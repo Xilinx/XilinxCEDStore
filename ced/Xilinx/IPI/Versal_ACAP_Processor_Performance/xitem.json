@@ -4,7 +4,7 @@
         {
           "infra": {
             "name": "ver_ps_perf",
-            "display": "Versal ACAP Processor Performance",
+            "display": "Versal Adaptive SOC Processor Performance",
             "revision": "1.0",
             "description": "Versal PS performance based example design",
             "company": "xilinx.com",
