@@ -157,11 +157,11 @@
         "name": "two_port_switch",
         "display": "Versal CPM5 Two Port Switch Design",
         "latest_revision": "1.0",
-        "commit_id": "5258441b859a8a655b24e4e80fbebea3cb885a39",
+        "commit_id": "e94e8610be7b81898b4c1f860113616659152501",
         "revisions": [
           {
             "revision": "1.0",
-            "commit_id": "5258441b859a8a655b24e4e80fbebea3cb885a39",
+            "commit_id": "e94e8610be7b81898b4c1f860113616659152501",
             "date": "21-10-2024:18:11:37",
             "history": "Added board Versal CPM5 Two Port Switch Design v1.0"
           }
@@ -176,11 +176,11 @@
         "name": "cpm_rp",
         "display": "Versal CPM Bridge RP Design",
         "latest_revision": "1.0",
-        "commit_id": "5258441b859a8a655b24e4e80fbebea3cb885a39",
+        "commit_id": "e94e8610be7b81898b4c1f860113616659152501",
         "revisions": [
           {
             "revision": "1.0",
-            "commit_id": "5258441b859a8a655b24e4e80fbebea3cb885a39",
+            "commit_id": "e94e8610be7b81898b4c1f860113616659152501",
             "date": "21-10-2024:18:11:37",
             "history": "Added board Versal CPM Bridge RP Design v1.0"
           }
@@ -195,11 +195,11 @@
         "name": "cpm_bmd_ep",
         "display": "Versal CPM PCIE BMD EP Design",
         "latest_revision": "1.0",
-        "commit_id": "5258441b859a8a655b24e4e80fbebea3cb885a39",
+        "commit_id": "e94e8610be7b81898b4c1f860113616659152501",
         "revisions": [
           {
             "revision": "1.0",
-            "commit_id": "5258441b859a8a655b24e4e80fbebea3cb885a39",
+            "commit_id": "e94e8610be7b81898b4c1f860113616659152501",
             "date": "21-10-2024:18:11:37",
             "history": "Added board Versal CPM PCIE BMD EP Design v1.0"
           }
@@ -214,11 +214,11 @@
         "name": "cpm_bmd",
         "display": "Versal CPM PCIE BMD EP Simulation Design",
         "latest_revision": "1.0",
-        "commit_id": "5258441b859a8a655b24e4e80fbebea3cb885a39",
+        "commit_id": "e94e8610be7b81898b4c1f860113616659152501",
         "revisions": [
           {
             "revision": "1.0",
-            "commit_id": "5258441b859a8a655b24e4e80fbebea3cb885a39",
+            "commit_id": "e94e8610be7b81898b4c1f860113616659152501",
             "date": "21-10-2024:18:11:37",
             "history": "Added board Versal CPM PCIE BMD EP Simulation Design v1.0"
           }
@@ -233,11 +233,11 @@
         "name": "cpm_pcie_pio",
         "display": "Versal CPM PCIE PIO EP Design",
         "latest_revision": "1.0",
-        "commit_id": "5258441b859a8a655b24e4e80fbebea3cb885a39",
+        "commit_id": "e94e8610be7b81898b4c1f860113616659152501",
         "revisions": [
           {
             "revision": "1.0",
-            "commit_id": "5258441b859a8a655b24e4e80fbebea3cb885a39",
+            "commit_id": "e94e8610be7b81898b4c1f860113616659152501",
             "date": "21-10-2024:18:11:37",
             "history": "Added board Versal CPM PCIE PIO EP Design v1.0"
           }
@@ -309,11 +309,11 @@
         "name": "cpm_qdma",
         "display": "Versal CPM QDMA EP Simulation Design",
         "latest_revision": "1.0",
-        "commit_id": "5258441b859a8a655b24e4e80fbebea3cb885a39",
+        "commit_id": "e94e8610be7b81898b4c1f860113616659152501",
         "revisions": [
           {
             "revision": "1.0",
-            "commit_id": "5258441b859a8a655b24e4e80fbebea3cb885a39",
+            "commit_id": "e94e8610be7b81898b4c1f860113616659152501",
             "date": "21-10-2024:18:11:37",
             "history": "Added board Versal CPM QDMA EP Simulation Design v1.0"
           }
