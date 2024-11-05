@@ -7,40 +7,13 @@ proc createDesign {design_name options} {
    
 if [regexp "CPM4" $options] {
 
-# Set 'constrs_1' fileset object
-set obj [get_filesets constrs_1]
-
-# Add/Import constrs file and set constrs file properties
-set file "[file normalize "$currentDir/xdc/cpm_rc.xdc"]"
-set file_added [add_files -norecurse -fileset $obj [list $file]]
-set file "$currentDir/xdc/cpm_rc.xdc"
-set file [file normalize $file]
-set file_obj [get_files -of_objects [get_filesets constrs_1] [list "*$file"]]
-set_property -name "file_type" -value "XDC" -objects $file_obj
-
-# Set 'constrs_1' fileset properties
-set obj [get_filesets constrs_1]
+set xdc [file join $currentDir xdc cpm_rc.xdc]
+import_files -fileset constrs_1 -norecurse $xdc
 
 } else {
 
-# Create 'constrs_1' fileset (if not found)
-#if {[string equal [get_filesets -quiet constrs_1] ""]} {
-#  create_fileset -constrset constrs_1
-#}
-
-# Set 'constrs_1' fileset object
-set obj [get_filesets constrs_1]
-
-# Add/Import constrs file and set constrs file properties
-set file "[file normalize "$currentDir/xdc/default.xdc"]"
-set file_added [add_files -norecurse -fileset $obj [list $file]]
-#set file_imported [import_files -fileset constrs_1 [list $file]]
-set file "$currentDir/xdc/default.xdc"
-set file_obj [get_files -of_objects [get_filesets constrs_1] [list "*$file"]]
-set_property -name "file_type" -value "XDC" -objects $file_obj
-
-# Set 'constrs_1' fileset properties
-set obj [get_filesets constrs_1]
+set xdc [file join $currentDir xdc default.xdc]
+import_files -fileset constrs_1 -norecurse $xdc
 
 }
 

@@ -55,44 +55,43 @@ puts -nonewline $outfile $contents
 close $outfile
 
 # Create 'constrs_1' fileset (if not found)
-if {[string equal [get_filesets -quiet constrs_1] ""]} {
-  create_fileset -constrset constrs_1
-}
+#if {[string equal [get_filesets -quiet constrs_1] ""]} {
+#  create_fileset -constrset constrs_1
+#}
 
 # Set 'constrs_1' fileset object
-set obj [get_filesets constrs_1]
+#set obj [get_filesets constrs_1]
 
 # Add/Import constrs file and set constrs file properties
-set file "[file normalize "$currentDir/cpm4_bmd_ep/constraints/top_impl.xdc"]"
-set file_added [add_files -norecurse -fileset $obj [list $file]]
-set file "$currentDir/cpm4_bmd_ep/constraints/top_impl.xdc"
-set file [file normalize $file]
-set file_obj [get_files -of_objects [get_filesets constrs_1] [list "*$file"]]
-set_property -name "file_type" -value "XDC" -objects $file_obj
+#set file "[file normalize "$currentDir/cpm4_bmd_ep/constraints/top_impl.xdc"]"
+#set file_added [add_files -norecurse -fileset $obj [list $file]]
+#set file "$currentDir/cpm4_bmd_ep/constraints/top_impl.xdc"
+#set file [file normalize $file]
+#set file_obj [get_files -of_objects [get_filesets constrs_1] [list "*$file"]]
+#set_property -name "file_type" -value "XDC" -objects $file_obj
 
 # Set 'constrs_1' fileset properties
-set obj [get_filesets constrs_1]
+#set obj [get_filesets constrs_1]
+
+set xdc [file join $currentDir cpm4_bmd_ep constraints top_impl.xdc]
+import_files -fileset constrs_1 -norecurse $xdc
 
 # Set 'utils_1' fileset object
-set obj [get_filesets utils_1]
-set files [list \
- [file normalize "${currentDir}/cpm4_bmd_ep/pre_place.tcl"] \
-]
-add_files -norecurse -fileset $obj $files
+set utils [file join $currentDir cpm4_bmd_ep pre_place.tcl]
+import_files -fileset utils_1 -norecurse $utils
 
 # Set 'utils_1' fileset file properties for remote files
-set file "$currentDir/cpm4_bmd_ep/pre_place.tcl"
-set file [file normalize $file]
-set file_obj [get_files -of_objects [get_filesets utils_1] [list "*$file"]]
-set_property -name "file_type" -value "TCL" -objects $file_obj
-
+#set file "$currentDir/cpm4_bmd_ep/pre_place.tcl"
+#set file [file normalize $file]
+#set file_obj [get_files -of_objects [get_filesets utils_1] [list "*$file"]]
+#set_property -name "file_type" -value "TCL" -objects $file_obj
 
 # Set 'utils_1' fileset file properties for local files
 # None
 set_property STEPS.PLACE_DESIGN.TCL.PRE [get_files pre_place.tcl -of [get_fileset utils_1] ] [get_runs impl_1]
 
 # Set 'utils_1' fileset properties
-set obj [get_filesets utils_1]
+#set obj [get_filesets utils_1]
 
 } 
 
@@ -147,24 +146,26 @@ puts -nonewline $outfile $contents
 close $outfile
 
 # Create 'constrs_1' fileset (if not found)
-if {[string equal [get_filesets -quiet constrs_1] ""]} {
-  create_fileset -constrset constrs_1
-}
+#if {[string equal [get_filesets -quiet constrs_1] ""]} {
+#  create_fileset -constrset constrs_1
+#}
 
 # Set 'constrs_1' fileset object
-set obj [get_filesets constrs_1]
+#set obj [get_filesets constrs_1]
+#
+## Add/Import constrs file and set constrs file properties
+#set file "[file normalize "$currentDir/cpm5_bmd_ep/constraints/io_assign_pcie_rstn.xdc"]"
+#set file_added [add_files -norecurse -fileset $obj [list $file]]
+#set file "$currentDir/cpm5_bmd_ep/constraints/io_assign_pcie_rstn.xdc"
+#set file [file normalize $file]
+#set file_obj [get_files -of_objects [get_filesets constrs_1] [list "*$file"]]
+#set_property -name "file_type" -value "XDC" -objects $file_obj
+#
+## Set 'constrs_1' fileset properties
+#set obj [get_filesets constrs_1]
 
-# Add/Import constrs file and set constrs file properties
-set file "[file normalize "$currentDir/cpm5_bmd_ep/constraints/io_assign_pcie_rstn.xdc"]"
-set file_added [add_files -norecurse -fileset $obj [list $file]]
-set file "$currentDir/cpm5_bmd_ep/constraints/io_assign_pcie_rstn.xdc"
-set file [file normalize $file]
-set file_obj [get_files -of_objects [get_filesets constrs_1] [list "*$file"]]
-set_property -name "file_type" -value "XDC" -objects $file_obj
-
-# Set 'constrs_1' fileset properties
-set obj [get_filesets constrs_1]
-
+set xdc [file join $currentDir cpm5_bmd_ep constraints io_assign_pcie_rstn.xdc]
+import_files -fileset constrs_1 -norecurse $xdc
 
 } elseif {[regexp "CPM5_PCIE_Gen5x8_BMD_Design" $options]} {
 
@@ -216,23 +217,26 @@ puts -nonewline $outfile $contents
 close $outfile
 
 # Create 'constrs_1' fileset (if not found)
-if {[string equal [get_filesets -quiet constrs_1] ""]} {
-  create_fileset -constrset constrs_1
-}
+#if {[string equal [get_filesets -quiet constrs_1] ""]} {
+#  create_fileset -constrset constrs_1
+#}
 
 # Set 'constrs_1' fileset object
-set obj [get_filesets constrs_1]
+#set obj [get_filesets constrs_1]
+#
+## Add/Import constrs file and set constrs file properties
+#set file "[file normalize "$currentDir/cpm5_bmd_g5x8_ep/constraints/top_impl.xdc"]"
+#set file_added [add_files -norecurse -fileset $obj [list $file]]
+#set file "$currentDir/cpm5_bmd_g5x8_ep/constraints/top_impl.xdc"
+#set file [file normalize $file]
+#set file_obj [get_files -of_objects [get_filesets constrs_1] [list "*$file"]]
+#set_property -name "file_type" -value "XDC" -objects $file_obj
+#
+## Set 'constrs_1' fileset properties
+#set obj [get_filesets constrs_1]
 
-# Add/Import constrs file and set constrs file properties
-set file "[file normalize "$currentDir/cpm5_bmd_g5x8_ep/constraints/top_impl.xdc"]"
-set file_added [add_files -norecurse -fileset $obj [list $file]]
-set file "$currentDir/cpm5_bmd_g5x8_ep/constraints/top_impl.xdc"
-set file [file normalize $file]
-set file_obj [get_files -of_objects [get_filesets constrs_1] [list "*$file"]]
-set_property -name "file_type" -value "XDC" -objects $file_obj
-
-# Set 'constrs_1' fileset properties
-set obj [get_filesets constrs_1]
+set xdc [file join $currentDir cpm5_bmd_g5x8_ep constraints top_impl.xdc]
+import_files -fileset constrs_1 -norecurse $xdc
 
 # Create 'sim_1' fileset (if not found)
 if {[string equal [get_filesets -quiet sim_1] ""]} {
