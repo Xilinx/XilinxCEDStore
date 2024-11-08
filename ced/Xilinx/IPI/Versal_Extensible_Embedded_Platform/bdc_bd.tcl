@@ -321,10 +321,10 @@ for {set i 0} {$i < $num_clks} {incr i} {
 			set m [expr $i+$m_incr]
 			connect_bd_intf_net [get_bd_intf_pins icn_ctrl/M0${m}_AXI] [get_bd_intf_pins icn_ctrl_$i/S00_AXI]
 			connect_bd_intf_net [get_bd_intf_pins to_delete_kernel_ctrl_$i/S_AXI] [get_bd_intf_pins icn_ctrl_$i/M00_AXI]
-			#connect_bd_net -net proc_sys_reset_${default_clk_num}_peripheral_aresetn [get_bd_pins to_delete_kernel_ctrl_$i/aresetn]
-			#connect_bd_net -net proc_sys_reset_${default_clk_num}_peripheral_aresetn [get_bd_pins icn_ctrl_$i/aresetn]
-			connect_bd_net -net proc_sys_reset_0_peripheral_aresetn [get_bd_pins to_delete_kernel_ctrl_$i/aresetn]
-			connect_bd_net -net proc_sys_reset_0_peripheral_aresetn [get_bd_pins icn_ctrl_$i/aresetn]
+			connect_bd_net -net proc_sys_reset_${default_clk_num}_peripheral_aresetn [get_bd_pins to_delete_kernel_ctrl_$i/aresetn]
+			connect_bd_net -net proc_sys_reset_${default_clk_num}_peripheral_aresetn [get_bd_pins icn_ctrl_$i/aresetn]
+			#connect_bd_net -net proc_sys_reset_0_peripheral_aresetn [get_bd_pins to_delete_kernel_ctrl_$i/aresetn]
+			#connect_bd_net -net proc_sys_reset_0_peripheral_aresetn [get_bd_pins icn_ctrl_$i/aresetn]
 			connect_bd_net -net $default_clock_net [get_bd_pins icn_ctrl_$i/aclk]
 			connect_bd_net -net $default_clock_net [get_bd_pins to_delete_kernel_ctrl_$i/aclk]
 		} 
@@ -344,16 +344,16 @@ for {set i 0} {$i < $num_clks} {incr i} {
 		}
 		connect_bd_net [get_bd_pins clk_wizard_0/locked] [get_bd_pins proc_sys_reset_0/dcm_locked]
 		
-		#connect_bd_net -net proc_sys_reset_${default_clk_num}_peripheral_aresetn [get_bd_pins proc_sys_reset_${default_clk_num}/peripheral_aresetn] [get_bd_pins icn_ctrl/aresetn] 
-		connect_bd_net -net proc_sys_reset_0_peripheral_aresetn [get_bd_pins proc_sys_reset_0/peripheral_aresetn] [get_bd_pins icn_ctrl/aresetn] 
+		connect_bd_net -net proc_sys_reset_${default_clk_num}_peripheral_aresetn [get_bd_pins proc_sys_reset_${default_clk_num}/peripheral_aresetn] [get_bd_pins icn_ctrl/aresetn] 
+		#connect_bd_net -net proc_sys_reset_0_peripheral_aresetn [get_bd_pins proc_sys_reset_0/peripheral_aresetn] [get_bd_pins icn_ctrl/aresetn] 
 		  
 		if { $use_intc_15 } {
 			set_property -dict [list CONFIG.NUM_MI {1}] [get_bd_cells icn_ctrl]
 			connect_bd_intf_net -intf_net icn_ctrl_M00_AXI [get_bd_intf_pins axi_intc_0/s_axi] [get_bd_intf_pins icn_ctrl/M00_AXI]
 			#connect_bd_net -net axi_intc_0_irq [get_bd_pins CIPS_0/pl_ps_irq0] [get_bd_pins axi_intc_0/irq]
 			connect_bd_net -net $default_clock_net [get_bd_pins axi_intc_0/s_axi_aclk]
-			#connect_bd_net -net proc_sys_reset_${default_clk_num}_peripheral_aresetn [get_bd_pins axi_intc_0/s_axi_aresetn]
-			connect_bd_net -net proc_sys_reset_0_peripheral_aresetn [get_bd_pins axi_intc_0/s_axi_aresetn]
+			connect_bd_net -net proc_sys_reset_${default_clk_num}_peripheral_aresetn [get_bd_pins axi_intc_0/s_axi_aresetn]
+			#connect_bd_net -net proc_sys_reset_0_peripheral_aresetn [get_bd_pins axi_intc_0/s_axi_aresetn]
 			connect_bd_net [get_bd_ports irq] [get_bd_pins axi_intc_0/irq]
 		}
 
@@ -362,8 +362,8 @@ for {set i 0} {$i < $num_clks} {incr i} {
 			connect_bd_intf_net -intf_net icn_ctrl_M00_AXI [get_bd_intf_pins axi_intc_0/s_axi] [get_bd_intf_pins icn_ctrl/M00_AXI]
 			#connect_bd_net -net axi_intc_0_irq [get_bd_pins CIPS_0/pl_ps_irq0] [get_bd_pins axi_intc_0/irq]
 			connect_bd_net -net $default_clock_net [get_bd_pins axi_intc_0/s_axi_aclk]
-			#connect_bd_net -net proc_sys_reset_${default_clk_num}_peripheral_aresetn [get_bd_pins axi_intc_0/s_axi_aresetn]
-			connect_bd_net -net proc_sys_reset_0_peripheral_aresetn [get_bd_pins axi_intc_0/s_axi_aresetn]
+			connect_bd_net -net proc_sys_reset_${default_clk_num}_peripheral_aresetn [get_bd_pins axi_intc_0/s_axi_aresetn]
+			#connect_bd_net -net proc_sys_reset_0_peripheral_aresetn [get_bd_pins axi_intc_0/s_axi_aresetn]
 			connect_bd_net [get_bd_ports irq] [get_bd_pins axi_intc_0/irq]
 		}
 		  
@@ -377,10 +377,10 @@ for {set i 0} {$i < $num_clks} {incr i} {
 			#connect_bd_net -net axi_intc_0_irq [get_bd_pins CIPS_0/pl_ps_irq0] [get_bd_pins axi_intc_parent/irq]
 			connect_bd_net -net $default_clock_net [get_bd_pins axi_intc_cascaded_1/s_axi_aclk]
 			connect_bd_net -net $default_clock_net [get_bd_pins axi_intc_parent/s_axi_aclk]
-			#connect_bd_net -net proc_sys_reset_${default_clk_num}_peripheral_aresetn [get_bd_pins axi_intc_cascaded_1/s_axi_aresetn]
-			#connect_bd_net -net proc_sys_reset_${default_clk_num}_peripheral_aresetn [get_bd_pins axi_intc_parent/s_axi_aresetn]
-			connect_bd_net -net proc_sys_reset_0_peripheral_aresetn [get_bd_pins axi_intc_cascaded_1/s_axi_aresetn]
-			connect_bd_net -net proc_sys_reset_0_peripheral_aresetn [get_bd_pins axi_intc_parent/s_axi_aresetn]
+			connect_bd_net -net proc_sys_reset_${default_clk_num}_peripheral_aresetn [get_bd_pins axi_intc_cascaded_1/s_axi_aresetn]
+			connect_bd_net -net proc_sys_reset_${default_clk_num}_peripheral_aresetn [get_bd_pins axi_intc_parent/s_axi_aresetn]
+			#connect_bd_net -net proc_sys_reset_0_peripheral_aresetn [get_bd_pins axi_intc_cascaded_1/s_axi_aresetn]
+			#connect_bd_net -net proc_sys_reset_0_peripheral_aresetn [get_bd_pins axi_intc_parent/s_axi_aresetn]
 			connect_bd_net [get_bd_ports irq] [get_bd_pins axi_intc_parent/irq]
 		
 		}
