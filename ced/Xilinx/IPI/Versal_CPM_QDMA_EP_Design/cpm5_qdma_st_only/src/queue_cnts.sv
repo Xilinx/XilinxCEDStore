@@ -26,11 +26,16 @@ module queue_cnts #(
   parameter DESC_AVAIL_WIDTH = 8,
   parameter MAX_QUEUES = 128,
   parameter QUEUE_ID_WIDTH = 7,
-  parameter SEED = 32'hb105f00d,    // rand_num seed
+  parameter SEED = 32'hb105f00d,  // rand_num seed
+  parameter PIPELINE_STAGES = 1,  // Add pipeline to the QID FIFO
   parameter TCQ = 1
 ) (
   input  wire user_clk,
   input  wire user_reset_n,
+  
+  // Control Signals
+  input  wire [31:0]               knob, // [0] = 1 - Holds credit issuance so we can do prefetch tag exchanges before starting the transfer (for Simple Bypass mode only).
+                                         //           Must only be set while Queues are all inactive (quiesced).
 
   // tm interface signals
   input  wire tm_dsc_sts_vld,
@@ -57,7 +62,7 @@ module queue_cnts #(
 
   //  output wire qid_valid, // valid output for the next queue id
   input  wire qid_rdy, // ready for the next queue id
-                  output reg qid_vld, // current qid and availabilyt is valid.
+  output reg qid_vld,  // current qid and availabily is valid.
   output reg [QUEUE_ID_WIDTH-1:0] qid,
   output reg [DESC_CNT_WIDTH-1:0] qid_desc_avail,
 
@@ -70,15 +75,20 @@ module queue_cnts #(
   wire desc_cnt_inc_comb;
   wire desc_cnt_clr_comb;
   reg  [MAX_QUEUES-1:0] qid_onehot;
-  reg  [QUEUE_ID_WIDTH-1:0] qid_encoded;
+  reg  [QUEUE_ID_WIDTH-1:0] qid_encoded, qid_encoded_pipeline;
+  reg  [QUEUE_ID_WIDTH-1:0] qid_encoded_delayed [2:0];
   reg  desc_cnt_inc;
+  reg  [2:0] desc_cnt_inc_delay;
   reg  [DESC_AVAIL_WIDTH-1:0] desc_inc_val;
   reg  desc_cnt_clr;
   wire [DESC_CNT_WIDTH-1:0] desc_cnt [MAX_QUEUES-1:0];
   wire [MAX_QUEUES-1:0] desc_rdy;
 
   wire tm_add_queue_comb;
+  reg  tm_add_queue_comb_pipeline;
+  
   wire reuse_add_queue_comb;
+  reg  reuse_add_queue_comb_pipeline;
   reg  [QUEUE_ID_WIDTH-1:0] qid_wr_data;
   reg  qid_wr_en;
   wire qid_rd_en;
@@ -95,7 +105,7 @@ module queue_cnts #(
   reg  [31:0]               rand_num = SEED;    // Random Number
   
   reg                       requeue_vld_reg;
-  reg  [QUEUE_ID_WIDTH-1:0] requeue_qid_reg;
+  reg  [QUEUE_ID_WIDTH-1:0] requeue_qid_reg, requeue_qid_reg_pipeline;
   
   // Random Number Generator
   always @(posedge user_clk) begin
@@ -181,19 +191,77 @@ module queue_cnts #(
       );
     end
   endgenerate
+  
+  // Delay the desc_cnt_inc so that it matches the latency for desc_rdy signal from desc_cnt module
+  always @(posedge user_clk) begin
+    if (!user_reset_n) begin
+      desc_cnt_inc_delay     <= 3'b000;
+      qid_encoded_delayed[0] <= 'h0;
+      qid_encoded_delayed[1] <= 'h0;
+      qid_encoded_delayed[2] <= 'h0;
+    end else begin
+      desc_cnt_inc_delay  <= {desc_cnt_inc_delay[1],desc_cnt_inc_delay[0],desc_cnt_inc};
+      qid_encoded_delayed <= {qid_encoded_delayed[1],qid_encoded_delayed[0],qid_encoded};
+    end
+  end
 
   // FIFO Read Enable Interface
-  assign qid_rd_en = ~qid_vld || (qid_vld & qid_rdy);
+  assign qid_rd_en = knob[0] ? 1'b0 : (~qid_vld || (qid_vld & qid_rdy));
   // Write interface for the queue id fifo
   // Add a tm_* id when needed.
-  assign tm_add_queue_comb = desc_cnt_inc & ((~queued_ids[qid_encoded]) | ((qid_encoded == qid_rd_data) & (qid_rd_valid & qid_rd_en & ~desc_rdy[qid_rd_data])));
+// Timing opt.  assign tm_add_queue_comb = desc_cnt_inc & ((~queued_ids[qid_encoded]) | ((qid_encoded == qid_rd_data) & (qid_rd_valid & qid_rd_en & ~desc_rdy[qid_rd_data])));
+//              Instead of checking at the output of the FIFO if the QID will get deleted, just wait until desc_rdy is updated. This will incur higher latency if the queue
+//              just started or resumed from a zero credit condition, but it should be an okay cost to pay because it should not happen frequently.
+  assign tm_add_queue_comb = desc_cnt_inc_delay[2] & (~queued_ids[qid_encoded_delayed[2]]);
   // Any time the tm_* interface is adding to the queue FIFO the requeue interface must be back pressured.
+generate
+if (PIPELINE_STAGES == 1)
+  assign requeue_rdy = ~tm_add_queue_comb_pipeline;
+else
   assign requeue_rdy = ~tm_add_queue_comb;
+endgenerate
   // Add a queue id when the descriptor has been process if not already added and is still enabled.
 //  assign reuse_add_queue_comb = requeue_vld & requeue_rdy & ~queued_ids[requeue_qid] & desc_rdy[requeue_qid];
-  assign reuse_add_queue_comb = requeue_vld_reg & requeue_rdy & desc_rdy[requeue_qid_reg];
+// Timing opt. In desc_cnt we're making adjustment to the desc_rdy that can add bubbles if a queue is running on last credit,
+//             therefore this check will no longer add any value because the bubbles is inavoidable when it happens.
+// Timing opt  assign reuse_add_queue_comb = requeue_vld_reg & requeue_rdy & desc_rdy[requeue_qid_reg];
+  assign reuse_add_queue_comb = requeue_vld_reg & requeue_rdy;
   // Create the qid fifo write enable and write data signals.
   // tmsts interface takes precedence and is never back pressured over the requeue interface.
+generate
+if (PIPELINE_STAGES == 1) begin : add_pipeline_reg
+  always @(posedge user_clk) begin
+    if (!user_reset_n) begin
+      tm_add_queue_comb_pipeline    <= 1'b0;
+      reuse_add_queue_comb_pipeline <= 1'b0;
+    end else begin
+      tm_add_queue_comb_pipeline    <= tm_add_queue_comb;
+      reuse_add_queue_comb_pipeline <= requeue_rdy ? reuse_add_queue_comb : reuse_add_queue_comb_pipeline;
+    end
+    qid_encoded_pipeline            <= qid_encoded_delayed[2];
+    requeue_qid_reg_pipeline        <= requeue_rdy ? requeue_qid_reg : requeue_qid_reg_pipeline;
+  end
+  always @* begin
+    if (tm_add_queue_comb_pipeline) begin
+      // Queue a new ID from tm_* interface
+      qid_wr_data <= qid_encoded_pipeline;
+      qid_wr_en <= 1'b1;
+// This pipeline is not helping a whole lot, since the reuse_add_queue_comb are already using two registered signals.
+//    end else if (reuse_add_queue_comb_pipeline) begin
+//      // Re queue a used ID
+//      qid_wr_data <= requeue_qid_reg_pipeline;
+//      qid_wr_en <= 1'b1;
+    end else if (reuse_add_queue_comb) begin
+      // Re queue a used ID
+      qid_wr_data <= requeue_qid_reg;
+      qid_wr_en <= 1'b1;
+    end else begin
+      // Wait for next ID
+      qid_wr_data <= 'h0;
+      qid_wr_en <= 1'b0;
+    end
+  end
+end else begin : no_pipeline_reg
   always @* begin
     if (tm_add_queue_comb) begin
       // Queue a new ID from tm_* interface
@@ -205,10 +273,12 @@ module queue_cnts #(
       qid_wr_en <= 1'b1;
     end else begin
       // Wait for next ID
-      qid_wr_data <= qid_encoded;
+      qid_wr_data <= 'h0;
       qid_wr_en <= 1'b0;
     end
   end
+end
+endgenerate
 
   // FIFO to store the queue IDs that are enabled.
   next_queue_fifo #(
@@ -224,22 +294,22 @@ module queue_cnts #(
     .qid_rd_vld(qid_rd_valid)
   );
 
-  // Track if the queue ID is already queued in the queue fifo
+  // Track if the queue ID is already in circulation (queued in the queue fifo or processed in the Data Generator)
   always @(posedge user_clk) begin
     // default value is to retain contents.
     queued_ids <= queued_ids;
     if (!user_reset_n) begin
       queued_ids <= 'h0;
     end else begin
-      //if (qid_rd_valid & qid_rd_en) begin
-      if (requeue_vld_reg & requeue_rdy & ~desc_rdy[requeue_qid_reg]) begin
-//      if (~reuse_add_queue_comb) begin
-        // unset the corresponding bit anytime the fifo is read
-        queued_ids[requeue_qid_reg] <= 1'b0;
-      end
+// Timing opt. In desc_cnt we're making adjustment to the desc_rdy that can add bubbles if a queue is running on last credit,
+//             therefore this check will no longer add any value because the bubbles is inavoidable when it happens.
+// Timing opt      if (requeue_vld_reg & requeue_rdy & ~desc_rdy[requeue_qid_reg]) begin
+// Timing opt        queued_ids[requeue_qid_reg] <= 1'b0;
+// Timing opt      end
       // FIFO Drop
-      if (qid_rd_valid & qid_rd_en & ~desc_rdy[qid_rd_data]) begin
-        queued_ids[qid_rd_data] <= 1'b0;
+// Timing opt      if (qid_rd_valid & qid_rd_en & ~desc_rdy[qid_rd_data]) begin
+      if (qid_rd_valid) begin // Removing qid_rd_en because Data is still valid as long as qid_rd_valid is 1
+        queued_ids[qid_rd_data] <= desc_rdy[qid_rd_data];
       end
       if (qid_wr_en) begin
         // set the corresponding bit anytime the fifo is written
@@ -276,6 +346,10 @@ module queue_cnts #(
         qid_vld <= qid_rd_valid & desc_rdy[qid_rd_data];
         qid <= qid_rd_data;
         qid_desc_avail <= desc_cnt[qid_rd_data];
+      end else if (qid_rdy) begin // This is a required state now because Knob[0] may be used to throttle the crediting mechanism.
+        qid_vld <= 'h0;
+        qid <= qid;
+        qid_desc_avail <= qid_desc_avail;
       end else begin
         qid_vld <= qid_vld;
         qid <= qid;

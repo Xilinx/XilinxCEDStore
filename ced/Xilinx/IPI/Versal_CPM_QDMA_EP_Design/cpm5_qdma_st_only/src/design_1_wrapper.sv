@@ -31,7 +31,49 @@ module design_1_wrapper #
     output [(PL_LINK_CAP_MAX_LINK_WIDTH - 1) : 0]   PCIE1_GT_0_gtx_p,
     output [(PL_LINK_CAP_MAX_LINK_WIDTH - 1) : 0]   PCIE1_GT_0_gtx_n,
     input          gt_refclk1_0_clk_n,
-    input          gt_refclk1_0_clk_p
+    input          gt_refclk1_0_clk_p,
+
+    output [5:0]CH0_LPDDR4_0_0_ca_a,
+    output [5:0]CH0_LPDDR4_0_0_ca_b,
+    output [0:0]CH0_LPDDR4_0_0_ck_c_a,
+    output [0:0]CH0_LPDDR4_0_0_ck_c_b,
+    output [0:0]CH0_LPDDR4_0_0_ck_t_a,
+    output [0:0]CH0_LPDDR4_0_0_ck_t_b,
+    output [0:0]CH0_LPDDR4_0_0_cke_a,
+    output [0:0]CH0_LPDDR4_0_0_cke_b,
+    output [0:0]CH0_LPDDR4_0_0_cs_a,
+    output [0:0]CH0_LPDDR4_0_0_cs_b,
+    inout [1:0]CH0_LPDDR4_0_0_dmi_a,
+    inout [1:0]CH0_LPDDR4_0_0_dmi_b,
+    inout [15:0]CH0_LPDDR4_0_0_dq_a,
+    inout [15:0]CH0_LPDDR4_0_0_dq_b,
+    inout [1:0]CH0_LPDDR4_0_0_dqs_c_a,
+    inout [1:0]CH0_LPDDR4_0_0_dqs_c_b,
+    inout [1:0]CH0_LPDDR4_0_0_dqs_t_a,
+    inout [1:0]CH0_LPDDR4_0_0_dqs_t_b,
+    output [0:0]CH0_LPDDR4_0_0_reset_n,
+    output [5:0]CH1_LPDDR4_0_0_ca_a,
+    output [5:0]CH1_LPDDR4_0_0_ca_b,
+    output [0:0]CH1_LPDDR4_0_0_ck_c_a,
+    output [0:0]CH1_LPDDR4_0_0_ck_c_b,
+    output [0:0]CH1_LPDDR4_0_0_ck_t_a,
+    output [0:0]CH1_LPDDR4_0_0_ck_t_b,
+    output [0:0]CH1_LPDDR4_0_0_cke_a,
+    output [0:0]CH1_LPDDR4_0_0_cke_b,
+    output [0:0]CH1_LPDDR4_0_0_cs_a,
+    output [0:0]CH1_LPDDR4_0_0_cs_b,
+    inout [1:0]CH1_LPDDR4_0_0_dmi_a,
+    inout [1:0]CH1_LPDDR4_0_0_dmi_b,
+    inout [15:0]CH1_LPDDR4_0_0_dq_a,
+    inout [15:0]CH1_LPDDR4_0_0_dq_b,
+    inout [1:0]CH1_LPDDR4_0_0_dqs_c_a,
+    inout [1:0]CH1_LPDDR4_0_0_dqs_c_b,
+    inout [1:0]CH1_LPDDR4_0_0_dqs_t_a,
+    inout [1:0]CH1_LPDDR4_0_0_dqs_t_b,
+    output [0:0]CH1_LPDDR4_0_0_reset_n,
+    input [0:0]sys_clk0_0_clk_n,
+    input [0:0]sys_clk0_0_clk_p
+
  );
 
    //-----------------------------------------------------------------------------------------------------------------------
@@ -181,7 +223,7 @@ module design_1_wrapper #
    // qid output signals
    wire                              qid_rdy;
    wire                              qid_vld;
-   wire [10:0]                       qid;
+   wire [11:0]                       qid;
    wire [16-1:0]                     qid_desc_avail;
    wire                              desc_cnt_dec;
    wire [10:0]                       desc_cnt_dec_qid;
@@ -235,7 +277,7 @@ module design_1_wrapper #
    wire                              m_axis_h2c_tvalid;
    wire                              m_axis_h2c_tready;
    wire                              m_axis_h2c_tlast;
-   wire [10:0]                       m_axis_h2c_tuser_qid;
+   wire [11:0]                       m_axis_h2c_tuser_qid;
    wire [2:0]                        m_axis_h2c_tuser_port_id;
    wire                              m_axis_h2c_tuser_err;
    wire [31:0]                       m_axis_h2c_tuser_mdata;
@@ -251,17 +293,17 @@ module design_1_wrapper #
    wire                              s_axis_c2h_ctrl_marker;
    wire [2:0]                        s_axis_c2h_ctrl_port_id;
    wire [15:0]                       s_axis_c2h_ctrl_len;
-   wire [10:0]                       s_axis_c2h_ctrl_qid ;
+   wire [11:0]                       s_axis_c2h_ctrl_qid ;
    wire                              s_axis_c2h_ctrl_user_trig ;
-   wire                              s_axis_c2h_ctrl_dis_cmpt ;
+   wire                              s_axis_c2h_ctrl_has_cmpt ;
    wire                              s_axis_c2h_ctrl_imm_data ;
    wire [6:0]                        s_axis_c2h_ctrl_ecc ;
    wire [C_DATA_WIDTH-1:0]           s_axis_c2h_tdata_int;
    wire                              s_axis_c2h_ctrl_marker_int;
    wire [15:0]                       s_axis_c2h_ctrl_len_int;
-   wire [10:0]                       s_axis_c2h_ctrl_qid_int ;
+   wire [11:0]                       s_axis_c2h_ctrl_qid_int ;
    wire                              s_axis_c2h_ctrl_user_trig_int ;
-   wire                              s_axis_c2h_ctrl_dis_cmpt_int ;
+   wire                              s_axis_c2h_ctrl_has_cmpt_int ;
    wire                              s_axis_c2h_ctrl_imm_data_int ;
    wire [6:0]                        s_axis_c2h_ctrl_ecc_int ;
    wire [C_DATA_WIDTH/8-1:0]         s_axis_c2h_dpar_int;
@@ -287,7 +329,7 @@ module design_1_wrapper #
    wire                              s_axis_c2h_cmpt_tlast_lpbk;
    wire                              s_axis_c2h_cmpt_tvalid_int;
    wire                              s_axis_c2h_cmpt_tlast_int;
-   wire [10:0]                       s_axis_c2h_cmpt_ctrl_qid;
+   wire [12:0]                       s_axis_c2h_cmpt_ctrl_qid;
    wire [1:0]                        s_axis_c2h_cmpt_ctrl_cmpt_type;
    wire [15:0]                       s_axis_c2h_cmpt_ctrl_wait_pld_pkt_id;
    wire [2:0]                        s_axis_c2h_cmpt_ctrl_port_id;
@@ -296,19 +338,13 @@ module design_1_wrapper #
    wire [2:0]                        s_axis_c2h_cmpt_ctrl_col_idx;
    wire [2:0]                        s_axis_c2h_cmpt_ctrl_err_idx;
 
-   wire                              usr_irq_in_vld = 1'b0;
-   wire [4:0]                        usr_irq_in_vec = 5'b0;
-   wire [7:0]                        usr_irq_in_fnc = 8'h0;
-   wire                              usr_irq_out_ack;
-   wire                              usr_irq_out_fail;
-
    wire                              tm_dsc_sts_vld;
    wire                              tm_dsc_sts_qen;
    wire                              tm_dsc_sts_byp;
    wire                              tm_dsc_sts_dir;
    wire                              tm_dsc_sts_mm;
    wire                              tm_dsc_sts_error;   // Not yet connected
-   wire [10:0]                       tm_dsc_sts_qid;
+   wire [11:0]                       tm_dsc_sts_qid;
    wire [15:0]                       tm_dsc_sts_avl;
    wire                              tm_dsc_sts_qinv;
    wire                              tm_dsc_sts_irq_arm;
@@ -317,12 +353,12 @@ module design_1_wrapper #
    wire                              c2h_st_marker_rsp;
 
    // Descriptor credit In -- Not Used
-   wire                              dsc_crdt_in_vld   = 1'b0;
+   wire                              dsc_crdt_in_vld;
    wire                              dsc_crdt_in_rdy;
-   wire                              dsc_crdt_in_dir   = 1'b0;
-   wire                              dsc_crdt_in_fence = 1'b0;
-   wire [10:0]                       dsc_crdt_in_qid   = 11'b0;
-   wire [15:0]                       dsc_crdt_in_crdt  = 16'b0;
+   wire                              dsc_crdt_in_dir;
+   wire                              dsc_crdt_in_fence;
+   wire [11:0]                       dsc_crdt_in_qid;
+   wire [15:0]                       dsc_crdt_in_crdt;
 
    // Report the DROP case
    wire                              axis_c2h_status_drop; 
@@ -330,7 +366,7 @@ module design_1_wrapper #
    wire                              axis_c2h_status_valid; 
 //EQDMA update   wire                              axis_c2h_status_imm_or_marker; 
    wire                              axis_c2h_status_cmp; 
-   wire [10:0]                       axis_c2h_status_qid;
+   wire [11:0]                       axis_c2h_status_qid;
    wire                              axis_c2h_dmawr_cmp;
    
    wire [7:0]                        qsts_out_op;
@@ -338,20 +374,20 @@ module design_1_wrapper #
    wire [2:0]                        qsts_out_port_id;
    wire [12:0]                       qsts_out_qid;
    wire                              qsts_out_vld;
-   wire                              qsts_out_rdy = 1'b1;
+   wire                              qsts_out_rdy;
 
    wire                              gen_user_reset_n;
    wire                              st_loopback;
 
    wire [10:0]                       c2h_num_pkt;
-   wire [10:0]                       c2h_st_qid;
+   wire [11:0]                       c2h_st_qid;
    wire [15:0]                       c2h_st_len;
    wire [31:0]                       h2c_count;
    wire                              h2c_match;
    wire                              clr_h2c_match;
    wire [31:0]                       control_reg_c2h;
    wire [31:0]                       control_reg_c2h2;
-   wire [10:0]                       h2c_qid;
+   wire [11:0]                       h2c_qid;
    wire [31:0]                       cmpt_size;
    wire [255:0]                      wb_dat;
    wire [TM_DSC_BITS-1:0]            credit_out;
@@ -361,231 +397,145 @@ module design_1_wrapper #
    wire [15:0]                       buf_count;
    wire                              sys_clk_gt; 
 
+  // Descriptor Bypass Out for qdma
+  wire  [255:0] h2c_byp_out_dsc;
+  wire  [3:0]   h2c_byp_out_fmt;
+  wire          h2c_byp_out_st_mm;
+  (* mark_debug = "TRUE" *)wire  [11:0]  h2c_byp_out_qid;
+  wire  [1:0]   h2c_byp_out_dsc_sz;
+  wire          h2c_byp_out_error;
+  wire  [11:0]  h2c_byp_out_func;
+  wire          h2c_byp_out_mm_chn;
+  wire  [15:0]  h2c_byp_out_cidx;
+  wire  [2:0]   h2c_byp_out_port_id;
+  (* mark_debug = "TRUE" *)wire          h2c_byp_out_vld;
+  (* mark_debug = "TRUE" *)wire          h2c_byp_out_rdy;
 
-   //-----------------------------------------------------------------------------------------------------------------------
-/*
-   // Core Top Level Wrapper
-   qdma_g3x16_per_exdes qdma_g3x16_per_exdes_i
-   (
-    //---------------------------------------------------------------------------------------//
-    //  PCI Express (pci_exp) Interface                                                      //
-    //---------------------------------------------------------------------------------------//
-    .sys_rst_n                      ( sys_rst_n_c ),
-    .sys_clk                        ( sys_clk     ),
-    .sys_clk_gt                     ( sys_clk_gt  ),
-    
-    // Tx
-    .pci_exp_txn                    ( pci_exp_txn ),
-    .pci_exp_txp                    ( pci_exp_txp ),
-    
-    // Rx
-    .pci_exp_rxn                    ( pci_exp_rxn ),
-    .pci_exp_rxp                    ( pci_exp_rxp ),
+  wire  [255:0] c2h_byp_out_dsc;
+  wire  [3:0]   c2h_byp_out_fmt;
+  wire          c2h_byp_out_st_mm;
+  wire  [1:0]   c2h_byp_out_dsc_sz;
+  (* mark_debug = "TRUE" *)wire  [11:0]  c2h_byp_out_qid;
+  (* mark_debug = "TRUE" *)wire          c2h_byp_out_error;
+  wire  [11:0]  c2h_byp_out_func;
+  wire          c2h_byp_out_mm_chn;
+  (* mark_debug = "TRUE" *)wire  [15:0]  c2h_byp_out_cidx;
+  wire  [2:0]   c2h_byp_out_port_id;
+  (* mark_debug = "TRUE" *)wire  [6:0]   c2h_byp_out_pfch_tag;
+  (* mark_debug = "TRUE" *)wire          c2h_byp_out_vld;
+  (* mark_debug = "TRUE" *)wire          c2h_byp_out_rdy;
 
-    // LITE interface   
-    //-- AXI Master Write Address Channel
-    .m_axil_awaddr                  ( m_axil_awaddr  ),
-    .m_axil_awprot                  ( m_axil_awprot  ),
-    .m_axil_awvalid                 ( m_axil_awvalid ),
-    .m_axil_awready                 ( m_axil_awready ),
-    //-- AXI Master Write Data Channel
-    .m_axil_wdata                   ( m_axil_wdata   ),
-    .m_axil_wstrb                   ( m_axil_wstrb   ),
-    .m_axil_wvalid                  ( m_axil_wvalid  ),
-    .m_axil_wready                  ( m_axil_wready  ),
-    //-- AXI Master Write Response Channel
-    .m_axil_bvalid                  ( m_axil_bvalid  ),
-    .m_axil_bresp                   ( m_axil_bresp   ),
-    .m_axil_bready                  ( m_axil_bready  ),
-    //-- AXI Master Read Address Channel
-    .m_axil_araddr                  ( m_axil_araddr  ),
-    .m_axil_arprot                  ( m_axil_arprot  ),
-    .m_axil_arvalid                 ( m_axil_arvalid ),
-    .m_axil_arready                 ( m_axil_arready ),
-    .m_axil_rdata                   ( m_axil_rdata   ),
-    //-- AXI Master Read Data Channel
-    .m_axil_rresp                   ( m_axil_rresp   ),
-    .m_axil_rvalid                  ( m_axil_rvalid  ),
-    .m_axil_rready                  ( m_axil_rready  ),
+  // Descriptor Bypass In for qdma MM
+  wire  [63:0]  h2c_byp_in_mm_radr;
+  wire  [63:0]  h2c_byp_in_mm_wadr;
+  wire  [15:0]  h2c_byp_in_mm_len;
+  wire          h2c_byp_in_mm_mrkr_req;
+  wire          h2c_byp_in_mm_sdi;
+  wire  [11:0]  h2c_byp_in_mm_qid;
+  wire          h2c_byp_in_mm_error;
+  wire  [11:0]  h2c_byp_in_mm_func;
+  wire  [15:0]  h2c_byp_in_mm_cidx;
+  wire  [2:0]   h2c_byp_in_mm_port_id;
+  wire  [1:0]   h2c_byp_in_mm_at;
+  wire          h2c_byp_in_mm_no_dma;
+  wire          h2c_byp_in_mm_vld;
+  wire          h2c_byp_in_mm_rdy;
 
-    .common_commands_in             ( common_commands_in_i ),
-    .pipe_rx_0_sigs                 ( pipe_rx_0_sigs_i     ),
-    .pipe_rx_1_sigs                 ( pipe_rx_1_sigs_i     ),
-    .pipe_rx_2_sigs                 ( pipe_rx_2_sigs_i     ),
-    .pipe_rx_3_sigs                 ( pipe_rx_3_sigs_i     ),
-    .pipe_rx_4_sigs                 ( pipe_rx_4_sigs_i     ),
-    .pipe_rx_5_sigs                 ( pipe_rx_5_sigs_i     ),
-    .pipe_rx_6_sigs                 ( pipe_rx_6_sigs_i     ),
-    .pipe_rx_7_sigs                 ( pipe_rx_7_sigs_i     ),
-    .pipe_rx_8_sigs                 ( pipe_rx_8_sigs_i     ),
-    .pipe_rx_9_sigs                 ( pipe_rx_9_sigs_i     ),
-    .pipe_rx_10_sigs                ( pipe_rx_10_sigs_i    ),
-    .pipe_rx_11_sigs                ( pipe_rx_11_sigs_i    ),
-    .pipe_rx_12_sigs                ( pipe_rx_12_sigs_i    ),
-    .pipe_rx_13_sigs                ( pipe_rx_13_sigs_i    ),
-    .pipe_rx_14_sigs                ( pipe_rx_14_sigs_i    ),
-    .pipe_rx_15_sigs                ( pipe_rx_15_sigs_i    ),
-    .common_commands_out            ( common_commands_out_i),
-    .pipe_tx_0_sigs                 ( pipe_tx_0_sigs_i     ),
-    .pipe_tx_1_sigs                 ( pipe_tx_1_sigs_i     ),
-    .pipe_tx_2_sigs                 ( pipe_tx_2_sigs_i     ),
-    .pipe_tx_3_sigs                 ( pipe_tx_3_sigs_i     ),
-    .pipe_tx_4_sigs                 ( pipe_tx_4_sigs_i     ),
-    .pipe_tx_5_sigs                 ( pipe_tx_5_sigs_i     ),
-    .pipe_tx_6_sigs                 ( pipe_tx_6_sigs_i     ),
-    .pipe_tx_7_sigs                 ( pipe_tx_7_sigs_i     ),
-    .pipe_tx_8_sigs                 ( pipe_tx_8_sigs_i     ),
-    .pipe_tx_9_sigs                 ( pipe_tx_9_sigs_i     ),
-    .pipe_tx_10_sigs                ( pipe_tx_10_sigs_i    ),
-    .pipe_tx_11_sigs                ( pipe_tx_11_sigs_i    ),
-    .pipe_tx_12_sigs                ( pipe_tx_12_sigs_i    ),
-    .pipe_tx_13_sigs                ( pipe_tx_13_sigs_i    ),
-    .pipe_tx_14_sigs                ( pipe_tx_14_sigs_i    ),
-    .pipe_tx_15_sigs                ( pipe_tx_15_sigs_i    ),
+  wire  [63:0]  c2h_byp_in_mm_radr;
+  wire  [63:0]  c2h_byp_in_mm_wadr;
+  wire  [15:0]  c2h_byp_in_mm_len;
+  wire          c2h_byp_in_mm_mrkr_req;
+  wire          c2h_byp_in_mm_sdi;
+  wire  [11:0]  c2h_byp_in_mm_qid;
+  wire          c2h_byp_in_mm_error;
+  wire  [11:0]  c2h_byp_in_mm_func;
+  wire  [15:0]  c2h_byp_in_mm_cidx;
+  wire  [2:0]   c2h_byp_in_mm_port_id;
+  wire  [1:0]   c2h_byp_in_mm_at;
+  wire          c2h_byp_in_mm_no_dma;
+  wire          c2h_byp_in_mm_vld;
+  wire          c2h_byp_in_mm_rdy;
 
-    //-- AXI Global
-    .axi_aclk                       ( user_clk         ),
-    .axi_aresetn                    ( axi_aresetn      ),
-    .soft_reset_n                   ( gen_user_reset_n ),
-    .phy_ready                      ( phy_ready        ),
+  // Descriptor Bypass In for qdma ST
+  wire [63:0]   h2c_byp_in_st_addr;
+  wire [15:0]   h2c_byp_in_st_len;
+  wire          h2c_byp_in_st_eop;
+  wire          h2c_byp_in_st_sop;
+  wire          h2c_byp_in_st_mrkr_req;
+  (* mark_debug = "TRUE" *)wire          h2c_byp_in_st_sdi;
+  (* mark_debug = "TRUE" *)wire  [11:0]  h2c_byp_in_st_qid;
+  wire          h2c_byp_in_st_error;
+  wire  [11:0]  h2c_byp_in_st_func;
+  wire  [15:0]  h2c_byp_in_st_cidx;
+  wire  [2:0]   h2c_byp_in_st_port_id;
+  wire  [1:0]   h2c_byp_in_st_at;
+  wire          h2c_byp_in_st_no_dma;
+  (* mark_debug = "TRUE" *)wire          h2c_byp_in_st_vld;
+  (* mark_debug = "TRUE" *)wire          h2c_byp_in_st_rdy;
 
-    // AXI MM Interface
-    .m_axi_awid                     ( m_axi_awid       ),
-    .m_axi_awaddr                   ( m_axi_awaddr     ),
-    .m_axi_awuser                   ( ),
-    .m_axi_awlen                    ( m_axi_awlen      ),
-    .m_axi_awsize                   ( m_axi_awsize     ),
-    .m_axi_awburst                  ( m_axi_awburst    ),
-    .m_axi_awprot                   ( m_axi_awprot     ),
-    .m_axi_awvalid                  ( m_axi_awvalid    ),
-    .m_axi_awready                  ( m_axi_awready    ),
-    .m_axi_awlock                   ( m_axi_awlock     ),
-    .m_axi_awcache                  ( m_axi_awcache    ),
-    .m_axi_wdata                    ( m_axi_wdata      ),
-    .m_axi_wstrb                    ( m_axi_wstrb      ),
-    .m_axi_wlast                    ( m_axi_wlast      ),
-    .m_axi_wvalid                   ( m_axi_wvalid     ),
-    .m_axi_wready                   ( m_axi_wready     ),
-    .m_axi_bid                      ( m_axi_bid        ),
-    .m_axi_bresp                    ( m_axi_bresp      ),
-    .m_axi_bvalid                   ( m_axi_bvalid     ),
-    .m_axi_bready                   ( m_axi_bready     ),
-    .m_axi_arid                     ( m_axi_arid       ),
-    .m_axi_araddr                   ( m_axi_araddr     ),
-    .m_axi_aruser                   ( ),
-    .m_axi_arlen                    ( m_axi_arlen      ),
-    .m_axi_arsize                   ( m_axi_arsize     ),
-    .m_axi_arburst                  ( m_axi_arburst    ),
-    .m_axi_arprot                   ( m_axi_arprot     ),
-    .m_axi_arvalid                  ( m_axi_arvalid    ),
-    .m_axi_arready                  ( m_axi_arready    ),
-    .m_axi_arlock                   ( m_axi_arlock     ),
-    .m_axi_arcache                  ( m_axi_arcache    ),
-    .m_axi_rid                      ( m_axi_rid        ),
-    .m_axi_rdata                    ( m_axi_rdata      ),
-    .m_axi_rresp                    ( m_axi_rresp      ),
-    .m_axi_rlast                    ( m_axi_rlast      ),
-    .m_axi_rvalid                   ( m_axi_rvalid     ),
-    .m_axi_rready                   ( m_axi_rready     ),
+  wire  [63:0]  c2h_byp_in_st_csh_addr;
+  (* mark_debug = "TRUE" *)wire  [11:0]  c2h_byp_in_st_csh_qid;
+  (* mark_debug = "TRUE" *)wire          c2h_byp_in_st_csh_error;
+  (* mark_debug = "TRUE" *)wire  [11:0]  c2h_byp_in_st_csh_func;
+  (* mark_debug = "TRUE" *)wire  [2:0]   c2h_byp_in_st_csh_port_id;
+  (* mark_debug = "TRUE" *)wire  [6:0]   c2h_byp_in_st_csh_pfch_tag;
+  wire  [1:0]   c2h_byp_in_st_csh_at;
+  (* mark_debug = "TRUE" *)wire          c2h_byp_in_st_csh_vld;
+  (* mark_debug = "TRUE" *)wire          c2h_byp_in_st_csh_rdy;
+  wire [11:0]   usr_flr_fnc;
+  wire          usr_flr_set;
+  wire          usr_flr_clr;
+  wire [11:0]   usr_flr_done_fnc;
+  wire          usr_flr_done_vld;
+  wire          usr_irq_in_vld;
+  wire [10 : 0] usr_irq_in_vec;
+  wire [11 : 0] usr_irq_in_fnc;
+  wire          usr_irq_out_ack;
+  wire          usr_irq_out_fail;
 
-    .s_axis_c2h_tdata               ( s_axis_c2h_tdata          ),
-//EQDMA update    .s_axis_c2h_dpar                ( s_axis_c2h_dpar           ),
-    .s_axis_c2h_ctrl_marker         ( s_axis_c2h_ctrl_marker    ),
-    .s_axis_c2h_ctrl_len            ( s_axis_c2h_ctrl_len       ),
-    .s_axis_c2h_ctrl_port_id        ( 3'b000                    ),
-    .s_axis_c2h_ctrl_qid            ( s_axis_c2h_ctrl_qid       ),
-    .s_axis_c2h_ctrl_has_cmpt       ( ~s_axis_c2h_ctrl_dis_cmpt ),   // 1 = Sends write back. 0 = disable write back, write back not valid
-//    .s_axis_c2h_ctrl_user_trig      ( s_axis_c2h_ctrl_user_trig ),
-//    .s_axis_c2h_ctrl_imm_data       ( s_axis_c2h_ctrl_imm_data  ),   // immediate data, 1 = data in transfer, 0 = no data in transfer
-    .s_axis_c2h_ctrl_ecc            ( s_axis_c2h_ctrl_ecc       ),
-    .s_axis_c2h_tvalid              ( s_axis_c2h_tvalid         ),
-    .s_axis_c2h_tready              ( s_axis_c2h_tready         ),
-    .s_axis_c2h_tlast               ( s_axis_c2h_tlast          ),
-    .s_axis_c2h_mty                 ( s_axis_c2h_mty            ),   // no empty bytes at EOP
-    .s_axis_c2h_tcrc                ( s_axis_c2h_tcrc           ),
-    .m_axis_h2c_tready              ( m_axis_h2c_tready          ),
-    .m_axis_h2c_tvalid              ( m_axis_h2c_tvalid          ),
-    .m_axis_h2c_tlast               ( m_axis_h2c_tlast           ),
-    .m_axis_h2c_tdata               ( m_axis_h2c_tdata           ),
-//EQDMA update        .m_axis_h2c_dpar                ( m_axis_h2c_dpar            ),
-    .m_axis_h2c_tuser_qid           ( m_axis_h2c_tuser_qid       ),
-    .m_axis_h2c_tuser_port_id       ( m_axis_h2c_tuser_port_id   ),
-    .m_axis_h2c_tuser_err           ( m_axis_h2c_tuser_err       ),
-    .m_axis_h2c_tuser_mdata         ( m_axis_h2c_tuser_mdata     ),
-    .m_axis_h2c_tuser_mty           ( m_axis_h2c_tuser_mty       ),
-    .m_axis_h2c_tuser_zero_byte     ( m_axis_h2c_tuser_zero_byte ),
-
-    .s_axis_c2h_cmpt_tdata                ( s_axis_c2h_cmpt_tdata                ),
-    .s_axis_c2h_cmpt_size                 ( s_axis_c2h_cmpt_size                 ),
-    .s_axis_c2h_cmpt_dpar                 ( s_axis_c2h_cmpt_dpar                 ),
-    .s_axis_c2h_cmpt_tvalid               ( s_axis_c2h_cmpt_tvalid               ),
-//    .s_axis_c2h_cmpt_tlast                ( s_axis_c2h_cmpt_tlast                ),
-    .s_axis_c2h_cmpt_tready               ( s_axis_c2h_cmpt_tready               ),
-    .s_axis_c2h_cmpt_ctrl_qid             ( s_axis_c2h_cmpt_ctrl_qid             ),
-    .s_axis_c2h_cmpt_ctrl_cmpt_type       ( s_axis_c2h_cmpt_ctrl_cmpt_type       ),
-    .s_axis_c2h_cmpt_ctrl_wait_pld_pkt_id ( s_axis_c2h_cmpt_ctrl_wait_pld_pkt_id ),
-    .s_axis_c2h_cmpt_ctrl_port_id         ( s_axis_c2h_cmpt_ctrl_port_id         ),
-    .s_axis_c2h_cmpt_ctrl_marker          ( s_axis_c2h_cmpt_ctrl_marker          ),
-    .s_axis_c2h_cmpt_ctrl_user_trig       ( s_axis_c2h_cmpt_ctrl_user_trig       ),
-    .s_axis_c2h_cmpt_ctrl_col_idx         ( s_axis_c2h_cmpt_ctrl_col_idx         ),
-    .s_axis_c2h_cmpt_ctrl_err_idx         ( s_axis_c2h_cmpt_ctrl_err_idx         ),
-
-    .axis_c2h_status_drop           ( axis_c2h_status_drop          ),
-    .axis_c2h_status_last           ( axis_c2h_status_last          ),
-    .axis_c2h_status_cmp            ( axis_c2h_status_cmp           ),
-    .axis_c2h_status_valid          ( axis_c2h_status_valid         ),
-    .axis_c2h_status_qid            ( axis_c2h_status_qid           ),
-//EQDMA update            .axis_c2h_status_imm_or_marker  ( axis_c2h_status_imm_or_marker ),
-    .axis_c2h_dmawr_cmp             ( axis_c2h_dmawr_cmp            ),
-    
-//    .usr_flr_fnc                  (),
-//    .usr_flr_set                  (),
-    //.usr_flr_clr                  (1'b0),
-//    .usr_flr_clr                  (),
-//    .usr_flr_done_fnc             (8'h0),
-//    .usr_flr_done_vld             (1'b0),
-//    .st_rx_msg_valid                ( ),
-//    .st_rx_msg_last                 ( ),
-//    .st_rx_msg_data                 ( ),
-//    .st_rx_msg_rdy                  ( 1'b0 ),
-
-    .tm_dsc_sts_vld                 ( tm_dsc_sts_vld     ),
-    .tm_dsc_sts_qen                 ( tm_dsc_sts_qen     ),
-    .tm_dsc_sts_byp                 ( tm_dsc_sts_byp     ),
-    .tm_dsc_sts_dir                 ( tm_dsc_sts_dir     ),
-    .tm_dsc_sts_mm                  ( tm_dsc_sts_mm      ),
-    .tm_dsc_sts_error               ( tm_dsc_sts_error   ),
-    .tm_dsc_sts_qid                 ( tm_dsc_sts_qid     ),
-    .tm_dsc_sts_avl                 ( tm_dsc_sts_avl     ),
-    .tm_dsc_sts_qinv                ( tm_dsc_sts_qinv    ),
-    .tm_dsc_sts_irq_arm             ( tm_dsc_sts_irq_arm ),
-    .tm_dsc_sts_rdy                 ( tm_dsc_sts_rdy     ),
-
-    .dsc_crdt_in_vld                ( dsc_crdt_in_vld   ),
-    .dsc_crdt_in_rdy                ( dsc_crdt_in_rdy   ),
-    .dsc_crdt_in_dir                ( dsc_crdt_in_dir   ),
-    .dsc_crdt_in_fence              ( dsc_crdt_in_fence ),
-    .dsc_crdt_in_qid                ( dsc_crdt_in_qid   ),
-    .dsc_crdt_in_crdt               ( dsc_crdt_in_crdt  ),
-
-    .usr_irq_in_vld                 ( usr_irq_in_vld   ),
-    .usr_irq_in_vec                 ( {6'b0, usr_irq_in_vec } ),
-    .usr_irq_in_fnc                 ( usr_irq_in_fnc   ),
-    .usr_irq_out_ack                ( usr_irq_out_ack  ),
-    .usr_irq_out_fail               ( usr_irq_out_fail ),
-
-    .user_lnk_up                    ( user_lnk_up      ),
-
-    .qsts_out_op                    ( qsts_out_op      ),
-    .qsts_out_data                  ( qsts_out_data    ),
-    .qsts_out_port_id               ( qsts_out_port_id ),
-    .qsts_out_qid                   ( qsts_out_qid     ),
-    .qsts_out_vld                   ( qsts_out_vld     ),
-    .qsts_out_rdy                   ( qsts_out_rdy     )
-    
-   );
-*/
  design_1 design_1_i (
+      .CH0_LPDDR4_0_0_ca_a(CH0_LPDDR4_0_0_ca_a),
+      .CH0_LPDDR4_0_0_ca_b(CH0_LPDDR4_0_0_ca_b),
+      .CH0_LPDDR4_0_0_ck_c_a(CH0_LPDDR4_0_0_ck_c_a),
+      .CH0_LPDDR4_0_0_ck_c_b(CH0_LPDDR4_0_0_ck_c_b),
+      .CH0_LPDDR4_0_0_ck_t_a(CH0_LPDDR4_0_0_ck_t_a),
+      .CH0_LPDDR4_0_0_ck_t_b(CH0_LPDDR4_0_0_ck_t_b),
+      .CH0_LPDDR4_0_0_cke_a(CH0_LPDDR4_0_0_cke_a),
+      .CH0_LPDDR4_0_0_cke_b(CH0_LPDDR4_0_0_cke_b),
+      .CH0_LPDDR4_0_0_cs_a(CH0_LPDDR4_0_0_cs_a),
+      .CH0_LPDDR4_0_0_cs_b(CH0_LPDDR4_0_0_cs_b),
+      .CH0_LPDDR4_0_0_dmi_a(CH0_LPDDR4_0_0_dmi_a),
+      .CH0_LPDDR4_0_0_dmi_b(CH0_LPDDR4_0_0_dmi_b),
+      .CH0_LPDDR4_0_0_dq_a(CH0_LPDDR4_0_0_dq_a),
+      .CH0_LPDDR4_0_0_dq_b(CH0_LPDDR4_0_0_dq_b),
+      .CH0_LPDDR4_0_0_dqs_c_a(CH0_LPDDR4_0_0_dqs_c_a),
+      .CH0_LPDDR4_0_0_dqs_c_b(CH0_LPDDR4_0_0_dqs_c_b),
+      .CH0_LPDDR4_0_0_dqs_t_a(CH0_LPDDR4_0_0_dqs_t_a),
+      .CH0_LPDDR4_0_0_dqs_t_b(CH0_LPDDR4_0_0_dqs_t_b),
+      .CH0_LPDDR4_0_0_reset_n(CH0_LPDDR4_0_0_reset_n),
+      .CH1_LPDDR4_0_0_ca_a(CH1_LPDDR4_0_0_ca_a),
+      .CH1_LPDDR4_0_0_ca_b(CH1_LPDDR4_0_0_ca_b),
+      .CH1_LPDDR4_0_0_ck_c_a(CH1_LPDDR4_0_0_ck_c_a),
+      .CH1_LPDDR4_0_0_ck_c_b(CH1_LPDDR4_0_0_ck_c_b),
+      .CH1_LPDDR4_0_0_ck_t_a(CH1_LPDDR4_0_0_ck_t_a),
+      .CH1_LPDDR4_0_0_ck_t_b(CH1_LPDDR4_0_0_ck_t_b),
+      .CH1_LPDDR4_0_0_cke_a(CH1_LPDDR4_0_0_cke_a),
+      .CH1_LPDDR4_0_0_cke_b(CH1_LPDDR4_0_0_cke_b),
+      .CH1_LPDDR4_0_0_cs_a(CH1_LPDDR4_0_0_cs_a),
+      .CH1_LPDDR4_0_0_cs_b(CH1_LPDDR4_0_0_cs_b),
+      .CH1_LPDDR4_0_0_dmi_a(CH1_LPDDR4_0_0_dmi_a),
+      .CH1_LPDDR4_0_0_dmi_b(CH1_LPDDR4_0_0_dmi_b),
+      .CH1_LPDDR4_0_0_dq_a(CH1_LPDDR4_0_0_dq_a),
+      .CH1_LPDDR4_0_0_dq_b(CH1_LPDDR4_0_0_dq_b),
+      .CH1_LPDDR4_0_0_dqs_c_a(CH1_LPDDR4_0_0_dqs_c_a),
+      .CH1_LPDDR4_0_0_dqs_c_b(CH1_LPDDR4_0_0_dqs_c_b),
+      .CH1_LPDDR4_0_0_dqs_t_a(CH1_LPDDR4_0_0_dqs_t_a),
+      .CH1_LPDDR4_0_0_dqs_t_b(CH1_LPDDR4_0_0_dqs_t_b),
+      .CH1_LPDDR4_0_0_reset_n(CH1_LPDDR4_0_0_reset_n),
+      
+      .sys_clk0_0_clk_n(sys_clk0_0_clk_n),
+      .sys_clk0_0_clk_p(sys_clk0_0_clk_p),
+
       .gt_refclk1_0_clk_n(gt_refclk1_0_clk_n),
       .gt_refclk1_0_clk_p(gt_refclk1_0_clk_p),
 
@@ -593,8 +543,7 @@ module design_1_wrapper #
       .PCIE1_GT_0_grx_p(PCIE1_GT_0_grx_p),
       .PCIE1_GT_0_gtx_n(PCIE1_GT_0_gtx_n),
       .PCIE1_GT_0_gtx_p(PCIE1_GT_0_gtx_p),
- 
- //Lite 1      
+
       .M_AXIL_araddr  (m_axil_araddr),
       .M_AXIL_arprot  (m_axil_arprot),
       .M_AXIL_arready (m_axil_arready),
@@ -642,7 +591,7 @@ module design_1_wrapper #
       .dma1_s_axis_c2h_0_tlast        (s_axis_c2h_tlast),
       .dma1_s_axis_c2h_0_tready       (s_axis_c2h_tready),
       .dma1_s_axis_c2h_0_tvalid       (s_axis_c2h_tvalid),
-      .dma1_s_axis_c2h_0_ctrl_has_cmpt(~s_axis_c2h_ctrl_dis_cmpt ), // 1 = Sends write back. 0 = disable write back, write back not valid
+      .dma1_s_axis_c2h_0_ctrl_has_cmpt(s_axis_c2h_ctrl_has_cmpt ), // 1 = Sends write back. 0 = disable write back, write back not valid
       .dma1_s_axis_c2h_0_ctrl_len     (s_axis_c2h_ctrl_len),
       .dma1_s_axis_c2h_0_ctrl_marker  (s_axis_c2h_ctrl_marker),
       .dma1_s_axis_c2h_0_ctrl_port_id (3'b000), //s_axis_c2h_ctrl_port_id),
@@ -658,8 +607,9 @@ module design_1_wrapper #
       .dma1_s_axis_c2h_cmpt_0_marker          (s_axis_c2h_cmpt_ctrl_marker           ),
       .dma1_s_axis_c2h_cmpt_0_col_idx         (s_axis_c2h_cmpt_ctrl_col_idx          ),
       .dma1_s_axis_c2h_cmpt_0_port_id         ('b00          ),
-      .dma1_s_axis_c2h_cmpt_0_qid             ({2'b0,s_axis_c2h_cmpt_ctrl_qid}       ),
+      .dma1_s_axis_c2h_cmpt_0_qid             (s_axis_c2h_cmpt_ctrl_qid       ),
       //.dma1_s_axis_c2h_cmpt_0_qid             ({s_axis_c2h_cmpt_ctrl_qid}       ),
+      .dma1_s_axis_c2h_cmpt_0_no_wrb_marker   (1'b0     ),
       .dma1_s_axis_c2h_cmpt_0_user_trig       (s_axis_c2h_cmpt_ctrl_user_trig        ),
       .dma1_s_axis_c2h_cmpt_0_wait_pld_pkt_id (s_axis_c2h_cmpt_ctrl_wait_pld_pkt_id  ),
       .dma1_s_axis_c2h_0_ecc                  (s_axis_c2h_ctrl_ecc),  
@@ -669,8 +619,8 @@ module design_1_wrapper #
       .dma1_axis_c2h_status_0_qid  (axis_c2h_status_qid   ),
       .dma1_axis_c2h_status_0_valid(axis_c2h_status_valid ),
       .dma1_axis_c2h_status_0_status_cmp  (axis_c2h_status_cmp   ),
+      .dma1_axis_c2h_status_0_error(), // TODO
       //.dma1_axis_c2h_status_0_error('d0), //axis_c2h_status_error ), // TODO
-      .dma1_axis_c2h_status_0_error(), 
       .dma1_axis_c2h_status_0_last (axis_c2h_status_last  ),
 
       .dma1_axis_c2h_dmawr_0_cmp    (axis_c2h_dmawr_cmp), 
@@ -727,24 +677,129 @@ module design_1_wrapper #
       .dma1_tm_dsc_sts_0_rdy     (tm_dsc_sts_rdy     ),
       .dma1_tm_dsc_sts_0_valid   (tm_dsc_sts_vld     ),
 
-      //.dma1_usr_flr_0_clear     (usr_flr_clear    ),
-      //.dma1_usr_flr_0_done_fnc  (usr_flr_done_fnc ),
-      //.dma1_usr_flr_0_done_vld  (usr_flr_done_vld ),
-      //.dma1_usr_flr_0_fnc       (usr_flr_fnc      ),
-      //.dma1_usr_flr_0_set       (usr_flr_set      ),
-
-      .usr_irq_0_ack      (usr_irq_out_ack   ),
-      .usr_irq_0_fail     (usr_irq_out_fail  ),
-      .usr_irq_0_fnc      (usr_irq_in_fnc   ),
-      .usr_irq_0_valid    (usr_irq_in_valid ),
-      .usr_irq_0_vec      ({6'b0,usr_irq_in_vec}),
       
+      .dma1_c2h_byp_out_0_cidx            (c2h_byp_out_cidx),
+      .dma1_c2h_byp_out_0_dsc             (c2h_byp_out_dsc),
+      .dma1_c2h_byp_out_0_dsc_sz          (c2h_byp_out_dsc_sz),
+      .dma1_c2h_byp_out_0_error           (c2h_byp_out_error),
+      .dma1_c2h_byp_out_0_fmt             (c2h_byp_out_fmt),
+      .dma1_c2h_byp_out_0_func            (c2h_byp_out_func),
+      .dma1_c2h_byp_out_0_mm_chn          (c2h_byp_out_mm_chn),
+      .dma1_c2h_byp_out_0_pfch_tag        (c2h_byp_out_pfch_tag),
+      .dma1_c2h_byp_out_0_port_id         (c2h_byp_out_port_id),
+      .dma1_c2h_byp_out_0_qid             (c2h_byp_out_qid),
+      .dma1_c2h_byp_out_0_ready           (c2h_byp_out_rdy),
+      .dma1_c2h_byp_out_0_st_mm           (c2h_byp_out_st_mm),
+      .dma1_c2h_byp_out_0_valid           (c2h_byp_out_vld),
+		      
+      .dma1_h2c_byp_out_0_cidx            (h2c_byp_out_cidx),
+      .dma1_h2c_byp_out_0_dsc             (h2c_byp_out_dsc),
+      .dma1_h2c_byp_out_0_dsc_sz          (h2c_byp_out_dsc_sz),
+      .dma1_h2c_byp_out_0_error           (h2c_byp_out_error),
+      .dma1_h2c_byp_out_0_fmt             (h2c_byp_out_fmt),
+      .dma1_h2c_byp_out_0_func            (h2c_byp_out_func),
+      .dma1_h2c_byp_out_0_mm_chn          (h2c_byp_out_mm_chn),
+      .dma1_h2c_byp_out_0_port_id         (h2c_byp_out_port_id),
+      .dma1_h2c_byp_out_0_qid             (h2c_byp_out_qid),
+      .dma1_h2c_byp_out_0_ready           (h2c_byp_out_rdy),
+      .dma1_h2c_byp_out_0_st_mm           (h2c_byp_out_st_mm),
+      .dma1_h2c_byp_out_0_valid           (h2c_byp_out_vld),
+      
+      .dma1_c2h_byp_in_st_csh_0_addr      (c2h_byp_in_st_csh_addr),
+      .dma1_c2h_byp_in_st_csh_0_error     (c2h_byp_in_st_csh_error),
+      .dma1_c2h_byp_in_st_csh_0_func      (c2h_byp_in_st_csh_func),
+      .dma1_c2h_byp_in_st_csh_0_pfch_tag  (c2h_byp_in_st_csh_pfch_tag),
+      .dma1_c2h_byp_in_st_csh_0_port_id   (c2h_byp_in_st_csh_port_id),
+      .dma1_c2h_byp_in_st_csh_0_qid       (c2h_byp_in_st_csh_qid),
+      .dma1_c2h_byp_in_st_csh_0_ready     (c2h_byp_in_st_csh_rdy),
+      .dma1_c2h_byp_in_st_csh_0_valid     (c2h_byp_in_st_csh_vld),
+      
+      .dma1_h2c_byp_in_st_0_addr          (h2c_byp_in_st_addr),
+      .dma1_h2c_byp_in_st_0_cidx          (h2c_byp_in_st_cidx),
+      .dma1_h2c_byp_in_st_0_eop           (h2c_byp_in_st_eop),
+      .dma1_h2c_byp_in_st_0_error         (h2c_byp_in_st_error),
+      .dma1_h2c_byp_in_st_0_func          (h2c_byp_in_st_func),
+      .dma1_h2c_byp_in_st_0_len           (h2c_byp_in_st_len),
+      .dma1_h2c_byp_in_st_0_mrkr_req      (h2c_byp_in_st_mrkr_req),
+      .dma1_h2c_byp_in_st_0_no_dma        (h2c_byp_in_st_no_dma),
+      .dma1_h2c_byp_in_st_0_port_id       (h2c_byp_in_st_port_id),
+      .dma1_h2c_byp_in_st_0_qid           (h2c_byp_in_st_qid),
+      .dma1_h2c_byp_in_st_0_ready         (h2c_byp_in_st_rdy),
+      .dma1_h2c_byp_in_st_0_sdi           (h2c_byp_in_st_sdi),
+      .dma1_h2c_byp_in_st_0_sop           (h2c_byp_in_st_sop),
+      .dma1_h2c_byp_in_st_0_valid         (h2c_byp_in_st_vld),
+
+      .dma1_c2h_byp_in_mm_0_0_cidx        (c2h_byp_in_mm_cidx),
+      .dma1_c2h_byp_in_mm_0_0_error       (c2h_byp_in_mm_error),
+      .dma1_c2h_byp_in_mm_0_0_func        (c2h_byp_in_mm_func),
+      .dma1_c2h_byp_in_mm_0_0_len         (c2h_byp_in_mm_len),
+      .dma1_c2h_byp_in_mm_0_0_mrkr_req    (c2h_byp_in_mm_mrkr_req),
+      .dma1_c2h_byp_in_mm_0_0_no_dma      (c2h_byp_in_mm_no_dma),
+      .dma1_c2h_byp_in_mm_0_0_port_id     (c2h_byp_in_mm_port_id),
+      .dma1_c2h_byp_in_mm_0_0_qid         (c2h_byp_in_mm_qid),
+      .dma1_c2h_byp_in_mm_0_0_radr        (c2h_byp_in_mm_radr),
+      .dma1_c2h_byp_in_mm_0_0_ready       (c2h_byp_in_mm_rdy),
+      .dma1_c2h_byp_in_mm_0_0_sdi         (c2h_byp_in_mm_sdi),
+      .dma1_c2h_byp_in_mm_0_0_valid       (c2h_byp_in_mm_vld),
+      .dma1_c2h_byp_in_mm_0_0_wadr        (c2h_byp_in_mm_wadr),
+      .dma1_c2h_byp_in_mm_1_0_cidx        ('h0),
+      .dma1_c2h_byp_in_mm_1_0_error       ('h0),
+      .dma1_c2h_byp_in_mm_1_0_func        ('h0),
+      .dma1_c2h_byp_in_mm_1_0_len         ('h0),
+      .dma1_c2h_byp_in_mm_1_0_mrkr_req    ('h0),
+      .dma1_c2h_byp_in_mm_1_0_no_dma      ('h0),
+      .dma1_c2h_byp_in_mm_1_0_port_id     ('h0),
+      .dma1_c2h_byp_in_mm_1_0_qid         ('h0),
+      .dma1_c2h_byp_in_mm_1_0_radr        (64'h0),
+      .dma1_c2h_byp_in_mm_1_0_ready       ( ),
+      .dma1_c2h_byp_in_mm_1_0_sdi         ('h0),
+      .dma1_c2h_byp_in_mm_1_0_valid       ('h0),
+      .dma1_c2h_byp_in_mm_1_0_wadr        (64'h0),
+      .dma1_h2c_byp_in_mm_0_0_cidx        (h2c_byp_in_mm_cidx),
+      .dma1_h2c_byp_in_mm_0_0_error       (h2c_byp_in_mm_error),
+      .dma1_h2c_byp_in_mm_0_0_func        (h2c_byp_in_mm_func),
+      .dma1_h2c_byp_in_mm_0_0_len         (h2c_byp_in_mm_len),
+      .dma1_h2c_byp_in_mm_0_0_mrkr_req    (h2c_byp_in_mm_mrkr_req),
+      .dma1_h2c_byp_in_mm_0_0_no_dma      (h2c_byp_in_mm_no_dma),
+      .dma1_h2c_byp_in_mm_0_0_port_id     (h2c_byp_in_mm_port_id),
+      .dma1_h2c_byp_in_mm_0_0_qid         (h2c_byp_in_mm_qid),
+      .dma1_h2c_byp_in_mm_0_0_radr        (h2c_byp_in_mm_radr),
+      .dma1_h2c_byp_in_mm_0_0_ready       (h2c_byp_in_mm_rdy),
+      .dma1_h2c_byp_in_mm_0_0_sdi         (h2c_byp_in_mm_sdi),
+      .dma1_h2c_byp_in_mm_0_0_valid       (h2c_byp_in_mm_vld),
+      .dma1_h2c_byp_in_mm_0_0_wadr        (h2c_byp_in_mm_wadr),
+      .dma1_h2c_byp_in_mm_1_0_cidx        ('h0),
+      .dma1_h2c_byp_in_mm_1_0_error       ('h0),
+      .dma1_h2c_byp_in_mm_1_0_func        ('h0),
+      .dma1_h2c_byp_in_mm_1_0_len         ('h0),
+      .dma1_h2c_byp_in_mm_1_0_mrkr_req    ('h0),
+      .dma1_h2c_byp_in_mm_1_0_no_dma      ('h0),
+      .dma1_h2c_byp_in_mm_1_0_port_id     ('h0),
+      .dma1_h2c_byp_in_mm_1_0_qid         ('h0),
+      .dma1_h2c_byp_in_mm_1_0_radr        (64'h0),
+      .dma1_h2c_byp_in_mm_1_0_ready       ( ),
+      .dma1_h2c_byp_in_mm_1_0_sdi         ('h0),
+      .dma1_h2c_byp_in_mm_1_0_valid       ('h0),
+      .dma1_h2c_byp_in_mm_1_0_wadr        (64'h0),
+
       .dma1_qsts_out_0_data     (qsts_out_data     ),
       .dma1_qsts_out_0_op       (qsts_out_op       ),
       .dma1_qsts_out_0_port_id  (qsts_out_port_id  ),
       .dma1_qsts_out_0_qid      (qsts_out_qid      ),
       .dma1_qsts_out_0_rdy      (qsts_out_rdy  ),
       .dma1_qsts_out_0_vld      (qsts_out_vld  ),
+
+      // Mailbox IP connection input from user
+      .usr_flr_0_clear         ( usr_flr_clr ),
+      .usr_flr_0_done_fnc      ( usr_flr_done_fnc ),
+      .usr_flr_0_done_vld      ( usr_flr_done_vld ),
+      .usr_flr_0_fnc           ( usr_flr_fnc ),
+      .usr_flr_0_set           ( usr_flr_set ),
+      .usr_irq_0_ack           ( usr_irq_out_ack ),
+      .usr_irq_0_fail          ( usr_irq_out_fail ),
+      .usr_irq_0_fnc           ( usr_irq_in_fnc ),
+      .usr_irq_0_valid         ( usr_irq_in_vld ),
+      .usr_irq_0_vec           ( usr_irq_in_vec ),
 
       .dma1_intrfc_resetn_0(gen_user_reset_n),
       .dma1_axi_aresetn_0(axi_aresetn),
@@ -754,83 +809,222 @@ module design_1_wrapper #
       .cpm_uncor_irq_0(),
       .cpm_irq0_0('d0),
       .cpm_irq1_0('d0),
-      .pcie1_user_clk_0(user_clk)
-
+      .dma1_intrfc_clk_0(user_clk),
+      .pcie0_user_lnk_up_0()
 
       );
 
- /*
-   // XDMA taget application
-   qdma_app #(
-    .C_M_AXI_ID_WIDTH ( C_M_AXI_ID_WIDTH )
-   ) qdma_app_i (
+  // DMA taget application for DMA0
+  qdma_app #(
+    .C_M_AXI_ID_WIDTH  ( C_M_AXI_ID_WIDTH),
+    .C_DATA_WIDTH       ( C_DATA_WIDTH),
+    .TM_DSC_BITS        ( TM_DSC_BITS),
+    .C_CNTR_WIDTH       ( C_CNTR_WIDTH),
+    .QID_MAX             ( QID_MAX),
+    .CRC_WIDTH           ( CRC_WIDTH          ),
+    .BYTE_CREDIT        ( 4096 ),      // DESCRIPTOR size from application
+    .TCQ                 ( TCQ)
+	     ) 
+   dma1_qdma_app_i 
+     (
+      .user_clk            ( user_clk),
+      .user_resetn         ( axi_aresetn),
+      .gen_user_reset_n   ( gen_user_reset_n),
+      
+      // AXI Lite Master Interface connections
+      .m_axil_awaddr  ( m_axil_awaddr[31:0]),
+      .m_axil_wdata   ( m_axil_wdata[31:0]),    // block fifo for AXI lite only 31 bits.
+      .m_axil_wvalid  ( m_axil_wvalid),
+      .m_axil_wready  ( m_axil_wready),
+      .m_axil_araddr  ( m_axil_araddr[31:0]),
+      .m_axil_rdata   ( m_axil_rdata),   // block ram for AXI Lite is only 31 bits
+      .m_axil_rdata_bram   ( m_axil_rdata_bram),   // block ram for AXI Lite is only 31 bits
 
-    .user_clk                       ( user_clk       ),
-    .user_resetn                    ( axi_aresetn & gen_user_reset_n ),
-    .user_lnk_up                    ( user_lnk_up    ),
-    .sys_rst_n                      ( sys_rst_n_c    ),
+      .c2h_byp_out_dsc      ( c2h_byp_out_dsc),
+      .c2h_byp_out_fmt      ( c2h_byp_out_fmt),
+//      .c2h_byp_out_cnt      ('d1),
+      .c2h_byp_out_st_mm    ( c2h_byp_out_st_mm),
+      .c2h_byp_out_dsc_sz   ( c2h_byp_out_dsc_sz),
+      .c2h_byp_out_qid      ( c2h_byp_out_qid),
+      .c2h_byp_out_error    ( c2h_byp_out_error),
+      .c2h_byp_out_func     ( c2h_byp_out_func),
+      .c2h_byp_out_mm_chn   ( c2h_byp_out_mm_chn),
+      .c2h_byp_out_cidx     ( c2h_byp_out_cidx),
+      .c2h_byp_out_port_id  ( c2h_byp_out_port_id),
+      .c2h_byp_out_pfch_tag ( c2h_byp_out_pfch_tag),
+      .c2h_byp_out_vld      ( c2h_byp_out_vld),
+      .c2h_byp_out_rdy      ( c2h_byp_out_rdy),
 
-    .leds                           ( ),
+      .c2h_byp_in_mm_radr     ( c2h_byp_in_mm_radr),
+      .c2h_byp_in_mm_wadr     ( c2h_byp_in_mm_wadr),
+      .c2h_byp_in_mm_len      ( c2h_byp_in_mm_len),
+      .c2h_byp_in_mm_mrkr_req ( c2h_byp_in_mm_mrkr_req),
+      .c2h_byp_in_mm_sdi      ( c2h_byp_in_mm_sdi),
+      .c2h_byp_in_mm_qid      ( c2h_byp_in_mm_qid),
+      .c2h_byp_in_mm_error    ( c2h_byp_in_mm_error),
+      .c2h_byp_in_mm_func     ( c2h_byp_in_mm_func),
+      .c2h_byp_in_mm_cidx     ( c2h_byp_in_mm_cidx),
+      .c2h_byp_in_mm_port_id  ( c2h_byp_in_mm_port_id),
+      .c2h_byp_in_mm_at       ( c2h_byp_in_mm_at),
+      .c2h_byp_in_mm_no_dma   ( c2h_byp_in_mm_no_dma),
+      .c2h_byp_in_mm_vld      ( c2h_byp_in_mm_vld),
+      .c2h_byp_in_mm_rdy      ( c2h_byp_in_mm_rdy),
 
-    .s_axil_awaddr                  ( m_axil_awaddr[11:0] ),    // input wire [11 : 0] s_axi_awaddr
-    .s_axil_awprot                  ( m_axil_awprot  ),    // input wire [2 : 0] s_axi_awprot
-    .s_axil_awvalid                 ( m_axil_awvalid ),    // input wire s_axi_awvalid
-    .s_axil_awready                 ( m_axil_awready ),    // output wire s_axi_awready
-    .s_axil_wdata                   ( m_axil_wdata   ),    // input wire [31 : 0] s_axi_wdata
-    .s_axil_wstrb                   ( m_axil_wstrb   ),    // input wire [3 : 0] s_axi_wstrb
-    .s_axil_wvalid                  ( m_axil_wvalid  ),    // input wire s_axi_wvalid
-    .s_axil_wready                  ( m_axil_wready  ),    // output wire s_axi_wready
-    .s_axil_bresp                   ( m_axil_bresp   ),    // output wire [1 : 0] s_axi_bresp
-    .s_axil_bvalid                  ( m_axil_bvalid  ),    // output wire s_axi_bvalid
-    .s_axil_bready                  ( m_axil_bready  ),    // input wire s_axi_bready
-    .s_axil_araddr                  ( m_axil_araddr[11:0] ), // input wire [11 : 0] s_axi_araddr
-    .s_axil_arprot                  ( m_axil_arprot  ),    // input wire [2 : 0] s_axi_arprot
-    .s_axil_arvalid                 ( m_axil_arvalid ),    // input wire s_axi_arvalid
-    .s_axil_arready                 ( m_axil_arready ),    // output wire s_axi_arready
-    .s_axil_rdata                   ( m_axil_rdata_bram ), // output wire [31 : 0] s_axi_rdata
-    .s_axil_rresp                   ( m_axil_rresp   ),    // output wire [1 : 0] s_axi_rresp
-    .s_axil_rvalid                  ( m_axil_rvalid  ),    // output wire s_axi_rvalid
-    .s_axil_rready                  ( m_axil_rready  ),    // input wire s_axi_rready
+      .c2h_byp_in_st_csh_addr    ( c2h_byp_in_st_csh_addr),
+      .c2h_byp_in_st_csh_qid     ( c2h_byp_in_st_csh_qid),
+      .c2h_byp_in_st_csh_error   ( c2h_byp_in_st_csh_error),
+      .c2h_byp_in_st_csh_func    ( c2h_byp_in_st_csh_func),
+      .c2h_byp_in_st_csh_port_id ( c2h_byp_in_st_csh_port_id),
+      .c2h_byp_in_st_csh_pfch_tag( c2h_byp_in_st_csh_pfch_tag),
+      .c2h_byp_in_st_csh_at      ( c2h_byp_in_st_csh_at),
+      .c2h_byp_in_st_csh_vld     ( c2h_byp_in_st_csh_vld),
+      .c2h_byp_in_st_csh_rdy     ( c2h_byp_in_st_csh_rdy),
 
-    // AXI MM Interface
-    .s_axi_awid                     ( m_axi_awid       ),
-    .s_axi_awaddr                   ( m_axi_awaddr     ),
-    .s_axi_awlen                    ( m_axi_awlen      ),
-    .s_axi_awsize                   ( m_axi_awsize     ),
-    .s_axi_awburst                  ( m_axi_awburst    ),
-    .s_axi_awprot                   ( m_axi_awprot     ),
-    .s_axi_awvalid                  ( m_axi_awvalid    ),
-    .s_axi_awready                  ( m_axi_awready    ),
-    .s_axi_awlock                   ( m_axi_awlock     ),
-    .s_axi_awcache                  ( m_axi_awcache    ),
-    .s_axi_wdata                    ( m_axi_wdata      ),
-    .s_axi_wstrb                    ( m_axi_wstrb      ),
-    .s_axi_wlast                    ( m_axi_wlast      ),
-    .s_axi_wvalid                   ( m_axi_wvalid     ),
-    .s_axi_wready                   ( m_axi_wready     ),
-    .s_axi_bid                      ( m_axi_bid        ),
-    .s_axi_bresp                    ( m_axi_bresp      ),
-    .s_axi_bvalid                   ( m_axi_bvalid     ),
-    .s_axi_bready                   ( m_axi_bready     ),
-    .s_axi_arid                     ( m_axi_arid       ),
-    .s_axi_araddr                   ( m_axi_araddr     ),
-    .s_axi_arlen                    ( m_axi_arlen      ),
-    .s_axi_arsize                   ( m_axi_arsize     ),
-    .s_axi_arburst                  ( m_axi_arburst    ),
-    .s_axi_arprot                   ( m_axi_arprot     ),
-    .s_axi_arvalid                  ( m_axi_arvalid    ),
-    .s_axi_arready                  ( m_axi_arready    ),
-    .s_axi_arlock                   ( m_axi_arlock     ),
-    .s_axi_arcache                  ( m_axi_arcache    ),
-    .s_axi_rid                      ( m_axi_rid        ),
-    .s_axi_rdata                    ( m_axi_rdata      ),
-    .s_axi_rresp                    ( m_axi_rresp      ),
-    .s_axi_rlast                    ( m_axi_rlast      ),
-    .s_axi_rvalid                   ( m_axi_rvalid     ),
-    .s_axi_rready                   ( m_axi_rready     )
+      .h2c_byp_out_dsc      ( h2c_byp_out_dsc),
+      .h2c_byp_out_fmt      ( h2c_byp_out_fmt),
+      .h2c_byp_out_st_mm    ( h2c_byp_out_st_mm),
+      .h2c_byp_out_dsc_sz   ( h2c_byp_out_dsc_sz),
+      .h2c_byp_out_qid      ( h2c_byp_out_qid),
+      .h2c_byp_out_error    ( h2c_byp_out_error),
+      .h2c_byp_out_func     ( h2c_byp_out_func),
+      .h2c_byp_out_mm_chn   ( h2c_byp_out_mm_chn),
+      .h2c_byp_out_cidx     ( h2c_byp_out_cidx),
+      .h2c_byp_out_port_id  ( h2c_byp_out_port_id),
+      .h2c_byp_out_vld      ( h2c_byp_out_vld),
+      .h2c_byp_out_rdy      ( h2c_byp_out_rdy),
 
-   );
-*/
+      .h2c_byp_in_mm_radr     ( h2c_byp_in_mm_radr),
+      .h2c_byp_in_mm_wadr     ( h2c_byp_in_mm_wadr),
+      .h2c_byp_in_mm_len      ( h2c_byp_in_mm_len),
+      .h2c_byp_in_mm_mrkr_req ( h2c_byp_in_mm_mrkr_req),
+      .h2c_byp_in_mm_sdi      ( h2c_byp_in_mm_sdi),
+      .h2c_byp_in_mm_qid      ( h2c_byp_in_mm_qid),
+      .h2c_byp_in_mm_error    ( h2c_byp_in_mm_error),
+      .h2c_byp_in_mm_func     ( h2c_byp_in_mm_func),
+      .h2c_byp_in_mm_cidx     ( h2c_byp_in_mm_cidx),
+      .h2c_byp_in_mm_port_id  ( h2c_byp_in_mm_port_id),
+      .h2c_byp_in_mm_at       ( h2c_byp_in_mm_at),
+      .h2c_byp_in_mm_no_dma   ( h2c_byp_in_mm_no_dma),
+      .h2c_byp_in_mm_vld      ( h2c_byp_in_mm_vld),
+      .h2c_byp_in_mm_rdy      ( h2c_byp_in_mm_rdy),
+
+      .h2c_byp_in_st_addr     ( h2c_byp_in_st_addr),
+      .h2c_byp_in_st_len      ( h2c_byp_in_st_len),
+      .h2c_byp_in_st_eop      ( h2c_byp_in_st_eop),
+      .h2c_byp_in_st_sop      ( h2c_byp_in_st_sop),
+      .h2c_byp_in_st_mrkr_req ( h2c_byp_in_st_mrkr_req),
+      .h2c_byp_in_st_sdi      ( h2c_byp_in_st_sdi),
+      .h2c_byp_in_st_qid      ( h2c_byp_in_st_qid),
+      .h2c_byp_in_st_error    ( h2c_byp_in_st_error),
+      .h2c_byp_in_st_func     ( h2c_byp_in_st_func),
+      .h2c_byp_in_st_cidx     ( h2c_byp_in_st_cidx),
+      .h2c_byp_in_st_port_id  ( h2c_byp_in_st_port_id),
+      .h2c_byp_in_st_at       ( h2c_byp_in_st_at),
+      .h2c_byp_in_st_no_dma   ( h2c_byp_in_st_no_dma),
+      .h2c_byp_in_st_vld      ( h2c_byp_in_st_vld),
+      .h2c_byp_in_st_rdy      ( h2c_byp_in_st_rdy),
+
+
+      .usr_flr_fnc ( usr_flr_fnc ),
+      .usr_flr_set ( usr_flr_set ),
+      .usr_flr_clr ( usr_flr_clr) ,
+      .usr_flr_done_fnc ( usr_flr_done_fnc),
+      .usr_flr_done_vld ( usr_flr_done_vld),
+      
+
+      .m_axis_h2c_tvalid         ( m_axis_h2c_tvalid),
+      .m_axis_h2c_tready         ( m_axis_h2c_tready),
+      .m_axis_h2c_tdata          ( m_axis_h2c_tdata),
+      .m_axis_h2c_tcrc           ( m_axis_h2c_tcrc),
+      .m_axis_h2c_tlast          ( m_axis_h2c_tlast),
+      .m_axis_h2c_tuser_qid      ( m_axis_h2c_tuser_qid),
+      .m_axis_h2c_tuser_port_id  ( m_axis_h2c_tuser_port_id),
+      .m_axis_h2c_tuser_err      ( m_axis_h2c_tuser_err),
+      .m_axis_h2c_tuser_mdata    ( m_axis_h2c_tuser_mdata),
+      .m_axis_h2c_tuser_mty      ( m_axis_h2c_tuser_mty),
+      .m_axis_h2c_tuser_zero_byte( m_axis_h2c_tuser_zero_byte),
+      
+      .s_axis_c2h_tdata          ( s_axis_c2h_tdata ),
+      .s_axis_c2h_tcrc           ( s_axis_c2h_tcrc  ),
+      .s_axis_c2h_ctrl_marker    ( s_axis_c2h_ctrl_marker),
+      .s_axis_c2h_ctrl_len       ( s_axis_c2h_ctrl_len), // c2h_st_len,
+      .s_axis_c2h_ctrl_port_id   ( s_axis_c2h_ctrl_port_id),
+      .s_axis_c2h_ctrl_ecc       ( s_axis_c2h_ctrl_ecc),
+      .s_axis_c2h_ctrl_qid       ( s_axis_c2h_ctrl_qid ), // st_qid,
+      .s_axis_c2h_ctrl_has_cmpt  ( s_axis_c2h_ctrl_has_cmpt),   // write back is valid
+      .s_axis_c2h_tvalid         ( s_axis_c2h_tvalid),
+      .s_axis_c2h_tready         ( s_axis_c2h_tready),
+      .s_axis_c2h_tlast          ( s_axis_c2h_tlast ),
+      .s_axis_c2h_mty            ( s_axis_c2h_mty ),  // no empthy bytes at EOP
+      
+      .s_axis_c2h_cmpt_tdata               ( s_axis_c2h_cmpt_tdata),
+      .s_axis_c2h_cmpt_size                ( s_axis_c2h_cmpt_size),
+      .s_axis_c2h_cmpt_dpar                ( s_axis_c2h_cmpt_dpar),
+      .s_axis_c2h_cmpt_tvalid              ( s_axis_c2h_cmpt_tvalid),
+      .s_axis_c2h_cmpt_tready              ( s_axis_c2h_cmpt_tready),
+      .s_axis_c2h_cmpt_ctrl_qid            ( s_axis_c2h_cmpt_ctrl_qid),
+      .s_axis_c2h_cmpt_ctrl_cmpt_type      ( s_axis_c2h_cmpt_ctrl_cmpt_type),
+      .s_axis_c2h_cmpt_ctrl_wait_pld_pkt_id( s_axis_c2h_cmpt_ctrl_wait_pld_pkt_id ),
+      .s_axis_c2h_cmpt_ctrl_marker         ( s_axis_c2h_cmpt_ctrl_marker),
+      .s_axis_c2h_cmpt_ctrl_user_trig      ( s_axis_c2h_cmpt_ctrl_user_trig),
+      .s_axis_c2h_cmpt_ctrl_col_idx        ( s_axis_c2h_cmpt_ctrl_col_idx),
+      .s_axis_c2h_cmpt_ctrl_err_idx        ( s_axis_c2h_cmpt_ctrl_err_idx),
+      
+      .axis_c2h_status_drop                ( axis_c2h_status_drop),
+      .axis_c2h_status_valid               ( axis_c2h_status_valid),
+      .axis_c2h_status_qid                 ( axis_c2h_status_qid),
+      .axis_c2h_status_last                ( axis_c2h_status_last),
+      .axis_c2h_status_cmp                 ( axis_c2h_status_cmp),
+      .axis_c2h_status_error               ( axis_c2h_status_error),
+      
+      .axis_c2h_dmawr_cmp                  ( axis_c2h_dmawr_cmp), 
+      .axis_c2h_dmawr_port_id              ( axis_c2h_dmawr_port_id),
+      
+      
+      .qsts_out_op      ( qsts_out_op),
+      .qsts_out_data    ( qsts_out_data),
+      .qsts_out_port_id ( qsts_out_port_id),
+      .qsts_out_qid     ( qsts_out_qid),
+      .qsts_out_vld     ( qsts_out_vld),
+      .qsts_out_rdy     ( qsts_out_rdy),
+      
+      .usr_irq_in_vld   ( usr_irq_in_vld),
+      .usr_irq_in_vec   ( usr_irq_in_vec),
+      .usr_irq_in_fnc   ( usr_irq_in_fnc),
+      .usr_irq_out_ack  ( usr_irq_out_ack),
+      .usr_irq_out_fail ( usr_irq_out_fail),
+      
+      .st_rx_msg_rdy   ( st_rx_msg_rdy),
+      .st_rx_msg_valid ( st_rx_msg_valid),
+      .st_rx_msg_last  ( st_rx_msg_last),
+      .st_rx_msg_data  ( st_rx_msg_data),
+      
+      .tm_dsc_sts_vld     ( tm_dsc_sts_vld   ),
+      .tm_dsc_sts_qen     ( tm_dsc_sts_qen   ),
+      .tm_dsc_sts_byp     ( tm_dsc_sts_byp   ),
+      .tm_dsc_sts_dir     ( tm_dsc_sts_dir   ),
+      .tm_dsc_sts_mm      ( tm_dsc_sts_mm    ),
+      .tm_dsc_sts_error   ( tm_dsc_sts_error ),
+      .tm_dsc_sts_qid     ( tm_dsc_sts_qid   ),
+      .tm_dsc_sts_avl     ( tm_dsc_sts_avl   ),
+      .tm_dsc_sts_qinv    ( tm_dsc_sts_qinv  ),
+      .tm_dsc_sts_irq_arm ( tm_dsc_sts_irq_arm),
+      .tm_dsc_sts_rdy     ( tm_dsc_sts_rdy),
+      
+      .dsc_crdt_in_vld        ( dsc_crdt_in_vld),
+      .dsc_crdt_in_rdy        ( dsc_crdt_in_rdy),
+      .dsc_crdt_in_dir        ( dsc_crdt_in_dir),
+      .dsc_crdt_in_fence      ( dsc_crdt_in_fence),
+      .dsc_crdt_in_qid        ( dsc_crdt_in_qid),
+      .dsc_crdt_in_crdt       ( dsc_crdt_in_crdt),
+
+
+      .leds()
+      
+  );
+
+   
+/*
    user_control #(
     .C_DATA_WIDTH                   ( C_DATA_WIDTH_ST   ),
     .QID_MAX                        ( QID_MAX           ),
@@ -875,7 +1069,22 @@ module design_1_wrapper #
     .axis_c2h_drop_valid            ( axis_c2h_status_valid ),
     .cmpt_size                      ( cmpt_size           ),
     .c2h_st_marker_rsp              ( c2h_st_marker_rsp   ),
-    
+
+    // FLR   
+    .usr_flr_fnc ( usr_flr_fnc ),
+    .usr_flr_set ( usr_flr_set ),
+    .usr_flr_clr ( usr_flr_clr) ,
+    .usr_flr_done_fnc (usr_flr_done_fnc),
+    .usr_flr_done_vld (usr_flr_done_vld),
+
+   // IRQ		     
+    .usr_irq_in_vld   (usr_irq_in_vld),
+    .usr_irq_in_vec   (usr_irq_in_vec),
+    .usr_irq_in_fnc   (usr_irq_in_fnc),
+    .usr_irq_out_ack  (usr_irq_out_ack),
+    .usr_irq_out_fail (usr_irq_out_fail),
+
+		     
     // tm interface signals
     .tm_dsc_sts_vld                 ( tm_dsc_sts_vld      ),
     .tm_dsc_sts_qen                 ( tm_dsc_sts_qen      ),
@@ -1045,5 +1254,6 @@ module design_1_wrapper #
 
   // Marker Response
   assign c2h_st_marker_rsp = (qsts_out_vld & (qsts_out_op == 8'b0)) ? 1'b1 : 1'b0;
-
+*/
+   
 endmodule

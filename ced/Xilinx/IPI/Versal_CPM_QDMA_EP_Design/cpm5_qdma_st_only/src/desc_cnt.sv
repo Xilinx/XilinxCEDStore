@@ -36,7 +36,10 @@ module desc_cnt #(
 
   // assign outputs
   assign desc_cnt = descriptor_count;
-  assign desc_rdy = descriptor_ready & (~((descriptor_count == 1) & desc_cnt_dec));
+// Timing opt. This is putting a lot of strain in timing
+//  assign desc_rdy = descriptor_ready & (~((descriptor_count == 1) & desc_cnt_dec));
+// Replacing with this. It will create bubbles if we constantly running low on credits, but we suspect that event is rare enough that this is an acceptable cost
+  assign desc_rdy = descriptor_ready;
 
   // Register if the queue is enabled or disabled
   always @(posedge user_clk) begin

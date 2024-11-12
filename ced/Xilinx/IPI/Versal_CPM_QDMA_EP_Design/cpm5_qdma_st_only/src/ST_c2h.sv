@@ -32,16 +32,23 @@ module ST_c2h # (
   input                       user_reset_n,
   
   // Control Signals
-  input  [31:0]               knob,             // [0] = Start transfer immediately. [1] = Stop transfer immediately. [2] = Enable DROP test. [3] = Random BTT. [4] = Send Marker
+  input  [31:0]               knob,             // [0] = Start transfer immediately.
+                                                // [1] = Stop transfer immediately.
+                                                // [2] = Enable DROP test (not compatible with Simple Bypass).
+                                                // [3] = Random BTT.
+                                                // [4] = Send Marker.
+                                                // [5] = Enable simple bypass (use qid_byp).
+                                                // [20:16] = Amount to batch.
                                                 // [31:21] = Number of QID to use in DROP case.
   
   // To queue_cnts
   input  [TM_DSC_BITS-1:0]    credit_in,        // Credit available for the given QID
   input  [QID_WIDTH-1:0]      qid,              // QID to use in the current transfer
+  input  [QID_WIDTH-1:0]      qid_byp,          // QID to use in the current transfer when simple bypass is enabled. This is going to be the QID for your Prefetch TAG
   input                       credit_vld,       // Indicates new QID with non-zero credit is available
   output                      credit_rdy,       // Indicates ready to accept next transfer
   output reg [QID_WIDTH-1:0]  dec_qid,          // QID which credit will be decremented
-  output                      dec_credit,       // Pulsed each time a credit is consumed. Currently set to decrement every 4K to match example design driver behavior
+  output reg                  dec_credit,       // Pulsed each time a credit is consumed. Currently set to decrement every 4K to match example design driver behavior
   output reg [QID_WIDTH-1:0]  requeue_qid,      // QID which credit will be requeued
   output                      requeue_credit,   // Pulsed each time this QID is done being used
   input                       requeue_rdy,      // When asserted the QID/Credit has been requeued  
@@ -55,9 +62,15 @@ module ST_c2h # (
   output                      c2h_formed,       // First Beat of C2H
   output                      c2h_fifo_is_full, // C2H Bus FIFO is full
 
+  // To Descriptor Credit Input Logic (if not enabled, then the value is save to ignore)
+  output reg [4:0]            dsc_req_val,      // Amount of descriptor to request in a batch. Must assert one clock cycle per request only
+  output reg [QID_WIDTH-1:0]  dsc_req_qid,      // QID which credit will be requested
+  output reg                  dsc_req_vld,      // Valid bit for dsc_req_val
+
   // QDMA C2H Bus
   output [DATA_WIDTH-1:0]     c2h_tdata,
   output [LEN_WIDTH-1:0]      c2h_len,
+  output [5:0]                c2h_mty,     // This field is a different representation of c2h_len. This is needed for certain QDMA IP version.
   output [QID_WIDTH-1:0]      c2h_qid,
   output                      c2h_marker,  // Used to facilitate pipeline flush during queue invalidation.
   output                      c2h_tlast,
@@ -93,9 +106,9 @@ each CRC bits is an XOR output of 7-bit data on that cycle
 CRC[i] = DATA[(i*7)+6] ^ DATA[(i*7)+5] ^ DATA[(i*7)+4] ^ DATA[(i*7)+3] ^ DATA[(i*7)+2] ^ DATA[(i*7)+1] ^ DATA[(i*7)+0];
 */
 
-localparam       HDR_WIDTH        = 64;                        // Must be 64 (must fit within a clock cycle and a multiple of DATA_WIDTH). Length of Metadata in bytes
-localparam       INC_DATA         = DATA_WIDTH / PATT_WIDTH;   // Total bytes per beat
-localparam       FIFO_TUSER_WIDTH = 1 + QID_WIDTH + LEN_WIDTH; // Marker + Qid + Len
+localparam       HDR_WIDTH        = 64;                            // Must be 64 (must fit within a clock cycle and a multiple of DATA_WIDTH). Length of Metadata in bytes
+localparam       INC_DATA         = DATA_WIDTH / PATT_WIDTH;       // Total bytes per beat
+localparam       FIFO_TUSER_WIDTH = 1 + QID_WIDTH + 6 + LEN_WIDTH; // Marker + Qid + MTY + Len
 
 localparam       DATA_WIDTH_BYTE  =  (DATA_WIDTH == 64)  ? 8 :
                                     ((DATA_WIDTH == 128) ? 16 :
@@ -108,7 +121,8 @@ wire                      sop;                // First Beat of C2H
 reg  [2:0]                drop_test_trig;     // Trigger when a DROP case is hit. [0] = Zero Length Transfer. [1] = No credits. [2] = Not Enough credits
 
 reg  [31:0]               rand_num = SEED;    // Random Number
-wire [LEN_WIDTH-1:0]      isel_btt;           // BTT input select. ~knob[3] = dbg_userctrl_credits; knob[3] = rand_num
+//wire [LEN_WIDTH-1:0]      isel_btt;           // BTT input select. ~knob[3] = dbg_userctrl_credits; knob[3] = rand_num
+wire [($clog2(MAX_CRDT * BYTE_CREDIT)-1):0] isel_btt;           // BTT input select. ~knob[3] = dbg_userctrl_credits; knob[3] = rand_num
 wire [31:0]               header[1:0];        // Packet header - makes up the Metadata
 wire [31:0]               header_raw[1:0];    // Packet header as it goes out in PCIe. Encoded using CTRL field - makes up the Metadata_raw
 wire [HDR_WIDTH-1:0]      metadata;           // Packet Metadata prior to encoding
@@ -139,10 +153,12 @@ reg                       mkr_wrb[1:0];         // C2H Marker pipeline in Writeb
 reg                       wrb_int[1:0];         // Indicates which writeback pipeline stages are valid
 reg [QID_WIDTH-1:0]       requeue_qid_int[1:0]; // Requeue pipeline stages
 reg                       requeue_int_vld[1:0]; // Indicates which requeue pipeline stages are valid
+reg                       rqq_int[1:0];         // Unset when doing batch requests to avoid multiple requeue. Set when we want to requeue at end of batch
 
 // QDMA C2H Bus FIFO
 wire [DATA_WIDTH-1:0]     c2h_tdata_fifo_in;
 wire [LEN_WIDTH-1:0]      c2h_len_fifo_in;
+wire [5:0]                c2h_mty_fifo_in;
 wire [QID_WIDTH-1:0]      c2h_qid_fifo_in;
 wire                      c2h_marker_fifo_in;
 wire                      c2h_tlast_fifo_in;
@@ -161,6 +177,11 @@ reg [11:0]                idle_fifo_cntr;      // Keep track of how many clock c
 wire                      fifo_idle_timeout;   // C2H Bus FIFO has been idling for too long
 wire                      c2h_fifo_start;      // Start dumping C2H Bus FIFO
 reg                       c2h_fifo_active;     // Set when C2H Bus FIFO begins transfer and clears only when it's empty
+reg [4:0]                 batch_cnt;           // Used to keep track the number of loops when doing batch transfers
+reg                       batch_inp;           // Batching in Progress
+wire [$clog2(MAX_CRDT):0] txs_desc_amt_raw;    // Number of Descriptor neeeded for one transfer (excluding batches) - Raw values before being adjusted by avail credits.
+wire [$clog2(MAX_CRDT):0] txs_desc_amt;        // Number of Descriptor neeeded for one transfer (excluding batches).
+reg [4:0]                 dsc_dec_cnt;         // Number of Descriptor to subtract.
 
 // Random Number Generator
 always @(posedge user_clk) begin
@@ -230,29 +251,51 @@ assign tdata = (DATA_WIDTH == 64)  ? metadata_raw :
 //assign c2h_tdata  = tdata;
 //assign c2h_tlast  = last;
 //assign c2h_len    = btt;
+//assign c2h_mty    = (last & (c2h_len%(DATA_WIDTH/8) > 0)) ? DATA_WIDTH/8 - (c2h_len%(DATA_WIDTH/8)) : 6'b0;
 //assign c2h_tvalid = valid;
 //assign ready      = c2h_tready;
 
 assign c2h_tdata_fifo_in  = tdata;
 assign c2h_tlast_fifo_in  = last;
 assign c2h_len_fifo_in    = btt_int[1];
-assign c2h_qid_fifo_in    = qid_int[1];
+assign c2h_mty_fifo_in    = (c2h_tlast_fifo_in & (c2h_len_fifo_in%(DATA_WIDTH/8) > 0)) ? DATA_WIDTH/8 - (c2h_len_fifo_in%(DATA_WIDTH/8)) : 6'b0;
+assign c2h_qid_fifo_in    = knob[5] ? qid_byp : qid_int[1];
 assign c2h_marker_fifo_in = mkr_int[1];
 assign c2h_tvalid_fifo_in = valid;
 assign ready              = c2h_tready_fifo_in;
-assign c2h_tuser_fifo_in  = {c2h_marker_fifo_in, c2h_qid_fifo_in, c2h_len_fifo_in};
+assign c2h_tuser_fifo_in  = {c2h_marker_fifo_in, c2h_qid_fifo_in, c2h_mty_fifo_in, c2h_len_fifo_in};
 assign {c2h_marker,
-        c2h_qid,c2h_len}  = c2h_tuser_fifo_out;
+        c2h_qid,
+        c2h_mty,
+        c2h_len}          = c2h_tuser_fifo_out;
 
 // Credit Maintainer
 // Decrement credit each time a descriptor is consumed (indicated by BYTE_CREDIT or reach tlast)
 /*always @(posedge user_clk) begin
   dec_credit <= #TCQ (byte_ctr == BYTE_CREDIT) | (done[0] == 1);
 end*/
-assign dec_credit     = ready & valid & ( ((byte_ctr % BYTE_CREDIT) == 0) | (last == 1) );
-assign dec_qid        = qid_int[1];
+//assign dec_credit     = ready & valid & ( ((byte_ctr % BYTE_CREDIT) == 0) | (last == 1) );
+//assign dec_qid        = qid_int[1];
+always @(posedge user_clk) begin
+  if (~user_reset_n) begin
+    dec_credit  <= #TCQ 1'b0;
+    dsc_dec_cnt <= #TCQ '0;
+  end else begin
+    if (dsc_req_vld) begin
+      dec_credit  <= #TCQ 1'b1;
+      dec_qid     <= #TCQ dsc_req_qid;
+      dsc_dec_cnt <= #TCQ dsc_req_val;
+    end else begin
+      dec_credit  <= #TCQ (dsc_dec_cnt <= 1) ? 1'b0 : 1'b1;
+      dec_qid     <= #TCQ dec_qid;
+      dsc_dec_cnt <= #TCQ (dsc_dec_cnt != 0) ? (dsc_dec_cnt - 1) : 0;
+    end
+  end
+end
 // Assert credit_rdy to accept new transfer credits
-assign credit_rdy     = ((~int_vld[0]) | start_txs) ? 1'b1 : 1'b0;  // Assert ready when a QID is queued up
+// Original. Add Batching Support
+//assign credit_rdy     = ((~int_vld[0]) | start_txs) ? 1'b1 : 1'b0;  // Assert ready when a QID is queued up
+assign credit_rdy     = ((~batch_inp) & ((~int_vld[0]) | start_txs) & (~marker_sent)) ? 1'b1 : 1'b0;  // Assert ready when a QID is queued up and we're done with batching
 // Requeue QID once transfer is complete
 assign requeue_credit = (requeue_int_vld[1] | (((ready & valid) | (~valid)) & requeue_int_vld[0])) ? 1'b1 : 1'b0;  // Last transfer or there's something in the buffer needs to be requeued. Always make sure dec_credit occurs first.
 assign requeue_qid    = requeue_int_vld[1] ? requeue_qid_int[1] : requeue_qid_int[0];
@@ -270,6 +313,36 @@ always @(posedge user_clk) begin
   end
 end
 
+// Batching Control Logic
+always @(posedge user_clk) begin
+  if (~user_reset_n) begin
+    batch_cnt     <= #TCQ '0;
+    batch_inp     <= #TCQ 1'b0;
+    dsc_req_vld   <= #TCQ 1'b0;
+  end else begin
+    dsc_req_qid   <= #TCQ qid;                                                                                // Only takes QID (not qid_cntr) because it must only request descriptor when there's credit_vld
+    dsc_req_val   <= #TCQ (credit_in >= (txs_desc_amt * knob[20:16])) ? (txs_desc_amt * knob[20:16]) : 
+                                                                        ((credit_in >= txs_desc_amt) ? txs_desc_amt : 1);
+    dsc_req_vld   <= #TCQ 1'b0;
+    
+    if (start_gen) begin // Start packet generation. // If there's no credit_vld, that means we're doing drop test (knob[2]) which is not supported.
+      if ((~batch_inp) & (~knob[4])) begin // Only allow batching if it isn't a marker request. Marker request will not request for descriptor and will only need to be sent once.
+        batch_cnt     <= #TCQ (credit_in >= (txs_desc_amt * knob[20:16])) ? knob[20:16] : 1;                  // If not enough to do the requested batching, default to just send one.
+        batch_inp     <= #TCQ (credit_in >= (txs_desc_amt * knob[20:16])) & (knob[20:16] > 1) ? 1'b1 : 1'b0;  // Set if we're doing batch requests more than one.
+        
+        dsc_req_vld   <= #TCQ 1'b1;
+      end else begin
+        batch_cnt     <= #TCQ batch_inp ? (batch_cnt - 1) : '0;
+        batch_inp     <= #TCQ (batch_cnt <= 2) ? 1'b0 : 1'b1; // Last request in the batch
+      end
+    end
+  end
+end
+
+always @(*) begin // wire
+ rqq_int[0] = ~batch_inp;
+end
+
 // Send Writeback
 assign c2h_formed = (wrb_int[1] | (((ready & valid) | (~valid)) & wrb_int[0])) ? 1'b1 : 1'b0;
 assign qid_wb     = wrb_int[1] ? qid_wrb[1] : qid_wrb[0];
@@ -285,11 +358,25 @@ assign sop        = (int_vld[0] & (~int_vld[1]) & (~(wrb_int[0] & wrb_int[1])) &
 // int_vld[1] current active C2H request
 // wrb_int[0] new CMPT
 // wrb_int[1] current active CMPT request
-assign start_gen = (credit_rdy & (knob[2] | knob[4] | credit_vld) & (~marker_sent)) ? 1'b1 : 1'b0;
-assign start_txs = (((~valid) | ready) & sop)                                       ? 1'b1 : 1'b0;
+// Original. Add Batching Support
+//assign start_gen = (credit_rdy & (knob[2] | knob[4] | credit_vld) & (~marker_sent)) ? 1'b1 : 1'b0;
+assign start_gen = (((~int_vld[0]) | start_txs) & (knob[2] | knob[4] | credit_vld | batch_inp) & (~marker_sent)) ? 1'b1 : 1'b0;
+assign start_txs = (((~valid) | ready) & sop) ? 1'b1 : 1'b0;
 
-assign isel_btt = knob[3] ? rand_num[0 +: LEN_WIDTH] : dbg_userctrl_credits;
+assign isel_btt     = knob[3] ? rand_num[0 +: ($clog2(MAX_CRDT * BYTE_CREDIT))] : dbg_userctrl_credits[0 +: ($clog2(MAX_CRDT * BYTE_CREDIT))];
 
+/*--------------------------------------------------------------------   */
+// /*Fixing the BYTE_CREDIT to 2048 and desc values are set to 1.
+   // This is for timing closure only.
+   // With this fix we can not do andy transfers more then 2048 Bytes. */
+//assign txs_desc_amt_raw = (|(isel_btt % BYTE_CREDIT)) ? ((isel_btt / BYTE_CREDIT) + 1) : (isel_btt / BYTE_CREDIT); // $ceil(isel_btt / BYTE_CREDIT)
+//assign txs_desc_amt = (txs_desc_amt_raw > credit_in) ? 1 : txs_desc_amt_raw;
+assign txs_desc_amt_raw = 1; // $ceil(isel_btt / BYTE_CREDIT)
+assign txs_desc_amt = 1;
+
+/*--------------------------------------------------------------------   */
+   
+   
 // QID + BTT Pipeline
 always @(posedge user_clk) begin
   if (~user_reset_n) begin
@@ -302,57 +389,51 @@ always @(posedge user_clk) begin
   end else begin
   
     if (start_gen) begin
-      if (credit_vld) begin
-        qid_int[0]    <= #TCQ qid;
+      // Add Batching Support
+      if (~batch_inp) begin
+        if (credit_vld) begin
+          qid_int[0]    <= #TCQ qid;
 
-        if ( knob[4] ) begin // Marker packet
-        
-          btt_int[0]    <= #TCQ DATA_WIDTH_BYTE; // Send full bus width
-          mkr_int[0]    <= #TCQ 1'b1;
-          marker_sent   <= #TCQ 1'b1;
-        
-        end else if ( (isel_btt[($clog2(MAX_CRDT * BYTE_CREDIT)-1):0] & ((credit_in[($clog2(MAX_CRDT)-1):0] * BYTE_CREDIT) - 1)) == 0 ) begin // Not enough credits or Drop test.
-                                                                                                                                              // Random value return 0, so let's just use up all the credits.
-//          btt_int[0]        <= #TCQ (credit_in * BYTE_CREDIT); // Not allowed to consume more than 7 credits - see err_desc_cnt in the PG
-          btt_int[0]        <= #TCQ (~knob[2]) ? (1 * BYTE_CREDIT) : ( isel_btt[($clog2(MAX_CRDT * BYTE_CREDIT)-1):0] ); // Just send one full credit
-          drop_test_trig[0] <= #TCQ (~knob[2]) ? 1'b0 : 1'b1;
+          if ( knob[4] ) begin // Marker packet
           
-          mkr_int[0]        <= #TCQ 1'b0;
-        end else begin // Enough credit to complete transfer. Limit to MAX_CRDT can be consumed
-          // zero extend | Take Random number[(limit to MAX_CRDT * Byte per credit) - 1] &
-          //               Take ((credit input[limit to MAX_CRDT] * Byte per credit) - 1)
-          btt_int[0]        <= #TCQ (~knob[2]) ? {LEN_WIDTH{1'b0}} | ( isel_btt[($clog2(MAX_CRDT * BYTE_CREDIT)-1):0] & 
-                                                                       ((credit_in[($clog2(MAX_CRDT)-1):0] * BYTE_CREDIT) - 1)
-                                                                     ) :
-                                                                     ( isel_btt[($clog2(MAX_CRDT * BYTE_CREDIT)-1):0] );
-          drop_test_trig[2] <= #TCQ (~knob[2]) ? 1'b0 : (credit_in < MAX_CRDT);
+            btt_int[0]    <= #TCQ DATA_WIDTH_BYTE; // Send full bus width
+            mkr_int[0]    <= #TCQ 1'b1;
+            marker_sent   <= #TCQ 1'b1;
+            
+          end else if ( txs_desc_amt_raw > credit_in ) begin // Not enough credits or Drop test.
+                                                             // Random value return 0, so let's just use up all the credits.
+//            btt_int[0]        <= #TCQ (credit_in * BYTE_CREDIT); // Not allowed to consume more than 7 credits - see err_desc_cnt in the PG
+            btt_int[0]        <= #TCQ (~knob[2]) ? (1 * BYTE_CREDIT) : isel_btt; // Just send one full credit
+            drop_test_trig[0] <= #TCQ (~knob[2]) ? 1'b0 : 1'b1;
+            
+            mkr_int[0]        <= #TCQ 1'b0;
+          end else begin // Enough credit to complete transfer. Limit to MAX_CRDT can be consumed
+            btt_int[0]        <= #TCQ isel_btt;
+            drop_test_trig[2] <= #TCQ (~knob[2]) ? 1'b0 : 1'b1;
+            
+            mkr_int[0]    <= #TCQ 1'b0;
+          end
+        
+        end else begin // No credits at all to do transfer
+        
+          if ( knob[4] ) begin // Marker packet
           
-          mkr_int[0]    <= #TCQ 1'b0;
-        end
-      
-      end else begin // No credits at all to do transfer
-      
-        if ( knob[4] ) begin // Marker packet
-        
-          btt_int[0]    <= #TCQ DATA_WIDTH_BYTE; // Send full bus width
-          mkr_int[0]    <= #TCQ 1'b1;
-          marker_sent   <= #TCQ 1'b1;
-        
-        end else begin
+            btt_int[0]    <= #TCQ DATA_WIDTH_BYTE; // Send full bus width
+            mkr_int[0]    <= #TCQ 1'b1;
+            marker_sent   <= #TCQ 1'b1;
+          
+          end else begin
 
-          qid_int[0]        <= #TCQ qid_cntr;
-          btt_int[0]        <= #TCQ ( isel_btt[($clog2(MAX_CRDT * BYTE_CREDIT)-1):0] );
-          drop_test_trig[1] <= #TCQ 1'b1;
-        
-          mkr_int[0]    <= #TCQ 1'b0;
+            qid_int[0]        <= #TCQ qid_cntr;
+            btt_int[0]        <= #TCQ isel_btt;
+            drop_test_trig[1] <= #TCQ 1'b1;
           
-        end
-        
-      end // credit_vld
-      
-//      btt_int[0] <= #TCQ (dbg_userctrl_credits < credit_in) ? ((dbg_userctrl_credits * BYTE_CREDIT) - 2048) : ((credit_in * BYTE_CREDIT) - 2048);
-//      btt_int[0] <= #TCQ 64;
-//      btt_int[0] <= #TCQ dbg_userctrl_credits;
+            mkr_int[0]    <= #TCQ 1'b0;
+            
+          end
+          
+        end // credit_vld
+      end // ~batch_inp
       
       int_vld[0] <= #TCQ 1'b1;
       
@@ -375,6 +456,7 @@ always @(posedge user_clk) begin
      valid         <= #TCQ 1'b0;
      
      int_vld[1]    <= #TCQ 1'b0;
+     rqq_int[1]    <= #TCQ 1'b0;
      wrb_int[0]    <= #TCQ 1'b0;
      wrb_int[1]    <= #TCQ 1'b0;
      
@@ -404,6 +486,7 @@ always @(posedge user_clk) begin
       qid_int[1]    <= #TCQ qid_int[0];
       btt_int[1]    <= #TCQ btt_int[0];
       mkr_int[1]    <= #TCQ mkr_int[0];
+      rqq_int[1]    <= #TCQ rqq_int[0];
       
     end // sop
     
@@ -490,10 +573,10 @@ always @(posedge user_clk) begin
       requeue_qid_int[1]   <= #TCQ requeue_qid_int[0];
   
       if (start_txs & ((DATA_WIDTH/8) >= btt)) begin // One beat transfer completes
-        requeue_int_vld[0] <= #TCQ int_vld[0];
+        requeue_int_vld[0] <= #TCQ rqq_int[0] ? int_vld[0] : 1'b0;
         requeue_qid_int[0] <= #TCQ qid_int[0];
       end else if ((ready & int_vld[1]) & ((byte_ctr + (DATA_WIDTH/8)) >= btt)) begin // n-beat transfer completes
-        requeue_int_vld[0] <= #TCQ int_vld[1];
+        requeue_int_vld[0] <= #TCQ rqq_int[1] ? int_vld[1] : 1'b0;
         requeue_qid_int[0] <= #TCQ qid_int[1];
       end else begin // No new transfer completes
 //        requeue_int_vld[0] <= #TCQ 1'b0;
@@ -505,10 +588,10 @@ always @(posedge user_clk) begin
       requeue_qid_int[1]   <= #TCQ ((~requeue_int_vld[1]) & ((ready & valid) | (~valid))) ? requeue_qid_int[0] : requeue_qid_int[1];
     
       if (start_txs & ((DATA_WIDTH/8) >= btt)) begin // One beat transfer completes
-        requeue_int_vld[0] <= #TCQ int_vld[0];
+        requeue_int_vld[0] <= #TCQ rqq_int[0] ? int_vld[0] : 1'b0;
         requeue_qid_int[0] <= #TCQ qid_int[0];
       end else if ((ready & int_vld[1]) & ((byte_ctr + (DATA_WIDTH/8)) >= btt)) begin // n-beat transfer completes
-        requeue_int_vld[0] <= #TCQ int_vld[1];
+        requeue_int_vld[0] <= #TCQ rqq_int[1] ? int_vld[1] : 1'b0;
         requeue_qid_int[0] <= #TCQ qid_int[1];
       end else begin // No new transfer completes
         requeue_int_vld[0] <= #TCQ ((~requeue_int_vld[1]) & ((ready & valid) | (~valid))) ? 1'b0 : requeue_int_vld[0];
@@ -529,7 +612,9 @@ xpm_fifo_axis #(
   .FIFO_MEMORY_TYPE("auto"),      // String
   .PACKET_FIFO("false"),          // String
   .PROG_EMPTY_THRESH(1024),       // DECIMAL -- Not used
-  .PROG_FULL_THRESH(2048-(BYTE_CREDIT/DATA_WIDTH)-1), // DECIMAL -- When asserted, FIFO only have spot for one descriptor left.
+//  .PROG_FULL_THRESH(2048-(BYTE_CREDIT/DATA_WIDTH)-1), // DECIMAL -- When asserted, FIFO only have spot for one descriptor left.
+  .PROG_FULL_THRESH(2048-(4096/(512/8))-1), // DECIMAL -- Hard code value because smaller BYTE_CREDIT makes the limit too high and XPM doesn't support > 2043
+//  .PROG_FULL_THRESH(80), // DECIMAL -- Hard code value because smaller BYTE_CREDIT makes the limit too high and XPM doesn't support > 2043
   .RD_DATA_COUNT_WIDTH(11),       // DECIMAL
   .RELATED_CLOCKS(0),             // DECIMAL
   .TDATA_WIDTH(DATA_WIDTH),       // DECIMAL
@@ -737,3 +822,4 @@ assign c2h_tready_fifo_out = ( (c2h_fifo_start | c2h_fifo_active) && (!knob[1]) 
 assign c2h_fifo_is_full    = prog_full_axis;
 
 endmodule
+

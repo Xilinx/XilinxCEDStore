@@ -155,24 +155,8 @@ set obj [get_filesets sources_1]
 set_property -name "top" -value "design_1_wrapper" -objects $obj
 set_property -name "top_auto_set" -value "0" -objects $obj
 
-# Create 'constrs_1' fileset (if not found)
-if {[string equal [get_filesets -quiet constrs_1] ""]} {
-  create_fileset -constrset constrs_1
-}
-
-# Set 'constrs_1' fileset object
-set obj [get_filesets constrs_1]
-
-# Add/Import constrs file and set constrs file properties
-set file "[file normalize "$currentDir/cpm4_qdma/constraints/top_impl.xdc"]"
-set file_added [add_files -norecurse -fileset $obj [list $file]]
-set file "$currentDir/cpm4_qdma/constraints/top_impl.xdc"
-set file [file normalize $file]
-set file_obj [get_files -of_objects [get_filesets constrs_1] [list "*$file"]]
-set_property -name "file_type" -value "XDC" -objects $file_obj
-
-# Set 'constrs_1' fileset properties
-set obj [get_filesets constrs_1]
+set xdc1 [file join $currentDir cpm4_qdma constraints top_impl.xdc]
+import_files -fileset constrs_1 -norecurse $xdc1
 
 # None
 set infile [open [file join [get_property directory [current_project]] [current_project].srcs sources_1 imports src exdes design_1_wrapper.sv]]
@@ -218,25 +202,8 @@ set outfile  [open [file join [get_property directory [current_project]] [curren
 puts -nonewline $outfile $contents
 close $outfile
 
-# Create 'constrs_1' fileset (if not found)
-if {[string equal [get_filesets -quiet constrs_1] ""]} {
-  create_fileset -constrset constrs_1
-}
-
-# Set 'constrs_1' fileset object
-set obj [get_filesets constrs_1]
-
-# Add/Import constrs file and set constrs file properties
-set file "[file normalize "$currentDir/cpm4_qdma_perf/constraints/top_impl.xdc"]"
-set file_added [add_files -norecurse -fileset $obj [list $file]]
-set file "$currentDir/cpm4_qdma_perf/constraints/top_impl.xdc"
-set file [file normalize $file]
-set file_obj [get_files -of_objects [get_filesets constrs_1] [list "*$file"]]
-set_property -name "file_type" -value "XDC" -objects $file_obj
-
-# Set 'constrs_1' fileset properties
-set obj [get_filesets constrs_1]
-
+set xdc2 [file join $currentDir cpm4_qdma_perf constraints top_impl.xdc]
+import_files -fileset constrs_1 -norecurse $xdc2
 }
 
 }
@@ -283,24 +250,8 @@ set outfile  [open [file join [get_property directory [current_project]] [curren
 puts -nonewline $outfile $contents
 close $outfile
 
-# Create 'constrs_1' fileset (if not found)
-if {[string equal [get_filesets -quiet constrs_1] ""]} {
-  create_fileset -constrset constrs_1
-}
-
-# Set 'constrs_1' fileset object
-set obj [get_filesets constrs_1]
-
-# Add/Import constrs file and set constrs file properties
-set file "[file normalize "$currentDir/cpm5_qdma_mm_st/constraints/vpk120_schematic.xdc"]"
-set file_added [add_files -norecurse -fileset $obj [list $file]]
-set file "$currentDir/cpm5_qdma_mm_st/constraints/vpk120_schematic.xdc"
-set file [file normalize $file]
-set file_obj [get_files -of_objects [get_filesets constrs_1] [list "*$file"]]
-set_property -name "file_type" -value "XDC" -objects $file_obj
-
-# Set 'constrs_1' fileset properties
-set obj [get_filesets constrs_1]
+set xdc3 [file join $currentDir cpm5_qdma_mm_st constraints vpk120_schematic.xdc]
+import_files -fileset constrs_1 -norecurse $xdc3
 
 set_property strategy Performance_Explore [get_runs impl_1]
 
@@ -346,66 +297,36 @@ set outfile  [open [file join [get_property directory [current_project]] [curren
 puts -nonewline $outfile $contents
 close $outfile
 
-# Create 'constrs_1' fileset (if not found)
-if {[string equal [get_filesets -quiet constrs_1] ""]} {
-  create_fileset -constrset constrs_1
-}
+set xdc4 [file join $currentDir cpm5_qdma_dual_ctrl constraints vpk120_schematic.xdc]
+import_files -fileset constrs_1 -norecurse $xdc4
 
-# Set 'constrs_1' fileset object
-set obj [get_filesets constrs_1]
 
-# Add/Import constrs file and set constrs file properties
-set file "[file normalize "$currentDir/cpm5_qdma_dual_ctrl/constraints/vpk120_schematic.xdc"]"
-set file_added [add_files -norecurse -fileset $obj [list $file]]
-set file "$currentDir/cpm5_qdma_dual_ctrl/constraints/vpk120_schematic.xdc"
-set file [file normalize $file]
-set file_obj [get_files -of_objects [get_filesets constrs_1] [list "*$file"]]
-set_property -name "file_type" -value "XDC" -objects $file_obj
+set xdc5 [file join $currentDir cpm5_qdma_dual_ctrl constraints config_v_bs_compress.xdc]
+import_files -fileset constrs_1 -norecurse $xdc5
 
-# Add/Import constrs file and set constrs file properties
-set file "[file normalize "$currentDir/cpm5_qdma_dual_ctrl/constraints/config_v_bs_compress.xdc"]"
-set file_added [add_files -norecurse -fileset $obj [list $file]]
-set file "$currentDir/cpm5_qdma_dual_ctrl/constraints/config_v_bs_compress.xdc"
-set file [file normalize $file]
-set file_obj [get_files -of_objects [get_filesets constrs_1] [list "*$file"]]
-set_property -name "file_type" -value "XDC" -objects $file_obj
-
-# Set 'constrs_1' fileset properties
-set obj [get_filesets constrs_1]
-
-# Set 'utils_1' fileset object
-set obj [get_filesets utils_1]
-set files [list \
-    [file normalize "${currentDir}/cpm5_qdma_dual_ctrl/scripts/pre_place.tcl"] \
-]
-add_files -norecurse -fileset $obj $files
-
-# Set 'utils_1' fileset file properties for remote files
-set file "$currentDir/cpm5_qdma_dual_ctrl/scripts/pre_place.tcl"
-set file [file normalize $file]
-set file_obj [get_files -of_objects [get_filesets utils_1] [list "*$file"]]
-set_property -name "file_type" -value "TCL" -objects $file_obj
-
-set_property STEPS.PLACE_DESIGN.TCL.PRE [get_files pre_place.tcl -of [get_fileset utils_1] ] [get_runs impl_1]
-
-# Set 'utils_1' fileset file properties for local files
-# None
-
-# Set 'utils_1' fileset properties
-set obj [get_filesets utils_1]
+set utils [file join $currentDir cpm5_qdma_dual_ctrl scripts pre_place.tcl]
+import_files -fileset utils_1 -norecurse $utils
  
 } elseif {[regexp "CPM5_QDMA_Gen4x8_ST_Performance_Design" $options]} {
  set files [list \
  [file normalize "${currentDir}/cpm5_qdma_st_only/src/ST_c2h.sv"] \
  [file normalize "${currentDir}/cpm5_qdma_st_only/src/ST_c2h_cmpt.sv"] \
  [file normalize "${currentDir}/cpm5_qdma_st_only/src/ST_h2c.sv"] \
+ [file normalize "${currentDir}/cpm5_qdma_st_only/src/ST_h2c_crdt.sv"] \
  [file normalize "${currentDir}/cpm5_qdma_st_only/src/axi_st_module.sv"] \
  [file normalize "${currentDir}/cpm5_qdma_st_only/src/crc32_gen.sv"] \
  [file normalize "${currentDir}/cpm5_qdma_st_only/src/desc_cnt.sv"] \
  [file normalize "${currentDir}/cpm5_qdma_st_only/src/l3fwd_cntr.sv"] \
  [file normalize "${currentDir}/cpm5_qdma_st_only/src/next_queue_fifo.sv"] \
  [file normalize "${currentDir}/cpm5_qdma_st_only/src/perf_cntr.sv"] \
+ [file normalize "${currentDir}/cpm5_qdma_st_only/src/qdma_app.sv"] \
  [file normalize "${currentDir}/cpm5_qdma_st_only/src/queue_cnts.sv"] \
+ [file normalize "${currentDir}/cpm5_qdma_st_only/src/dsc_crdt_wrapper.sv"] \
+ [file normalize "${currentDir}/cpm5_qdma_st_only/src/dsc_byp_c2h.sv"] \
+ [file normalize "${currentDir}/cpm5_qdma_st_only/src/dsc_byp_h2c.sv"] \
+ [file normalize "${currentDir}/cpm5_qdma_st_only/src/dsc_crdt.sv"] \
+ [file normalize "${currentDir}/cpm5_qdma_st_only/src/dsc_crdt_mux.sv"] \
+ [file normalize "${currentDir}/cpm5_qdma_st_only/src/qdma_ecc_enc.sv"] \
  [file normalize "${currentDir}/cpm5_qdma_st_only/src/user_control.sv"] \
  [file normalize "${currentDir}/cpm5_qdma_st_only/src/qdma_stm_defines.svh"] \
  [file normalize "${currentDir}/cpm5_qdma_st_only/src/design_1_wrapper.sv"] \
@@ -432,45 +353,31 @@ set outfile  [open [file join [get_property directory [current_project]] [curren
 puts -nonewline $outfile $contents
 close $outfile
 
-# Create 'constrs_1' fileset (if not found)
-if {[string equal [get_filesets -quiet constrs_1] ""]} {
-  create_fileset -constrset constrs_1
-}
+set xdc6 [file join $currentDir cpm5_qdma_st_only constraints config_v_bs_compress.xdc]
+import_files -fileset constrs_1 -norecurse $xdc6
 
-# Set 'constrs_1' fileset object
-set obj [get_filesets constrs_1]
+set xdc7 [file join $currentDir cpm5_qdma_st_only constraints vpk120_schematic.xdc]
+import_files -fileset constrs_1 -norecurse $xdc7
 
-# Add/Import constrs file and set constrs file properties
-set file "[file normalize "$currentDir/cpm5_qdma_st_only/constraints/config_v_bs_compress.xdc"]"
-set file_added [add_files -norecurse -fileset $obj [list $file]]
-set file "$currentDir/cpm5_qdma_st_only/constraints/config_v_bs_compress.xdc"
-set file [file normalize $file]
-set file_obj [get_files -of_objects [get_filesets constrs_1] [list "*$file"]]
-set_property -name "file_type" -value "XDC" -objects $file_obj
+set xdc8 [file join $currentDir cpm5_qdma_st_only constraints constraint.xdc]
+import_files -fileset constrs_1 -norecurse $xdc8
 
-# Set 'constrs_1' fileset properties
-set obj [get_filesets constrs_1]
+set xdcfile [file join [get_property directory [current_project]] [current_project].srcs constrs_1 imports constraints constraint.xdc]
+set_property used_in_implementation false [get_files $xdcfile]
+
+
 
 # Set 'utils_1' fileset object
-set obj [get_filesets utils_1]
-set files [list \
-    [file normalize "${currentDir}/cpm5_qdma_st_only/scripts/pre_place.tcl"] \
-]
-add_files -norecurse -fileset $obj $files
 
-# Set 'utils_1' fileset file properties for remote files
-set file "$currentDir/cpm5_qdma_st_only/scripts/pre_place.tcl"
-set file [file normalize $file]
-set file_obj [get_files -of_objects [get_filesets utils_1] [list "*$file"]]
-set_property -name "file_type" -value "TCL" -objects $file_obj
+set utils [file join $currentDir cpm5_qdma_st_only scripts pre_place.tcl]
+import_files -fileset utils_1 -norecurse $utils
 
 set_property STEPS.PLACE_DESIGN.TCL.PRE [get_files pre_place.tcl -of [get_fileset utils_1] ] [get_runs impl_1]
 
 # Set 'utils_1' fileset file properties for local files
 # None
 
-# Set 'utils_1' fileset properties
-set obj [get_filesets utils_1]
+
 } elseif {[regexp "CPM5_QDMA_Gen5x8_MM_Performance_Design" $options]} {
 set board_part_name [get_property PART_NAME [current_board_part]]
 if [regexp "xcvp1202-vsva2785-2MHP-e-S" $board_part_name] {
@@ -502,32 +409,12 @@ set outfile  [open [file join [get_property directory [current_project]] [curren
 puts -nonewline $outfile $contents
 close $outfile
 
-# Create 'constrs_1' fileset (if not found)
-if {[string equal [get_filesets -quiet constrs_1] ""]} {
-  create_fileset -constrset constrs_1
-}
+set xdc9 [file join $currentDir cpm5_qdma_g5x8_mm_perf constraints vpk120_lpddr_3MC_no_interleave.xdc]
+import_files -fileset constrs_1 -norecurse $xdc9
 
-# Set 'constrs_1' fileset object
-set obj [get_filesets constrs_1]
 
-# Add/Import constrs file and set constrs file properties
-set file "[file normalize "$currentDir/cpm5_qdma_g5x8_mm_perf/constraints/vpk120_lpddr_3MC_no_interleave.xdc"]"
-set file_added [add_files -norecurse -fileset $obj [list $file]]
-set file "$currentDir/cpm5_qdma_g5x8_mm_perf/constraints/vpk120_lpddr_3MC_no_interleave.xdc"
-set file [file normalize $file]
-set file_obj [get_files -of_objects [get_filesets constrs_1] [list "*$file"]]
-set_property -name "file_type" -value "XDC" -objects $file_obj
-
-# Add/Import constrs file and set constrs file properties
-set file "[file normalize "$currentDir/cpm5_qdma_g5x8_mm_perf/constraints/config_v_bs_compress.xdc"]"
-set file_added [add_files -norecurse -fileset $obj [list $file]]
-set file "$currentDir/cpm5_qdma_g5x8_mm_perf/constraints/config_v_bs_compress.xdc"
-set file [file normalize $file]
-set file_obj [get_files -of_objects [get_filesets constrs_1] [list "*$file"]]
-set_property -name "file_type" -value "XDC" -objects $file_obj
-
-# Set 'constrs_1' fileset properties
-set obj [get_filesets constrs_1]
+set xdc10 [file join $currentDir cpm5_qdma_g5x8_mm_perf constraints config_v_bs_compress.xdc]
+import_files -fileset constrs_1 -norecurse $xdc10
 
 } else {
 puts "Warning: No design created as -2MP variant of VPK120 board is selected.
@@ -598,6 +485,9 @@ regenerate_bd_layout
 } elseif {([lsearch $options CPM5_Preset.VALUE] == -1) || ([lsearch $options "CPM5_QDMA_Gen4x8_ST_Performance_Design"] != -1)} {
 puts "INFO: CPM5_QDMA_Gen4x8_ST_Performance_Design preset is selected."
 source "$currentDir/cpm5_qdma_st_only/design_1_bd.tcl"
+set_property synth_checkpoint_mode Hierarchical [get_files $design_name.bd]
+#set_property synth_checkpoint_mode None [get_files $design_name.bd]
+generate_target all [get_files $design_name.bd]
 puts "INFO: EP bd generated"
 regenerate_bd_layout
 

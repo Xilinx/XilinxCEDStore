@@ -22,100 +22,130 @@ module user_control #(
   parameter                    TM_DSC_BITS  = 16,
   parameter                    C_CNTR_WIDTH = 32
 )(
-  input                        user_clk,
-  input                        user_reset_n,
-  input                        m_axil_wvalid,
-  input wire                   m_axil_wready,
-  input                 [31:0] m_axil_awaddr,
-  input                 [31:0] m_axil_wdata,
-  output logic          [31:0] m_axil_rdata,
-  input                 [31:0] m_axil_rdata_bram,
-  input                 [31:0] m_axil_araddr,
-  output                       gen_user_reset_n,
-  input                        axi_mm_h2c_valid,
-  input                        axi_mm_h2c_ready,
-  input                        axi_mm_c2h_valid,
-  input                        axi_mm_c2h_ready,
-  input                        axi_st_h2c_valid,
-  input                        axi_st_h2c_ready,
-  input                        axi_st_c2h_valid,
-  input                        axi_st_c2h_ready,
-  output reg            [31:0] control_reg_c2h,
-  output reg            [31:0] control_reg_c2h2,
-  output reg            [10:0] c2h_num_pkt,
-  output reg            [10:0] c2h_st_qid,
-  output                       clr_h2c_match,
-  output reg            [15:0] c2h_st_len,
-  input                        h2c_match,
-  input                 [10:0] h2c_qid,
-  input                 [31:0] h2c_count,
-  output reg            [31:0] cmpt_size,
-  output reg           [255:0] wb_dat,
-  output reg [TM_DSC_BITS-1:0] credit_out,
-  output reg                   credit_updt,
-  output reg [TM_DSC_BITS-1:0] credit_needed,
-  output reg [TM_DSC_BITS-1:0] credit_perpkt_in,
-  output wire           [15:0] buf_count,
-  input                        axis_c2h_drop,
-  input                        axis_c2h_drop_valid,
-  input                        c2h_st_marker_rsp,
-  
+  input 			user_clk,
+  input 			user_reset_n,
+  input 			m_axil_wvalid,
+  input wire 			m_axil_wready,
+  input [31:0] 			m_axil_awaddr,
+  input [31:0] 			m_axil_wdata,
+  output logic [31:0] 		m_axil_rdata,
+  input [31:0] 			m_axil_rdata_bram,
+  input [31:0] 			m_axil_araddr,
+  output 			gen_user_reset_n,
+  input 			axi_mm_h2c_valid,
+  input 			axi_mm_h2c_ready,
+  input 			axi_mm_c2h_valid,
+  input 			axi_mm_c2h_ready,
+  input 			axi_st_h2c_valid,
+  input 			axi_st_h2c_ready,
+  input 			axi_st_c2h_valid,
+  input 			axi_st_c2h_ready,
+  output reg [31:0] 		control_reg_c2h,
+  output reg [31:0] 		control_reg_c2h2,
+  output reg [10:0] 		c2h_num_pkt,
+  output reg [10:0] 		c2h_st_qid,
+  output 			clr_h2c_match,
+  output reg [15:0] 		c2h_st_len,
+  input 			h2c_match,
+  input [10:0] 			h2c_qid,
+  input [31:0] 			h2c_count,
+  output reg [31:0] 		cmpt_size,
+  output reg [255:0] 		wb_dat,
+  output reg [TM_DSC_BITS-1:0] 	credit_out,
+  output reg 			credit_updt,
+  output reg [TM_DSC_BITS-1:0] 	credit_needed,
+  output reg [TM_DSC_BITS-1:0] 	credit_perpkt_in,
+  output wire [15:0] 		buf_count,
+  input 			axis_c2h_drop,
+  input 			axis_c2h_drop_valid,
+  input 			c2h_st_marker_rsp,
+  output reg [3:0] 		dsc_bypass,
+  output wire [6:0] 		pfch_byp_tag,
+  output wire [11:0] 		pfch_byp_tag_qid,
+
+  // user flr and IRD
+  input [11:0] 			usr_flr_fnc,
+  input 			usr_flr_set,
+  input 			usr_flr_clr,
+  output reg [11:0] 		usr_flr_done_fnc,
+  output reg 			usr_flr_done_vld,
+  input 			usr_irq_out_fail,
+  input 			usr_irq_out_ack,
+  output reg [10:0] 		usr_irq_in_vec,
+  output reg [11:0] 		usr_irq_in_fnc,
+  output reg 			usr_irq_in_vld,
+
   // tm interface signals
-  input                        tm_dsc_sts_vld,
-  input                        tm_dsc_sts_qen,
-  input                        tm_dsc_sts_byp,
-  input                        tm_dsc_sts_dir,
-  input                        tm_dsc_sts_mm,
-  input                 [10:0] tm_dsc_sts_qid,
-  input      [TM_DSC_BITS-1:0] tm_dsc_sts_avl,
-  input                        tm_dsc_sts_qinv,
-  input                        tm_dsc_sts_irq_arm,
-  output                       tm_dsc_sts_rdy,
+  input 			tm_dsc_sts_vld,
+  input 			tm_dsc_sts_qen,
+  input 			tm_dsc_sts_byp,
+  input 			tm_dsc_sts_dir,
+  input 			tm_dsc_sts_mm,
+  input [10:0] 			tm_dsc_sts_qid,
+  input [TM_DSC_BITS-1:0] 	tm_dsc_sts_avl,
+  input 			tm_dsc_sts_qinv,
+  input 			tm_dsc_sts_irq_arm,
+  output 			tm_dsc_sts_rdy,
   
   // H2C Checking
-  input                        stat_vld,
-  input                 [31:0] stat_err,
+  input 			stat_vld,
+  input [31:0] 			stat_err,
   
   // qid output signals
-  input                        qid_rdy,
-  output                       qid_vld,
-  output                [10:0] qid,
-  output              [16-1:0] qid_desc_avail,
-  input                        desc_cnt_dec,
-  input                 [10:0] desc_cnt_dec_qid,
-  input                        requeue_vld,
-  input                 [10:0] requeue_qid,
-  output                       requeue_rdy,
-  output reg          [16-1:0] dbg_userctrl_credits,
+  input 			qid_rdy,
+  output 			qid_vld,
+  output [10:0] 		qid,
+  output [16-1:0] 		qid_desc_avail,
+  input 			desc_cnt_dec,
+  input [10:0] 			desc_cnt_dec_qid,
+  input 			requeue_vld,
+  input [10:0] 			requeue_qid,
+  output 			requeue_rdy,
+  output reg [16-1:0] 		dbg_userctrl_credits,
+  output reg [15:0] 		sdi_count_reg, // default set to 64
   
   // Performance counter signals
   output reg [C_CNTR_WIDTH-1:0] user_cntr_max,
-  output reg                    user_cntr_rst,
-  output wire                   user_cntr_read,
-  input      [C_CNTR_WIDTH-1:0] free_cnts,
-  input      [C_CNTR_WIDTH-1:0] idle_cnts,
-  input      [C_CNTR_WIDTH-1:0] busy_cnts,
-  input      [C_CNTR_WIDTH-1:0] actv_cnts,
+  output reg 			user_cntr_rst,
+  output wire 			user_cntr_read,
+  input [C_CNTR_WIDTH-1:0] 	free_cnts,
+  input [C_CNTR_WIDTH-1:0] 	idle_cnts,
+  input [C_CNTR_WIDTH-1:0] 	busy_cnts,
+  input [C_CNTR_WIDTH-1:0] 	actv_cnts,
   
   output reg [C_CNTR_WIDTH-1:0] h2c_user_cntr_max,
-  output reg                    h2c_user_cntr_rst,
-  output wire                   h2c_user_cntr_read,
-  input      [C_CNTR_WIDTH-1:0] h2c_free_cnts,
-  input      [C_CNTR_WIDTH-1:0] h2c_idle_cnts,
-  input      [C_CNTR_WIDTH-1:0] h2c_busy_cnts,
-  input      [C_CNTR_WIDTH-1:0] h2c_actv_cnts,
+  output reg 			h2c_user_cntr_rst,
+  output wire 			h2c_user_cntr_read,
+  input [C_CNTR_WIDTH-1:0] 	h2c_free_cnts,
+  input [C_CNTR_WIDTH-1:0] 	h2c_idle_cnts,
+  input [C_CNTR_WIDTH-1:0] 	h2c_busy_cnts,
+  input [C_CNTR_WIDTH-1:0] 	h2c_actv_cnts,
+
+  // debug counters
+  input [10:0] 			c2h_data_cnt_q0,
+  input [10:0] 			c2h_data_cnt_q1,
+  input [10:0] 			c2h_data_cnt_q2,
+  input [10:0] 			c2h_data_cnt_q3,
+  input [10:0] 			c2h_cmpt_cnt_q0,
+  input [10:0] 			c2h_cmpt_cnt_q1,
+  input [10:0] 			c2h_cmpt_cnt_q2,
+  input [10:0] 			c2h_cmpt_cnt_q3,
+  input [10:0] 			c2h_bypin_cnt_q0,
+  input [10:0] 			c2h_bypin_cnt_q1,
+  input [10:0] 			c2h_bypin_cnt_q2,
+  input [10:0] 			c2h_bypin_cnt_q3,
   
   // l3fwd latency signals
   output reg [C_CNTR_WIDTH-1:0] user_l3fwd_max,
-  output reg                    user_l3fwd_en,
-  output reg                    user_l3fwd_mode,
-  output reg                    user_l3fwd_rst,
-  output wire                   user_l3fwd_read,
+  output reg 			user_l3fwd_en,
+  output reg 			user_l3fwd_mode,
+  output reg 			user_l3fwd_rst,
+  output wire 			user_l3fwd_read,
   
-  input      [C_CNTR_WIDTH-1:0] max_latency,
-  input      [C_CNTR_WIDTH-1:0] min_latency,
-  input      [C_CNTR_WIDTH-1:0] sum_latency,
-  input      [C_CNTR_WIDTH-1:0] num_pkt_rcvd
+  input [C_CNTR_WIDTH-1:0] 	max_latency,
+  input [C_CNTR_WIDTH-1:0] 	min_latency,
+  input [C_CNTR_WIDTH-1:0] 	sum_latency,
+  input [C_CNTR_WIDTH-1:0] 	num_pkt_rcvd
 );
 
   reg            [9:0]  user_reset_counter; // Used to assert gen_user_reset_n
@@ -142,8 +172,15 @@ module user_control #(
   reg            [31:0] h2c_stat;
   reg                   c2h_stat;
   
-  wire            [6:0] qid_short; // A temporary reduction of QID width
-  assign qid = {{4{1'b0}}, qid_short};
+  wire            [7:0] qid_short; // A temporary reduction of QID width
+   reg           [31:0]	pfch_byp_tag_reg;
+   reg [31:0]      usr_irq;
+   reg             usr_irq_fail;
+   reg             usr_irq_d;
+   
+
+//  assign qid = {{4{1'b0}}, qid_short};
+  assign qid = ( 'h0 | qid_short);
   
   always @ (posedge user_clk) begin
     if (~user_reset_n) begin
@@ -167,7 +204,21 @@ module user_control #(
     end
   end
   
-  
+  // Checking FLR request and provide ack
+   
+    always @ (posedge user_clk) begin
+      if (~user_reset_n) begin
+         usr_flr_done_fnc <= 'h0;
+	 usr_flr_done_vld <= 0;
+	 
+      end
+      else begin
+	 usr_flr_done_vld <= usr_flr_set;
+	 usr_flr_done_fnc <= usr_flr_set ? usr_flr_fnc : 'h0;
+      end
+   end
+
+ 
   //
   // To Control AXI-Stream pattern generator and checker
   //
@@ -178,6 +229,11 @@ module user_control #(
   //                  [1] start C2H
   //                  [2] Immediate data
   //                  [3] Every packet starts with 00 insted of continous data stream until number of pakets is complete
+  //                  [5] Send Marker
+  //                  [18] Stop data traffic immediately
+  //                  [21] Stop CMPT traffic immediately
+  //                  [28:24] Batching credits. 0 : 1 credit per Q, 7 : 8 credit per Q (+1)
+  //                  [30] Hold C2h credit input so no data will be filled in FIFO. 
   //                  [31] gen_user_reset_n
   // address 0x00C0 : H2C Control
   //                  [0] clear match for H2C transfer
@@ -214,14 +270,14 @@ module user_control #(
       c2h_st_qid       <= 1;
       c2h_st_len       <= 16'h80;  // default transfer size set to 128Bytes
       control_reg_h2c  <= 32'h0;
-      control_reg_c2h  <= 32'h0;
+      control_reg_c2h  <= 32'h09000000;    // setting default batch to 9
       control_reg_c2h2 <= 32'h0 | QID_MAX; // Initialize to the QID_MAX supported by the design
       wb_dat[255:0]    <= 0;
       cmpt_size[31:0]  <= 0;
       c2h_num_pkt      <= 11'h1;
       perf_ctl         <= 0;
 //      perf_ctl         <= 5'b11001;
-      scratch_reg1     <= 'd1809051; // After reset it holds the bitfile version number. In Decimal YYMMDDRev
+      scratch_reg1     <= 'h20230606; // After reset it holds the bitfile version number. In Decimal YYMMDDRev
       scratch_reg2     <=0;
       c2h_st_buffsz    <=16'h1000;  // default buff size 4K
       dbg_userctrl_credits<='d64;   // default to 64B
@@ -233,6 +289,10 @@ module user_control #(
       user_l3fwd_mode      <=1'b0;
       user_l3fwd_en        <=1'b0;
       user_l3fwd_rst       <=1'b0;
+      dsc_bypass           <=4'h0;
+      pfch_byp_tag_reg     <=32'h0;
+      sdi_count_reg        <=32'h8;
+      usr_irq              <= 'h0;
     end else 
     if (m_axil_wvalid && m_axil_wready ) begin
       case (m_axil_awaddr[15:0])
@@ -241,6 +301,7 @@ module user_control #(
         16'h08 : control_reg_c2h    <= m_axil_wdata[31:0];
         16'h0C : control_reg_h2c    <= m_axil_wdata[31:0];
         16'h20 : c2h_num_pkt[10:0]  <= m_axil_wdata[10:0];
+        16'h24 : pfch_byp_tag_reg   <= m_axil_wdata[31:0];
         16'h30 : wb_dat[31:0]       <= m_axil_wdata[31:0];
         16'h34 : wb_dat[63:32]      <= m_axil_wdata[31:0];
         16'h38 : wb_dat[95:64]      <= m_axil_wdata[31:0];
@@ -250,12 +311,15 @@ module user_control #(
         16'h48 : wb_dat[223:192]    <= m_axil_wdata[31:0];
         16'h4C : wb_dat[255:224]    <= m_axil_wdata[31:0];
         16'h50 : cmpt_size[31:0]    <= m_axil_wdata[31:0];
+        16'h58 : sdi_count_reg      <= m_axil_wdata[31:0];
         16'h60 : scratch_reg1[31:0] <= m_axil_wdata[31:0];
         16'h64 : scratch_reg2[31:0] <= m_axil_wdata[31:0];
+        16'h68 : usr_irq[31:0]      <= m_axil_wdata[31:0];
         16'h70 : perf_ctl[4:0]      <= m_axil_wdata[4:0];
         16'h84 : c2h_st_buffsz      <= m_axil_wdata[15:0];
         16'h90 : dbg_userctrl_credits <= m_axil_wdata[15:0];
         16'h94 : control_reg_c2h2     <= m_axil_wdata[31:0];
+        16'h98 : dsc_bypass           <= m_axil_wdata[3:0];
         16'h9C : user_cntr_max[31:0]  <= m_axil_wdata[31:0];
         16'hA0 : user_cntr_max[63:32] <= m_axil_wdata[31:0];
         16'hA4 : user_cntr_rst        <= m_axil_wdata[0];
@@ -271,7 +335,7 @@ module user_control #(
       control_reg_c2h <= {control_reg_c2h[31:2],start_c2h,control_reg_c2h[0]};
       control_reg_h2c <= {control_reg_h2c[31:1],clr_h2c_match};
       perf_ctl[4:0] <= {perf_ctl[4:3],perf_clear,perf_stop, (perf_ctl[0]& ~perf_stop)};
-      
+      usr_irq[31:0] <= {usr_irq[31:1],usr_irq_in_vld};
       if (user_reset_counter[8]) begin // 256 clock cycle
         control_reg_c2h[31] <= 1'b0;
       end
@@ -289,6 +353,7 @@ module user_control #(
       16'h14 : m_axil_rdata  <= h2c_stat;
       16'h18 : m_axil_rdata  <= (32'h0 | c2h_stat);
       16'h20 : m_axil_rdata  <= (32'h0 | c2h_num_pkt[10:0]);
+      16'h24 : m_axil_rdata  <= (32'h0 | pfch_byp_tag_reg );
       16'h30 : m_axil_rdata  <= wb_dat[31:0];
       16'h34 : m_axil_rdata  <= wb_dat[63:32];
       16'h38 : m_axil_rdata  <= wb_dat[95:64];
@@ -298,8 +363,10 @@ module user_control #(
       16'h48 : m_axil_rdata  <= wb_dat[223:192];
       16'h4C : m_axil_rdata  <= wb_dat[255:224];
       16'h50 : m_axil_rdata  <= cmpt_size[31:0];
+      16'h58 : m_axil_rdata  <= (32'h0 | sdi_count_reg );
       16'h60 : m_axil_rdata  <= scratch_reg1[31:0];
       16'h64 : m_axil_rdata  <= scratch_reg2[31:0];
+      16'h68 : m_axil_rdata  <= {usr_irq_fail,  usr_irq[30:0]};
       16'h70 : m_axil_rdata  <= {32'h0 | perf_ctl[4:0]};
       16'h74 : m_axil_rdata  <= data_count[31:0];
       16'h78 : m_axil_rdata  <= data_count[63:32];
@@ -310,6 +377,7 @@ module user_control #(
       16'h8C : m_axil_rdata  <= {32'h0 | axis_pkt_accept[7:0]};
       16'h90 : m_axil_rdata  <= {32'h0 | dbg_userctrl_credits};
       16'h94 : m_axil_rdata  <= (32'h0 | control_reg_c2h2[31:0]);
+      16'h98 : m_axil_rdata  <= {32'h0 | dsc_bypass[3:0]};
       16'h9C : m_axil_rdata  <= (32'h0 | user_cntr_max[31:0]);
       16'hA0 : m_axil_rdata  <= (32'h0 | user_cntr_max[63:32]);
       16'hA4 : m_axil_rdata  <= (32'h0 | user_cntr_rst);
@@ -343,9 +411,18 @@ module user_control #(
       16'h120: m_axil_rdata  <= (32'h0 | sum_latency[63:32]);
       16'h124: m_axil_rdata  <= (32'h0 | num_pkt_rcvd[31:0]);
       16'h128: m_axil_rdata  <= (32'h0 | num_pkt_rcvd[63:32]);
+      16'h130: m_axil_rdata  <= (32'h0 | {c2h_data_cnt_q1, 5'b0, c2h_data_cnt_q0});
+      16'h134: m_axil_rdata  <= (32'h0 | {c2h_data_cnt_q3, 5'b0, c2h_data_cnt_q2});
+      16'h138: m_axil_rdata  <= (32'h0 | {c2h_cmpt_cnt_q1, 5'b0, c2h_cmpt_cnt_q0});
+      16'h13C: m_axil_rdata  <= (32'h0 | {c2h_cmpt_cnt_q3, 5'b0, c2h_cmpt_cnt_q2});
+      16'h140: m_axil_rdata  <= (32'h0 | {c2h_bypin_cnt_q1, 5'b0, c2h_bypin_cnt_q0});
+      16'h144: m_axil_rdata  <= (32'h0 | {c2h_bypin_cnt_q3, 5'b0, c2h_bypin_cnt_q2});
       default : m_axil_rdata <= 32'h0;
     endcase // case (m_axil_araddr[31:0]...
   end // always_comb begin
+
+  assign pfch_byp_tag[6:0]      = pfch_byp_tag_reg[6:0];
+  assign pfch_byp_tag_qid[11:0] = pfch_byp_tag_reg[27:16]; 
   
   // Clear Performance Counter once all counters are read
   reg [7:0] user_fiba_read;      // [7/6] = F/ree_cnts read; [5/4] = I/dle_cnts read; [3/2] = B/usy_cnts read; [1/0] = A/ctv_cnts read
@@ -498,13 +575,15 @@ module user_control #(
     .DIR              ( 1           ), // C2H
     .DESC_CNT_WIDTH   ( 16          ),
     .DESC_AVAIL_WIDTH ( TM_DSC_BITS ),
-    .MAX_QUEUES       ( 128         ), // Limiting to 128 because 11 bits QID is using too much logic
-    .QUEUE_ID_WIDTH   ( 7           )  // Limiting to 128 because 11 bits QID is using too much logic
+//    .MAX_QUEUES       ( 128         ), // Limiting to 128 because 11 bits QID is using too much logic
+    .MAX_QUEUES       ( QID_MAX     ), // Limiting to 128 because 11 bits QID is using too much logic
+    .QUEUE_ID_WIDTH   ( 8           )  // Limiting to 128 because 11 bits QID is using too much logic
   
   ) queue_cnts_i (
   
     .user_clk           ( user_clk           ),
     .user_reset_n       ( user_reset_n & gen_user_reset_n ),
+    .knob                ( {31'h0,control_reg_c2h[30]}), 
 
   // tm interface signals
     .tm_dsc_sts_vld     ( tm_dsc_sts_vld     ),
@@ -513,7 +592,7 @@ module user_control #(
     .tm_dsc_sts_dir     ( tm_dsc_sts_dir     ), // 0=H2C; 1=C2H
     .tm_dsc_sts_mm      ( tm_dsc_sts_mm      ), // 0=ST; 1=MM
 //    .tm_dsc_sts_qid     ( tm_dsc_sts_qid     ), // QID for update
-    .tm_dsc_sts_qid     ( tm_dsc_sts_qid[6:0] ), // QID for update
+    .tm_dsc_sts_qid     ( tm_dsc_sts_qid[7:0] ), // QID for update
     .tm_dsc_sts_avl     ( tm_dsc_sts_avl     ), // Number of new descriptors since last update
     .tm_dsc_sts_qinv    ( tm_dsc_sts_qinv    ), // 1 indicated to invalidate the queue
     .tm_dsc_sts_irq_arm ( tm_dsc_sts_irq_arm ), // 1 indicated to that the driver is using interrupts
@@ -526,9 +605,9 @@ module user_control #(
     .qid                ( qid_short          ),
     .qid_desc_avail     ( qid_desc_avail     ),
     .desc_cnt_dec       ( desc_cnt_dec       ), // decrement the qid count by 1
-    .desc_cnt_dec_qid   ( desc_cnt_dec_qid[6:0] ), // qid for desc_cnt_dec signal
+    .desc_cnt_dec_qid   ( desc_cnt_dec_qid[7:0] ), // qid for desc_cnt_dec signal
     .requeue_vld        ( requeue_vld        ), // requeue the specified qid
-    .requeue_qid        ( requeue_qid[6:0]   ), // qid to be requeued
+    .requeue_qid        ( requeue_qid[7:0]   ), // qid to be requeued
     .requeue_rdy        ( requeue_rdy        ), // requeue accepted
     .back_pres          ( control_reg_c2h[4] ),
     .turn_off           ( control_reg_c2h[3] )
@@ -537,4 +616,24 @@ module user_control #(
   
   //assign m_axil_wready = 1'b1;
 
+   //USR IRQ
+   assign usr_irq_in_vec = {6'h0,usr_irq[8:4]};   // vector
+   assign usr_irq_in_fnc = usr_irq[22:12]; // function number
+
+   always @(posedge user_clk) begin
+     if (~user_reset_n) begin
+          usr_irq_d <= 1'b0;
+          usr_irq_in_vld <= 1'b0;
+	  usr_irq_fail <= 1'b0;
+     end	      
+     else begin
+	  usr_irq_d <= usr_irq[0];
+          usr_irq_in_vld <= (usr_irq[0] & ~usr_irq_d) ? 1'b1 : (usr_irq_out_ack) ? 1'b0 : usr_irq_in_vld;
+	
+	  usr_irq_fail <= usr_irq_out_fail ? 1'b1 : (m_axil_wvalid && m_axil_wready && (m_axil_awaddr ==16'h68) && m_axil_wdata[0]) ? 1'b0 : usr_irq_fail;
+	
+     end 
+   end // always @ (posedge axi_aclk)
+   
+   
 endmodule // user_control
