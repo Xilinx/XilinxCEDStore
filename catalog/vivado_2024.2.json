@@ -271,11 +271,11 @@
         "name": "cpm_pcie_qdma_ep",
         "display": "Versal CPM QDMA EP Design",
         "latest_revision": "1.0",
-        "commit_id": "5258441b859a8a655b24e4e80fbebea3cb885a39",
+        "commit_id": "7d9adf4b2115c745b7f344036f7b4ee8a43a18cf",
         "revisions": [
           {
             "revision": "1.0",
-            "commit_id": "5258441b859a8a655b24e4e80fbebea3cb885a39",
+            "commit_id": "7d9adf4b2115c745b7f344036f7b4ee8a43a18cf",
             "date": "21-10-2024:18:11:37",
             "history": "Added board Versal CPM QDMA EP Design v1.0"
           }
@@ -290,11 +290,11 @@
         "name": "cpm_qdma_ep_part",
         "display": "Versal CPM QDMA EP Design (Part based)",
         "latest_revision": "1.0",
-        "commit_id": "5258441b859a8a655b24e4e80fbebea3cb885a39",
+        "commit_id": "7d9adf4b2115c745b7f344036f7b4ee8a43a18cf",
         "revisions": [
           {
             "revision": "1.0",
-            "commit_id": "5258441b859a8a655b24e4e80fbebea3cb885a39",
+            "commit_id": "7d9adf4b2115c745b7f344036f7b4ee8a43a18cf",
             "date": "21-10-2024:18:11:37",
             "history": "Added board Versal CPM QDMA EP Design (Part based) v1.0"
           }
