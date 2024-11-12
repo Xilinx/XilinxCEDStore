@@ -652,7 +652,8 @@ xpm_fifo_axis #(
   .PACKET_FIFO("false"),          // String
   .PROG_EMPTY_THRESH(1024),       // DECIMAL -- Not used
 //  .PROG_FULL_THRESH(2048-(BYTE_CREDIT/DATA_WIDTH)-1), // DECIMAL -- When asserted, FIFO only have spot for one descriptor left.
-  .PROG_FULL_THRESH(2048-(4096/512)-1), // DECIMAL -- Hard code value because smaller BYTE_CREDIT makes the limit too high and XPM doesn't support > 2043
+  .PROG_FULL_THRESH(2048-(4096/(512/8))-1), // DECIMAL -- Hard code value because smaller BYTE_CREDIT makes the limit too high and XPM doesn't support > 2043
+//  .PROG_FULL_THRESH(80), // DECIMAL -- Hard code value because smaller BYTE_CREDIT makes the limit too high and XPM doesn't support > 2043
   .RD_DATA_COUNT_WIDTH(11),       // DECIMAL
   .RELATED_CLOCKS(0),             // DECIMAL
   .TDATA_WIDTH(DATA_WIDTH),       // DECIMAL

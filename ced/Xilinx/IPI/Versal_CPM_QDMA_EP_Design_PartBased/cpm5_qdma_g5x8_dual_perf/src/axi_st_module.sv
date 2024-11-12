@@ -95,7 +95,6 @@ module axi_st_module
     output                         s_axis_c2h_ctrl_user_trig /* synthesis syn_keep = 1 */,
     output                         s_axis_c2h_ctrl_dis_cmpt /* synthesis syn_keep = 1 */,
     output                         s_axis_c2h_ctrl_imm_data /* synthesis syn_keep = 1 */,
-    output [6:0]                   s_axis_c2h_ctrl_ecc /* synthesis syn_keep = 1 */,
     output                         s_axis_c2h_tvalid /* synthesis syn_keep = 1 */,
     input                          s_axis_c2h_tready /* synthesis syn_keep = 1 */,
     output                         s_axis_c2h_tlast /* synthesis syn_keep = 1 */,
@@ -214,7 +213,7 @@ module axi_st_module
     wire                         s_axis_c2h_tready_l3fwd;
     wire                         s_axis_c2h_tlast_l3fwd;
     wire [5:0]                   s_axis_c2h_mty_l3fwd;
-
+    
     // l3fwd_cntr to crc32_gen signals
     wire [C_DATA_WIDTH-1 :0]     s_axis_c2h_tdata_crc;
     wire                         s_axis_c2h_ctrl_marker_crc;
@@ -227,7 +226,7 @@ module axi_st_module
     wire                         s_axis_c2h_tready_crc;
     wire                         s_axis_c2h_tlast_crc;
     wire [5:0]                   s_axis_c2h_mty_crc;
-    
+
     // l3fwd_cntr to ST_h2c signals
     wire [C_DATA_WIDTH-1 :0]     m_axis_h2c_tdata_l3fwd;
     wire [C_DATA_WIDTH/8-1 :0]   m_axis_h2c_dpar_l3fwd;
@@ -274,7 +273,6 @@ module axi_st_module
    assign s_axis_c2h_ctrl_len_l3fwd       = control_reg_c2h[2] ? 'd0 : c2h_st_len; // in case of Immediate data, length = 0
    
    // Parity Generator for C2H data bus
-   assign s_axis_c2h_ctrl_ecc = 7'h0; // To be added
    generate
    begin
      genvar pa;
@@ -345,15 +343,14 @@ module axi_st_module
      .s_axis_c2h_mty_o            ( s_axis_c2h_mty                  ),
      .s_axis_c2h_tcrc_o           ( s_axis_c2h_tcrc                 )
    );
-  
+
   ST_c2h #(
     .DATA_WIDTH       ( C_DATA_WIDTH      ),
     .QID_WIDTH        ( QID_WIDTH         ),
     .LEN_WIDTH        ( 16                ),
     .PATT_WIDTH       ( 16                ),
     .TM_DSC_BITS      ( 16                ),
-//    .BYTE_CREDIT      ( 4096              ),
-    .BYTE_CREDIT      ( BYTE_CREDIT       ), // DPDK Hack
+    .BYTE_CREDIT      ( BYTE_CREDIT       ),
     .MAX_CRDT         ( 4                 ),
     .QID_MAX          ( QID_MAX           ),
     .SEED             ( 32'hb105f00d      ),
@@ -450,8 +447,7 @@ module axi_st_module
     .LEN_WIDTH           ( 16                               ),
     .PATT_WIDTH          ( 16                               ),
     .TM_DSC_BITS         ( TM_DSC_BITS                      ),
-//    .BYTE_CREDIT         ( 4096                             ),
-    .BYTE_CREDIT         ( BYTE_CREDIT                      ), // DPDK Hack
+    .BYTE_CREDIT         ( BYTE_CREDIT                      ),
     .MAX_CRDT            ( 4                                ),
     .SEED                ( 32'hb105f00d                     ),
     .TCQ                 ( 1                                )
@@ -528,11 +524,9 @@ module axi_st_module
     .user_clk                    ( user_clk                        ),
 
     .user_l3fwd_max              ( user_l3fwd_max                  ),
-//    .user_l3fwd_en               ( user_l3fwd_en                   ),
-    .user_l3fwd_en               ( 1'b0                   ),
+    .user_l3fwd_en               ( user_l3fwd_en                   ),
     .user_l3fwd_mode             ( user_l3fwd_mode                 ),
-//    .user_l3fwd_rst              ( user_l3fwd_rst                  ),
-    .user_l3fwd_rst              ( 1'b1                  ),
+    .user_l3fwd_rst              ( user_l3fwd_rst                  ),
     .user_l3fwd_read             ( user_l3fwd_read                 ),
 
     .s_axis_c2h_tdata_i          ( s_axis_c2h_tdata_l3fwd          ),
@@ -558,7 +552,7 @@ module axi_st_module
     .s_axis_c2h_tready_o         ( s_axis_c2h_tready_crc           ),
     .s_axis_c2h_tlast_o          ( s_axis_c2h_tlast_crc            ),
     .s_axis_c2h_mty_o            ( s_axis_c2h_mty_crc              ),
-  
+
     .m_axis_h2c_tdata_i          ( m_axis_h2c_tdata                ),
     .m_axis_h2c_dpar_i           ( m_axis_h2c_dpar                 ),
     .m_axis_h2c_tvalid_i         ( m_axis_h2c_tvalid               ),

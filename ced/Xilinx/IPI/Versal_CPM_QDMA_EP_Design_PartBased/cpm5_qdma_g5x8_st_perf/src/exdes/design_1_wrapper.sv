@@ -862,6 +862,7 @@ module design_1_wrapper #
     .C_CNTR_WIDTH       ( C_CNTR_WIDTH),
     .QID_MAX             ( QID_MAX),
     .CRC_WIDTH           ( CRC_WIDTH          ),
+    .BYTE_CREDIT        ( 4096 ),      // DESCRIPTOR size from application
     .TCQ                 ( TCQ)
 	     ) 
    dma1_qdma_app_i 

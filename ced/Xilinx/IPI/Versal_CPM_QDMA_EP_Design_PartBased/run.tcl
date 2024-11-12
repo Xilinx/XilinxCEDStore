@@ -46,6 +46,7 @@ set files [list \
  [file normalize "${currentDir}/cpm5_qdma_g5x8_st_perf/src/exdes/perf_cntr.sv"]\
  [file normalize "${currentDir}/cpm5_qdma_g5x8_st_perf/src/exdes/qdma_stm_defines.svh"]\
  [file normalize "${currentDir}/cpm5_qdma_g5x8_st_perf/src/exdes/qdma_app.sv"]\
+ [file normalize "${currentDir}/cpm5_qdma_g5x8_st_perf/src/exdes/qdma_ecc_enc.sv"]\
  [file normalize "${currentDir}/cpm5_qdma_g5x8_st_perf/src/exdes/queue_cnts.sv"]\
  [file normalize "${currentDir}/cpm5_qdma_g5x8_st_perf/src/exdes/user_control.sv"]\
  [file normalize "${currentDir}/cpm5_qdma_g5x8_st_perf/src/exdes/design_1_wrapper.sv"]\
@@ -74,27 +75,19 @@ if {[string equal [get_filesets -quiet constrs_1] ""]} {
   create_fileset -constrset constrs_1
 }
 
-# Set 'constrs_1' fileset object
-set obj [get_filesets constrs_1]
+set xdc1 [file join $currentDir cpm5_qdma_g5x8_st_perf constraints config_v_bs_compress.xdc]
+import_files -fileset constrs_1 -norecurse $xdc1
 
-# Add/Import constrs file and set constrs file properties
-set file "[file normalize "$currentDir/cpm5_qdma_g5x8_st_perf/constraints/config_v_bs_compress.xdc"]"
-set file_added [add_files -norecurse -fileset $obj [list $file]]
-set file "$currentDir/cpm5_qdma_g5x8_st_perf/constraints/config_v_bs_compress.xdc"
-set file [file normalize $file]
-set file_obj [get_files -of_objects [get_filesets constrs_1] [list "*$file"]]
-set_property -name "file_type" -value "XDC" -objects $file_obj
+set xdc2 [file join $currentDir cpm5_qdma_g5x8_st_perf constraints vpk120_schematic.xdc]
+import_files -fileset constrs_1 -norecurse $xdc2
 
-# Add/Import constrs file and set constrs file properties
-set file "[file normalize "$currentDir/cpm5_qdma_g5x8_st_perf/constraints/vpk120_schematic.xdc"]"
-set file_added [add_files -norecurse -fileset $obj [list $file]]
-set file "$currentDir/cpm5_qdma_g5x8_st_perf/constraints/vpk120_schematic.xdc"
-set file [file normalize $file]
-set file_obj [get_files -of_objects [get_filesets constrs_1] [list "*$file"]]
-set_property -name "file_type" -value "XDC" -objects $file_obj
 
-# Set 'constrs_1' fileset properties
-set obj [get_filesets constrs_1]
+set xdc3 [file join $currentDir cpm5_qdma_g5x8_st_perf constraints constraint.xdc]
+import_files -fileset constrs_1 -norecurse $xdc3
+
+set xdcfile1 [file join [get_property directory [current_project]] [current_project].srcs constrs_1 imports constraints constraint.xdc]
+set_property used_in_implementation false [get_files $xdcfile1]
+
 } elseif {[regexp "CPM5_QDMA_Dual_Gen5x8_ST_Performance_Design" $options]} {
 
 puts "INFO: default CPM5_QDMA_Dual_Gen5x8_ST_Performance_Design preset is selected."
@@ -116,6 +109,7 @@ set files [list \
  [file normalize "${currentDir}/cpm5_qdma_g5x8_dual_perf/src/perf_cntr.sv"] \
  [file normalize "${currentDir}/cpm5_qdma_g5x8_dual_perf/src/qdma_stm_defines.svh"] \
  [file normalize "${currentDir}/cpm5_qdma_g5x8_dual_perf/src/qdma_app.sv"] \
+ [file normalize "${currentDir}/cpm5_qdma_g5x8_dual_perf/src/qdma_ecc_enc.sv"] \
  [file normalize "${currentDir}/cpm5_qdma_g5x8_dual_perf/src/queue_cnts.sv"] \
  [file normalize "${currentDir}/cpm5_qdma_g5x8_dual_perf/src/user_control.sv"] \
  [file normalize "${currentDir}/cpm5_qdma_g5x8_dual_perf/src/design_1_wrapper.sv"] \
@@ -148,24 +142,17 @@ if {[string equal [get_filesets -quiet constrs_1] ""]} {
 # Set 'constrs_1' fileset object
 set obj [get_filesets constrs_1]
 
-# Add/Import constrs file and set constrs file properties
-set file "[file normalize "$currentDir/cpm5_qdma_g5x8_dual_perf/constraints/config_v_bs_compress.xdc"]"
-set file_added [add_files -norecurse -fileset $obj [list $file]]
-set file "$currentDir/cpm5_qdma_g5x8_dual_perf/constraints/config_v_bs_compress.xdc"
-set file [file normalize $file]
-set file_obj [get_files -of_objects [get_filesets constrs_1] [list "*$file"]]
-set_property -name "file_type" -value "XDC" -objects $file_obj
+set xdc4 [file join $currentDir cpm5_qdma_g5x8_dual_perf constraints config_v_bs_compress.xdc]
+import_files -fileset constrs_1 -norecurse $xdc4
 
-# Add/Import constrs file and set constrs file properties
-set file "[file normalize "$currentDir/cpm5_qdma_g5x8_dual_perf/constraints/vpk120_schematic.xdc"]"
-set file_added [add_files -norecurse -fileset $obj [list $file]]
-set file "$currentDir/cpm5_qdma_g5x8_dual_perf/constraints/vpk120_schematic.xdc"
-set file [file normalize $file]
-set file_obj [get_files -of_objects [get_filesets constrs_1] [list "*$file"]]
-set_property -name "file_type" -value "XDC" -objects $file_obj
+set xdc5 [file join $currentDir cpm5_qdma_g5x8_dual_perf constraints vpk120_schematic.xdc]
+import_files -fileset constrs_1 -norecurse $xdc5
 
-# Set 'constrs_1' fileset properties
-set obj [get_filesets constrs_1]
+set xdc6 [file join $currentDir cpm5_qdma_g5x8_dual_perf constraints constraint.xdc]
+import_files -fileset constrs_1 -norecurse $xdc6
+
+set xdcfile2 [file join [get_property directory [current_project]] [current_project].srcs constrs_1 imports constraints constraint.xdc]
+set_property used_in_implementation false [get_files $xdcfile2]
 
 }
 ##################################################################
@@ -177,7 +164,8 @@ puts "INFO: default CPM5_QDMA_Gen5x8_ST_Performance_Design preset is selected."
 
 source "$currentDir/cpm5_qdma_g5x8_st_perf/design_1_bd.tcl"
 # Set synthesis property to be non-OOC
-set_property synth_checkpoint_mode None [get_files $design_name.bd]
+set_property synth_checkpoint_mode Hierarchical [get_files $design_name.bd]
+#set_property synth_checkpoint_mode None [get_files $design_name.bd]
 generate_target all [get_files $design_name.bd]
 puts "INFO: EP bd generated"
 
@@ -197,7 +185,8 @@ set_property strategy Performance_Explore [get_runs impl_*]
 puts "INFO: default CPM5_QDMA_Dual_Gen5x8_ST_Performance_Design preset is selected."
 source "$currentDir/cpm5_qdma_g5x8_dual_perf/design_1_bd.tcl"
 # Set synthesis property to be non-OOC
-set_property synth_checkpoint_mode None [get_files $design_name.bd]
+set_property synth_checkpoint_mode Hierarchical [get_files $design_name.bd]
+#set_property synth_checkpoint_mode None [get_files $design_name.bd]
 generate_target all [get_files $design_name.bd]
 puts "INFO: EP bd generated"
 
@@ -207,7 +196,9 @@ open_bd_design [get_bd_files $design_name.bd]
 
 validate_bd_design
 save_bd_design
- 
+
+set_property strategy Performance_Explore [get_runs impl_*]
+
 puts "INFO: design generation completed successfully"
 
 

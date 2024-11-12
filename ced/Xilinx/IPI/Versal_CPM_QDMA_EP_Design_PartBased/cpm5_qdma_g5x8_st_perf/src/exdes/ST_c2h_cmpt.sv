@@ -162,7 +162,7 @@ module ST_c2h_cmpt # (
     end
     else begin
       
-    cmpt_tuser_fifo_in_part    <= {marker_wb, qid_wb[10:0], cmpt_size[1:0]};
+//    cmpt_tuser_fifo_in_part    <= {marker_wb, qid_wb[10:0], cmpt_size[1:0]};
       
       case (wb_sm)
         SM_IDL :
@@ -172,6 +172,7 @@ module ST_c2h_cmpt # (
             wb_sm               <= SM_S1;
             cmpt_tdata_fifo_in  <= {{3{wb_dat[127:0]}}, wb_dat[127:20], btt_wb[15:0], 1'b1, 3'b000}; // Example driver expects 2018.2 Completion Entry format. We do this in "user-defined" data to mimic that Entry.
                                                                                                      // bit[2:0] is reserved. bit[3] = "desc_used". bit[19:4] = C2H packet length
+            cmpt_tuser_fifo_in_part    <= {marker_wb, qid_wb[10:0], cmpt_size[1:0]};
             cmpt_tvalid_fifo_in <= 1'b1;
             cmpt_tlast_fifo_in  <= 1'b1;
           end
@@ -185,6 +186,7 @@ module ST_c2h_cmpt # (
               wb_sm               <= SM_S1;
               cmpt_tdata_fifo_in  <= {{3{wb_dat[127:0]}}, wb_dat[127:20], btt_wb[15:0], 1'b1, 3'b000}; // Example driver expects 2018.2 Completion Entry format. We do this in "user-defined" data to mimic that Entry.
                                                                                                        // bit[2:0] is reserved. bit[3] = "desc_used". bit[19:4] = C2H packet length
+              cmpt_tuser_fifo_in_part    <= {marker_wb, qid_wb[10:0], cmpt_size[1:0]};
               cmpt_tvalid_fifo_in <= 1'b1;
               cmpt_tlast_fifo_in  <= 1'b1;
               
@@ -193,6 +195,7 @@ module ST_c2h_cmpt # (
               wb_sm               <= SM_IDL;
               cmpt_tdata_fifo_in  <= {{3{wb_dat[127:0]}}, wb_dat[127:20], btt_wb[15:0], 1'b1, 3'b000}; // Example driver expects 2018.2 Completion Entry format. We do this in "user-defined" data to mimic that Entry.
                                                                                                        // bit[2:0] is reserved. bit[3] = "desc_used". bit[19:4] = C2H packet length.
+              cmpt_tuser_fifo_in_part    <= {marker_wb, qid_wb[10:0], cmpt_size[1:0]};
               cmpt_tvalid_fifo_in <= 1'b0;
               cmpt_tlast_fifo_in  <= 1'b0;
             

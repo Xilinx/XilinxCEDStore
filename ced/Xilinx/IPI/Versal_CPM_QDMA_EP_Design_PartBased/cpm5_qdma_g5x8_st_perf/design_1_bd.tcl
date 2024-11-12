@@ -336,7 +336,7 @@ proc create_root_design { parentCell } {
     CONFIG.MC_TZQ_START_ITVL {1000000000} \
     CONFIG.MC_USER_DEFINED_ADDRESS_MAP {16RA-3BA-10CA} \
     CONFIG.MC_XPLL_CLKOUT1_PERIOD {1250} \
-    CONFIG.NUM_CLKS {3} \
+    CONFIG.NUM_CLKS {4} \
     CONFIG.NUM_MC {1} \
     CONFIG.NUM_MCP {4} \
     CONFIG.NUM_MI {3} \
@@ -390,8 +390,12 @@ proc create_root_design { parentCell } {
  ] [get_bd_pins /axi_noc_0/aclk1]
 
   set_property -dict [ list \
-   CONFIG.ASSOCIATED_BUSIF {M00_AXI:M01_AXI:M02_AXI} \
+   CONFIG.ASSOCIATED_BUSIF {M01_AXI} \
  ] [get_bd_pins /axi_noc_0/aclk2]
+
+  set_property -dict [ list \
+   CONFIG.ASSOCIATED_BUSIF {M00_AXI:M02_AXI} \
+ ] [get_bd_pins /axi_noc_0/aclk3]
 
   # Create instance: smartconnect_0, and set properties
   set smartconnect_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:smartconnect smartconnect_0 ]
@@ -448,6 +452,7 @@ proc create_root_design { parentCell } {
       CPM_PCIE1_PF0_BAR2_SRIOV_QDMA_64BIT {1} \
       CPM_PCIE1_PF0_BAR2_SRIOV_QDMA_ENABLED {1} \
       CPM_PCIE1_PF0_BAR2_SRIOV_QDMA_PREFETCHABLE {1} \
+      CPM_PCIE1_PF0_BAR2_SRIOV_QDMA_SIZE {4} \
       CPM_PCIE1_PF0_BAR3_QDMA_AXCACHE {0} \
       CPM_PCIE1_PF0_BAR4_QDMA_AXCACHE {0} \
       CPM_PCIE1_PF0_BAR5_QDMA_AXCACHE {0} \
@@ -467,9 +472,11 @@ proc create_root_design { parentCell } {
       CPM_PCIE1_PF1_BAR2_QDMA_64BIT {1} \
       CPM_PCIE1_PF1_BAR2_QDMA_AXCACHE {0} \
       CPM_PCIE1_PF1_BAR2_QDMA_ENABLED {1} \
+      CPM_PCIE1_PF1_BAR2_QDMA_SIZE {4} \
       CPM_PCIE1_PF1_BAR2_SRIOV_QDMA_64BIT {1} \
       CPM_PCIE1_PF1_BAR2_SRIOV_QDMA_ENABLED {1} \
       CPM_PCIE1_PF1_BAR2_SRIOV_QDMA_PREFETCHABLE {1} \
+      CPM_PCIE1_PF1_BAR2_SRIOV_QDMA_SIZE {4} \
       CPM_PCIE1_PF1_BAR3_QDMA_AXCACHE {0} \
       CPM_PCIE1_PF1_BAR4_QDMA_AXCACHE {0} \
       CPM_PCIE1_PF1_BAR5_QDMA_AXCACHE {1} \
@@ -493,8 +500,10 @@ proc create_root_design { parentCell } {
       CPM_PCIE1_PF2_BAR2_QDMA_64BIT {1} \
       CPM_PCIE1_PF2_BAR2_QDMA_AXCACHE {0} \
       CPM_PCIE1_PF2_BAR2_QDMA_ENABLED {1} \
+      CPM_PCIE1_PF2_BAR2_QDMA_SIZE {4} \
       CPM_PCIE1_PF2_BAR2_SRIOV_QDMA_64BIT {1} \
       CPM_PCIE1_PF2_BAR2_SRIOV_QDMA_ENABLED {1} \
+      CPM_PCIE1_PF2_BAR2_SRIOV_QDMA_SIZE {4} \
       CPM_PCIE1_PF2_BAR3_QDMA_AXCACHE {0} \
       CPM_PCIE1_PF2_BAR4_QDMA_AXCACHE {0} \
       CPM_PCIE1_PF2_BAR5_QDMA_AXCACHE {0} \
@@ -518,9 +527,11 @@ proc create_root_design { parentCell } {
       CPM_PCIE1_PF3_BAR2_QDMA_64BIT {1} \
       CPM_PCIE1_PF3_BAR2_QDMA_AXCACHE {0} \
       CPM_PCIE1_PF3_BAR2_QDMA_ENABLED {1} \
+      CPM_PCIE1_PF3_BAR2_QDMA_SIZE {4} \
       CPM_PCIE1_PF3_BAR2_SRIOV_QDMA_64BIT {1} \
       CPM_PCIE1_PF3_BAR2_SRIOV_QDMA_ENABLED {1} \
       CPM_PCIE1_PF3_BAR2_SRIOV_QDMA_PREFETCHABLE {1} \
+      CPM_PCIE1_PF3_BAR2_SRIOV_QDMA_SIZE {4} \
       CPM_PCIE1_PF3_BAR3_QDMA_AXCACHE {0} \
       CPM_PCIE1_PF3_BAR4_QDMA_AXCACHE {0} \
       CPM_PCIE1_PF3_BAR5_QDMA_AXCACHE {1} \
@@ -575,7 +586,7 @@ proc create_root_design { parentCell } {
       PS_PCIE2_PERIPHERAL_ENABLE {1} \
       PS_PCIE_EP_RESET1_IO {None} \
       PS_PCIE_EP_RESET2_IO {PS_MIO 19} \
-      PS_PCIE_RESET {{ENABLE 1}} \
+      PS_PCIE_RESET {ENABLE 1} \
       PS_PL_CONNECTIVITY_MODE {Custom} \
       PS_USE_M_AXI_FPD {1} \
       PS_USE_PMCPL_CLK0 {1} \
@@ -586,6 +597,7 @@ proc create_root_design { parentCell } {
       SMON_TEMP_AVERAGING_SAMPLES {0} \
       SMON_USER_TEMP {{THRESHOLD_LOWER 0} {THRESHOLD_UPPER 125} {USER_ALARM_TYPE window}} \
     } \
+    CONFIG.PS_PMC_CONFIG_APPLIED {1} \
   ] $versal_cips_0
 
 
@@ -640,19 +652,48 @@ proc create_root_design { parentCell } {
   connect_bd_intf_net -intf_net versal_cips_0_dma1_tm_dsc_sts [get_bd_intf_ports dma1_tm_dsc_sts_0] [get_bd_intf_pins versal_cips_0/dma1_tm_dsc_sts]
 
   # Create port connections
-  connect_bd_net -net cpm_irq0_0_1 [get_bd_ports cpm_irq0_0] [get_bd_pins versal_cips_0/cpm_irq0]
-  connect_bd_net -net cpm_irq1_0_1 [get_bd_ports cpm_irq1_0] [get_bd_pins versal_cips_0/cpm_irq1]
-  connect_bd_net -net dma1_intrfc_resetn_0_1 [get_bd_ports dma1_intrfc_resetn_0] [get_bd_pins versal_cips_0/dma1_intrfc_resetn]
-  connect_bd_net -net proc_sys_reset_0_interconnect_aresetn [get_bd_pins proc_sys_reset_0/interconnect_aresetn] [get_bd_pins smartconnect_1/aresetn] [get_bd_pins pcie_qdma_mailbox_0/axi_aresetn]
-  connect_bd_net -net versal_cips_0_cpm_cor_irq [get_bd_pins versal_cips_0/cpm_cor_irq] [get_bd_ports cpm_cor_irq_0]
-  connect_bd_net -net versal_cips_0_cpm_misc_irq [get_bd_pins versal_cips_0/cpm_misc_irq] [get_bd_ports cpm_misc_irq_0]
-  connect_bd_net -net versal_cips_0_cpm_pcie_noc_axi0_clk [get_bd_pins versal_cips_0/cpm_pcie_noc_axi0_clk] [get_bd_pins axi_noc_0/aclk0]
-  connect_bd_net -net versal_cips_0_cpm_pcie_noc_axi1_clk [get_bd_pins versal_cips_0/cpm_pcie_noc_axi1_clk] [get_bd_pins axi_noc_0/aclk1]
-  connect_bd_net -net versal_cips_0_cpm_uncor_irq [get_bd_pins versal_cips_0/cpm_uncor_irq] [get_bd_ports cpm_uncor_irq_0]
-  connect_bd_net -net versal_cips_0_dma1_axi_aresetn [get_bd_pins versal_cips_0/dma1_axi_aresetn] [get_bd_ports dma1_axi_aresetn_0] [get_bd_pins axi_bram_ctrl_0/s_axi_aresetn] [get_bd_pins axi_bram_ctrl_1/s_axi_aresetn] [get_bd_pins smartconnect_0/aresetn] [get_bd_pins proc_sys_reset_0/ext_reset_in] [get_bd_pins pcie_qdma_mailbox_0/ip_resetn]
-  connect_bd_net -net versal_cips_0_pcie0_user_lnk_up [get_bd_ports pcie0_user_lnk_up_0]
-  connect_bd_net -net versal_cips_0_pl0_ref_clk [get_bd_pins versal_cips_0/pl0_ref_clk] [get_bd_pins axi_bram_ctrl_1/s_axi_aclk] [get_bd_pins axi_bram_ctrl_0/s_axi_aclk] [get_bd_pins smartconnect_0/aclk] [get_bd_ports dma1_intrfc_clk_0] [get_bd_pins axi_noc_0/aclk2] [get_bd_pins smartconnect_1/aclk1] [get_bd_pins versal_cips_0/m_axi_fpd_aclk] [get_bd_pins versal_cips_0/dma1_intrfc_clk] [get_bd_pins pcie_qdma_mailbox_0/ip_clk]
-  connect_bd_net -net versal_cips_0_pl1_ref_clk [get_bd_pins versal_cips_0/pl1_ref_clk] [get_bd_pins smartconnect_1/aclk] [get_bd_pins proc_sys_reset_0/slowest_sync_clk] [get_bd_pins pcie_qdma_mailbox_0/axi_aclk]
+  connect_bd_net -net cpm_irq0_0_1  [get_bd_ports cpm_irq0_0] \
+  [get_bd_pins versal_cips_0/cpm_irq0]
+  connect_bd_net -net cpm_irq1_0_1  [get_bd_ports cpm_irq1_0] \
+  [get_bd_pins versal_cips_0/cpm_irq1]
+  connect_bd_net -net dma1_intrfc_resetn_0_1  [get_bd_ports dma1_intrfc_resetn_0] \
+  [get_bd_pins versal_cips_0/dma1_intrfc_resetn]
+  connect_bd_net -net proc_sys_reset_0_interconnect_aresetn  [get_bd_pins proc_sys_reset_0/interconnect_aresetn] \
+  [get_bd_pins smartconnect_1/aresetn] \
+  [get_bd_pins pcie_qdma_mailbox_0/axi_aresetn] \
+  [get_bd_pins axi_bram_ctrl_0/s_axi_aresetn]
+  connect_bd_net -net versal_cips_0_cpm_cor_irq  [get_bd_pins versal_cips_0/cpm_cor_irq] \
+  [get_bd_ports cpm_cor_irq_0]
+  connect_bd_net -net versal_cips_0_cpm_misc_irq  [get_bd_pins versal_cips_0/cpm_misc_irq] \
+  [get_bd_ports cpm_misc_irq_0]
+  connect_bd_net -net versal_cips_0_cpm_pcie_noc_axi0_clk  [get_bd_pins versal_cips_0/cpm_pcie_noc_axi0_clk] \
+  [get_bd_pins axi_noc_0/aclk0]
+  connect_bd_net -net versal_cips_0_cpm_pcie_noc_axi1_clk  [get_bd_pins versal_cips_0/cpm_pcie_noc_axi1_clk] \
+  [get_bd_pins axi_noc_0/aclk1]
+  connect_bd_net -net versal_cips_0_cpm_uncor_irq  [get_bd_pins versal_cips_0/cpm_uncor_irq] \
+  [get_bd_ports cpm_uncor_irq_0]
+  connect_bd_net -net versal_cips_0_dma1_axi_aresetn  [get_bd_pins versal_cips_0/dma1_axi_aresetn] \
+  [get_bd_ports dma1_axi_aresetn_0] \
+  [get_bd_pins axi_bram_ctrl_1/s_axi_aresetn] \
+  [get_bd_pins smartconnect_0/aresetn] \
+  [get_bd_pins proc_sys_reset_0/ext_reset_in] \
+  [get_bd_pins pcie_qdma_mailbox_0/ip_resetn]
+  connect_bd_net -net versal_cips_0_pcie0_user_lnk_up  [get_bd_ports pcie0_user_lnk_up_0]
+  connect_bd_net -net versal_cips_0_pl0_ref_clk  [get_bd_pins versal_cips_0/pl0_ref_clk] \
+  [get_bd_pins axi_bram_ctrl_1/s_axi_aclk] \
+  [get_bd_pins smartconnect_0/aclk] \
+  [get_bd_ports dma1_intrfc_clk_0] \
+  [get_bd_pins axi_noc_0/aclk2] \
+  [get_bd_pins smartconnect_1/aclk1] \
+  [get_bd_pins pcie_qdma_mailbox_0/ip_clk] \
+  [get_bd_pins versal_cips_0/m_axi_fpd_aclk] \
+  [get_bd_pins versal_cips_0/dma1_intrfc_clk]
+  connect_bd_net -net versal_cips_0_pl1_ref_clk  [get_bd_pins versal_cips_0/pl1_ref_clk] \
+  [get_bd_pins smartconnect_1/aclk] \
+  [get_bd_pins proc_sys_reset_0/slowest_sync_clk] \
+  [get_bd_pins pcie_qdma_mailbox_0/axi_aclk] \
+  [get_bd_pins axi_bram_ctrl_0/s_axi_aclk] \
+  [get_bd_pins axi_noc_0/aclk3]
 
   # Create address segments
   assign_bd_address -offset 0x020180000000 -range 0x00001000 -target_address_space [get_bd_addr_spaces versal_cips_0/CPM_PCIE_NOC_0] [get_bd_addr_segs M_AXIL/Reg] -force
