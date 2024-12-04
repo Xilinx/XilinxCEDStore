@@ -320,7 +320,7 @@ proc createDesign {design_name options} {
     set device [lindex [split $part -] 0]
     set pkg [lindex [split $part -] 1]  
 
-    if {$device eq "xcvp1902"} {
+    if {$device eq "xcvp1902" || $device eq "xcvm2152"} {
       create_bd_cell -type ip -vlnv xilinx.com:ip:ps_wizard:1.0 versal_cips_0
       set_property -dict [list \
         CONFIG.PS_PMC_CONFIG(PMC_CRP_PL0_REF_CTRL_FREQMHZ) {125} \
