@@ -521,6 +521,152 @@ proc xcvc1802 {} {
 }
 
 #######################################################################################################
+# xcvm2152
+#######################################################################################################
+proc xcvm2152 {} {
+  log "using xcvm2152 procs"
+
+  proc get_gt_types {} {
+    return [list GTM GTYP]
+  }
+
+  proc get_gtloc {q} {
+    set gt_dict {
+      GTYP_QUAD_102 GTYP_QUAD_X0Y0
+      GTYP_QUAD_103 GTYP_QUAD_X0Y1
+      GTM_QUAD_104 GTM_QUAD_X0Y0
+      GTM_QUAD_105 GTM_QUAD_X0Y1
+    }
+    return [dict get $gt_dict $q]
+  }
+
+  proc get_reflocs {q} {
+    set refclk_dict {
+      GTYP_QUAD_102 { GTYP_REFCLK_X0Y0 GTYP_REFCLK_X0Y1 }
+      GTYP_QUAD_103 { GTYP_REFCLK_X0Y2 GTYP_REFCLK_X0Y3 }
+      GTM_QUAD_104 { GTM_REFCLK_X0Y0 GTM_REFCLK_X0Y1 }
+      GTM_QUAD_105 { GTM_REFCLK_X0Y2 GTM_REFCLK_X0Y3 }
+    }
+    return [dict get $refclk_dict $q]
+  }
+
+  proc get_left {pkg} {
+    switch $pkg {
+      nfvd1024 {
+        return [list GTYP_QUAD_102 GTYP_QUAD_103 GTM_QUAD_104 GTM_QUAD_105]
+      }
+      nfvm1369 {
+        return [list GTYP_QUAD_102 GTYP_QUAD_103 GTM_QUAD_104 GTM_QUAD_105]
+      }
+    }
+  }
+
+  proc get_right {pkg} {
+    switch $pkg {
+      nfvd1024 {
+        return [list ]
+      }
+      nfvm1369 {
+        return [list ]
+      }
+    }
+  }
+  proc get_refclk_neighbors {pkg quad} {
+    switch $pkg {
+      nfvd1024 {
+        switch $quad {
+          GTM_QUAD_104 { return [list GTM_QUAD_105] }
+          GTM_QUAD_105 { return [list GTM_QUAD_104] }
+          GTYP_QUAD_102 { return [list GTYP_QUAD_103] }
+          GTYP_QUAD_103 { return [list GTYP_QUAD_102] }
+        }
+      }
+      nfvm1369 {
+        switch $quad {
+          GTM_QUAD_104 { return [list GTM_QUAD_105] }
+          GTM_QUAD_105 { return [list GTM_QUAD_104] }
+          GTYP_QUAD_102 { return [list GTYP_QUAD_103] }
+          GTYP_QUAD_103 { return [list GTYP_QUAD_102] }
+        }
+      }
+    }
+  }
+}
+
+#######################################################################################################
+# xcvm2152_SE
+#######################################################################################################
+proc xcvm2152_SE {} {
+  log "using xcvm2152_SE procs"
+
+  proc get_gt_types {} {
+    return [list GTM GTYP]
+  }
+
+  proc get_gtloc {q} {
+    set gt_dict {
+      GTYP_QUAD_102 GTYP_QUAD_X0Y0
+      GTYP_QUAD_103 GTYP_QUAD_X0Y1
+      GTM_QUAD_104 GTM_QUAD_X0Y0
+      GTM_QUAD_105 GTM_QUAD_X0Y1
+    }
+    return [dict get $gt_dict $q]
+  }
+
+  proc get_reflocs {q} {
+    set refclk_dict {
+      GTYP_QUAD_102 { GTYP_REFCLK_X0Y0 GTYP_REFCLK_X0Y1 }
+      GTYP_QUAD_103 { GTYP_REFCLK_X0Y2 GTYP_REFCLK_X0Y3 }
+      GTM_QUAD_104 { GTM_REFCLK_X0Y0 GTM_REFCLK_X0Y1 }
+      GTM_QUAD_105 { GTM_REFCLK_X0Y2 GTM_REFCLK_X0Y3 }
+    }
+    return [dict get $refclk_dict $q]
+  }
+
+  proc get_left {pkg} {
+    switch $pkg {
+      nfvd1024 {
+        return [list GTYP_QUAD_102 GTYP_QUAD_103 GTM_QUAD_104 GTM_QUAD_105]
+      }
+      nfvm1369 {
+        return [list GTYP_QUAD_102 GTYP_QUAD_103 GTM_QUAD_104 GTM_QUAD_105]
+      }
+    }
+  }
+
+  proc get_right {pkg} {
+    switch $pkg {
+      nfvd1024 {
+        return [list ]
+      }
+      nfvm1369 {
+        return [list ]
+      }
+    }
+  }
+  proc get_refclk_neighbors {pkg quad} {
+    switch $pkg {
+      nfvd1024 {
+        switch $quad {
+          GTM_QUAD_104 { return [list GTM_QUAD_105] }
+          GTM_QUAD_105 { return [list GTM_QUAD_104] }
+          GTYP_QUAD_102 { return [list GTYP_QUAD_103] }
+          GTYP_QUAD_103 { return [list GTYP_QUAD_102] }
+        }
+      }
+      nfvm1369 {
+        switch $quad {
+          GTM_QUAD_104 { return [list GTM_QUAD_105] }
+          GTM_QUAD_105 { return [list GTM_QUAD_104] }
+          GTYP_QUAD_102 { return [list GTYP_QUAD_103] }
+          GTYP_QUAD_103 { return [list GTYP_QUAD_102] }
+        }
+      }
+    }
+  }
+}
+
+#######################################################################################################
 # xcvc1902
 #######################################################################################################
 proc xcvc1902 {} {
