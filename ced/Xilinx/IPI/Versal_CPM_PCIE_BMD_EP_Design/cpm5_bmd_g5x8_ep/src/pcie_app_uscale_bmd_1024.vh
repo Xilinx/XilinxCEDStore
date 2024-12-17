@@ -6,6 +6,7 @@
 `define PCI_EXP_EP_DSN_1                        {{8'h1},`PCI_EXP_EP_OUI}
 `define PCI_EXP_EP_DSN_2                        32'h10EE0001
 `define MSI_INTR                                1
+`define MSIX                                    1
 
 `define STRUCT_AXI_RC_IF \
 typedef struct packed { \

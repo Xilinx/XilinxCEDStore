@@ -63,7 +63,7 @@
 //
 //--------------------------------------------------------------------------------
 
-
+`include "pcie_app_uscale_bmd_1024.vh"
 `timescale 1ps/1ps
 //`include "validation_defines.vh"
 (* DowngradeIPIdentifiedWarnings = "yes" *)
