@@ -181,6 +181,12 @@ reg                             expect_finish_check;
 reg                             testError;
 reg     [AXI4_RQ_TUSER_WIDTH-1:0]                 s_axis_rq_tuser_wo_parity;
 reg     [C_DATA_WIDTH-1:0]         s_axis_rq_tdata;
+
+reg     [2:0] msix_vec_bar;
+reg     [2:0] msix_pba_bar;
+
+integer       msix_vec_offset;
+integer       msix_pba_offset;
 assign s_axis_rq_tdata_o = {512'd0, s_axis_rq_tdata};
 
 //assign s_axis_rq_tuser = {(AXISTEN_IF_RQ_PARITY_CHECK ?  s_axis_rq_tparity : 64'b0),s_axis_rq_tuser_wo_parity[72:0]};

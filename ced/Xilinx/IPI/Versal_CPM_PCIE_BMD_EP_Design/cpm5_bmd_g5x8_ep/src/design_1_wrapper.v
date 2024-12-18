@@ -143,8 +143,8 @@ module design_1_wrapper
   wire [AXI4_RQ_TUSER_WIDTH-1:0]pcie1_s_axis_rq_0_tuser;
   wire pcie1_s_axis_rq_0_tvalid;
   wire pcie1_user_clk_0;
-  wire [7:0]pcie1_cfg_msix_function_number_0;
-  //wire [31:0]pcie1_cfg_msix_mint_vector_0;
+  wire [15:0]pcie1_cfg_msix_function_number_0;
+  wire [31:0]pcie1_cfg_msix_mint_vector_0;
   wire [1:0]pcie1_cfg_fc_npd_scale_0;
   wire [1:0]pcie1_cfg_fc_nph_scale_0;
   wire [1:0]pcie1_cfg_fc_pd_scale_0;
@@ -164,6 +164,13 @@ module design_1_wrapper
   wire [7:0]pcie1_cfg_fc_cplh_0;
   wire pcie1_user_lnk_up_0;
   wire pcie1_user_reset_0;
+  
+  assign pcie1_cfg_msix_0_attr = 3'd0;
+  assign pcie1_cfg_msix_0_tph_type = 2'd0;
+  assign pcie1_cfg_msix_0_tph_st_tag = 8'd0;
+  assign pcie1_cfg_msix_mint_vector_0 = 32'd0;
+  assign pcie1_cfg_msix_function_number_0[15:8] = 8'd0;
+  
 
   design_1 design_1_i
        (.gt_refclk1_0_clk_n(gt_refclk1_0_clk_n),
@@ -277,7 +284,7 @@ module design_1_wrapper
         .pcie1_s_axis_rq_0_tvalid(pcie1_s_axis_rq_0_tvalid),
         .pcie1_user_clk_0(pcie1_user_clk_0),
         .pcie1_cfg_msix_0_function_number(pcie1_cfg_msix_function_number_0),
-        //.pcie1_cfg_msix_0_mint_vector(pcie1_cfg_msix_mint_vector_0),
+        .pcie1_cfg_msix_0_mint_vector(pcie1_cfg_msix_mint_vector_0),
         .pcie1_cfg_fc_0_npd_scale(pcie1_cfg_fc_npd_scale_0),
         .pcie1_cfg_fc_0_nph_scale(pcie1_cfg_fc_nph_scale_0),
         .pcie1_cfg_fc_0_pd_scale(pcie1_cfg_fc_pd_scale_0),
@@ -473,6 +480,7 @@ module design_1_wrapper
     .cfg_interrupt_msi_tph_type                     ( pcie1_cfg_msi_0_tph_type ),
     .cfg_interrupt_msi_tph_st_tag                   ( pcie1_cfg_msi_0_tph_st_tag ),
     .cfg_interrupt_msi_function_number              ( pcie1_cfg_msi_0_function_number ),*/
+	
     .cfg_interrupt_msi_sent                         ( pcie1_cfg_msix_0_sent ),
     .cfg_interrupt_msi_fail                         ( pcie1_cfg_msix_0_fail ),
     .cfg_interrupt_msix_enable ({3'b0,pcie1_cfg_msix_0_enable[0]}),
@@ -482,7 +490,7 @@ module design_1_wrapper
     .cfg_interrupt_msix_vec_pending_status  (pcie1_cfg_msix_0_vec_pending_status),
     .cfg_interrupt_msix_int  (pcie1_cfg_msix_0_int_vector),
     .cfg_interrupt_msix_vec_pending  (pcie1_cfg_msix_0_vec_pending),
-    .cfg_interrupt_msi_function_number              ( pcie1_cfg_msix_function_number_0 ),
+    .cfg_interrupt_msi_function_number              ( pcie1_cfg_msix_function_number_0[7:0] ),
     //.cfg_interrupt_msi_vf_enable                    ( 6'b0 ),
     //.cfg_interrupt_msix_enable                      ( 4'b0 ),
    // .cfg_interrupt_msix_int                         ( ),

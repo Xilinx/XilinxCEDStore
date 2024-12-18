@@ -308,13 +308,24 @@ end
 else if(testname == "msix_smoke_test")
 begin
      $display("[%t] : Start MSI-/MSIX Simulation",$realtime);
-    TSK_SIMULATION_TIMEOUT(5050);
 
+    // This test performs a 32 bit write to a 32 bit Memory space and performs a read back
+    board.RP.tx_usrapp.TSK_SIMULATION_TIMEOUT(10050);
+	wait (board.EP.design_1_i.pcie1_cfg_status_0_phy_link_down == 1'b1);
+	board.RP.tx_usrapp.TSK_TX_CLK_EAT(131072);
     // System Initialization
-    TSK_SYSTEM_INITIALIZATION;
+    board.RP.tx_usrapp.TSK_SYSTEM_INITIALIZATION;
     // Program BARs (Required so Completer ID at the Endpoint is updated)
-    TSK_BAR_INIT;
+    board.RP.tx_usrapp.TSK_BAR_INIT;
+        
+    //--------------------------------------------------------------------------
+    // Direct Root Port to allow upstream traffic by enabling Mem, I/O and
+    // BusMstr in the command register
+    //--------------------------------------------------------------------------
 
+    board.RP.cfg_usrapp.TSK_READ_CFG_DW(32'h00000001);
+    board.RP.cfg_usrapp.TSK_WRITE_CFG_DW(32'h00000001, 32'h00000007, 4'b1110);
+    board.RP.cfg_usrapp.TSK_READ_CFG_DW(32'h00000001);
 
     // Enable MSI
 
@@ -327,43 +338,89 @@ begin
     TSK_WAIT_FOR_READ_DATA;
     $display("[%t] : Config Addr = %x ; Data = %x", $realtime, 12'h60, P_READ_DATA);
     
+	// Get the offset of MSIX vector table
     TSK_TX_TYPE0_CONFIGURATION_READ(DEFAULT_TAG, 12'h64, 4'hF);
     DEFAULT_TAG = DEFAULT_TAG + 1;
     TSK_WAIT_FOR_READ_DATA;
     $display("[%t] : Config Addr = %x ; Data = %x", $realtime, 12'h64, P_READ_DATA);
+    msix_vec_offset = {P_READ_DATA[31:3], 3'b0};
+    msix_vec_bar    = P_READ_DATA[2:0];
+    $display("[%t] :   MSIX Vector table offset is %x on BAR %0d", $realtime, msix_vec_offset, msix_vec_bar); 
  
+    // Get the offset of MSIX PBA table
     TSK_TX_TYPE0_CONFIGURATION_READ(DEFAULT_TAG, 12'h68, 4'hF);
     DEFAULT_TAG = DEFAULT_TAG + 1;
     TSK_WAIT_FOR_READ_DATA;
-    $display("[%t] : Config Addr = %x ; Data =%x", $realtime, 12'h68, P_READ_DATA);  
+    $display("[%t] : Config Addr = %x ; Data =%x", $realtime, 12'h68, P_READ_DATA);
+    msix_pba_offset = {P_READ_DATA[31:3], 3'b0};
+    msix_pba_bar    = P_READ_DATA[2:0]; 
+    $display("[%t] :   MSIX PBA offset is %x on BAR %0d", $realtime, msix_pba_offset, msix_pba_bar);
+
     
+    // Set up the Vector Table
+
+    board.RP.tx_usrapp.TSK_MEM32_WR(msix_vec_offset, 32'hABCD0000,4'hf);
+	board.RP.tx_usrapp.TSK_MEM32_RD(msix_vec_offset);
+	board.RP.tx_usrapp.TSK_MEM32_WR(msix_vec_offset+'h4, 32'h00000000,4'hf);
+	board.RP.tx_usrapp.TSK_MEM32_RD(msix_vec_offset+'h4);
+	board.RP.tx_usrapp.TSK_MEM32_WR(msix_vec_offset+'h8, 32'hDEAD0000,4'hf);
+	board.RP.tx_usrapp.TSK_MEM32_RD(msix_vec_offset+'h8);
+	board.RP.tx_usrapp.TSK_MEM32_WR(msix_vec_offset+'hc, 32'h00000000,4'hf);
+	board.RP.tx_usrapp.TSK_MEM32_RD(msix_vec_offset+'hc);
+	board.RP.tx_usrapp.TSK_MEM32_WR(msix_vec_offset+'h10, 32'h12340000,4'hf);
+	board.RP.tx_usrapp.TSK_MEM32_RD(msix_vec_offset+'h10);
+	board.RP.tx_usrapp.TSK_MEM32_WR(msix_vec_offset+'h14, 32'h00000000,4'hf);
+	board.RP.tx_usrapp.TSK_MEM32_RD(msix_vec_offset+'h14);
+	board.RP.tx_usrapp.TSK_MEM32_WR(msix_vec_offset+'h18, 32'hDEAD0000,4'hf);
+	board.RP.tx_usrapp.TSK_MEM32_RD(msix_vec_offset+'h18);
+	board.RP.tx_usrapp.TSK_MEM32_WR(msix_vec_offset+'h1c, 32'h00000000,4'hf);
+	board.RP.tx_usrapp.TSK_MEM32_RD(msix_vec_offset+'h1c);
+	
+
+    board.RP.tx_usrapp.TSK_TX_CLK_EAT(10);
+    DEFAULT_TAG = DEFAULT_TAG + 1;
+
+
     //DCSR - Assert Initiator Reset
-      board.RP.tx_usrapp.TSK_MEM64_WR(32'h0, 32'h00000001,4'hf);
-                  //DCSR - De-assert Initiator Reset
-      board.RP.tx_usrapp.TSK_MEM64_WR(32'h0, 32'h00000000,4'hf);
-
-
+      board.RP.tx_usrapp.TSK_MEM32_WR(32'h0, 32'h00000001,4'hf);
+      board.RP.tx_usrapp.TSK_MEM32_RD(32'h0);
+ 
+		  //DCSR - De-assert Initiator Reset
+      board.RP.tx_usrapp.TSK_MEM32_WR(32'h0, 32'h00000000,4'hf);
+      board.RP.tx_usrapp.TSK_MEM32_RD(32'h0);
+      
     // Start BMD Traffic Iter 1 /////////////////////
 
     //WDMATLPS
-      board.RP.tx_usrapp.TSK_MEM64_WR(32'h0c, 32'h00000001,4'hf); // 32DW
-    //Write DMA TLP Count
-      board.RP.tx_usrapp.TSK_MEM64_WR(32'h10, 32'h000C,4'hf);  // 1MB Transfer
-    // Read DMA TLP Count
-   //   board.RP.tx_usrapp.TSK_MEM64_RD(32'h10);  // 1MB Transfer
-    //Write DMA Pattern
-      board.RP.tx_usrapp.TSK_MEM64_WR(32'h14, 32'h54535251,4'hf);
-    //RDMATLPS
-      board.RP.tx_usrapp.TSK_MEM64_WR(32'h20, 32'h00000001,4'hf);
-    //RDMATPC
-      board.RP.tx_usrapp.TSK_MEM64_WR(32'h24, 32'h01,4'hf);
-    //DCSR2- Start Writes
-      board.RP.tx_usrapp.TSK_MEM64_WR(32'h4, 32'h00010001,4'hf);
+      board.RP.tx_usrapp.TSK_MEM32_WR(32'h0c, 32'h00000004,4'hf); // 32DW
+      board.RP.tx_usrapp.TSK_MEM32_RD(32'h0c);
 
-      $display("[%t] : Start BMD Iterations ",$realtime);
+    //Write DMA TLP Count 
+      board.RP.tx_usrapp.TSK_MEM32_WR(32'h10, 32'h0008,4'hf);  // 1MB Transfer 
+
+    // Read DMA TLP Count
+      board.RP.tx_usrapp.TSK_MEM32_RD(32'h10);        // 1MB Transfer 
+    //Write DMA Pattern
+      board.RP.tx_usrapp.TSK_MEM32_WR(32'h14, 32'h54535251,4'hf);                                 
+      board.RP.tx_usrapp.TSK_MEM32_RD(32'h14);
+     //READ DMA Pattern
+      board.RP.tx_usrapp.TSK_MEM32_WR(32'h18, 32'h54535251,4'hf);  
+      board.RP.tx_usrapp.TSK_MEM32_RD(32'h18);
+    //RDMATLPS
+      board.RP.tx_usrapp.TSK_MEM32_WR(32'h20, 32'h00000004,4'hf);
+      board.RP.tx_usrapp.TSK_MEM32_RD(32'h20);
+    //RDMATPC
+      board.RP.tx_usrapp.TSK_MEM32_WR(32'h24, 32'h08,4'hf);  
+      board.RP.tx_usrapp.TSK_MEM32_RD(32'h24);
+    //DCSR2- Start Writes
+      board.RP.tx_usrapp.TSK_MEM32_WR(32'h4, 32'h00010001,4'hf);
+      
+      $display("[%t] : Start BMD Iterations at Gen5",$realtime);
+
+      //#1000000  
+      board.RP.tx_usrapp.TSK_TX_CLK_EAT(10000);
       wait(board.EP.pcie_app_versal_i.BMD_AXIST_1024.BMD_AXIST_EP_1024.mwr_done);
       $display("[%t] : BMD Iteration Complete ",$realtime);
-
      #50000 $finish;
 end
 
