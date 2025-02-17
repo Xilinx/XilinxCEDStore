@@ -72,7 +72,7 @@ proc addGUILayout {DESIGNOBJ PROJECT_PARAM.BOARD_PART} {
 	set text "Note: The requested clock frequencies are not validated until the design is generated. Any restrictions from the Clocking Wizard will be applied 
 	during generation. After the design is created, please review the \"Message\" window to ensure the requested clock frequencies were properly generated. 
 	The specified Default Clock will drive all IPs created by this wizard. Higher clock frequencies may pose challenges during Timing Closure. 
-	For boards with an AI Engine, it’s recommended to use clock frequencies derived from the AIE clock (1250 MHz) for the programmable logic (PL).
+	For boards with an AI Engine, it is recommended to use clock frequencies derived from the AIE clock (1250 MHz) for the programmable logic (PL).
 	On selecting 625MHz default clk, MBUFGCE is enabled in clocking wizard to generate 625Mhz, 312.5MHz, 156.25 MHz and 78.125 MHz as derived clock and 
 	312.5MHz clock is used for clocking IPs created by this wizard."
     ced::add_text -designObject $designObj -name Note -tclproc $text  -parent $clocks

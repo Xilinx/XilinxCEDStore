@@ -40,14 +40,7 @@ proc getSupportedBoards {} {
 # }
 
 proc addOptions {DESIGNOBJ PROJECT_PARAM.BOARD_PART} {
-
-	if {[regexp "ac701" ${PROJECT_PARAM.BOARD_PART}]||[regexp "sp701" ${PROJECT_PARAM.BOARD_PART}]} {
-	lappend x [dict create name "Preset" type "string" value "Microcontroller" value_list {"Microcontroller Microcontroller___Suitable_for_running_baremetal_code"} enabled true]
-	
-	} else {
-	
 	lappend x [dict create name "Preset" type "string" value "Microcontroller" value_list {"Microcontroller Microcontroller___Suitable_for_running_baremetal_code" "Real-time_Processor Real-time____________Deterministic_real-time_processing_on_RTOS"} enabled true]
-	}
 	return $x
 }
 
@@ -64,13 +57,13 @@ proc addGUILayout {DESIGNOBJ PROJECT_PARAM.BOARD_PART} {
   set Preset.DISPLAYNAME "Microblaze V Preset Configurations"
   if { ${Preset.VALUE} == "Application_Processor"} {
      set Preset.ENABLEMENT true
-     set Image.IMAGE_PATH "mb_v_app.png"
+     set Image.IMAGE_PATH "microblaze-application-processor.jpg"
   } elseif { ${Preset.VALUE} == "Microcontroller"} {
 	 set Preset.ENABLEMENT true
-	 set Image.IMAGE_PATH "mb_v_micro.png"
+	 set Image.IMAGE_PATH "microblaze-microcontroller.jpg"
   } elseif { ${Preset.VALUE} == "Real-time_Processor" } {
 	 set preset.ENABLEMENT true
-	 set Image.IMAGE_PATH "mb_v_real.png"
+	 set Image.IMAGE_PATH "microblaze-real-time-processor.jpg"
   }
 }
 

@@ -29,6 +29,9 @@ set part_family [get_property FAMILY $fpga_part]
 if {[regexp "xcvm2152" $fpga_part] || [regexp "xc2v" $fpga_part] || [regexp "xcvr1652" $fpga_part]|| [regexp "xcvr1602" $fpga_part]} {
 	puts "INFO : PS_wizard part selected"
 	source "$currentDir/run_ps_wizard.tcl"
+} elseif {[regexp "xcvp1902" $fpga_part]} {
+	puts "INFO : PS_wizard part selected : Versal Premium Series"
+	source "$currentDir/run_p.tcl"
 } else { 
 source "$currentDir/run.tcl"
 puts "INFO : CIPS PS part selected"
