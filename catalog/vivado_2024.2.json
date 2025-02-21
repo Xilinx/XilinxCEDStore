@@ -62,11 +62,11 @@
         "name": "microblaze_v_preset",
         "display": "MicroBlaze V Design Presets",
         "latest_revision": "1.0",
-        "commit_id": "6fc37676a7e7ee80f30119f94535cbb8c54d0162",
+        "commit_id": "9aa1bb230baf13d8a7b44d3af2458a8da5564fb6",
         "revisions": [
           {
             "revision": "1.0",
-            "commit_id": "6fc37676a7e7ee80f30119f94535cbb8c54d0162",
+            "commit_id": "9aa1bb230baf13d8a7b44d3af2458a8da5564fb6",
             "date": "21-10-2024:18:11:37",
             "history": "Added board MicroBlaze V Design Presets v1.0"
           }
@@ -347,11 +347,11 @@
         "name": "ext_platform",
         "display": "Versal Extensible Embedded Platform",
         "latest_revision": "1.0",
-        "commit_id": "afa732903e8c69fefdf234938942e54114217fe3",
+        "commit_id": "9aa1bb230baf13d8a7b44d3af2458a8da5564fb6",
         "revisions": [
           {
             "revision": "1.0",
-            "commit_id": "afa732903e8c69fefdf234938942e54114217fe3",
+            "commit_id": "9aa1bb230baf13d8a7b44d3af2458a8da5564fb6",
             "date": "21-10-2024:18:11:37",
             "history": "Added board Versal Extensible Embedded Platform v1.0"
           }
@@ -366,11 +366,11 @@
         "name": "ext_platform_part",
         "display": "Versal Extensible Embedded Platform (Part based)",
         "latest_revision": "1.0",
-        "commit_id": "afa732903e8c69fefdf234938942e54114217fe3",
+        "commit_id": "9aa1bb230baf13d8a7b44d3af2458a8da5564fb6",
         "revisions": [
           {
             "revision": "1.0",
-            "commit_id": "afa732903e8c69fefdf234938942e54114217fe3",
+            "commit_id": "9aa1bb230baf13d8a7b44d3af2458a8da5564fb6",
             "date": "21-10-2024:18:11:37",
             "history": "Added board Versal Extensible Embedded Platform (Part based) v1.0"
           }
