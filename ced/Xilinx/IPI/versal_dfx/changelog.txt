@@ -1,0 +1,9 @@
+######### Versal DFX Extensible Embedded Platform example design change log ##############
+
+2025.1 
+Adding HSDP port support
+Configured clock generator settings to use MBUFGCE driver and "HARDSYNC" for higher clock frequencies (625 Mhz)
+Converted all xlconcat and xlconstant Xilinx IP instances to inline HDL references
+
+2022.2 Changes 
+Initial design

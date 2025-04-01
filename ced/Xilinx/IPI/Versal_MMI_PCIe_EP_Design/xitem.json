@@ -1,0 +1,36 @@
+{
+    "config": {
+      "items": [
+        {
+          "infra": {
+            "name": "Versal_MMI_PCIe_EP_Design",
+            "display": "Versal MMI PCIe EP Design",
+            "revision": "1.0",
+            "description": "This is MMI PCIe Endpoint DMA design.",
+            "company": "xilinx.com",
+            "company_display": "Xilinx",
+            "author": "vkethu",
+            "contributors": [
+              {
+                "group": "Xilinx",
+                "url": "www.xilinx.com"
+              }
+            ],
+            "category": "Versal",
+            "website": "www.xilinx.com",
+            "is_active" : true, 
+            "search-keywords": [
+              "MMI",
+	      "PCIe",
+	      "EP",
+	      "endpoint",
+              "xilinx.com",
+              "example"             
+            ]
+          }
+        }
+      ]
+    },
+    "_major" : 1,
+    "_minor" : 0
+}

@@ -1,0 +1,16 @@
+all: {
+image {
+partition {
+type = bootimage
+file = ./design_1_wrapper_pld.pdi
+}
+}
+image {
+name = user_elfs_subsystem
+id = 0x1c000000
+partition {
+core = a72-0
+file = ./ipi_cdma_intr.elf
+}
+}
+}

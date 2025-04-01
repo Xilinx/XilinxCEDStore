@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<ExampleDesign>
+<Vendor>xilinx.com</Vendor>
+<Library>design</Library>
+<Name>mmi_dpdc_usb</Name>
+<DisplayName>Versal MMI DPDC USB Designs</DisplayName>
+<Description>
+This example design offers PS Wizard subsystem which is targeted for MMI Display Controller and MMI USB designs.
+Display controller is configured with functional and bypass operating mode and has option to select video interface, number of video streams incase of bypass and different presentation modes-Non_Live, Live, Mixed.
+USB is configured with USB3.2 enabled.
+</Description>
+<Version>1.0</Version>
+<Design>init.tcl</Design>
+<DesignType>IPI</DesignType>
+<Image></Image>
+</ExampleDesign>

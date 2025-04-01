@@ -1,0 +1,49 @@
+######### Versal Gen2 Platform example design change log ##############
+2.3
+Added UART0 and SYSMON changes,updated NoC connectivity and added new Golden NCR.
+
+2.2
+Updated ps_wizard config  (TTC enabled and pl_ref1 disabled and GPIS direction updated)
+
+2.1
+changed the pl clock connectivity
+ 
+2.0
+Disabled USF secondary boot, added new vek385_6058432_0x8058b654.ncr and added inline_HDL IPs 
+
+1.9
+Updated ps_wizard config 
+
+1.8
+Added golden ncr and updated the IPI interrupts.
+
+1.7
+Added MMI updates 
+
+1.6
+Added AIE option for base, and Added pl GPIO DIP and  removed VIP IP from BD.
+
+1.5 
+Updated SYSMON I2C address
+
+1.4 
+Updated PS I3C peripherals to I2C, and IPI interrupts
+
+1.3
+   1.Base Design:
+	clk_out1 is updated with 312.5 Mhz
+ 
+   2.Extensible Design:
+	Removed reg_slice IP, Updated aggr_noc connections,applied DONT_TOUCH property on FPD_AXI_PL, and clk_out2 is enabled with 100 MHz
+	
+1.2
+Updated NOC2.NOC3,NOC4 memory regions and connectivity.
+
+1.1
+Added Non-interleaved NoCs and aggr_noc.
+
+1.0
+Initial design for vek385 device
+
+
+

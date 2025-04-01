@@ -1,0 +1,7 @@
+######### TMR Microblaze Example Design change log ##############
+
+2025.1 Changes
+Converted all xlconcat, xlconstant and xlslice Xilinx IP instances to inline HDL references
+
+2022.1 :
+initial design
