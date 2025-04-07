@@ -1,4 +1,7 @@
 ######### Versal Gen2 Platform example design change log ##############
+2.4
+updated NoC connectivity and added new Golden NCR.
+
 2.3
 Added UART0 and SYSMON changes,updated NoC connectivity and added new Golden NCR.
 

@@ -59,33 +59,13 @@ set_property SEGMENTED_CONFIGURATION 1 [current_project]
 puts "INFO: selected design_name:: $design_name"
 
 # Creating the design based on the options selected in GUI
-if {[regexp "L20_processor_board" $part]} {
-	puts "INFO: L20 part is selected"
-	if {[regexp "Base" $bd_typ]} {
-		puts "INFO: Base design is selected"
-		source "$currentDir/l20_run.tcl"
-	} else {
-	puts "INFO: Extensible design is selected"
-	#source "$currentDir/l20_run_ext.tcl"
-	}
-} elseif {[regexp "VEK385" $part]} {
-	puts "INFO: VEK385 part is selected"
-	if {[regexp "Base" $bd_typ]} {
-		puts "INFO: Base design is selected"
-		source "$currentDir/vek385_run.tcl"
-	} else {
-	puts "INFO: Extensible design is selected"
-	source "$currentDir/run_ext.tcl"
-	}
-} elseif {[regexp "Palmyra" $part]} {
-	puts "INFO: Palmyra part is selected"
-	if {[regexp "Base" $bd_typ]} {
-		puts "INFO: Base design is selected"
-		source "$currentDir/palmyra_run.tcl"
-	} else {
-	puts "INFO: Extensible design is selected"
-	#source "$currentDir/l20_run_ext.tcl"
-	}
+puts "INFO: VEK385 part is selected"
+if {[regexp "Base" $bd_typ]} {
+	puts "INFO: Base design is selected"
+	source "$currentDir/vek385_base.tcl"
+} else {
+puts "INFO: Extensible design is selected"
+source "$currentDir/vek385_ext.tcl"
 }
 
 # if {$sgc == "true"} {

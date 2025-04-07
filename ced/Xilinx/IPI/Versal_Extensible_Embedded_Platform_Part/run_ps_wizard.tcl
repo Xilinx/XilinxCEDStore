@@ -322,6 +322,7 @@ proc create_root_design {currentDir design_name use_lpddr clk_options irqs use_a
 	CONFIG.NUM_NSI {1} \
 	CONFIG.NUM_SI {0} \
 	] [get_bd_cells noc2_ddr5]
+	set_property CONFIG.MC_CHAN_REGION1 {DDR_CH0_MED} [get_bd_cells noc2_ddr5]
 	
 	} else {
 	
@@ -332,6 +333,7 @@ proc create_root_design {currentDir design_name use_lpddr clk_options irqs use_a
 	CONFIG.NUM_SI {0} \
 	] [get_bd_cells noc2_ddr5]
 	
+	set_property CONFIG.MC_CHAN_REGION1 {DDR_CH0_MED} [get_bd_cells noc2_ddr5]
 	}
 	
 	set_property -dict [list CONFIG.CONNECTIONS {MC_0 {read_bw {500} write_bw {500} read_avg_burst {4} write_avg_burst {4}}}] [get_bd_intf_pins /noc2_ddr5/S00_INI]
@@ -573,6 +575,8 @@ proc create_root_design {currentDir design_name use_lpddr clk_options irqs use_a
 	CONFIG.NUM_SI {0} \
     ] [get_bd_cells noc2_lpddr5]
 	
+	set_property CONFIG.MC_CHAN_REGION0 {DDR_CH1} [get_bd_cells noc2_lpddr5]
+	
 	set_property -dict [list CONFIG.CONNECTIONS {MC_0 {read_bw {500} write_bw {500} read_avg_burst {4} write_avg_burst {4}}}] [get_bd_intf_pins /noc2_lpddr5/S00_INI]
 
 	} else {
@@ -584,6 +588,7 @@ proc create_root_design {currentDir design_name use_lpddr clk_options irqs use_a
 	CONFIG.NUM_SI {0} \
 	] $noc2_lpddr5
 	
+	set_property CONFIG.MC_CHAN_REGION0 {DDR_CH1} [get_bd_cells noc2_lpddr5]
 	set_property -dict [list CONFIG.CONNECTIONS {MC_0 {read_bw {500} write_bw {500} read_avg_burst {4} write_avg_burst {4}} MC_1 {read_bw {500} write_bw {500} read_avg_burst {4} write_avg_burst {4}}}] [get_bd_intf_pins /noc2_lpddr5/S00_INI]
 	}
 	
