@@ -428,8 +428,8 @@ set_property IOSTANDARD LVCMOS12 [get_ports {gpio_pb_tri_i[0]}]
 set_property PACKAGE_PIN BF9 [get_ports {gpio_pb_tri_i[0]}]
 set_property PACKAGE_PIN BE18 [get_ports {gpio_pb_tri_i[1]}]
 
-set_property PACKAGE_PIN BE10 [get_ports {gpio_dip_tri_i[0]}]
-set_property PACKAGE_PIN BF8 [get_ports {gpio_dip_tri_i[1]}]
+set_property PACKAGE_PIN BF8 [get_ports {gpio_dip_tri_i[0]}]
+set_property PACKAGE_PIN BF7 [get_ports {gpio_dip_tri_i[1]}]
 set_property PACKAGE_PIN BD16 [get_ports {gpio_dip_tri_i[2]}]
 set_property PACKAGE_PIN BE15 [get_ports {gpio_dip_tri_i[3]}]
 
