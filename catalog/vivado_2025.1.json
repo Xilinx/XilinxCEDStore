@@ -480,11 +480,11 @@
         "name": "versal_gen2_platform",
         "display": "Versal Gen 2 AI Edge Series Embedded Common Platform",
         "latest_revision": "1.0",
-        "commit_id": "4b797053a72d6bbd76e69f88719b813f74a006ba",
+        "commit_id": "ad708af089a94c538acaa6871a949bbc20fa6ce5",
         "revisions": [
           {
             "revision": "1.0",
-            "commit_id": "4b797053a72d6bbd76e69f88719b813f74a006ba",
+            "commit_id": "ad708af089a94c538acaa6871a949bbc20fa6ce5",
             "date": "01-04-2025:13:33:39",
             "history": "Added board Versal Gen 2 AI Edge Series Embedded Common Platform v1.0"
           }
@@ -632,11 +632,11 @@
         "name": "mb_preset_xcsu",
         "display": "MicroBlaze Design Presets (Spartan UltraScale+)",
         "latest_revision": "1.0",
-        "commit_id": "bea9af088bb472fbddcb56425585bc623e955ab0",
+        "commit_id": "ad708af089a94c538acaa6871a949bbc20fa6ce5",
         "revisions": [
           {
             "revision": "1.0",
-            "commit_id": "bea9af088bb472fbddcb56425585bc623e955ab0",
+            "commit_id": "ad708af089a94c538acaa6871a949bbc20fa6ce5",
             "date": "01-04-2025:13:33:39",
             "history": "Added board MicroBlaze Design Presets (Spartan UltraScale+) v1.0"
           }
@@ -651,11 +651,11 @@
         "name": "mb_v_preset_xcsu",
         "display": "MicroBlaze V Design Presets (Spartan UltraScale+)",
         "latest_revision": "1.0",
-        "commit_id": "bea9af088bb472fbddcb56425585bc623e955ab0",
+        "commit_id": "ad708af089a94c538acaa6871a949bbc20fa6ce5",
         "revisions": [
           {
             "revision": "1.0",
-            "commit_id": "bea9af088bb472fbddcb56425585bc623e955ab0",
+            "commit_id": "ad708af089a94c538acaa6871a949bbc20fa6ce5",
             "date": "01-04-2025:13:33:39",
             "history": "Added board MicroBlaze V Design Presets (Spartan UltraScale+) v1.0"
           }
