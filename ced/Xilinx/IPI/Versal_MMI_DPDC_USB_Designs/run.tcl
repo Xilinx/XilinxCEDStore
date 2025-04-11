@@ -8,7 +8,6 @@ source "$currentDir/USB/mmi_usb.tcl"
 add_files -fileset constrs_1 -norecurse $currentDir/USB/ddr.xdc
 import_files -fileset constrs_1 $currentDir/USB/ddr.xdc
 } elseif { ([lsearch $options "DC_Bypass*"] != -1) } {
-set_property ip_repo_paths "$currentDir/pcore" [current_project]
 update_ip_catalog
 if { ([lsearch $options "true*"] != -1) } {
 if { ([lsearch $options "4"] != -1) } {
@@ -22,7 +21,6 @@ source "$currentDir/Bypass/mmi_dpdc_bypass1.tcl"
 add_files -fileset constrs_1 -norecurse $currentDir/Bypass/ddr.xdc
 import_files -fileset constrs_1 $currentDir/Bypass/ddr.xdc
 } else {
-set_property ip_repo_paths "$currentDir/pcore" [current_project]
 update_ip_catalog
 if { ([lsearch $options "Live*"] != -1) && ([lsearch $options "Native*"] != -1) } {
 source "$currentDir/Live/mmi_dpdc_live.tcl"
