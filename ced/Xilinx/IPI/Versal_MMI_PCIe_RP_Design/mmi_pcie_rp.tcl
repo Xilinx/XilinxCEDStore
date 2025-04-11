@@ -47,17 +47,12 @@ proc create_root_design { parentCell design_name } {
 
   set MMI_GT_0 [ create_bd_intf_port -mode Master -vlnv xilinx.com:interface:gt_rtl:1.0 MMI_GT_0 ]
 
-
-  # Create ports
-  set mmi_pl_pcie0_perstn_0 [ create_bd_port -dir O -type rst mmi_pl_pcie0_perstn_0 ]
-
   # Create instance: ps_wizard_0, and set properties
   set ps_wizard_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:ps_wizard ps_wizard_0 ]
   set_property -dict [list \
     CONFIG.MMI_CONFIG(MDB5_GT) {PCIe0_x2} \
     CONFIG.MMI_CONFIG(MMI_GPU_ENABLE) {1} \
     CONFIG.MMI_CONFIG(MMI_PCIE0_PORT_TYPE) {Root_Port_of_PCIe_Root_Port_Complex} \
-    CONFIG.MMI_CONFIG(MMI_PL_PCIE_PERST) {1} \
     CONFIG.MMI_CONFIG(PCIE0_ECAM_REGION_SELECTION) {Higher_Region} \
     CONFIG.MMI_CONFIG(PCIE0_LINK_SPEED) {32.0_GT/s} \
     CONFIG.PS11_CONFIG(MDB5_GT) {PCIe0_x2} \
@@ -116,7 +111,6 @@ proc create_root_design { parentCell design_name } {
     CONFIG.PS11_CONFIG(PS_TTC5_PERIPHERAL_ENABLE) {1} \
     CONFIG.PS11_CONFIG(PS_TTC6_PERIPHERAL_ENABLE) {1} \
     CONFIG.PS11_CONFIG(PS_TTC7_PERIPHERAL_ENABLE) {1} \
-    CONFIG.PS11_CONFIG(PS_UART0_PERIPHERAL) {ENABLE 1 IO PS_MIO_16:17 IO_TYPE MIO} \
     CONFIG.PS11_CONFIG(PS_UART1_PERIPHERAL) {ENABLE 1 IO PMC_MIO_46:47 IO_TYPE MIO} \
     CONFIG.PS11_CONFIG(PS_USB1_PERIPHERAL) {ENABLE 1 IO PMC_MIO_27:39 IO_TYPE MIO} \
     CONFIG.PS11_CONFIG(PS_USE_FPD_AXI_NOC) {1} \
@@ -293,8 +287,6 @@ NON_KSB DDRMC5_SELF_REFRESH DISABLE DDRMC5_LBDQ_SWAP false DDRMC5_CAL_MASK_POLL 
   [get_bd_pins axi_noc2_s0/aclk7]
   connect_bd_net -net ps_wizard_0_lpd_axi_noc0_clk  [get_bd_pins ps_wizard_0/lpd_axi_noc0_clk] \
   [get_bd_pins axi_noc2_s0/aclk9]
-  connect_bd_net -net ps_wizard_0_mmi_pl_pcie0_perstn  [get_bd_pins ps_wizard_0/mmi_pl_pcie0_perstn] \
-  [get_bd_ports mmi_pl_pcie0_perstn_0]
   connect_bd_net -net ps_wizard_0_pmc_axi_noc0_clk  [get_bd_pins ps_wizard_0/pmc_axi_noc0_clk] \
   [get_bd_pins axi_noc2_s0/aclk8]
 
