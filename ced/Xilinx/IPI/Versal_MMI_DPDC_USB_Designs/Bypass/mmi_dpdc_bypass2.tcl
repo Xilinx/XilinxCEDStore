@@ -68,7 +68,7 @@ proc create_hier_cell_avtpg_s1 { parentCell nameHier } {
   create_bd_pin -dir O vid_vsync
 
   # Create instance: av_pat_gen_0, and set properties
-  set av_pat_gen_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:av_pat_gen av_pat_gen_0 ]
+  set av_pat_gen_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:psdpdc_av_pat_gen av_pat_gen_0 ]
   set_property -dict [list \
     CONFIG.BPC {12} \
     CONFIG.PART_EN {1} \
@@ -78,7 +78,7 @@ proc create_hier_cell_avtpg_s1 { parentCell nameHier } {
 
 
   # Create instance: i2s_transmitter_0, and set properties
-  set i2s_transmitter_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:i2s_transmitter i2s_transmitter_0 ]
+  set i2s_transmitter_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:psdpdc_i2s_transmitter i2s_transmitter_0 ]
   set_property CONFIG.C_NUM_CHANNELS {8} $i2s_transmitter_0
 
 
@@ -253,7 +253,7 @@ proc create_hier_cell_avtpg_s0 { parentCell nameHier } {
   create_bd_pin -dir O vid_vsync
 
   # Create instance: av_pat_gen_0, and set properties
-  set av_pat_gen_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:av_pat_gen av_pat_gen_0 ]
+  set av_pat_gen_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:psdpdc_av_pat_gen av_pat_gen_0 ]
   set_property -dict [list \
     CONFIG.BPC {12} \
     CONFIG.PART_EN {1} \
@@ -263,7 +263,7 @@ proc create_hier_cell_avtpg_s0 { parentCell nameHier } {
 
 
   # Create instance: i2s_transmitter_0, and set properties
-  set i2s_transmitter_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:i2s_transmitter i2s_transmitter_0 ]
+  set i2s_transmitter_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:psdpdc_i2s_transmitter i2s_transmitter_0 ]
   set_property CONFIG.C_NUM_CHANNELS {8} $i2s_transmitter_0
 
 
@@ -547,7 +547,7 @@ proc create_root_design { parentCell design_name } {
     CONFIG.MMI_CONFIG(UDH_GT) {DP_X4} \
     CONFIG.PS11_CONFIG(MMI_DP_HPD) {PMC_MIO_48} \
     CONFIG.PS11_CONFIG(MMI_GPU_ENABLE) {1} \
-    CONFIG.PS11_CONFIG(PMC_CRP_PL0_REF_CTRL_FREQMHZ) {150} \
+    CONFIG.PS11_CONFIG(PMC_CRP_PL0_REF_CTRL_FREQMHZ) {100} \
     CONFIG.PS11_CONFIG(PMC_MIO13) {DRIVE_STRENGTH 12mA SLEW fast PULL pullup SCHMITT 1 AUX_IO 0 USAGE Reserved OUTPUT_DATA default DIRECTION in} \
     CONFIG.PS11_CONFIG(PMC_OSPI_ECC_FAIL_IO) {PMC_MIO_26} \
     CONFIG.PS11_CONFIG(PMC_SDIO_30AD) {CD_ENABLE 0 POW_ENABLE 1 WP_ENABLE 0 RESET_ENABLE 0 CD_IO PMC_MIO_24 POW_IO PMC_MIO_17 WP_IO PMC_MIO_25 RESET_IO PMC_MIO_17 CLK_50_SDR_ITAP_DLY 0x25 CLK_50_SDR_OTAP_DLY\
