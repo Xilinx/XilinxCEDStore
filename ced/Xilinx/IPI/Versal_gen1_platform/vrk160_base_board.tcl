@@ -42,7 +42,6 @@ puts "creating the root design"
 
 # Create instance: ps_wizard_0, and set properties
 create_bd_cell -type ip -vlnv xilinx.com:ip:ps_wizard:* ps_wizard_0
-if { [get_param ips.applyPresetsToPresetsSpecialHandling] } {set ip_def [ipx::get_cores -all xilinx.com:ip:ps_wizard:1.0] ; set ip_busifs [ipx::get_bus_interfaces -of_objects $ip_def FIXED_IO] ; set ip_busparam [ipx::get_bus_parameters -of_objects $ip_busifs BOARD.ASSOCIATED_PARAM] ; set boardParam [get_property VALUE $ip_busparam] ; set_property CONFIG.$boardParam ps_pmc_fixed_io [get_bd_cells ps_wizard_0] }
 
 apply_bd_automation -rule xilinx.com:bd_rule:ps_wizard -config { board_preset {Yes} boot_config {Custom} configure_noc {Add new AXI NoC} debug_config {JTAG} mc_type {None} num_mc_ddr {None} num_mc_lpddr {None} pl_clocks {None} pl_resets {None}}  [get_bd_cells ps_wizard_0]
 
