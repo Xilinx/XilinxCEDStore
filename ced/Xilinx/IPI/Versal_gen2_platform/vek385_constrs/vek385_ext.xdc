@@ -406,7 +406,7 @@ set_property PULLTYPE OFF [get_ports C0_C1_LPDDR5X_sys_clk_clk_p]
 set_property CTLE_EQ CTLE_EQ_LEVEL7 [get_ports {C2_LPDDR5X_sys_clk_clk_p C2_LPDDR5X_sys_clk_clk_n}]
 set_property IOSTANDARD LVDS12 [get_ports [list {C2_LPDDR5X_sys_clk_clk_p}]]
 set_property IOSTANDARD LVDS12 [get_ports [list {C2_LPDDR5X_sys_clk_clk_n}]]
-#set_property PULLTYPE OFF [get_ports C2_LPDDR5X_sys_clk_clk_p]
+# set_property PULLTYPE OFF [get_ports C2_LPDDR5X_sys_clk_clk_p]
 
 set_property CTLE_EQ CTLE_EQ_LEVEL7 [get_ports {C3_C4_LPDDR5X_sys_clk_clk_p C3_C4_LPDDR5X_sys_clk_clk_n}]
 set_property IOSTANDARD LVDS12 [get_ports [list {C3_C4_LPDDR5X_sys_clk_clk_p}]]
