@@ -43,6 +43,7 @@ proc createDesign {design_name options} {
     [file normalize "${currentDir}/src/ST_c2h_cmpt.sv"] \
     [file normalize "${currentDir}/src/ipi_cdma_intr.elf"] \
     [file normalize "${currentDir}/src/qdma_accel_sys.bif"] \
+    [file normalize "${currentDir}/README.txt"] \
    ]
    
    import_files -norecurse -fileset $obj $files
@@ -93,5 +94,22 @@ proc createDesign {design_name options} {
    puts "INFO: EP bd generated"
    puts "INFO: design generation completed successfully"
    } 
+   if [regexp "xcvp1202-vsva2785-2MP-e-S" $board_part_name] {
+   set_property SEGMENTED_CONFIGURATION true [current_project]
+   puts "INFO: Project is set to Segmented Configuration flow"
+   source "$currentDir/scripts/design_1_MP_dev.tcl"
+   # Set synthesis property to be non-OOC
+   set_property synth_checkpoint_mode None [get_files $design_name.bd]
+   validate_bd_design
+   puts "INFO: Block design validation completed"
+   save_bd_design
+   puts "INFO: Block design is saved"
+   generate_target all [get_files $design_name.bd]      
+   open_bd_design [get_bd_files $design_name]   
+   regenerate_bd_layout     
+   puts "INFO: File generation for the IPs in the block design is completed"
+   puts "INFO: EP bd generated"
+   puts "INFO: design generation completed successfully"
+   }
    }
 }
