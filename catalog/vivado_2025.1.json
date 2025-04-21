@@ -404,11 +404,11 @@
         "name": "Versal_MMI_DPDC_USB_designs",
         "display": "Versal MMI DPDC USB Designs",
         "latest_revision": "1.0",
-        "commit_id": "5e6edfe6487d3a795fa446e08c99d852eef93604",
+        "commit_id": "9bc71880fd319838a63c23523ba2cde66721a985",
         "revisions": [
           {
             "revision": "1.0",
-            "commit_id": "5e6edfe6487d3a795fa446e08c99d852eef93604",
+            "commit_id": "9bc71880fd319838a63c23523ba2cde66721a985",
             "date": "01-04-2025:13:33:39",
             "history": "Added board Versal MMI DPDC USB Designs v1.0"
           }
@@ -423,11 +423,11 @@
         "name": "Versal_MMI_PCIe_EP_Design",
         "display": "Versal MMI PCIe EP Design",
         "latest_revision": "1.0",
-        "commit_id": "bea9af088bb472fbddcb56425585bc623e955ab0",
+        "commit_id": "9bc71880fd319838a63c23523ba2cde66721a985",
         "revisions": [
           {
             "revision": "1.0",
-            "commit_id": "bea9af088bb472fbddcb56425585bc623e955ab0",
+            "commit_id": "9bc71880fd319838a63c23523ba2cde66721a985",
             "date": "01-04-2025:13:33:39",
             "history": "Added board Versal MMI PCIe EP Design v1.0"
           }
@@ -442,11 +442,11 @@
         "name": "Versal_MMI_PCIe_RP_Design",
         "display": "Versal MMI PCIe RP Design",
         "latest_revision": "1.0",
-        "commit_id": "182e11b123ad59c56fcc90fd40423df42fbcf0cf",
+        "commit_id": "9bc71880fd319838a63c23523ba2cde66721a985",
         "revisions": [
           {
             "revision": "1.0",
-            "commit_id": "182e11b123ad59c56fcc90fd40423df42fbcf0cf",
+            "commit_id": "9bc71880fd319838a63c23523ba2cde66721a985",
             "date": "01-04-2025:13:33:39",
             "history": "Added board Versal MMI PCIe RP Design v1.0"
           }
