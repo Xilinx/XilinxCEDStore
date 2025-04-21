@@ -2,7 +2,7 @@ all: {
 image {
 partition {
 type = bootimage
-file = ./design_1_wrapper_pld.pdi
+file = ./design_1_wrapper_boot.pdi
 }
 }
 image {
