@@ -114,8 +114,8 @@ set bCheckIPsPassed 1
 set bCheckIPs 1
 if { $bCheckIPs == 1 } {
    set list_check_ips "\ 
-xilinx.com:ip:xlconstant:*\
-xilinx.com:ip:util_vector_logic:*\
+xilinx.com:inline_hdl:ilconstant:*\
+xilinx.com:inline_hdl:ilvector_logic:*\
 xilinx.com:ip:versal_cips:*\
 "
 
@@ -240,25 +240,25 @@ proc create_root_design { parentCell } {
 
   set cpm_user_rstn [ create_bd_port -dir O -from 0 -to 0 -type rst cpm_user_rstn ]
 
-  # Create instance: xlconstant_0, and set properties
-  set xlconstant_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:xlconstant xlconstant_0 ]
-  set_property CONFIG.CONST_VAL {0} $xlconstant_0
+  # Create instance: ilconstant_0, and set properties
+  set ilconstant_0 [ create_bd_cell -type inline_hdl -vlnv xilinx.com:inline_hdl:ilconstant ilconstant_0 ]
+  set_property CONFIG.CONST_VAL {0} $ilconstant_0
 
 
-  # Create instance: xlconstant_0_4, and set properties
-  set xlconstant_0_4 [ create_bd_cell -type ip -vlnv xilinx.com:ip:xlconstant xlconstant_0_4 ]
+  # Create instance: ilconstant_0_4, and set properties
+  set ilconstant_0_4 [ create_bd_cell -type inline_hdl -vlnv xilinx.com:inline_hdl:ilconstant ilconstant_0_4 ]
   set_property -dict [list \
     CONFIG.CONST_VAL {0} \
     CONFIG.CONST_WIDTH {4} \
-  ] $xlconstant_0_4
+  ] $ilconstant_0_4
 
 
-  # Create instance: util_vector_logic_0, and set properties
-  set util_vector_logic_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:util_vector_logic util_vector_logic_0 ]
+  # Create instance: ilvector_logic_0, and set properties
+  set ilvector_logic_0 [ create_bd_cell -type inline_hdl -vlnv xilinx.com:inline_hdl:ilvector_logic ilvector_logic_0 ]
   set_property -dict [list \
     CONFIG.C_OPERATION {not} \
     CONFIG.C_SIZE {1} \
-  ] $util_vector_logic_0
+  ] $ilvector_logic_0
 
 
   # Create instance: versal_cips_0, and set properties
@@ -318,11 +318,11 @@ proc create_root_design { parentCell } {
   connect_bd_intf_net -intf_net versal_cips_0_pcie0_transmit_fc [get_bd_intf_ports pcie0_transmit_fc_0] [get_bd_intf_pins versal_cips_0/pcie0_transmit_fc]
 
   # Create port connections
-  connect_bd_net -net util_vector_logic_0_Res [get_bd_pins util_vector_logic_0/Res] [get_bd_ports cpm_user_rstn]
+  connect_bd_net -net ilvector_logic_0_Res [get_bd_pins ilvector_logic_0/Res] [get_bd_ports cpm_user_rstn]
   connect_bd_net -net versal_cips_0_pcie0_user_clk [get_bd_pins versal_cips_0/pcie0_user_clk] [get_bd_ports cpm_user_clk]
-  connect_bd_net -net versal_cips_0_pcie0_user_reset [get_bd_pins versal_cips_0/pcie0_user_reset] [get_bd_pins util_vector_logic_0/Op1]
-  connect_bd_net -net xlconstant_0_4_dout [get_bd_pins xlconstant_0_4/dout] [get_bd_pins versal_cips_0/pcie0_cfg_interrupt_intx_vector] [get_bd_pins versal_cips_0/pcie0_cfg_interrupt_pending]
-  connect_bd_net -net xlconstant_0_dout [get_bd_pins xlconstant_0/dout] [get_bd_pins versal_cips_0/cpm_irq0] [get_bd_pins versal_cips_0/cpm_irq1]
+  connect_bd_net -net versal_cips_0_pcie0_user_reset [get_bd_pins versal_cips_0/pcie0_user_reset] [get_bd_pins ilvector_logic_0/Op1]
+  connect_bd_net -net ilconstant_0_4_dout [get_bd_pins ilconstant_0_4/dout] [get_bd_pins versal_cips_0/pcie0_cfg_interrupt_intx_vector] [get_bd_pins versal_cips_0/pcie0_cfg_interrupt_pending]
+  connect_bd_net -net ilconstant_0_dout [get_bd_pins ilconstant_0/dout] [get_bd_pins versal_cips_0/cpm_irq0] [get_bd_pins versal_cips_0/cpm_irq1]
 
   # Create address segments
 

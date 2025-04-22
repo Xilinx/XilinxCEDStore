@@ -122,8 +122,8 @@ set bCheckIPs 1
 if { $bCheckIPs == 1 } {
    set list_check_ips "\ 
 xilinx.com:ip:c_counter_binary:*\
-xilinx.com:ip:xlconcat:*\
-xilinx.com:ip:xlconstant:*\
+xilinx.com:inline_hdl:ilconcat:*\
+xilinx.com:inline_hdl:ilconstant:*\
 "
 
    set list_ips_missing ""
@@ -209,27 +209,27 @@ proc create_root_design_cnt8 { parentCell } {
   ] $cntr8
 
 
-  # Create instance: xlconcat_0, and set properties
-  set xlconcat_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:xlconcat xlconcat_0 ]
+  # Create instance: ilconcat_0, and set properties
+  set ilconcat_0 [ create_bd_cell -type inline_hdl -vlnv xilinx.com:inline_hdl:ilconcat ilconcat_0 ]
   set_property -dict [list \
     CONFIG.IN0_WIDTH {8} \
     CONFIG.IN1_WIDTH {8} \
-  ] $xlconcat_0
+  ] $ilconcat_0
 
 
-  # Create instance: xlconstant_0, and set properties
-  set xlconstant_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:xlconstant xlconstant_0 ]
+  # Create instance: ilconstant_0, and set properties
+  set ilconstant_0 [ create_bd_cell -type inline_hdl -vlnv xilinx.com:inline_hdl:ilconstant ilconstant_0 ]
   set_property -dict [list \
     CONFIG.CONST_VAL {0} \
     CONFIG.CONST_WIDTH {8} \
-  ] $xlconstant_0
+  ] $ilconstant_0
 
-  # Create instance: xlslice_0, and set properties
-  set xlslice_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:xlslice xlslice_0 ]
+  # Create instance: ilslice_0, and set properties
+  set ilslice_0 [ create_bd_cell -type inline_hdl -vlnv xilinx.com:inline_hdl:ilslice ilslice_0 ]
   set_property -dict [list \
     CONFIG.DIN_FROM {7} \
     CONFIG.DIN_WIDTH {16} \
-  ] $xlslice_0
+  ] $ilslice_0
 
 
   # Create port connections
@@ -237,11 +237,11 @@ proc create_root_design_cnt8 { parentCell } {
   connect_bd_net -net CLK_0_1 [get_bd_ports clk] [get_bd_pins cntr8/CLK]
   connect_bd_net -net LOAD_0_1 [get_bd_ports load] [get_bd_pins cntr8/LOAD]
   connect_bd_net -net UP_0_1 [get_bd_ports up] [get_bd_pins cntr8/UP]
-  connect_bd_net -net cntr8_Q [get_bd_pins cntr8/Q] [get_bd_pins xlconcat_0/In0]
-  connect_bd_net -net xlconcat_0_dout [get_bd_pins xlconcat_0/dout] [get_bd_ports q]
-  connect_bd_net -net xlconstant_0_dout [get_bd_pins xlconstant_0/dout] [get_bd_pins xlconcat_0/In1]
-  connect_bd_net -net xlslice_0_dout [get_bd_pins xlslice_0/Dout] [get_bd_pins cntr8/L]
-  connect_bd_net -net xlslice_0_din [get_bd_pins xlslice_0/Din] [get_bd_ports l]
+  connect_bd_net -net cntr8_Q [get_bd_pins cntr8/Q] [get_bd_pins ilconcat_0/In0]
+  connect_bd_net -net ilconcat_0_dout [get_bd_pins ilconcat_0/dout] [get_bd_ports q]
+  connect_bd_net -net ilconstant_0_dout [get_bd_pins ilconstant_0/dout] [get_bd_pins ilconcat_0/In1]
+  connect_bd_net -net ilslice_0_dout [get_bd_pins ilslice_0/Dout] [get_bd_pins cntr8/L]
+  connect_bd_net -net ilslice_0_din [get_bd_pins ilslice_0/Din] [get_bd_ports l]
 
   # Create address segments
 

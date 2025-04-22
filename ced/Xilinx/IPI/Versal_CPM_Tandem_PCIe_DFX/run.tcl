@@ -210,11 +210,11 @@ proc create_root_design { parentCell design_name temp_options} {
   ] [get_bd_pins /axi_noc_0/aclk4]
 
   # Create instance: logic0, and set properties
-  set logic0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:xlconstant logic0 ]
+  set logic0 [ create_bd_cell -type inline_hdl -vlnv xilinx.com:inline_hdl:ilconstant logic0 ]
   set_property CONFIG.CONST_VAL {0} $logic0
 
   # Create instance: logic1, and set properties
-  set logic1 [ create_bd_cell -type ip -vlnv xilinx.com:ip:xlconstant logic1 ]
+  set logic1 [ create_bd_cell -type inline_hdl -vlnv xilinx.com:inline_hdl:ilconstant logic1 ]
 
   # Create instance: proc_sys_reset_0, and set properties
   set proc_sys_reset_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:proc_sys_reset proc_sys_reset_0 ]

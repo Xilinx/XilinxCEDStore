@@ -78,7 +78,7 @@ module pci_exp_usrapp_top # (
   
   parameter EP_DEV_ID                           = 16'hB03F,
   
-  parameter TCQ
+  parameter TCQ                                 = 1
 )
 (
   input user_clk,

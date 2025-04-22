@@ -143,13 +143,54 @@ if (PCIE_CTRL_MODE == 0) begin : Single_CTRL_CRX // CTRL 0 x16
     // PS-VIP clock
     force `EP_PS_PATH.inst.versal_cips_ps_vip_clk = clk33_3mhz;
     force `RP_PS_PATH.inst.versal_cips_ps_vip_clk = clk33_3mhz;
+  // Enable Multi Clock Support API
+    `EP_PS_PATH.inst.en_multi_clock_support();
+    `RP_PS_PATH.inst.en_multi_clock_support();
+  // cpm_osc_clk_div2_gen_clock = 200MHz
+  // cpm_gen_clock = 33.33MHz
+  // ps_gen_clk = 1GHz
+    `EP_PS_PATH.inst.ps_gen_clock(5'd0,1000);
+    `EP_PS_PATH.inst.ps_gen_clock(5'd1,1000);
+    `EP_PS_PATH.inst.ps_gen_clock(5'd2,1000);
+    `EP_PS_PATH.inst.ps_gen_clock(5'd3,1000);
+    `EP_PS_PATH.inst.ps_gen_clock(5'd4,1000);
+    `EP_PS_PATH.inst.ps_gen_clock(5'd5,1000);
+    `EP_PS_PATH.inst.ps_gen_clock(5'd6,1000);
+    `EP_PS_PATH.inst.ps_gen_clock(5'd7,1000);
+    `EP_PS_PATH.inst.ps_gen_clock(5'd8,1000);
+    `EP_PS_PATH.inst.ps_gen_clock(5'd9,1000);
+    `EP_PS_PATH.inst.ps_gen_clock(5'd10,1000);
+    `EP_PS_PATH.inst.ps_gen_clock(5'd11,1000);
+    `EP_PS_PATH.inst.ps_gen_clock(5'd12,1000);
+    `EP_PS_PATH.inst.ps_gen_clock(5'd13,1000);
+    `EP_PS_PATH.inst.ps_gen_clock(5'd14,1000);
+    `EP_PS_PATH.inst.ps_gen_clock(5'd15,1000);
+    `EP_PS_PATH.inst.ps_gen_clock(5'd16,1000);
+    `RP_PS_PATH.inst.ps_gen_clock(5'd0,1000);
+    `RP_PS_PATH.inst.ps_gen_clock(5'd1,1000);
+    `RP_PS_PATH.inst.ps_gen_clock(5'd2,1000);
+    `RP_PS_PATH.inst.ps_gen_clock(5'd3,1000);
+    `RP_PS_PATH.inst.ps_gen_clock(5'd4,1000);
+    `RP_PS_PATH.inst.ps_gen_clock(5'd5,1000);
+    `RP_PS_PATH.inst.ps_gen_clock(5'd6,1000);
+    `RP_PS_PATH.inst.ps_gen_clock(5'd7,1000);
+    `RP_PS_PATH.inst.ps_gen_clock(5'd8,1000);
+    `RP_PS_PATH.inst.ps_gen_clock(5'd9,1000);
+    `RP_PS_PATH.inst.ps_gen_clock(5'd10,1000);
+    `RP_PS_PATH.inst.ps_gen_clock(5'd11,1000);
+    `RP_PS_PATH.inst.ps_gen_clock(5'd12,1000);
+    `RP_PS_PATH.inst.ps_gen_clock(5'd13,1000);
+    `RP_PS_PATH.inst.ps_gen_clock(5'd14,1000);
+    `RP_PS_PATH.inst.ps_gen_clock(5'd15,1000);
+    `RP_PS_PATH.inst.ps_gen_clock(5'd16,1000);
+    
     
     // Reference Clocks for the CPM
-    `EP_PS_PATH.inst.cpm_gen_clock(100);
-    `EP_PS_PATH.inst.cpm_osc_clk_div2_gen_clock(100);
+    `EP_PS_PATH.inst.cpm_gen_clock(33.33);
+    `EP_PS_PATH.inst.cpm_osc_clk_div2_gen_clock(200);
 
-    `RP_PS_PATH.inst.cpm_gen_clock(100);
-    `RP_PS_PATH.inst.cpm_osc_clk_div2_gen_clock(100);
+    `RP_PS_PATH.inst.cpm_gen_clock(33.33);
+    `RP_PS_PATH.inst.cpm_osc_clk_div2_gen_clock(200);
     
     // EP reset
     force `EP_PS_PATH.inst.PERST0N = perstn;
@@ -195,13 +236,54 @@ else if (PCIE_CTRL_MODE == 1) begin : Dual_Ctrl_CRX // CTRL 0+1 x8x8
     // PS-VIP clock
     force `EP_PS_PATH.inst.versal_cips_ps_vip_clk = clk33_3mhz;
     force `RP_PS_PATH.inst.versal_cips_ps_vip_clk = clk33_3mhz;
+  // Enable Multi Clock Support API
+    `EP_PS_PATH.inst.en_multi_clock_support();
+    `RP_PS_PATH.inst.en_multi_clock_support();
+  // cpm_osc_clk_div2_gen_clock = 200MHz
+  // cpm_gen_clock = 33.33MHz
+  // ps_gen_clk = 1GHz
+    `EP_PS_PATH.inst.ps_gen_clock(5'd0,1000);
+    `EP_PS_PATH.inst.ps_gen_clock(5'd1,1000);
+    `EP_PS_PATH.inst.ps_gen_clock(5'd2,1000);
+    `EP_PS_PATH.inst.ps_gen_clock(5'd3,1000);
+    `EP_PS_PATH.inst.ps_gen_clock(5'd4,1000);
+    `EP_PS_PATH.inst.ps_gen_clock(5'd5,1000);
+    `EP_PS_PATH.inst.ps_gen_clock(5'd6,1000);
+    `EP_PS_PATH.inst.ps_gen_clock(5'd7,1000);
+    `EP_PS_PATH.inst.ps_gen_clock(5'd8,1000);
+    `EP_PS_PATH.inst.ps_gen_clock(5'd9,1000);
+    `EP_PS_PATH.inst.ps_gen_clock(5'd10,1000);
+    `EP_PS_PATH.inst.ps_gen_clock(5'd11,1000);
+    `EP_PS_PATH.inst.ps_gen_clock(5'd12,1000);
+    `EP_PS_PATH.inst.ps_gen_clock(5'd13,1000);
+    `EP_PS_PATH.inst.ps_gen_clock(5'd14,1000);
+    `EP_PS_PATH.inst.ps_gen_clock(5'd15,1000);
+    `EP_PS_PATH.inst.ps_gen_clock(5'd16,1000);
+    `RP_PS_PATH.inst.ps_gen_clock(5'd0,1000);
+    `RP_PS_PATH.inst.ps_gen_clock(5'd1,1000);
+    `RP_PS_PATH.inst.ps_gen_clock(5'd2,1000);
+    `RP_PS_PATH.inst.ps_gen_clock(5'd3,1000);
+    `RP_PS_PATH.inst.ps_gen_clock(5'd4,1000);
+    `RP_PS_PATH.inst.ps_gen_clock(5'd5,1000);
+    `RP_PS_PATH.inst.ps_gen_clock(5'd6,1000);
+    `RP_PS_PATH.inst.ps_gen_clock(5'd7,1000);
+    `RP_PS_PATH.inst.ps_gen_clock(5'd8,1000);
+    `RP_PS_PATH.inst.ps_gen_clock(5'd9,1000);
+    `RP_PS_PATH.inst.ps_gen_clock(5'd10,1000);
+    `RP_PS_PATH.inst.ps_gen_clock(5'd11,1000);
+    `RP_PS_PATH.inst.ps_gen_clock(5'd12,1000);
+    `RP_PS_PATH.inst.ps_gen_clock(5'd13,1000);
+    `RP_PS_PATH.inst.ps_gen_clock(5'd14,1000);
+    `RP_PS_PATH.inst.ps_gen_clock(5'd15,1000);
+    `RP_PS_PATH.inst.ps_gen_clock(5'd16,1000);
+    
     
     // Reference Clocks for the CPM
-    `EP_PS_PATH.inst.cpm_gen_clock(100);
-    `EP_PS_PATH.inst.cpm_osc_clk_div2_gen_clock(100);
+    `EP_PS_PATH.inst.cpm_gen_clock(33.33);
+    `EP_PS_PATH.inst.cpm_osc_clk_div2_gen_clock(200);
 
-    `RP_PS_PATH.inst.cpm_gen_clock(100);
-    `RP_PS_PATH.inst.cpm_osc_clk_div2_gen_clock(100);
+    `RP_PS_PATH.inst.cpm_gen_clock(33.33);
+    `RP_PS_PATH.inst.cpm_osc_clk_div2_gen_clock(200);
     
     // EP reset
     force `EP_PS_PATH.inst.PERST0N = perstn;
