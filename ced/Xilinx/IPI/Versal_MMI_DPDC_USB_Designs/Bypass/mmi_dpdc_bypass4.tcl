@@ -69,7 +69,6 @@ proc create_hier_cell_avtpg_s3 { parentCell nameHier } {
   set av_pat_gen_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:psdpdc_av_pat_gen av_pat_gen_0 ]
   set_property -dict [list \
     CONFIG.BPC {12} \
-    CONFIG.PART_EN {1} \
     CONFIG.PPC {1} \
     CONFIG.SDP_EN {1} \
   ] $av_pat_gen_0
@@ -254,7 +253,6 @@ proc create_hier_cell_avtpg_s2 { parentCell nameHier } {
   set av_pat_gen_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:psdpdc_av_pat_gen av_pat_gen_0 ]
   set_property -dict [list \
     CONFIG.BPC {12} \
-    CONFIG.PART_EN {1} \
     CONFIG.PPC {1} \
     CONFIG.SDP_EN {1} \
   ] $av_pat_gen_0
@@ -439,7 +437,6 @@ proc create_hier_cell_avtpg_s1 { parentCell nameHier } {
   set av_pat_gen_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:psdpdc_av_pat_gen av_pat_gen_0 ]
   set_property -dict [list \
     CONFIG.BPC {12} \
-    CONFIG.PART_EN {1} \
     CONFIG.PPC {1} \
     CONFIG.SDP_EN {1} \
   ] $av_pat_gen_0
@@ -624,7 +621,6 @@ proc create_hier_cell_avtpg_s0 { parentCell nameHier } {
   set av_pat_gen_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:psdpdc_av_pat_gen av_pat_gen_0 ]
   set_property -dict [list \
     CONFIG.BPC {12} \
-    CONFIG.PART_EN {1} \
     CONFIG.PPC {1} \
     CONFIG.SDP_EN {1} \
   ] $av_pat_gen_0
