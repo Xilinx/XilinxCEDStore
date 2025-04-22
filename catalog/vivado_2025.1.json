@@ -404,11 +404,11 @@
         "name": "Versal_MMI_DPDC_USB_designs",
         "display": "Versal MMI DPDC USB Designs",
         "latest_revision": "1.0",
-        "commit_id": "9bc71880fd319838a63c23523ba2cde66721a985",
+        "commit_id": "f32d2db8bad8236a5574428a27a95332cc7e7ff5",
         "revisions": [
           {
             "revision": "1.0",
-            "commit_id": "9bc71880fd319838a63c23523ba2cde66721a985",
+            "commit_id": "f32d2db8bad8236a5574428a27a95332cc7e7ff5",
             "date": "01-04-2025:13:33:39",
             "history": "Added board Versal MMI DPDC USB Designs v1.0"
           }
