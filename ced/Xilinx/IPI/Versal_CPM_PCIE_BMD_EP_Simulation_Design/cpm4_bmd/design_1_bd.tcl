@@ -111,7 +111,7 @@ set bCheckIPsPassed 1
 set bCheckIPs 1
 if { $bCheckIPs == 1 } {
    set list_check_ips "\ 
-xilinx.com:ip:xlconstant:*\
+xilinx.com:inline_hdl:ilconstant:*\
 xilinx.com:ip:versal_cips:*\
 "
 
@@ -262,7 +262,7 @@ proc create_root_design { parentCell } {
   set pcie0_user_reset_0 [ create_bd_port -dir O -type rst pcie0_user_reset_0 ]
 
   # Create instance: logic0, and set properties
-  set logic0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:xlconstant logic0 ]
+  set logic0 [ create_bd_cell -type inline_hdl -vlnv xilinx.com:inline_hdl:ilconstant logic0 ]
   set_property CONFIG.CONST_VAL {0} $logic0
 
 
@@ -349,7 +349,7 @@ proc create_root_design { parentCell } {
   connect_bd_net -net versal_cips_0_pcie0_user_clk [get_bd_pins versal_cips_0/pcie0_user_clk] [get_bd_ports pcie0_user_clk_0]
   connect_bd_net -net versal_cips_0_pcie0_user_lnk_up [get_bd_pins versal_cips_0/pcie0_user_lnk_up] [get_bd_ports pcie0_user_lnk_up_0]
   connect_bd_net -net versal_cips_0_pcie0_user_reset [get_bd_pins versal_cips_0/pcie0_user_reset] [get_bd_ports pcie0_user_reset_0]
-  connect_bd_net -net xlconstant_0_dout [get_bd_pins logic0/dout] [get_bd_pins versal_cips_0/cpm_irq0] [get_bd_pins versal_cips_0/cpm_irq1]
+  connect_bd_net -net ilconstant_0_dout [get_bd_pins logic0/dout] [get_bd_pins versal_cips_0/cpm_irq0] [get_bd_pins versal_cips_0/cpm_irq1]
 
   # Create address segments
 
