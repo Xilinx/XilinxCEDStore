@@ -18,6 +18,21 @@ variable script_folder
 set script_folder [_tcl::get_script_folder]
 
 ################################################################
+# Check if script is running in correct Vivado version.
+#
+# NOTE - set scripts_vivado_version "" to ignore version check.
+################################################################
+set scripts_vivado_version ""
+#set scripts_vivado_version 2025.1
+set current_vivado_version [version -short]
+
+if { $scripts_vivado_version ne "" && [string first $scripts_vivado_version $current_vivado_version] == -1 } {
+   puts ""
+   common::send_gid_msg -ssname BD::TCL -id 2040 -severity "CRITICAL WARNING" "This script was generated using Vivado <$scripts_vivado_version> without IP versions in the create_bd_cell commands, but is now being run in <$current_vivado_version> of Vivado. There may have been changes to the IP between Vivado <$scripts_vivado_version> and <$current_vivado_version>, which could impact the functionality and configuration of the design."
+
+}
+
+################################################################
 # START
 ################################################################
 
@@ -557,7 +572,7 @@ proc create_root_design { parentCell } {
       CPM_PCIE0_DMA_INTF {AXI_MM_and_AXI_Stream} \
       CPM_PCIE0_DSC_BYPASS_WR {1} \
       CPM_PCIE0_MAILBOX_ENABLE {0} \
-      CPM_PCIE0_MAX_LINK_SPEED {32.0_GT/s} \
+      CPM_PCIE0_MAX_LINK_SPEED {16.0_GT/s} \
       CPM_PCIE0_MODES {DMA} \
       CPM_PCIE0_MODE_SELECTION {Advanced} \
       CPM_PCIE0_PF0_BAR0_QDMA_64BIT {1} \
@@ -1526,7 +1541,7 @@ proc create_root_design { parentCell } {
       USE_UART0_IN_DEVICE_BOOT {0} \
       preset {None} \
     } \
-    CONFIG.PS_PMC_CONFIG_APPLIED {0} \
+    CONFIG.PS_PMC_CONFIG_APPLIED {1} \
   ] $versal_cips_0
 
 
