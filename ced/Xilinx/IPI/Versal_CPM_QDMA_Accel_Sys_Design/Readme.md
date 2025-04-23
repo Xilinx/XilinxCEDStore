@@ -50,7 +50,8 @@ This CED is only provided for hardware test flow. Simulation is not supported.
 
 ## Block Diagram
 Following is the block diagram of various modules in the design.  
-![Versal_CPM_QDMA_Accel_Sys_Design_block_diagram](https://media.gitenterprise.xilinx.com/user/2450/files/fdd96895-11f1-4026-a5e6-579b79317a46)
+![image](https://github.com/user-attachments/assets/36f82093-7727-438d-983e-c01256f5fed5)
+
 
 Following is a brief description about the design. 
  - The PL logic in the design is highlighted in Red boxes. This consists of 
@@ -70,20 +71,23 @@ Following is a brief description about the design.
 ### Address Remap
 Following snapshot shows address remap settings in AXI-NoC IP. This feature is used to access various register spaces of PMC, CPM, IPI peripherals are accessed using one of the PCIe BARs. 
 
-![image](https://media.gitenterprise.xilinx.com/user/2450/files/7d13d338-07ac-408c-baed-025eb152d655)
+![image](https://github.com/user-attachments/assets/f87986cc-0573-445b-b74d-d42a28707a31)
 
 The table below provides different memory regions accessible through PCIe link. This table demonstrates two levels of address translations. 
 1. AXI-Bridge functionality available in CPM5 is used to translate PCIe BAR offset to different offsets accessible through PCIe NoC. PCIe BAR size is set to 128MB and PCIe base address is translated to 0x201_0000_0000. 
 2. Second translation is performed inside AXI-NoC. This translation matches the addresses coming from PCIe NoC port to the PMC, CPM, IPI peripherals address regions.
-![image](https://media.gitenterprise.xilinx.com/user/2450/files/bcf1bdf9-f774-4caf-a301-b5b512600289)
+![image](https://github.com/user-attachments/assets/f3149479-af60-4212-9a53-e429ff10381b)
+
 
 ### MM Data flow
 Following flowchart describes the data path flow for Memory mapped mode of transfer:
-![image](https://media.gitenterprise.xilinx.com/user/2450/files/fe1aac2e-b216-41a1-a7ac-db50071f4fcc)
+![image](https://github.com/user-attachments/assets/5370c0eb-e6d4-41e7-a7c4-b57103b5e106)
+
 
 ### ST Data flow
 Following flowchart describes the data path flow for Stream mode of transfer:
-![image](https://media.gitenterprise.xilinx.com/user/2450/files/87063e89-e4b7-458a-90a1-b8e26b2ff5b6)
+![image](https://github.com/user-attachments/assets/1a5882fa-b2c6-49ef-bb47-4188c082491c)
+
 
 
 ## Required Hardware and Tools
@@ -107,39 +111,53 @@ bootgen -arch versal -image ./qdma_accel_sys.bif -o ./boot_with_elf.pdi -w
 
 ## CPM Configuration
 Following snapshots show the configuration done in CPM GUI inside Versal CIPS IP.  
-![image](https://media.gitenterprise.xilinx.com/user/2450/files/a3a5d39d-3086-4578-a558-dce5c90c6a85)
+![image](https://github.com/user-attachments/assets/00d60df3-677d-4d6b-baad-a410885c3b8b)
 
-![image](https://media.gitenterprise.xilinx.com/user/2450/files/c241e080-36b0-4670-9bdd-e127e78d1978)
+![image](https://github.com/user-attachments/assets/d53fe957-b31c-4651-a51f-0b57a6793cc8)
 
-![image](https://media.gitenterprise.xilinx.com/user/2450/files/6eca83d9-f6d4-47ad-bb61-b44c9861ab90)
+![image](https://github.com/user-attachments/assets/913f238c-58c9-4ce5-8dc0-3cd576e1e02d)
 
-![image](https://media.gitenterprise.xilinx.com/user/2450/files/2251a957-44ef-4af4-9fda-f413b4a61adb)
 
-![image](https://media.gitenterprise.xilinx.com/user/2450/files/6cda2954-d037-4123-af2e-8b2faaa923f5)
+![image](https://github.com/user-attachments/assets/7abb9b0d-0f6a-4ff6-9825-44d15f6bf545)
 
-![image](https://media.gitenterprise.xilinx.com/user/2450/files/e730f0dc-b190-4ca6-990a-f85c701b6d89)
 
-![image](https://media.gitenterprise.xilinx.com/user/2450/files/91d14150-9827-4baa-a763-149732d3530f)
+![image](https://github.com/user-attachments/assets/7d612835-9dca-4f15-8c38-cf7a9fc8ff17)
 
-![image](https://media.gitenterprise.xilinx.com/user/2450/files/aa96b895-6f0e-423b-b3a7-510e61d07428)
 
-![image](https://media.gitenterprise.xilinx.com/user/2450/files/a1e7edd2-c6f2-4496-ab2c-5386ee6524d7)
+![image](https://github.com/user-attachments/assets/32b322b0-86c1-45ee-b286-7cd6ea2519de)
+
+
+![image](https://github.com/user-attachments/assets/07ece90d-d95b-400c-825c-6a5f14a6e939)
+
+
+![image](https://github.com/user-attachments/assets/3080c48a-e3d5-47bd-bdbc-5e7c77f05328)
+
+
+![image](https://github.com/user-attachments/assets/348cbda9-7691-4f8c-ba0b-54c32bf5ede4)
+
 
 ## PMC Configuration
 
-![image](https://media.gitenterprise.xilinx.com/user/2450/files/adddd576-9e38-4e29-8682-45ea82553940)
+![image](https://github.com/user-attachments/assets/85abf016-1cdf-491b-b9fd-de953c0bbc75)
 
-![image](https://media.gitenterprise.xilinx.com/user/2450/files/2eb07068-f778-4a6d-be60-48215f4d3cc6)
 
-![image](https://media.gitenterprise.xilinx.com/user/2450/files/15f6a9d2-9299-45e4-a960-f806060ee79a)
+![image](https://github.com/user-attachments/assets/0be791f6-d156-4df3-a5a9-d9ffe0806c0d)
 
-![image](https://media.gitenterprise.xilinx.com/user/2450/files/eb6f0daf-e5ea-4880-9e54-beb6090a5179)
 
-![image](https://media.gitenterprise.xilinx.com/user/2450/files/0dff63b5-5050-4160-918a-3923e1721e50)
+![image](https://github.com/user-attachments/assets/bb1e0eab-aff9-414d-9881-2975babe0ce5)
 
-![image](https://media.gitenterprise.xilinx.com/user/2450/files/f9b773d3-f47f-433f-a095-b7894cfcbf10)
 
-![image](https://media.gitenterprise.xilinx.com/user/2450/files/de71fc6c-8fb6-4782-8f6b-bb3ef83fb6d8)
+![image](https://github.com/user-attachments/assets/edc55176-d45e-4ca2-9726-9f111de17d01)
+
+
+![image](https://github.com/user-attachments/assets/c8e086d5-c55e-4c82-915c-540cc4bbd951)
+
+
+![image](https://github.com/user-attachments/assets/0d1ea2bb-bbc2-4d6c-b466-bdcf6537f1ce)
+
+
+![image](https://github.com/user-attachments/assets/bc98d36e-2d27-4853-acef-22328415d906)
+
 
 
 ## Test Scripts
@@ -185,15 +203,17 @@ Following scripts are provided with the CED for reference. They are available in
 
 #### 2. Setup TeraTerm terminal with the settings shown in the figure below. How to identify the teraterm port to use?
 
-![image](https://media.gitenterprise.xilinx.com/user/2450/files/42a42f7d-68e4-4c52-9f98-abc33444695d)
+![image](https://github.com/user-attachments/assets/5dc9fc04-26d9-4ba5-9e89-34afd8b3255f)
+
 
 #### 3. Launch xsdb and read SBI_CONTROL register at 0xF1220004 address. This register needs to be set to 0x29 to load the PLD PDI from host. This step is essential to get dma transfer step to load pld pdi using QDMA driver. 
 
-![image](https://media.gitenterprise.xilinx.com/user/2450/files/3c781485-bade-4a26-8e0f-c220c0b3d342)
+![image](https://github.com/user-attachments/assets/50cdd45b-5bf3-4f71-b622-b4217c6ac585)
+
 
 If the JTAG cable is connected to a remote host, use the command "conn -host <host_name or host IP address> before connecting to the board using "ta" command (shown below)
 
-![image](https://media.gitenterprise.xilinx.com/user/2450/files/b592a6da-8537-49e8-b09b-71b7df6f7da8)
+![image](https://github.com/user-attachments/assets/b05c4938-8626-4b20-b9d9-dccdef0b4110)
 
 ### Following steps need to be run on the PCIe host in which VPK120 board is connected through a PCIe slot. 
 
@@ -250,19 +270,19 @@ targeting the SBI FIFO using address 0x102100000
 
 Following snapshot shows the PLM log after programming boot.pdi to VPK120 board.
 
-![image](https://media.gitenterprise.xilinx.com/user/2450/files/cb03b486-ded3-4051-8b70-66b8529f53b9)
+![image](https://github.com/user-attachments/assets/166f663a-9ffb-4287-9022-f5c54730807e)
 
 Following snapshot shows the PLM log after programming pld.pdi to VPK120 board using QDMA driver. 
 
-![image](https://media.gitenterprise.xilinx.com/user/2450/files/7232b22d-2a28-4d2d-a8b7-e4f2cb56d09a)
+![image](https://github.com/user-attachments/assets/2c4553d0-5d0a-4f36-bfa7-70fd4c1c9626)
 
 Following snapshot shows the result of sourcing the access_PS_peripherals.sh. This script tries to access the PMC peripherals - RTCA, OCM, QSPI, CPM, SBI
 
-![image](https://media.gitenterprise.xilinx.com/user/2450/files/aee0cf64-78f1-46db-9c57-429ac9f8e104)
+![image](https://github.com/user-attachments/assets/ab4beb0e-b385-4895-91aa-24ce706d55c4)
 
 Following snapshot shows the output on TeraTerm after sourcing H2C_MM test script in PCIe Host.
 
-![image](https://media.gitenterprise.xilinx.com/user/2450/files/c82c2afb-ebb9-4917-a0dc-152543dff0d2)
+![image](https://github.com/user-attachments/assets/55adb2c3-f28c-4c3e-b8a3-d4fa4282498c)
 
 ## References
 #### PG347 - https://docs.amd.com/r/en-US/pg347-cpm-dma-bridge?tocId=oTd_ZrdYcOWw7fqmc3hb9g
