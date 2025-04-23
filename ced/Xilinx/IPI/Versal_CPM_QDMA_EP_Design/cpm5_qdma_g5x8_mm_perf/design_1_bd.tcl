@@ -113,7 +113,7 @@ if { $bCheckIPs == 1 } {
    set list_check_ips "\ 
 xilinx.com:ip:axi_noc:*\
 xilinx.com:ip:versal_cips:*\
-xilinx.com:ip:xlconstant:*\
+xilinx.com:inline_hdl:ilconstant:*\
 "
 
    set list_ips_missing ""
@@ -857,13 +857,13 @@ proc create_root_design { parentCell } {
   ] $versal_cips_0
 
 
-  # Create instance: xlconstant_0, and set properties
-  set xlconstant_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:xlconstant xlconstant_0 ]
-  set_property CONFIG.CONST_VAL {0} $xlconstant_0
+  # Create instance: ilconstant_0, and set properties
+  set ilconstant_0 [ create_bd_cell -type inline_hdl -vlnv xilinx.com:inline_hdl:ilconstant ilconstant_0 ]
+  set_property CONFIG.CONST_VAL {0} $ilconstant_0
 
 
-  # Create instance: xlconstant_1, and set properties
-  set xlconstant_1 [ create_bd_cell -type ip -vlnv xilinx.com:ip:xlconstant xlconstant_1 ]
+  # Create instance: ilconstant_1, and set properties
+  set ilconstant_1 [ create_bd_cell -type inline_hdl -vlnv xilinx.com:inline_hdl:ilconstant ilconstant_1 ]
 
   # Create interface connections
   connect_bd_intf_net -intf_net axi_noc_0_CH0_LPDDR4_0 [get_bd_intf_ports CH0_LPDDR4_0_0] [get_bd_intf_pins axi_noc_0/CH0_LPDDR4_0]
@@ -890,8 +890,8 @@ proc create_root_design { parentCell } {
   connect_bd_net -net versal_cips_0_dma1_axi_aresetn [get_bd_pins versal_cips_0/dma1_axi_aresetn] [get_bd_ports dma1_axi_aresetn_0]
   connect_bd_net -net versal_cips_0_noc_pmc_axi_axi0_clk [get_bd_pins versal_cips_0/noc_pmc_axi_axi0_clk] [get_bd_pins axi_noc_1/aclk1]
   connect_bd_net -net versal_cips_0_pl0_ref_clk [get_bd_pins versal_cips_0/pl0_ref_clk] [get_bd_ports pl0_ref_clk_0] [get_bd_pins versal_cips_0/dma1_intrfc_clk]
-  connect_bd_net -net xlconstant_0_dout [get_bd_pins xlconstant_0/dout] [get_bd_pins versal_cips_0/cpm_irq0] [get_bd_pins versal_cips_0/cpm_irq1] [get_bd_pins versal_cips_0/dma1_mgmt_req_vld] [get_bd_pins versal_cips_0/dma1_usr_irq_valid]
-  connect_bd_net -net xlconstant_1_dout [get_bd_pins xlconstant_1/dout] [get_bd_pins versal_cips_0/dma1_mgmt_cpl_rdy] [get_bd_pins versal_cips_0/dma1_st_rx_msg_tready] [get_bd_pins versal_cips_0/dma1_qsts_out_rdy]
+  connect_bd_net -net ilconstant_0_dout [get_bd_pins ilconstant_0/dout] [get_bd_pins versal_cips_0/cpm_irq0] [get_bd_pins versal_cips_0/cpm_irq1] [get_bd_pins versal_cips_0/dma1_mgmt_req_vld] [get_bd_pins versal_cips_0/dma1_usr_irq_valid]
+  connect_bd_net -net ilconstant_1_dout [get_bd_pins ilconstant_1/dout] [get_bd_pins versal_cips_0/dma1_mgmt_cpl_rdy] [get_bd_pins versal_cips_0/dma1_st_rx_msg_tready] [get_bd_pins versal_cips_0/dma1_qsts_out_rdy]
 
   # Create address segments
   assign_bd_address -offset 0x050000000000 -range 0x80000000 -target_address_space [get_bd_addr_spaces versal_cips_0/CPM_PCIE_NOC_0] [get_bd_addr_segs axi_noc_0/S00_AXI/C3_DDR_CH1] -force
