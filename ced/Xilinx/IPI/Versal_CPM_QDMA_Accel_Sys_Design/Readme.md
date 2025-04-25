@@ -90,7 +90,7 @@ The following flowchart depicts the data path flow for the Memory mapped (MM) mo
 The following flowchart illustrates the data path flow for Stream (ST) mode of transfer:
 ![image](https://github.com/user-attachments/assets/1a5882fa-b2c6-49ef-bb47-4188c082491c)
 
-## Required Hardware and Tools
+## Tool Requirements
  - Vivado 2025.1  
  - Vitis 2025.1
 
