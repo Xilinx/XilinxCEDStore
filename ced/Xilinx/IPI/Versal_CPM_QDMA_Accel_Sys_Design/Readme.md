@@ -4,17 +4,16 @@ This example design demonstrates the following functionalities with Versal CPM5 
 
 This design will cover the following functionalities:
 
-  * Segmented Configuration
-    - The Boot PDI includes baremetal application running on A72 processor present in the PMC portion of the Versal Premium device.
-    - Load PLD image over PCIe to SBI using QDMA driver.
+  * Segmented Configuration    
+    - Loading of PLD image over PCIe to SBI using QDMA driver.
   * QDMA-MM H2C/C2H data path:
     Using MM, the example design demonstrates the transfer of data from a host machine to an accelerator logic within a Programmable Logic (PL) device, processing that data, and then retrieving the 
     processed data back into the host memory. This is done with the following steps:
-    - Transfer the data from the host memory to a DDR attached to the Versal Premium device. QDMA Driver running on PCIe host is used to perform the H2C DMA transfer.
-    - Upon completion of H2C DMA transfer, generate IPI Interrupt. This IPI interrupt is targeted to PS APU in Versal Premium Device. 
-    - A Baremetal Application running on the APU responds to IPI interrupt and programs AXI-DMA IP in the PL.
-    - Following this, AXI-DMA IP transfers the data from DDR to the Accelerator logic in the PL. 
-    - The Accelerator logic performs the processing of H2C data and subsequently writes the output data back to the DDR memory. 
+    - Begin by transferring the data from the host memory to a DDR attached to the Versal Premium device, utilizing the QDMA Driver running on PCIe host to perform the H2C DMA transfer.
+    - Upon completion of H2C DMA transfer, generate an IPI Interrupt targeted to the A72 APU within the Versal Premium Device. 
+    - A Baremetal Application running on the APU responds to the IPI interrupt and programs AXI-DMA IP in the PL.
+    - Following this, AXI-DMA IP transfers the data from DDR to the Accelerator logic located in the PL. 
+    - The Accelerator logic then processes the H2C data and subsequently writes the output data back to the DDR memory. 
     - Afterward, the PL generates an interrupt to the host via the usr_irq interface of CPM5-QDMA. 
     - Finally, utilize the QDMA driver to perform C2H DMA transfer from DDR memory back into the Host memory.   
   * QDMA-ST H2C/C2H data path:
@@ -58,7 +57,7 @@ Following is a brief description about the design.
  - The PL logic in the design is highlighted in Red boxes. This consists of the following components:
       - Example accelerator logic for MM/ST data path.
       - AXI-DMA IP for DMA transfer from DDR to PL.
-      - AXI-smart connect for connect between FPD NoC to PL, AXI-DMA to DDR and PL.
+      - AXI-smart connect for connections between FPD NoC to PL, AXI-DMA to DDR and PL.
       - DSC-Bypass suport for QDMA-ST mode. 
       - Generation of CMPT packet for C2H-ST DMA transfer using CPM5-QDMA IP. 
       - Descriptor fetch using the DSC_CRDT interface of CPM5-QDMA IP. 
@@ -67,8 +66,8 @@ Following is a brief description about the design.
  - Both PCIe NoC ports from the CPM5 block are connected to DDR through AXI-NoC.
  - PCIe NoC1 port is connected to PMC peripherals. with NoC remap enabled in this path and address translation is enabled in both CPM5 and AXI-NoC IP. 
  - A Baremetal application running on APU accesses the AXI-DMA IP registers through the FPD-NoC port. 
-## Functional Description
 
+## Functional Description
 ### Address Remap
 The following snapshot shows address remap settings in the AXI-NoC IP. This feature is utilized to access various register spaces of PMC, CPM, and IPI peripherals through one of the PCIe BARs. 
 
@@ -88,8 +87,6 @@ The following flowchart depicts the data path flow for the Memory mapped (MM) mo
 ### ST Data flow
 The following flowchart illustrates the data path flow for Stream (ST) mode of transfer:
 ![image](https://github.com/user-attachments/assets/1a5882fa-b2c6-49ef-bb47-4188c082491c)
-
-
 
 ## Required Hardware and Tools
  - Vivado 2025.1  
@@ -254,7 +251,6 @@ In the remainder of this section, the steps are assumed to be performed on two m
 #### 2. Setup TeraTerm terminal with the settings shown in the figure below. How to identify the teraterm port to use?
 
 ![image](https://github.com/user-attachments/assets/5dc9fc04-26d9-4ba5-9e89-34afd8b3255f)
-
 
 #### 3. Launch xsdb and read SBI_CONTROL register at 0xF1220004 address. This register needs to be set to 0x29 to load the PLD PDI from host. This step is essential for the DMA transfer step to load the PLD PDI using the QDMA driver. 
 
