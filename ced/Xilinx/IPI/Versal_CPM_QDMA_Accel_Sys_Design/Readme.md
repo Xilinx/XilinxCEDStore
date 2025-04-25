@@ -25,13 +25,14 @@ This design will cover the following functionalities:
         - Internal method
         - Simple bypass method
         - Csh bypass method
-  * Access to the following memory regions via the PCIe link will be demonstrated
-    - OCM
-    - RTCA
-    - SBI
-    - QSPI
-    - CPM
-    - Inter Processer Interrupt registers
+  * Access to Memory Regions
+    - Access to the following memory regions via the PCIe link will be demonstrated
+      - OCM
+      - RTCA
+      - SBI
+      - QSPI
+      - CPM
+      - Inter Processer Interrupt registers
 
 VPK120 board has two device variants with MP and MHP parts. 
 
