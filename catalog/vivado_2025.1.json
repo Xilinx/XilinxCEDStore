@@ -157,11 +157,11 @@
         "name": "two_port_switch",
         "display": "Versal CPM5 Two Port Switch Design",
         "latest_revision": "1.0",
-        "commit_id": "336a7fa5246bef7970b29e34c39df6b74e0ade89",
+        "commit_id": "6c1d2231c6ff42fc126748d4c20d240b0e39d0c1",
         "revisions": [
           {
             "revision": "1.0",
-            "commit_id": "336a7fa5246bef7970b29e34c39df6b74e0ade89",
+            "commit_id": "6c1d2231c6ff42fc126748d4c20d240b0e39d0c1",
             "date": "01-04-2025:13:33:38",
             "history": "Added board Versal CPM5 Two Port Switch Design v1.0"
           }
@@ -195,11 +195,11 @@
         "name": "cpm_bmd_ep",
         "display": "Versal CPM PCIE BMD EP Design",
         "latest_revision": "1.0",
-        "commit_id": "336a7fa5246bef7970b29e34c39df6b74e0ade89",
+        "commit_id": "6c1d2231c6ff42fc126748d4c20d240b0e39d0c1",
         "revisions": [
           {
             "revision": "1.0",
-            "commit_id": "336a7fa5246bef7970b29e34c39df6b74e0ade89",
+            "commit_id": "6c1d2231c6ff42fc126748d4c20d240b0e39d0c1",
             "date": "01-04-2025:13:33:38",
             "history": "Added board Versal CPM PCIE BMD EP Design v1.0"
           }
