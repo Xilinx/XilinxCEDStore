@@ -111,10 +111,30 @@ The following flowchart illustrates the data path flow for Stream (ST) mode of t
 
 ![image](https://github.com/user-attachments/assets/dc4c3d4f-dd8e-4048-9b5e-473ae631d9ac)
 
-#### 5. This CED targets VPK120 board. This board has two variants of the Versal Premium device. By default, xcvp1202-vsva2785-2MP-e-S device is selected. Alternatively, the speedgChose the device to use with the design by using "Switch Part"
-#### 5. Create Versal_CPM_QDMA_Accel_Sys_Design vivado project and generate .pdi by selecting Generate Device Image
+#### 5. This CED targets VPK120 board. This board has two variants of the Versal Premium device. By default, xcvp1202-vsva2785-2MP-e-S device is selected. Alternatively, a MHP part can be selected by using "Switch Part" option in this page. 
+![image](https://github.com/user-attachments/assets/3c3c9c32-abd2-456a-80ac-9b5155754acd)
 
-This design requires a baremetal application to be executing while performing MM transfers. Following command needs to be executed after generating the PDI from Vivado. ipi_cdma_intr.elf and qdma_accel_sys.bif are provided in src directory of this CED. 
+When "Switch Part" option is clicked, a pop-up will be launched with option to select either xcvp1202-vsva2785-2MP-e-S or xcvp1202-vsva2785-2MHP-e-S device for the VPK120 board. This CED supports both parts. When "MP" device is selected CPM5-QDMA is set to Gen4 x8 configuration. For "MHP" device, CPM5-QDMA is set to Gen5 x8 configuration.
+
+![image](https://github.com/user-attachments/assets/19e0b7ac-c2b9-42ab-967a-6e68e2625482)
+
+#### 6. "Select Design and Preset" page is launched. The options on this page are fixed. Click Next on this page. 
+![image](https://github.com/user-attachments/assets/6f8fc8a9-ac77-435b-8cc6-aead6b2cbe7c)
+
+#### 8. This is the final page - "New Project Summary". It lists the options selected in the previous pages. 
+  - CED template - Versal CPM5 QDMA Based Acceleration System design
+  - Board - Versal VPK120 Evaluation Platform
+  - Part - xcvp1202-vsva2785-2MP-e-S (in this example)
+  - Family - Versal Premium
+  - Package - vsva2785
+  - Speed Grade : -2MP (in this example)
+Click "Finish" on this page. This will initiate CED creation process.
+  
+![image](https://github.com/user-attachments/assets/c589b992-415d-45cb-9d05-b959cd0b3afd)
+
+#### 9. After the CED has been created, generate .pdi by selecting Generate Device Image step in the "Flow Navigator" section of Vivado GUI. 
+
+#### 10. This design requires a baremetal application to be executing while performing MM transfers. Following command needs to be executed after generating the PDI from Vivado. ipi_cdma_intr.elf and qdma_accel_sys.bif are provided in src directory of this CED. 
 
 qdma_accel_sys.bif assumes that ipi_cdma_intr.elf and design_1_wrapper_pld.pdi are in the same directory as the bif file.  
 bootgen -arch versal -image ./qdma_accel_sys.bif -o ./boot_with_elf.pdi -w
