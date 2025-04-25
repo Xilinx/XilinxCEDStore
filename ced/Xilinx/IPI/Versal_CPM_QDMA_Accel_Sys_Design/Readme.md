@@ -140,7 +140,7 @@ qdma_accel_sys.bif assumes that ipi_cdma_intr.elf and design_1_wrapper_pld.pdi a
 bootgen -arch versal -image ./qdma_accel_sys.bif -o ./boot_with_elf.pdi -w
 
 ## CPM Configuration
-Following snapshots show the configuration done in CPM GUI inside Versal CIPS IP.  
+The following snapshots show the configuration done in CPM GUI inside Versal CIPS IP.  
 ![image](https://github.com/user-attachments/assets/00d60df3-677d-4d6b-baad-a410885c3b8b)
 
 ![image](https://github.com/user-attachments/assets/d53fe957-b31c-4651-a51f-0b57a6793cc8)
@@ -167,6 +167,7 @@ Following snapshots show the configuration done in CPM GUI inside Versal CIPS IP
 
 
 ## PMC Configuration
+The following snapshots show the design PMC configuration inside Versal CIPS IP.
 
 ![image](https://github.com/user-attachments/assets/85abf016-1cdf-491b-b9fd-de953c0bbc75)
 
@@ -192,38 +193,44 @@ Following snapshots show the configuration done in CPM GUI inside Versal CIPS IP
 
 ## Test Scripts
 
-### Pre-requisite to source this script: QDMA driver must be installed in the host and it is linked to the QDMA End point running on the VPK120 board.
+As a prerequisite to run this script, ensure that the QDMA driver (found in the link below) is installed on the host and connected to the QDMA endpoint running on the VPK120 board. 
+
+https://github.com/Xilinx/dma_ip_drivers
 
 Following scripts are provided with the CED for reference. They are available in scripts folder of this CED. 
-1. qdma_test_h2c_mm.sh -- Tests the MM data path of the design. This script performs the following steps. 
-  - Identify bus, device, function (BDF) numbers of the PCIe slot to which VPK120 board is connected to. This design is set with DEVICE_ID of "10EE". This value is        used for the BDF identification process. 
-  - Create MM QID for H2C/C2H directions
-  - Start the QID
-  - Perform H2C-MM DMA transfer to 0x72000000000 DDR address.
-  - Initiate IPI interrupt to A72 processor in Versal Premium device. IPI message sent through IPI interrupt consists of the following details. 
-    - DDR address used in H2C-MM DMA transfer
-    - QID used in H2C-MM DMA transfer
-    - Size of the H2C-MM DMA transfer
+### qdma_test_h2c_mm.sh
+This script tests the MM data path of the design and performs the following steps. 
+  1. Identify the bus, device, function (BDF) numbers of the PCIe slot to which the VPK120 board is connected. This design is set with DEVICE_ID of "10EE", which is used for the BDF identification process.
+  2. Create MM QID for both H2C/C2H directions
+  3. Start the QID
+  4. Perform an H2C-MM DMA transfer to the 0x72000000000 DDR address.
+  5. Initiate an IPI interrupt to the A72 processor in the Versal Premium device. The IPI message sent through the IPI interrupt consists of the following information.
+     - DDR address used in H2C-MM DMA transfer
+     - QID used in H2C-MM DMA transfer
+     - Size of the H2C-MM DMA transfer
   
-2. qdma_test_h2c_st.sh -- Tests the ST data path of the design. This script requires h2c_data.txt file. This script performs the following steps. 
-  - Identify bus, device, function (BDF) numbers of the PCIe slot to which VPK120 board is connected to. This design is set with DEVICE_ID of "10EE". This value is        used for the BDF identification process.
-  - This script has desc_bypass_en, pfetch_bypass_en, trfr_size0, trfr_size1, trfr_size2 variables.
-    - desc_bypass_en, pfetch_bypass_en are used to set different C2H-ST use modes (Simple bypass, Csh bypass, Csh Internal) for C2H-ST QID. 
-    #### Simple bypass mode --> desc_bypass_en = 1, pfetch_bypass_en = 1
-    #### Csh bypass mode --> desc_bypass_en = 1, pfetch_bypass_en = 0
-    #### Csh Internal mode --> desc_bypass_en = 0, pfetch_bypass_en = 0
-    - trfr_size0 - size of DMA transfer with Csh Internal mode
-    - trfr_size1 - size of DMA transfer with Csh bypass mode
-    - trfr_size2 - size of DMA transfer with simple bypass mode
-   - Create ST QID for H2C-ST direction
-   - Create ST QID for C2H-ST direction based on desc_bypass_en, pfetch_bypass_en
-   - Start the QID H2C-ST and C2H-ST directions.
-   - Perform H2C-ST DMA transfer to PL
+### qdma_test_h2c_st.sh
+This script tests the ST data path of the design and requires the h2c_data.txt file. It performs the following steps. 
+  1. Identify the bus, device, function (BDF) numbers of the PCIe slot to which the VPK120 board is connected. This design is set with DEVICE_ID of "10EE", which is used for the BDF identification process.
+  2. This script includes variables such as desc_bypass_en, pfetch_bypass_en, trfr_size0, trfr_size1, and trfr_size2.
+     - desc_bypass_en, pfetch_bypass_en are used to set different C2H-ST use modes (Simple bypass, Csh bypass, Csh Internal) for C2H-ST QID. 
+       - Simple bypass mode --> desc_bypass_en = 1, pfetch_bypass_en = 1
+       - Csh bypass mode --> desc_bypass_en = 1, pfetch_bypass_en = 0
+       - Csh Internal mode --> desc_bypass_en = 0, pfetch_bypass_en = 0
+     - trfr_size0 - size of DMA transfer with Csh Internal mode
+     - trfr_size1 - size of DMA transfer with Csh bypass mode
+     - trfr_size2 - size of DMA transfer with simple bypass mode
+   3. Create a ST QID for the H2C-ST direction
+   4. Create a ST QID for the C2H-ST direction based on desc_bypass_en and pfetch_bypass_en values.
+   5. Start the QID H2C-ST and C2H-ST directions.
+   6. Perform a H2C-ST DMA transfer to the PL
   
-3. access_PS_peripherals.sh -- Tests the access to the memory regions such as OCM, RTCA, SBI, QSPI, CPM.
-  - This script assumes BDF value of 01000 to access the PMC peripherals. 
+### access_PS_peripherals.sh 
+This script tests access to the memory regions such as OCM, RTCA, SBI, QSPI, CPM. 
+It is important to note that this script presumes a BDF value of 01000 for accessing the PMC peripherals.
 
-4. host_profile_noc0_1.sh -- Programs host profile registers of QDMA to perform MM transfers to NoC Ch#0 and Ch#
+### host_profile_noc0_1.sh
+This script programs host profile registers of QDMA to perform MM transfers to NoC Ch#0 and Ch#1.
 
 ## Hardware Test flow
 
