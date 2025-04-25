@@ -1,35 +1,37 @@
 Versal CPM5 QDMA Based Acceleration System Design
 
-This example design will show-case end user application features to demonstrate system level operation for key features for Versal devices.
+This example design demonstrates the following functionalities with Versal CPM5 QDMA:
 
 This design will cover the following functionalities:
 
   * Segmented Configuration
-    - Load PLD image over PCIe to SBI – use QDMA driver.
-  * QDMA-MM data path - H2C/C2H: Following steps show a process of transferring data from Host machine to Accelerator logic inside PL, processing 
-    the data and fetching the processed data back to host memory. 
-    - Transfer the data in host memory to a DDR attached to the Versal Premium device. Use QDMA Driver running on PCIe host to perform the H2C DMA transfer.
-    - Generate IPI Interrupt on completion of H2C DMA transfer. This IPI interrupt is targeted to PS APU in Versal Premium Device. 
-    - A Baremetal Application running on the APU responds to IPI interrupt and programs AXI-DMA IP in the PL.
-    - AXI-DMA IP transfers the data from DDR to the Accelerator logic in the PL. 
-    - Accelerator logic performs the processing of H2C data and writes the output data back to DDR memory. 
-    - PL will generate an interrupt to the host via the usr_irq interface of CPM5-QDMA. 
-    - Use QDMA driver to perform C2H DMA transfer from DDR memory to Host memory.   
-  * QDMA-ST data path - H2C/C2H:
+    - Loading of PLD image over PCIe to SBI using QDMA driver.
+  * QDMA-MM H2C/C2H data path: 
+    Using MM, the example design demonstrates the transfer of data from a host machine to an accelerator logic within a Programmable Logic (PL) device, processing that data, 
+    and then retrieving the processed data back into the host memory. This is done with the following steps:
+    - Begin by transferring the data from the host memory to a DDR attached to the Versal Premium device, utilizing the QDMA Driver running on PCIe host to perform the H2C DMA transfer.
+    - Upon completion of H2C DMA transfer, generate an IPI Interrupt targeted to the A72 APU within the Versal Premium Device.
+    - A Baremetal Application running on the APU responds to the IPI interrupt and programs AXI-DMA IP in the PL.
+    - Following this, AXI-DMA IP transfers the data from DDR to the Accelerator logic located in the PL.
+    - The Accelerator logic then processes the H2C data and subsequently writes the output data back to the DDR memory.
+    - Afterward, the PL generates an interrupt to the host via the usr_irq interface of CPM5-QDMA.
+    - Finally, utilize the QDMA driver to perform C2H DMA transfer from DDR memory back into the Host memory.
+  * QDMA-ST H2C/C2H data path:
     - Using QDMA driver, transfer the data in host memory to Accelerator logic to PL using H2C-ST DMA transfer
     - Process the H2C-ST data and store it in Stream FIFO
     - Perform C2H-ST data transfer
-  * The C2H-ST transfer is supported using:
-    - Internal method
-    - Simple bypass method
-    - Csh bypass method
-  * Access to the following memory regions via the PCIe link will be demonstrated
-    - OCM
-    - RTCA
-    - SBI
-    - QSPI
-    - CPM
-    - Inter Processer Interrupt registers
+       - The C2H-ST transfer is supported using:
+          - Internal method
+          - Simple bypass method
+          - Csh bypass method
+  * Access to Memory Regions
+    - Access to the following memory regions via the PCIe link will be demonstrated
+      - OCM
+      - RTCA
+      - SBI
+      - QSPI
+      - CPM
+      - Inter Processer Interrupt registers
     
 For additional details of the CED, please refer to the readme.md file available in the git repository of this CED. 
     
@@ -56,25 +58,38 @@ bootgen -arch versal -image ./qdma_accel_sys.bif -o ./boot_with_elf.pdi -w
 
 2. This CED is only provided for hardware test flow. Simulation is not supported. 
 
-Required Hardware and Tools:
+Tool Requirements:
 
 Vivado 2025.1
 Vitis 2025.1
 
 Design Steps:
 
-1. Open Vivado and select XHub Stores in Tools tab
-2. Install Versal_CPM_QDMA_Accel_Sys_Design
-3. Close that window and select Open Example Project
-4. Create Versal_CPM_QDMA_Accel_Sys_Design vivado project and generate .pdi by selecting Generate Device Image
-This design requires a baremetal application to be executing while performing MM transfers. Following command needs to be executed after generating the PDI from Vivado. ipi_cdma_intr.elf and qdma_accel_sys.bif are provided in src directory of this CED.
+1. Open Vivado and click on "open Example Project"
+2. "Open Example Project" pop-up is launched by Vivado. Click Next on this page.
+3. In "Select Project Template" page, there are "Templates" and "Description" section. In the Templates section, look for "Versal CPM5 QDMA Based Acceleration System design" template. There is a search icon at the top of the Templates section to perform search. Click Next after selecting this CED template.
+4. Select project name and project location.
+5. This CED targets VPK120 board. This board has two variants of the Versal Premium device. By default, xcvp1202-vsva2785-2MP-e-S device is selected. Alternatively, a MHP part can be selected by using "Switch Part" option in this page.
+   - When "Switch Part" option is clicked, a pop-up will be launched with option to select either xcvp1202-vsva2785-2MP-e-S or xcvp1202-vsva2785-2MHP-e-S device for the VPK120 board. This CED supports both parts. When "MP" device is selected CPM5-QDMA is set to Gen4 x8 configuration. For "MHP" device, CPM5-QDMA is set to Gen5 x8 configuration.
+6. "Select Design and Preset" page is launched. The options on this page are fixed. Click Next on this page.
+7. This is the final page - "New Project Summary". It lists the options selected in the previous pages.
+   - CED template - Versal CPM5 QDMA Based Acceleration System design
+   - Board - Versal VPK120 Evaluation Platform
+   - Part - xcvp1202-vsva2785-2MP-e-S (in this example)
+   - Family - Versal Premium
+   - Package - vsva2785
+   - Speed Grade : -2MP (in this example) Click "Finish" on this page. This will initiate CED creation process.
+8. After the CED has been created, generate .pdi by selecting Generate Device Image step in the "Flow Navigator" section of Vivado GUI.
+9. This design requires a baremetal application to be executing while performing MM transfers. Following command needs to be executed after generating the PDI from Vivado. ipi_cdma_intr.elf and qdma_accel_sys.bif are provided in src directory of this CED.
 
 qdma_accel_sys.bif assumes that ipi_cdma_intr.elf and design_1_wrapper_boot.pdi are in the same directory as the bif file.
 bootgen -arch versal -image ./qdma_accel_sys.bif -o ./boot_with_elf.pdi -w
 
 Test Scripts:
 
-Pre-requisite to source this script: QDMA driver must be installed in the host and it is linked to the QDMA End point running on the VPK120 board.
+As a prerequisite to run this script, ensure that the QDMA driver (found in the link below) is installed on the host and connected to the QDMA endpoint running on the VPK120 board.
+
+https://github.com/Xilinx/dma_ip_drivers
 
 Following scripts are provided with the CED for reference. They are available in scripts folder of this CED.
 
@@ -115,7 +130,22 @@ compile and install the driver on your host system.
 
   https://github.com/Xilinx/dma_ip_drivers
 
-Following steps need to be run on the machine with JTAG connection to the VPK120 board.
+Hardware Test Flow:
+
+The test setup for the CED will include the following components.
+ - VPK120 board inserted to the PCIe slot of a Gen5/Gen4 server.
+ - Connect the JTAG cable to a machine with Vivado 2025.1 installed.
+ - Install TeraTerm (or) similar software to view the PLM log and prints from Baremetal application.
+
+Test steps for this CED require the following components.
+ - Vivado 2025.1 - to program the boot image.
+ - XSDB - to program SBI_CTRL register.
+ - QDMA driver - to perform DMA transactions.
+ - TeraTerm - to review the PLM log and prints from the Baremetal application.
+
+In the remainder of this section, the steps are assumed to be performed on two machines. One machine (Ex: laptop) with Vivado, Tera Term softwares installed and the second machine being the PCIe host.
+
+The following steps need to be run on the machine with JTAG connection to the VPK120 board.
 1. Program Boot image using JTAG
 2. Setup TeraTerm terminal with the settings shown in the figure below. How to identify the teraterm port to use?
 3. Launch xsdb and read SBI_CONTROL register at 0xF1220004 address. This register needs to be set to 0x29 to load 
