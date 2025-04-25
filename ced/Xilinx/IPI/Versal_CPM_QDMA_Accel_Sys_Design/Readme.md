@@ -232,9 +232,22 @@ It is important to note that this script presumes a BDF value of 01000 for acces
 ### host_profile_noc0_1.sh
 This script programs host profile registers of QDMA to perform MM transfers to NoC Ch#0 and Ch#1.
 
-## Hardware Test flow
+## Hardware Test Flow
 
-### Following steps need to be run on the machine with JTAG connection to the VPK120 board. 
+The test setup for the CED will include the following components. 
+1. VPK120 board inserted to the PCIe slot of a Gen5/Gen4 server.
+2. Connect the JTAG cable to a machine with Vivado 2025.1 installed.
+3. Install TeraTerm (or) similar software to view the PLM log and prints from Baremetal application.
+
+Test steps for this CED require the following components.
+1. Vivado 2025.1 - to program the boot image.
+2. XSDB - to program SBI_CTRL register.
+3. QDMA driver - to perform DMA transactions.
+4. TeraTerm - to review the PLM log and prints from the Baremetal application. 
+
+In the remainder of this section, the steps are assumed to be performed on two machines. One machine (Ex: laptop) with Vivado, Tera Term softwares installed and the second machine being the PCIe host. 
+
+### The Following steps need to be run on the machine with JTAG connection to the VPK120 board. 
 
 #### 1. Program Boot image using JTAG
 
@@ -243,12 +256,11 @@ This script programs host profile registers of QDMA to perform MM transfers to N
 ![image](https://github.com/user-attachments/assets/5dc9fc04-26d9-4ba5-9e89-34afd8b3255f)
 
 
-#### 3. Launch xsdb and read SBI_CONTROL register at 0xF1220004 address. This register needs to be set to 0x29 to load the PLD PDI from host. This step is essential to get dma transfer step to load pld pdi using QDMA driver. 
+#### 3. Launch xsdb and read SBI_CONTROL register at 0xF1220004 address. This register needs to be set to 0x29 to load the PLD PDI from host. This step is essential for the DMA transfer step to load the PLD PDI using the QDMA driver. 
 
 ![image](https://github.com/user-attachments/assets/50cdd45b-5bf3-4f71-b622-b4217c6ac585)
 
-
-If the JTAG cable is connected to a remote host, use the command "conn -host <host_name or host IP address> before connecting to the board using "ta" command (shown below)
+If the JTAG cable is connected to a remote host, use the command "conn -host <host_name or host_IP_address>" before connecting to the board using "ta" command as shown below.
 
 ![image](https://github.com/user-attachments/assets/b05c4938-8626-4b20-b9d9-dccdef0b4110)
 
@@ -305,19 +317,19 @@ targeting the SBI FIFO using address 0x102100000
 > dma-to-device -d /dev/qdma010000-MM-0 -f <stage2.pdi> -s <size> -a 0x20102100000
 
 
-Following snapshot shows the PLM log after programming boot.pdi to VPK120 board.
+The following snapshot shows the PLM log after programming boot.pdi to VPK120 board.
 
 ![image](https://github.com/user-attachments/assets/166f663a-9ffb-4287-9022-f5c54730807e)
 
-Following snapshot shows the PLM log after programming pld.pdi to VPK120 board using QDMA driver. 
+The following snapshot shows the PLM log after programming pld.pdi to VPK120 board using QDMA driver. 
 
 ![image](https://github.com/user-attachments/assets/2c4553d0-5d0a-4f36-bfa7-70fd4c1c9626)
 
-Following snapshot shows the result of sourcing the access_PS_peripherals.sh. This script tries to access the PMC peripherals - RTCA, OCM, QSPI, CPM, SBI
+The following snapshot shows the result of sourcing the access_PS_peripherals.sh. This script tries to access the PMC peripherals - RTCA, OCM, QSPI, CPM, SBI
 
 ![image](https://github.com/user-attachments/assets/ab4beb0e-b385-4895-91aa-24ce706d55c4)
 
-Following snapshot shows the output on TeraTerm after sourcing H2C_MM test script in PCIe Host.
+The following snapshot shows the output on TeraTerm after sourcing H2C_MM test script in PCIe Host.
 
 ![image](https://github.com/user-attachments/assets/55adb2c3-f28c-4c3e-b8a3-d4fa4282498c)
 
