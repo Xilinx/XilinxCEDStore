@@ -100,12 +100,61 @@ module board;
     force board.EP.design_1_i.versal_cips_0.inst.pspmc_0.inst.PS9_VIP_inst.inst.versal_cips_ps_vip_clk = lpdcpmtopswclk;
     force board.RP.design_rp_i.versal_cips_0.inst.pspmc_0.inst.PS9_VIP_inst.inst.versal_cips_ps_vip_clk = lpdcpmtopswclk;
     
+  // Enable Multi Clock Support API
+    board.EP.design_1_i.versal_cips_0.inst.pspmc_0.inst.PS9_VIP_inst.inst.en_multi_clock_support();
+    board.RP.design_rp_i.versal_cips_0.inst.pspmc_0.inst.PS9_VIP_inst.inst.en_multi_clock_support();
+  // ps_gen_clk = 1GHz
+    board.EP.design_1_i.versal_cips_0.inst.pspmc_0.inst.PS9_VIP_inst.inst.ps_gen_clock(5'd0,1000);
+    board.EP.design_1_i.versal_cips_0.inst.pspmc_0.inst.PS9_VIP_inst.inst.ps_gen_clock(5'd1,1000);
+    board.EP.design_1_i.versal_cips_0.inst.pspmc_0.inst.PS9_VIP_inst.inst.ps_gen_clock(5'd2,1000);
+    board.EP.design_1_i.versal_cips_0.inst.pspmc_0.inst.PS9_VIP_inst.inst.ps_gen_clock(5'd3,1000);
+    board.EP.design_1_i.versal_cips_0.inst.pspmc_0.inst.PS9_VIP_inst.inst.ps_gen_clock(5'd4,1000);
+    board.EP.design_1_i.versal_cips_0.inst.pspmc_0.inst.PS9_VIP_inst.inst.ps_gen_clock(5'd5,1000);
+    board.EP.design_1_i.versal_cips_0.inst.pspmc_0.inst.PS9_VIP_inst.inst.ps_gen_clock(5'd6,1000);
+    board.EP.design_1_i.versal_cips_0.inst.pspmc_0.inst.PS9_VIP_inst.inst.ps_gen_clock(5'd7,1000);
+    board.EP.design_1_i.versal_cips_0.inst.pspmc_0.inst.PS9_VIP_inst.inst.ps_gen_clock(5'd8,1000);
+    board.EP.design_1_i.versal_cips_0.inst.pspmc_0.inst.PS9_VIP_inst.inst.ps_gen_clock(5'd9,1000);
+    board.EP.design_1_i.versal_cips_0.inst.pspmc_0.inst.PS9_VIP_inst.inst.ps_gen_clock(5'd10,1000);
+    board.EP.design_1_i.versal_cips_0.inst.pspmc_0.inst.PS9_VIP_inst.inst.ps_gen_clock(5'd11,1000);
+    board.EP.design_1_i.versal_cips_0.inst.pspmc_0.inst.PS9_VIP_inst.inst.ps_gen_clock(5'd12,1000);
+    board.EP.design_1_i.versal_cips_0.inst.pspmc_0.inst.PS9_VIP_inst.inst.ps_gen_clock(5'd13,1000);
+    board.EP.design_1_i.versal_cips_0.inst.pspmc_0.inst.PS9_VIP_inst.inst.ps_gen_clock(5'd14,1000);
+    board.EP.design_1_i.versal_cips_0.inst.pspmc_0.inst.PS9_VIP_inst.inst.ps_gen_clock(5'd15,1000);
+    board.EP.design_1_i.versal_cips_0.inst.pspmc_0.inst.PS9_VIP_inst.inst.ps_gen_clock(5'd16,1000);
+    board.RP.design_rp_i.versal_cips_0.inst.pspmc_0.inst.PS9_VIP_inst.inst.ps_gen_clock(5'd0,1000);
+    board.RP.design_rp_i.versal_cips_0.inst.pspmc_0.inst.PS9_VIP_inst.inst.ps_gen_clock(5'd1,1000);
+    board.RP.design_rp_i.versal_cips_0.inst.pspmc_0.inst.PS9_VIP_inst.inst.ps_gen_clock(5'd2,1000);
+    board.RP.design_rp_i.versal_cips_0.inst.pspmc_0.inst.PS9_VIP_inst.inst.ps_gen_clock(5'd3,1000);
+    board.RP.design_rp_i.versal_cips_0.inst.pspmc_0.inst.PS9_VIP_inst.inst.ps_gen_clock(5'd4,1000);
+    board.RP.design_rp_i.versal_cips_0.inst.pspmc_0.inst.PS9_VIP_inst.inst.ps_gen_clock(5'd5,1000);
+    board.RP.design_rp_i.versal_cips_0.inst.pspmc_0.inst.PS9_VIP_inst.inst.ps_gen_clock(5'd6,1000);
+    board.RP.design_rp_i.versal_cips_0.inst.pspmc_0.inst.PS9_VIP_inst.inst.ps_gen_clock(5'd7,1000);
+    board.RP.design_rp_i.versal_cips_0.inst.pspmc_0.inst.PS9_VIP_inst.inst.ps_gen_clock(5'd8,1000);
+    board.RP.design_rp_i.versal_cips_0.inst.pspmc_0.inst.PS9_VIP_inst.inst.ps_gen_clock(5'd9,1000);
+    board.RP.design_rp_i.versal_cips_0.inst.pspmc_0.inst.PS9_VIP_inst.inst.ps_gen_clock(5'd10,1000);
+    board.RP.design_rp_i.versal_cips_0.inst.pspmc_0.inst.PS9_VIP_inst.inst.ps_gen_clock(5'd11,1000);
+    board.RP.design_rp_i.versal_cips_0.inst.pspmc_0.inst.PS9_VIP_inst.inst.ps_gen_clock(5'd12,1000);
+    board.RP.design_rp_i.versal_cips_0.inst.pspmc_0.inst.PS9_VIP_inst.inst.ps_gen_clock(5'd13,1000);
+    board.RP.design_rp_i.versal_cips_0.inst.pspmc_0.inst.PS9_VIP_inst.inst.ps_gen_clock(5'd14,1000);
+    board.RP.design_rp_i.versal_cips_0.inst.pspmc_0.inst.PS9_VIP_inst.inst.ps_gen_clock(5'd15,1000);
+    board.RP.design_rp_i.versal_cips_0.inst.pspmc_0.inst.PS9_VIP_inst.inst.ps_gen_clock(5'd16,1000);
+    
+    // cpm_osc_clk_div2_gen_clock = 200MHz
+    // cpm_gen_clock = 33.33MHz
     // Generate Reference Clocks for the CPM
-    board.EP.design_1_i.versal_cips_0.inst.pspmc_0.inst.PS9_VIP_inst.inst.cpm_gen_clock(100);
-    board.EP.design_1_i.versal_cips_0.inst.pspmc_0.inst.PS9_VIP_inst.inst.cpm_osc_clk_div2_gen_clock(100);
+    board.EP.design_1_i.versal_cips_0.inst.pspmc_0.inst.PS9_VIP_inst.inst.cpm_gen_clock(33.33);
+    board.EP.design_1_i.versal_cips_0.inst.pspmc_0.inst.PS9_VIP_inst.inst.cpm_osc_clk_div2_gen_clock(200);
 
-    board.RP.design_rp_i.versal_cips_0.inst.pspmc_0.inst.PS9_VIP_inst.inst.cpm_gen_clock(100);
-    board.RP.design_rp_i.versal_cips_0.inst.pspmc_0.inst.PS9_VIP_inst.inst.cpm_osc_clk_div2_gen_clock(100);  
+    board.RP.design_rp_i.versal_cips_0.inst.pspmc_0.inst.PS9_VIP_inst.inst.cpm_gen_clock(33.33);
+    board.RP.design_rp_i.versal_cips_0.inst.pspmc_0.inst.PS9_VIP_inst.inst.cpm_osc_clk_div2_gen_clock(200);  
+
+
+    //// Generate Reference Clocks for the CPM
+    //board.EP.design_1_i.versal_cips_0.inst.pspmc_0.inst.PS9_VIP_inst.inst.cpm_gen_clock(100);
+    //board.EP.design_1_i.versal_cips_0.inst.pspmc_0.inst.PS9_VIP_inst.inst.cpm_osc_clk_div2_gen_clock(100);
+
+    //board.RP.design_rp_i.versal_cips_0.inst.pspmc_0.inst.PS9_VIP_inst.inst.cpm_gen_clock(100);
+    //board.RP.design_rp_i.versal_cips_0.inst.pspmc_0.inst.PS9_VIP_inst.inst.cpm_osc_clk_div2_gen_clock(100);  
     // Assert PCIe reset
     $display("[%t] : System Reset Is Asserted...", $realtime);
     // Root Port reset assert

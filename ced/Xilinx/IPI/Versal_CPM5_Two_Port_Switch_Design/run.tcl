@@ -286,7 +286,7 @@ source  "$currentDir/switch_combination_2/usp_plpcie_bd.tcl"
 puts "usp_plpcie_bd generated" 
 
 set_property strategy Flow_PerfOptimized_high [get_runs synth_1]
-set_property strategy Performance_ExploreWithRemap [get_runs impl_1]
+set_property strategy Performance_Explore [get_runs impl_1]
 
 set_property used_in simulation [get_files design_ep.bd]
 set_property used_in simulation [get_files design_sim_rp.bd]
