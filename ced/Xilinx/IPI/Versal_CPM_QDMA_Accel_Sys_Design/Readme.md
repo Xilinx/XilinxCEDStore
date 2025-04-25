@@ -1,28 +1,30 @@
 # Versal CPM5 QDMA Based Acceleration System Design
 ## Objective
-This example design will show-case end user application features to demonstrate system level operation for key features for Versal devices.
+This example design demonstrates the following functionalities with Versal CPM5 QDMA:
 
 This design will cover the following functionalities:
 
   * Segmented Configuration
-    - Load PLD image over PCIe to SBI – use QDMA driver.
-  * QDMA-MM data path - H2C/C2H: Following steps show a process of transferring data from Host machine to Accelerator logic inside PL, processing 
-    the data and fetching the processed data back to host memory. 
-    - Transfer the data in host memory to a DDR attached to the Versal Premium device. Use QDMA Driver running on PCIe host to perform the H2C DMA transfer.
-    - Generate IPI Interrupt on completion of H2C DMA transfer. This IPI interrupt is targeted to PS APU in Versal Premium Device. 
+    - The Boot PDI includes baremetal application running on A72 processor present in the PMC portion of the Versal Premium device.
+    - Load PLD image over PCIe to SBI using QDMA driver.
+  * QDMA-MM H2C/C2H data path:
+    Using MM, the example design demonstrates the transfer of data from a host machine to an accelerator logic within a Programmable Logic (PL) device, processing that data, and then retrieving the 
+    processed data back into the host memory. This is done with the following steps:
+    - Transfer the data from the host memory to a DDR attached to the Versal Premium device. QDMA Driver running on PCIe host is used to perform the H2C DMA transfer.
+    - Upon completion of H2C DMA transfer, generate IPI Interrupt. This IPI interrupt is targeted to PS APU in Versal Premium Device. 
     - A Baremetal Application running on the APU responds to IPI interrupt and programs AXI-DMA IP in the PL.
-    - AXI-DMA IP transfers the data from DDR to the Accelerator logic in the PL. 
-    - Accelerator logic performs the processing of H2C data and writes the output data back to DDR memory. 
-    - PL will generate an interrupt to the host via the usr_irq interface of CPM5-QDMA. 
-    - Use QDMA driver to perform C2H DMA transfer from DDR memory to Host memory.   
-  * QDMA-ST data path - H2C/C2H:
+    - Following this, AXI-DMA IP transfers the data from DDR to the Accelerator logic in the PL. 
+    - The Accelerator logic performs the processing of H2C data and subsequently writes the output data back to the DDR memory. 
+    - Afterward, the PL generates an interrupt to the host via the usr_irq interface of CPM5-QDMA. 
+    - Finally, utilize the QDMA driver to perform C2H DMA transfer from DDR memory back into the Host memory.   
+  * QDMA-ST H2C/C2H data path:
     - Using QDMA driver, transfer the data in host memory to Accelerator logic to PL using H2C-ST DMA transfer
     - Process the H2C-ST data and store it in Stream FIFO
     - Perform C2H-ST data transfer
-  * The C2H-ST transfer is supported using:
-    - Internal method
-    - Simple bypass method
-    - Csh bypass method
+      - The C2H-ST transfer is supported using:
+        - Internal method
+        - Simple bypass method
+        - Csh bypass method
   * Access to the following memory regions via the PCIe link will be demonstrated
     - OCM
     - RTCA
@@ -48,44 +50,43 @@ Depending on the device selected during the CED creation, the target data rate i
 Note:
 This CED is only provided for hardware test flow. Simulation is not supported. 
 
-## Block Diagram
-Following is the block diagram of various modules in the design.  
+## System Architecture
+The block diagram below illustrates the architecture of the provided example design:
 ![image](https://github.com/user-attachments/assets/36f82093-7727-438d-983e-c01256f5fed5)
 
-
 Following is a brief description about the design. 
- - The PL logic in the design is highlighted in Red boxes. This consists of 
+ - The PL logic in the design is highlighted in Red boxes. This consists of the following components:
       - Example accelerator logic for MM/ST data path.
       - AXI-DMA IP for DMA transfer from DDR to PL.
-      - AXI-smart connect to connect from FPD NoC to PL, AXI-DMA to DDR and PL.
+      - AXI-smart connect for connect between FPD NoC to PL, AXI-DMA to DDR and PL.
       - DSC-Bypass suport for QDMA-ST mode. 
-      - Generation of CMPT packet for C2H-ST DMA transfer with CPM5-QDMA IP. 
-      - Descriptor fetch using DSC_CRDT interface of CPM5-QDMA IP. 
-      - User interrupt generation using usr_irq interface of CPM5-QDMA IP. 
- - QDMA inside CPM5 is enabled to perform the DMA transfer to/from host memory. 
- - Both PCIe NoC ports from CPM5 block are connected to DDR through AXI-NoC.
- - PCIe NoC1 port is connected to PMC peripherals. NoC remap is enabled in this path and address translation is enabled in both CPM5 and AXI-NoC IP. 
- - Baremetal application running on APU accesses the AXI-DMA IP registers through FPD-NoC port. 
+      - Generation of CMPT packet for C2H-ST DMA transfer using CPM5-QDMA IP. 
+      - Descriptor fetch using the DSC_CRDT interface of CPM5-QDMA IP. 
+      - User interrupt generation using the usr_irq interface of CPM5-QDMA IP. 
+ - QDMA within CPM5 is enabled to perform DMA transfer to/from host memory. 
+ - Both PCIe NoC ports from the CPM5 block are connected to DDR through AXI-NoC.
+ - PCIe NoC1 port is connected to PMC peripherals. with NoC remap enabled in this path and address translation is enabled in both CPM5 and AXI-NoC IP. 
+ - A Baremetal application running on APU accesses the AXI-DMA IP registers through the FPD-NoC port. 
 ## Functional Description
 
 ### Address Remap
-Following snapshot shows address remap settings in AXI-NoC IP. This feature is used to access various register spaces of PMC, CPM, IPI peripherals are accessed using one of the PCIe BARs. 
+The following snapshot shows address remap settings in the AXI-NoC IP. This feature is utilized to access various register spaces of PMC, CPM, and IPI peripherals through one of the PCIe BARs. 
 
 ![image](https://github.com/user-attachments/assets/f87986cc-0573-445b-b74d-d42a28707a31)
 
-The table below provides different memory regions accessible through PCIe link. This table demonstrates two levels of address translations. 
-1. AXI-Bridge functionality available in CPM5 is used to translate PCIe BAR offset to different offsets accessible through PCIe NoC. PCIe BAR size is set to 128MB and PCIe base address is translated to 0x201_0000_0000. 
-2. Second translation is performed inside AXI-NoC. This translation matches the addresses coming from PCIe NoC port to the PMC, CPM, IPI peripherals address regions.
+The table below presents various memory regions accessible through the PCIe link. This table illustrates two levels of address translations. 
+1. The AXI-Bridge functionality in CPM5 is used to translate PCIe BAR offset to different offsets accessible through the PCIe NoC. The PCIe BAR size is set to 128MB and the PCIe base address is translated to 0x201_0000_0000. 
+2. The second translation occurs within the AXI-NoC. This translation aligns the addresses coming from the PCIe NoC port with the address regions of the PMC, CPM, IPI peripherals.
 ![image](https://github.com/user-attachments/assets/f3149479-af60-4212-9a53-e429ff10381b)
 
 
 ### MM Data flow
-Following flowchart describes the data path flow for Memory mapped mode of transfer:
+The following flowchart depicts the data path flow for the Memory mapped (MM) mode of transfer:
 ![image](https://github.com/user-attachments/assets/5370c0eb-e6d4-41e7-a7c4-b57103b5e106)
 
 
 ### ST Data flow
-Following flowchart describes the data path flow for Stream mode of transfer:
+The following flowchart illustrates the data path flow for Stream (ST) mode of transfer:
 ![image](https://github.com/user-attachments/assets/1a5882fa-b2c6-49ef-bb47-4188c082491c)
 
 
@@ -96,13 +97,22 @@ Following flowchart describes the data path flow for Stream mode of transfer:
 
 ## Design Steps
 
-#### 1. Open Vivado and select XHub Stores in Tools tab
+#### 1. Open Vivado and click on "open Example Project"
+![image](https://github.com/user-attachments/assets/b86dc364-8d21-4720-894c-f4ada44d99a7)
 
-#### 2. Install Versal_CPM_QDMA_Accel_Sys_Design
+#### 2. "Open Example Project" pop-up is launched by Vivado. Click Next on this page. 
+![image](https://github.com/user-attachments/assets/ddbfcf3f-3c42-488e-93f8-002f043d868c)
 
-#### 3. Close that window and select Open Example Project
+#### 3. In "Select Project Template" page, there are "Templates" and "Description" section. In the Templates section, look for "Versal CPM5 QDMA Based Acceleration System design" template. There is a search icon at the top of the Templates section to perform search. Click Next after selecting this CED template.
 
-#### 4. Create Versal_CPM_QDMA_Accel_Sys_Design vivado project and generate .pdi by selecting Generate Device Image
+![image](https://github.com/user-attachments/assets/0f50995f-6558-4997-8428-4e2f14a5cb8b)
+
+#### 4. Select project name and project location.
+
+![image](https://github.com/user-attachments/assets/dc4c3d4f-dd8e-4048-9b5e-473ae631d9ac)
+
+#### 5. This CED targets VPK120 board. This board has two variants of the Versal Premium device. By default, xcvp1202-vsva2785-2MP-e-S device is selected. Alternatively, the speedgChose the device to use with the design by using "Switch Part"
+#### 5. Create Versal_CPM_QDMA_Accel_Sys_Design vivado project and generate .pdi by selecting Generate Device Image
 
 This design requires a baremetal application to be executing while performing MM transfers. Following command needs to be executed after generating the PDI from Vivado. ipi_cdma_intr.elf and qdma_accel_sys.bif are provided in src directory of this CED. 
 
