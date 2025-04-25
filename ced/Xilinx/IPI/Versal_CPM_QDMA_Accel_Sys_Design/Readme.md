@@ -120,7 +120,7 @@ When "Switch Part" option is clicked, a pop-up will be launched with option to s
 #### 6. "Select Design and Preset" page is launched. The options on this page are fixed. Click Next on this page. 
 ![image](https://github.com/user-attachments/assets/6f8fc8a9-ac77-435b-8cc6-aead6b2cbe7c)
 
-#### 8. This is the final page - "New Project Summary". It lists the options selected in the previous pages. 
+#### 7. This is the final page - "New Project Summary". It lists the options selected in the previous pages. 
   - CED template - Versal CPM5 QDMA Based Acceleration System design
   - Board - Versal VPK120 Evaluation Platform
   - Part - xcvp1202-vsva2785-2MP-e-S (in this example)
@@ -131,9 +131,9 @@ Click "Finish" on this page. This will initiate CED creation process.
   
 ![image](https://github.com/user-attachments/assets/c589b992-415d-45cb-9d05-b959cd0b3afd)
 
-#### 9. After the CED has been created, generate .pdi by selecting Generate Device Image step in the "Flow Navigator" section of Vivado GUI. 
+#### 8. After the CED has been created, generate .pdi by selecting Generate Device Image step in the "Flow Navigator" section of Vivado GUI. 
 
-#### 10. This design requires a baremetal application to be executing while performing MM transfers. Following command needs to be executed after generating the PDI from Vivado. ipi_cdma_intr.elf and qdma_accel_sys.bif are provided in src directory of this CED. 
+#### 9. This design requires a baremetal application to be executing while performing MM transfers. Following command needs to be executed after generating the PDI from Vivado. ipi_cdma_intr.elf and qdma_accel_sys.bif are provided in src directory of this CED. 
 
 qdma_accel_sys.bif assumes that ipi_cdma_intr.elf and design_1_wrapper_pld.pdi are in the same directory as the bif file.  
 bootgen -arch versal -image ./qdma_accel_sys.bif -o ./boot_with_elf.pdi -w
