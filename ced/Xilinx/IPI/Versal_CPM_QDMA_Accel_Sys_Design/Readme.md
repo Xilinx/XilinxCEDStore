@@ -7,6 +7,7 @@ This design will cover the following functionalities:
   * Segmented Configuration    
     - Loading of PLD image over PCIe to SBI using QDMA driver.
   * QDMA-MM H2C/C2H data path:
+
     Using MM, the example design demonstrates the transfer of data from a host machine to an accelerator logic within a Programmable Logic (PL) device, processing that data, and then retrieving the 
     processed data back into the host memory. This is done with the following steps:
     - Begin by transferring the data from the host memory to a DDR attached to the Versal Premium device, utilizing the QDMA Driver running on PCIe host to perform the H2C DMA transfer.
