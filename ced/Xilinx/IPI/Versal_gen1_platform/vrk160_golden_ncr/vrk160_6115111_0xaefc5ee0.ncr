@@ -149,8 +149,10 @@
         "Component_Name": "bd_04ff_MC0_ddrc_0",
         "DDRMC5_CONTROLLERTYPE": "LPDDR5_SDRAM",
         "DDRMC5_DATA_WIDTH": "16",
-        "DDRMC5_F0_TCK": "1250",
-        "DDRMC5_F1_TCK": "1250",
+        "DDRMC5_DEVICE_TYPE": "Components",
+        "DDRMC5_DRAM_WIDTH": "x16",
+        "DDRMC5_F0_TCK": "938",
+        "DDRMC5_F1_TCK": "938",
         "DDRMC5_MEMORY_DENSITY": "2GB",
         "DDRMC5_NUM_CH": "2",
         "MC_CHAN_REGION0": "DDR_CH0_LEGACY",
@@ -189,8 +191,10 @@
         "Component_Name": "bd_04ff_MC1_ddrc_0",
         "DDRMC5_CONTROLLERTYPE": "LPDDR5_SDRAM",
         "DDRMC5_DATA_WIDTH": "16",
-        "DDRMC5_F0_TCK": "1250",
-        "DDRMC5_F1_TCK": "1250",
+        "DDRMC5_DEVICE_TYPE": "Components",
+        "DDRMC5_DRAM_WIDTH": "x16",
+        "DDRMC5_F0_TCK": "938",
+        "DDRMC5_F1_TCK": "938",
         "DDRMC5_MEMORY_DENSITY": "2GB",
         "DDRMC5_NUM_CH": "2",
         "MC_CHAN_REGION0": "DDR_CH0_LEGACY",
@@ -223,6 +227,7 @@
         "DDRMC5_CONTROLLERTYPE": "LPDDR5_SDRAM",
         "DDRMC5_DATA_WIDTH": "32",
         "DDRMC5_DEVICE_TYPE": "Components",
+        "DDRMC5_DRAM_WIDTH": "x16",
         "DDRMC5_F0_TCK": "938",
         "DDRMC5_F1_TCK": "938",
         "DDRMC5_MEMORY_DENSITY": "4GB",
@@ -253,6 +258,8 @@
         "Component_Name": "bd_d129_MC0_ddrc_0",
         "DDRMC5_CONTROLLERTYPE": "LPDDR5_SDRAM",
         "DDRMC5_DATA_WIDTH": "32",
+        "DDRMC5_DEVICE_TYPE": "Components",
+        "DDRMC5_DRAM_WIDTH": "x16",
         "DDRMC5_F0_TCK": "938",
         "DDRMC5_F1_TCK": "938",
         "DDRMC5_MEMORY_DENSITY": "4GB",
@@ -10123,10 +10130,6 @@
       "DestId": 0
     },
     {
-      "Name": "NOC2_NSU128_X0Y0",
-      "DestId": 0
-    },
-    {
       "Name": "NOC2_NSU128_X1Y0",
       "DestId": 0
     },
@@ -10144,14 +10147,6 @@
     },
     {
       "Name": "NOC2_NSU128_X5Y0",
-      "DestId": 0
-    },
-    {
-      "Name": "NOC2_NMU128_X0Y0",
-      "DestId": 0
-    },
-    {
-      "Name": "NOC2_NMU128_X1Y0",
       "DestId": 0
     },
     {
