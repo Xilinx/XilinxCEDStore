@@ -176,6 +176,7 @@ proc create_root_design { parentCell } {
     CONFIG.MC_CH0_LP4_CHB_ENABLE {true} \
     CONFIG.MC_CH1_LP4_CHA_ENABLE {true} \
     CONFIG.MC_CH1_LP4_CHB_ENABLE {true} \
+    CONFIG.MC_CHANNEL_INTERLEAVING {true} \
     CONFIG.MC_CHAN_REGION1 {DDR_LOW1} \
     CONFIG.MC_CKE_WIDTH {0} \
     CONFIG.MC_CK_WIDTH {0} \
