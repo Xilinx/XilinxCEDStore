@@ -117,6 +117,8 @@ always_ff @(posedge user_clk) begin
 end
 
 always_comb begin
+  c2h_dsc_crdt_in_rdy = 1'b0;
+  h2c_dsc_crdt_in_rdy = 1'b0;
   if (sel) begin
     dsc_crdt_in_crdt    = c2h_dsc_crdt_in_crdt;
     dsc_crdt_in_dir     = c2h_dsc_crdt_in_dir;

@@ -6,8 +6,8 @@ This design will cover the following functionalities:
 
   * Segmented Configuration
     - Loading of PLD image over PCIe to SBI using QDMA driver.
-  * QDMA-MM H2C/C2H data path: 
-    Using MM, the example design demonstrates the transfer of data from a host machine to an accelerator logic within a Programmable Logic (PL) device, processing that data, 
+  * QDMA-MM H2C/C2H data path:
+    Using MM, the example design demonstrates the transfer of data from a host machine to an accelerator logic within a Programmable Logic (PL) device, processing that data,
     and then retrieving the processed data back into the host memory. This is done with the following steps:
     - Begin by transferring the data from the host memory to a DDR attached to the Versal Premium device, utilizing the QDMA Driver running on PCIe host to perform the H2C DMA transfer.
     - Upon completion of H2C DMA transfer, generate an IPI Interrupt targeted to the A72 APU within the Versal Premium Device.
@@ -32,9 +32,9 @@ This design will cover the following functionalities:
       - QSPI
       - CPM
       - Inter Processer Interrupt registers
-    
-For additional details of the CED, please refer to the readme.md file available in the git repository of this CED. 
-    
+
+For additional details of the CED, please refer to the readme.md file available in the git repository of this CED.
+
 VPK120 board has two device variants with MP and MHP parts.
 
 The VPK120 evaluation kit has a physical x16 edge connector and enables protocol support in two flavors depending on whether overdrive is used or not.
@@ -49,14 +49,14 @@ Depending on the device selected during the CED creation, the target data rate i
 For MP part, design is generated with Gen4 x8 configuration.
 For MHP part, design is generated with Gen5 x8 configuration.
 
-NOTE: 
+NOTE:
 1. This design requires a baremetal application to be executing while performing MM transfers. Following
-command needs to be executed after generating the PDI from Vivado. 
+command needs to be executed after generating the PDI from Vivado.
 
-qdma_accel_sys.bif assumes that ipi_cdma_intr.elf and design_1_wrapper_boot.pdi are in the same directory as the bif file.  
+qdma_accel_sys.bif assumes that ipi_cdma_intr.elf and design_1_wrapper_boot.pdi are in the same directory as the bif file.
 bootgen -arch versal -image ./qdma_accel_sys.bif -o ./boot_with_elf.pdi -w
 
-2. This CED is only provided for hardware test flow. Simulation is not supported. 
+2. This CED is only provided for hardware test flow. Simulation is not supported.
 
 Tool Requirements:
 
@@ -123,9 +123,9 @@ Following scripts are provided with the CED for reference. They are available in
 4. host_profile_noc0_1.sh -- Programs host profile registers of QDMA to perform MM transfers to NoC Ch#0 and Ch#
 
 The QDMA driver that should be used with this design can be found on GitHub
-at the below link and there is a set of example Linux shell scripts that can 
+at the below link and there is a set of example Linux shell scripts that can
 be used directly or referenced to test the QDMA user applications in the
-scripts.tar tarball. Refer to the QDMA documentation for details on how to 
+scripts.tar tarball. Refer to the QDMA documentation for details on how to
 compile and install the driver on your host system.
 
   https://github.com/Xilinx/dma_ip_drivers
@@ -148,25 +148,25 @@ In the remainder of this section, the steps are assumed to be performed on two m
 The following steps need to be run on the machine with JTAG connection to the VPK120 board.
 1. Program Boot image using JTAG
 2. Setup TeraTerm terminal with the settings shown in the figure below. How to identify the teraterm port to use?
-3. Launch xsdb and read SBI_CONTROL register at 0xF1220004 address. This register needs to be set to 0x29 to load 
+3. Launch xsdb and read SBI_CONTROL register at 0xF1220004 address. This register needs to be set to 0x29 to load
 the PLD PDI from host. This step is essential to get dma transfer step to load pld pdi using QDMA driver.
-Note: If the JTAG cable is connected to a remote host, use the command "conn -host <host_name or host IP address> 
+Note: If the JTAG cable is connected to a remote host, use the command "conn -host <host_name or host IP address>
 before connecting to the board using "ta" command (shown below)
 
 The following steps are an example of how a user may test the qdma_accel_sys design,
-assuming that they've taken this example design through bitstream generation and 
-have a design_wrapper_1_boot.pdi and a pld_with_elf.pdi and are unfamiliar with the driver. 
-The details of these commands and instructions can be found in the QDMA driver documentation; 
-the steps are just listed here for ease of use. 
+assuming that they've taken this example design through bitstream generation and
+have a design_wrapper_1_boot.pdi and a pld_with_elf.pdi and are unfamiliar with the driver.
+The details of these commands and instructions can be found in the QDMA driver documentation;
+the steps are just listed here for ease of use.
 
-Please note that the commands provided in this section assumes VPK120 board to a PCIe slot and 
+Please note that the commands provided in this section assumes VPK120 board to a PCIe slot and
 host has assigned the PCIe slot with a BDF value of 01000.
 
 1. Download or clone the dma_ip_drivers repo from GitHub to the host system
 2. Compile the QDMA driver and applications
 
 $> cd <path>/dma_ip_drivers/QDMA/linux-kernel
-$> make TANDEM_BOOT_SUPPORTED=1 
+$> make TANDEM_BOOT_SUPPORTED=1
 
 3. Install the compiled binaries
 
@@ -175,13 +175,13 @@ $> make install
 4. Load the stage one bitstream (design_1_wrapper_boot.pdi) to the device through JTAG or another method
 5. Reboot the host system
 
-6. Make sure SBI_CTRL register (0xF1220004) is set to 0x29 using XSDB. 
+6. Make sure SBI_CTRL register (0xF1220004) is set to 0x29 using XSDB.
 7. Load the QDMA driver(s)
 
 $> modprobe qdma-pf //physical functions
 $> modprobe qdma-vf //virtual functions (if necessary)
 
-8. Source host_profile script to use mm_chn1. 
+8. Source host_profile script to use mm_chn1.
 
 source ./host_profile_noc0_1.sh
 

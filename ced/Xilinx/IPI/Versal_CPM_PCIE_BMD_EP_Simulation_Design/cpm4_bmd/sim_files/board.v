@@ -48,9 +48,9 @@
 //
 //-----------------------------------------------------------------------------
 //
-// Project    : Versal CPM5N BMD Test bench 
+// Project    : Versal CPM5N BMD Test bench
 // File       : board.v
-// Version    : 31.0 
+// Version    : 31.0
 //-----------------------------------------------------------------------------
 //
 // Description: Top level testbench
@@ -67,11 +67,12 @@
 module board;
 
   `ifdef SINGLE_CTRL
-  localparam PCIE_CTRL_MODE                     = 0;      // 0 - PCIE0(x16), 1 - PCIE0+1(x8x8) -- Add more when other configuration is supported
+  localparam PCIE_CTRL_MODE = 0;      // 0 - PCIE0(x16), 1 - PCIE0+1(x8x8) -- Add more when other configuration is supported
   `elsif DUAL_CTRL
-  localparam PCIE_CTRL_MODE                     = 1;      // 0 - PCIE0(x16), 1 - PCIE0+1(x8x8) -- Add more when other configuration is supported
+  localparam PCIE_CTRL_MODE = 1;      // 0 - PCIE0(x16), 1 - PCIE0+1(x8x8) -- Add more when other configuration is supported
   `endif
-  localparam REF_CLK_FREQ                       = 0;      // 0 - 100 MHz, 1 - 125 MHz, 2 - 250 MHz
+  localparam REF_CLK_FREQ = 0;      // 0 - 100 MHz, 1 - 125 MHz, 2 - 250 MHz
+
   localparam [4:0] PL_LINK_CAP_MAX_LINK_SPEED   = 5'd8;   // 1- GEN1, 2 - GEN2, 4 - GEN3, 8 - GEN4. 16 - GEN5
   localparam [4:0] PL_LINK_CAP_MAX_LINK_WIDTH   = 5'd8;  // 1- X1, 2 - X2, 4 - X4, 8 - X8, 16 - X16
   localparam [2:0] PF0_DEV_CAP_MAX_PAYLOAD_SIZE = 3'b011;
@@ -80,8 +81,8 @@ module board;
                                   (REF_CLK_FREQ == 1) ? 4000 :
                                   (REF_CLK_FREQ == 2) ? 2000 : 0;
 
- localparam C_CPM_PIPESIM = `EP_CPM_PATH.inst.C_CPM_PIPESIM;
- 
+  localparam C_CPM_PIPESIM = `EP_CPM_PATH.inst.C_CPM_PIPESIM;
+
   // System-level clock and reset
   reg sys_rst_n;
 
@@ -97,7 +98,7 @@ module board;
   wire  [(PL_LINK_CAP_MAX_LINK_WIDTH-1):0]  ep_pci_exp_txp;
   wire  [(PL_LINK_CAP_MAX_LINK_WIDTH-1):0]  rp_pci_exp_txn;
   wire  [(PL_LINK_CAP_MAX_LINK_WIDTH-1):0]  rp_pci_exp_txp;
- 
+
 
   sys_clk_gen_ds # (
     .halfcycle(REF_CLK_HALF_CYCLE),
@@ -118,207 +119,108 @@ module board;
   );
 
   parameter ON=3, OFF=4, UNIQUE=32, UNIQUE0=64, PRIORITY=128;
-  reg clk1000mhz;
-  reg clk250mhz;
-  reg clk33_3mhz;
   reg perstn;
-  
-  initial begin
-    // Generate Clocks
-    clk1000mhz = 0;
-    forever #(500) clk1000mhz = ~clk1000mhz;
-  end
-  initial begin
-    clk250mhz  = 0;
-    forever #(2000)  clk250mhz  = ~clk250mhz;
-  end
-  initial begin
-    clk33_3mhz = 0;
-    forever #(15000) clk33_3mhz = ~clk33_3mhz;
-  end
 
 generate
 if (PCIE_CTRL_MODE == 0) begin : Single_CTRL_CRX // CTRL 0 x16
   initial begin
-    // PS-VIP clock
-    force `EP_PS_PATH.inst.versal_cips_ps_vip_clk = clk33_3mhz;
-    force `RP_PS_PATH.inst.versal_cips_ps_vip_clk = clk33_3mhz;
   // Enable Multi Clock Support API
     `EP_PS_PATH.inst.en_multi_clock_support();
     `RP_PS_PATH.inst.en_multi_clock_support();
-  // cpm_osc_clk_div2_gen_clock = 200MHz
+    
   // cpm_gen_clock = 33.33MHz
-  // ps_gen_clk = 1GHz
-    `EP_PS_PATH.inst.ps_gen_clock(5'd0,1000);
-    `EP_PS_PATH.inst.ps_gen_clock(5'd1,1000);
-    `EP_PS_PATH.inst.ps_gen_clock(5'd2,1000);
-    `EP_PS_PATH.inst.ps_gen_clock(5'd3,1000);
-    `EP_PS_PATH.inst.ps_gen_clock(5'd4,1000);
-    `EP_PS_PATH.inst.ps_gen_clock(5'd5,1000);
-    `EP_PS_PATH.inst.ps_gen_clock(5'd6,1000);
-    `EP_PS_PATH.inst.ps_gen_clock(5'd7,1000);
-    `EP_PS_PATH.inst.ps_gen_clock(5'd8,1000);
-    `EP_PS_PATH.inst.ps_gen_clock(5'd9,1000);
-    `EP_PS_PATH.inst.ps_gen_clock(5'd10,1000);
-    `EP_PS_PATH.inst.ps_gen_clock(5'd11,1000);
-    `EP_PS_PATH.inst.ps_gen_clock(5'd12,1000);
-    `EP_PS_PATH.inst.ps_gen_clock(5'd13,1000);
-    `EP_PS_PATH.inst.ps_gen_clock(5'd14,1000);
-    `EP_PS_PATH.inst.ps_gen_clock(5'd15,1000);
-    `EP_PS_PATH.inst.ps_gen_clock(5'd16,1000);
-    `RP_PS_PATH.inst.ps_gen_clock(5'd0,1000);
-    `RP_PS_PATH.inst.ps_gen_clock(5'd1,1000);
-    `RP_PS_PATH.inst.ps_gen_clock(5'd2,1000);
-    `RP_PS_PATH.inst.ps_gen_clock(5'd3,1000);
-    `RP_PS_PATH.inst.ps_gen_clock(5'd4,1000);
-    `RP_PS_PATH.inst.ps_gen_clock(5'd5,1000);
-    `RP_PS_PATH.inst.ps_gen_clock(5'd6,1000);
-    `RP_PS_PATH.inst.ps_gen_clock(5'd7,1000);
-    `RP_PS_PATH.inst.ps_gen_clock(5'd8,1000);
-    `RP_PS_PATH.inst.ps_gen_clock(5'd9,1000);
-    `RP_PS_PATH.inst.ps_gen_clock(5'd10,1000);
-    `RP_PS_PATH.inst.ps_gen_clock(5'd11,1000);
-    `RP_PS_PATH.inst.ps_gen_clock(5'd12,1000);
-    `RP_PS_PATH.inst.ps_gen_clock(5'd13,1000);
-    `RP_PS_PATH.inst.ps_gen_clock(5'd14,1000);
-    `RP_PS_PATH.inst.ps_gen_clock(5'd15,1000);
-    `RP_PS_PATH.inst.ps_gen_clock(5'd16,1000);
-    
-    
-    // Reference Clocks for the CPM
-    `EP_PS_PATH.inst.cpm_gen_clock(33.33);
-    `EP_PS_PATH.inst.cpm_osc_clk_div2_gen_clock(200);
-
-    `RP_PS_PATH.inst.cpm_gen_clock(33.33);
-    `RP_PS_PATH.inst.cpm_osc_clk_div2_gen_clock(200);
-    
+  // cpm_osc_clk_div2_gen_clock = 100MHz
+    `EP_PS_PATH.inst.cpm_osc_clk_div2_gen_clock(100);
+    `RP_PS_PATH.inst.cpm_osc_clk_div2_gen_clock(100);
     // EP reset
     force `EP_PS_PATH.inst.PERST0N = perstn;
-    force `EP_PS_PATH.inst.PERST1N = 0;                // PCIe1 not enabled
-    
+    force `EP_PS_PATH.inst.PERST1N = 0; // PCIe1 not enabled
+
     // RP reset
     force `RP_PS_PATH.inst.PERST0N = perstn;
-    force `RP_PS_PATH.inst.PERST1N = 0;   // PCIe1 not enabled
+    force `RP_PS_PATH.inst.PERST1N = 0; // PCIe1 not enabled
   end
-  
+
   initial begin
     // Assert System resets
     $display("[%t] : System Reset Is Asserted...", $realtime);
     $system("date +'%X--%x :  System Reset Is Asserted...' > time.log");
     perstn = 1'b0;
     sys_rst_n = 1'b0;
-    
+
     `EP_PS_PATH.inst.por_reset(0);
     `RP_PS_PATH.inst.por_reset(0);
     `EP_PS_PATH.inst.pl_gen_reset(4'h0); // PL RSTN
     `RP_PS_PATH.inst.pl_gen_reset(4'h0); // PL RSTN
- 
+
     // Release POR resets after some delay
     repeat (500) @(posedge rp_sys_clk_p);
     $display("[%t] : POR Reset Is De-asserted...", $realtime);
     $system("date +'%X--%x :  POR Reset Is De-asserted...' >> time.log");
     sys_rst_n = 1'b1;
-    
+
     `EP_PS_PATH.inst.por_reset(1);
     `RP_PS_PATH.inst.por_reset(1);
     `EP_PS_PATH.inst.pl_gen_reset(4'h1); // PL RSTN
     `RP_PS_PATH.inst.pl_gen_reset(4'h1); // PL RSTN
-    
+
     // Wait for CDO load to complete before releasing PCIe reset
-    repeat (10000) @(posedge rp_sys_clk_p);
+    wait(`RP_CPM_PATH.inst.CPM_INST.CPM_MAIN_INST.SIP_CPM_MAIN_INST.i_cpm_sim_cfg_wrap.u_cpm_sim_cfg.cdo_programming_done);
+    $display("[%t] : RP CDO programming done...", $realtime);
+    wait(`EP_CPM_PATH.inst.CPM_INST.CPM_MAIN_INST.SIP_CPM_MAIN_INST.i_cpm_sim_cfg_wrap.u_cpm_sim_cfg.cdo_programming_done);
+    $display("[%t] : EP CDO programming done...", $realtime);
+    
+    perstn = 1'b1;
     $display("[%t] : PCIe Reset Is De-asserted...", $realtime);
     $system("date +'%X--%x :  PCIe Reset Is De-asserted...' >> time.log");
-    perstn = 1'b1;
   end
 end
 else if (PCIE_CTRL_MODE == 1) begin : Dual_Ctrl_CRX // CTRL 0+1 x8x8
   initial begin
-    // PS-VIP clock
-    force `EP_PS_PATH.inst.versal_cips_ps_vip_clk = clk33_3mhz;
-    force `RP_PS_PATH.inst.versal_cips_ps_vip_clk = clk33_3mhz;
   // Enable Multi Clock Support API
     `EP_PS_PATH.inst.en_multi_clock_support();
     `RP_PS_PATH.inst.en_multi_clock_support();
-  // cpm_osc_clk_div2_gen_clock = 200MHz
-  // cpm_gen_clock = 33.33MHz
-  // ps_gen_clk = 1GHz
-    `EP_PS_PATH.inst.ps_gen_clock(5'd0,1000);
-    `EP_PS_PATH.inst.ps_gen_clock(5'd1,1000);
-    `EP_PS_PATH.inst.ps_gen_clock(5'd2,1000);
-    `EP_PS_PATH.inst.ps_gen_clock(5'd3,1000);
-    `EP_PS_PATH.inst.ps_gen_clock(5'd4,1000);
-    `EP_PS_PATH.inst.ps_gen_clock(5'd5,1000);
-    `EP_PS_PATH.inst.ps_gen_clock(5'd6,1000);
-    `EP_PS_PATH.inst.ps_gen_clock(5'd7,1000);
-    `EP_PS_PATH.inst.ps_gen_clock(5'd8,1000);
-    `EP_PS_PATH.inst.ps_gen_clock(5'd9,1000);
-    `EP_PS_PATH.inst.ps_gen_clock(5'd10,1000);
-    `EP_PS_PATH.inst.ps_gen_clock(5'd11,1000);
-    `EP_PS_PATH.inst.ps_gen_clock(5'd12,1000);
-    `EP_PS_PATH.inst.ps_gen_clock(5'd13,1000);
-    `EP_PS_PATH.inst.ps_gen_clock(5'd14,1000);
-    `EP_PS_PATH.inst.ps_gen_clock(5'd15,1000);
-    `EP_PS_PATH.inst.ps_gen_clock(5'd16,1000);
-    `RP_PS_PATH.inst.ps_gen_clock(5'd0,1000);
-    `RP_PS_PATH.inst.ps_gen_clock(5'd1,1000);
-    `RP_PS_PATH.inst.ps_gen_clock(5'd2,1000);
-    `RP_PS_PATH.inst.ps_gen_clock(5'd3,1000);
-    `RP_PS_PATH.inst.ps_gen_clock(5'd4,1000);
-    `RP_PS_PATH.inst.ps_gen_clock(5'd5,1000);
-    `RP_PS_PATH.inst.ps_gen_clock(5'd6,1000);
-    `RP_PS_PATH.inst.ps_gen_clock(5'd7,1000);
-    `RP_PS_PATH.inst.ps_gen_clock(5'd8,1000);
-    `RP_PS_PATH.inst.ps_gen_clock(5'd9,1000);
-    `RP_PS_PATH.inst.ps_gen_clock(5'd10,1000);
-    `RP_PS_PATH.inst.ps_gen_clock(5'd11,1000);
-    `RP_PS_PATH.inst.ps_gen_clock(5'd12,1000);
-    `RP_PS_PATH.inst.ps_gen_clock(5'd13,1000);
-    `RP_PS_PATH.inst.ps_gen_clock(5'd14,1000);
-    `RP_PS_PATH.inst.ps_gen_clock(5'd15,1000);
-    `RP_PS_PATH.inst.ps_gen_clock(5'd16,1000);
-    
-    
-    // Reference Clocks for the CPM
-    `EP_PS_PATH.inst.cpm_gen_clock(33.33);
-    `EP_PS_PATH.inst.cpm_osc_clk_div2_gen_clock(200);
+  //cpm_osc_clk_div2 = 200MHz
+  //cpm_in_refclk = 33.33MHz
 
-    `RP_PS_PATH.inst.cpm_gen_clock(33.33);
-    `RP_PS_PATH.inst.cpm_osc_clk_div2_gen_clock(200);
-    
     // EP reset
     force `EP_PS_PATH.inst.PERST0N = perstn;
     force `EP_PS_PATH.inst.PERST1N = perstn;
-    
+
     // RP reset
     force `RP_PS_PATH.inst.PERST0N = perstn;
     force `RP_PS_PATH.inst.PERST1N = perstn;
   end
-  
+
   initial begin
     // Assert System resets
     $display("[%t] : System Reset Is Asserted...", $realtime);
     $system("date +'%X--%x :  System Reset Is Asserted...' > time.log");
     perstn = 1'b0;
     sys_rst_n = 1'b0;
-    
+
     `EP_PS_PATH.inst.por_reset(0);
     `RP_PS_PATH.inst.por_reset(0);
     `EP_PS_PATH.inst.pl_gen_reset(4'h0); // PL RSTN
     `RP_PS_PATH.inst.pl_gen_reset(4'h0); // PL RSTN
- 
+
     // Release POR resets after some delay
     repeat (500) @(posedge rp_sys_clk_p);
     $display("[%t] : POR Reset Is De-asserted...", $realtime);
     $system("date +'%X--%x :  POR Reset Is De-asserted...' >> time.log");
     sys_rst_n = 1'b1;
-    
+
     `EP_PS_PATH.inst.por_reset(1);
     `RP_PS_PATH.inst.por_reset(1);
     `EP_PS_PATH.inst.pl_gen_reset(4'h1); // PL RSTN
     `RP_PS_PATH.inst.pl_gen_reset(4'h1); // PL RSTN
-    
+
     // Wait for CDO load to complete before releasing PCIe reset
-    repeat (10000) @(posedge rp_sys_clk_p);
+    wait(`RP_CPM_PATH.inst.CPM_INST.CPM_MAIN_INST.SIP_CPM_MAIN_INST.i_cpm_sim_cfg_wrap.u_cpm_sim_cfg.cdo_programming_done);
+    $display("[%t] : RP CDO programming done...", $realtime);
+    wait(`EP_CPM_PATH.inst.CPM_INST.CPM_MAIN_INST.SIP_CPM_MAIN_INST.i_cpm_sim_cfg_wrap.u_cpm_sim_cfg.cdo_programming_done);
+    $display("[%t] : EP CDO programming done...", $realtime);
+
     $display("[%t] : PCIe Reset Is De-asserted...", $realtime);
     $system("date +'%X--%x :  PCIe Reset Is De-asserted...' >> time.log");
     perstn = 1'b1;
@@ -350,7 +252,7 @@ endgenerate
   //------------------------------------------------------------------------------//
   // Simulation Root Port Model
   // (Comment out this module to interface EndPoint with BFM)
-  
+
   //------------------------------------------------------------------------------//
   // PCI-Express Model Root Port Instance
   //------------------------------------------------------------------------------//
@@ -372,14 +274,14 @@ endgenerate
     .pci_exp_txn (rp_pci_exp_txn),
     .pci_exp_txp (rp_pci_exp_txp)
   );
-  
+
 generate
 if ((PCIE_CTRL_MODE == 0) &&
    (C_CPM_PIPESIM == "TRUE")) begin : Single_CTRL_PIPE // CTRL 0 x16
   initial begin
      force `EP_IP_PATH.pcie0_pipe_ep_commands_in = `RP_IP_PATH.pcie0_pipe_rp_commands_in;
      force `RP_IP_PATH.pcie0_pipe_rp_commands_out = `EP_IP_PATH.pcie0_pipe_ep_commands_out;
-     
+
      force `EP_IP_PATH.pcie0_pipe_ep_rx_0  = `RP_IP_PATH.pcie0_pipe_rp_rx_0;
      force `EP_IP_PATH.pcie0_pipe_ep_rx_1  = `RP_IP_PATH.pcie0_pipe_rp_rx_1;
      force `EP_IP_PATH.pcie0_pipe_ep_rx_2  = `RP_IP_PATH.pcie0_pipe_rp_rx_2;
@@ -396,7 +298,7 @@ if ((PCIE_CTRL_MODE == 0) &&
      force `EP_IP_PATH.pcie0_pipe_ep_rx_13 = `RP_IP_PATH.pcie0_pipe_rp_rx_13;
      force `EP_IP_PATH.pcie0_pipe_ep_rx_14 = `RP_IP_PATH.pcie0_pipe_rp_rx_14;
      force `EP_IP_PATH.pcie0_pipe_ep_rx_15 = `RP_IP_PATH.pcie0_pipe_rp_rx_15;
-     
+
      force `RP_IP_PATH.pcie0_pipe_rp_tx_0  = `EP_IP_PATH.pcie0_pipe_ep_tx_0;
      force `RP_IP_PATH.pcie0_pipe_rp_tx_1  = `EP_IP_PATH.pcie0_pipe_ep_tx_1;
      force `RP_IP_PATH.pcie0_pipe_rp_tx_2  = `EP_IP_PATH.pcie0_pipe_ep_tx_2;
@@ -420,7 +322,7 @@ else if ((PCIE_CTRL_MODE == 1) &&
   initial begin
      force `EP_IP_PATH.pcie0_pipe_ep_commands_in = `RP_IP_PATH.pcie0_pipe_rp_commands_in;
      force `RP_IP_PATH.pcie0_pipe_rp_commands_out = `EP_IP_PATH.pcie0_pipe_ep_commands_out;
-        
+
      force `EP_IP_PATH.pcie0_pipe_ep_rx_0  = `RP_IP_PATH.pcie0_pipe_rp_rx_0;
      force `EP_IP_PATH.pcie0_pipe_ep_rx_1  = `RP_IP_PATH.pcie0_pipe_rp_rx_1;
      force `EP_IP_PATH.pcie0_pipe_ep_rx_2  = `RP_IP_PATH.pcie0_pipe_rp_rx_2;
@@ -429,7 +331,7 @@ else if ((PCIE_CTRL_MODE == 1) &&
      force `EP_IP_PATH.pcie0_pipe_ep_rx_5  = `RP_IP_PATH.pcie0_pipe_rp_rx_5;
      force `EP_IP_PATH.pcie0_pipe_ep_rx_6  = `RP_IP_PATH.pcie0_pipe_rp_rx_6;
      force `EP_IP_PATH.pcie0_pipe_ep_rx_7  = `RP_IP_PATH.pcie0_pipe_rp_rx_7;
-     
+
      force `RP_IP_PATH.pcie0_pipe_rp_tx_0  = `EP_IP_PATH.pcie0_pipe_ep_tx_0;
      force `RP_IP_PATH.pcie0_pipe_rp_tx_1  = `EP_IP_PATH.pcie0_pipe_ep_tx_1;
      force `RP_IP_PATH.pcie0_pipe_rp_tx_2  = `EP_IP_PATH.pcie0_pipe_ep_tx_2;
@@ -438,10 +340,10 @@ else if ((PCIE_CTRL_MODE == 1) &&
      force `RP_IP_PATH.pcie0_pipe_rp_tx_5  = `EP_IP_PATH.pcie0_pipe_ep_tx_5;
      force `RP_IP_PATH.pcie0_pipe_rp_tx_6  = `EP_IP_PATH.pcie0_pipe_ep_tx_6;
      force `RP_IP_PATH.pcie0_pipe_rp_tx_7  = `EP_IP_PATH.pcie0_pipe_ep_tx_7;
-     
+
      force `EP_IP_PATH.pcie1_pipe_ep_commands_in = `RP_IP_PATH.pcie1_pipe_rp_commands_in;
      force `RP_IP_PATH.pcie1_pipe_rp_commands_out = `EP_IP_PATH.pcie1_pipe_ep_commands_out;
-     
+
      force `EP_IP_PATH.pcie1_pipe_ep_rx_0  = `RP_IP_PATH.pcie1_pipe_rp_rx_0;
      force `EP_IP_PATH.pcie1_pipe_ep_rx_1  = `RP_IP_PATH.pcie1_pipe_rp_rx_1;
      force `EP_IP_PATH.pcie1_pipe_ep_rx_2  = `RP_IP_PATH.pcie1_pipe_rp_rx_2;
@@ -450,7 +352,7 @@ else if ((PCIE_CTRL_MODE == 1) &&
      force `EP_IP_PATH.pcie1_pipe_ep_rx_5  = `RP_IP_PATH.pcie1_pipe_rp_rx_5;
      force `EP_IP_PATH.pcie1_pipe_ep_rx_6  = `RP_IP_PATH.pcie1_pipe_rp_rx_6;
      force `EP_IP_PATH.pcie1_pipe_ep_rx_7  = `RP_IP_PATH.pcie1_pipe_rp_rx_7;
-     
+
      force `RP_IP_PATH.pcie1_pipe_rp_tx_0  = `EP_IP_PATH.pcie1_pipe_ep_tx_0;
      force `RP_IP_PATH.pcie1_pipe_rp_tx_1  = `EP_IP_PATH.pcie1_pipe_ep_tx_1;
      force `RP_IP_PATH.pcie1_pipe_rp_tx_2  = `EP_IP_PATH.pcie1_pipe_ep_tx_2;
@@ -462,7 +364,7 @@ else if ((PCIE_CTRL_MODE == 1) &&
   end
 end
 endgenerate
-   
+
   initial begin
 `ifndef XILINX_SIMULATOR
       // Re-enable UNIQUE, UNIQUE0, and PRIORITY analysis

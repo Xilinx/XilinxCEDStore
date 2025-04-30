@@ -72,60 +72,35 @@
 
 module board;
 
-  parameter          REF_CLK_FREQ       = 0 ;      // 0 - 100 MHz, 1 - 125 MHz,  2 - 250 MHz
-
-
-
-
-  localparam         REF_CLK_HALF_CYCLE = (REF_CLK_FREQ == 0) ? 5000 :
-                                          (REF_CLK_FREQ == 1) ? 4000 :
-                                          (REF_CLK_FREQ == 2) ? 2000 : 0;
+  parameter  REF_CLK_FREQ       = 0 ;      // 0 - 100 MHz, 1 - 125 MHz,  2 - 250 MHz
+  localparam REF_CLK_HALF_CYCLE = (REF_CLK_FREQ == 0) ? 5000 :
+                                  (REF_CLK_FREQ == 1) ? 4000 :
+                                  (REF_CLK_FREQ == 2) ? 2000 : 0;
   localparam   [2:0] PF0_DEV_CAP_MAX_PAYLOAD_SIZE = 3'b010;
   `ifdef LINKWIDTH
   localparam   [4:0] LINK_WIDTH = 5'd`LINKWIDTH;
   `else
   localparam   [4:0] LINK_WIDTH = 5'd8;
   `endif
-  `ifdef LINKSPEED
-  localparam   [2:0] LINK_SPEED = 3'h`LINKSPEED;
-  `else
-  localparam   [3:0] LINK_SPEED = 4'h8;
-  `endif
 
-  localparam EXT_PIPE_SIM = "FALSE";
   localparam EP_DATA_WIDTH = 512;
-
-//  `include  "h10_cisco_cmpt_sig.svh"
-   
-   
-  // RP cdo file
-//  defparam board.RP.design_rp_wrapper_i.design_rp_i.versal_cips_0.inst.cpm_0.inst.CPM_INST.SIM_CPM_CDO_FILE_NAME = "rp_cpm_data_sim.cdo";
-
-   integer            i;
-
   // System-level clock and reset
-  reg                sys_rst_n;
+  reg sys_rst_n;
 
-  wire               ep_sys_clk;
-  wire               rp_sys_clk;
-  wire               ep_sys_clk_p;
-  wire               ep_sys_clk_n;
-  wire               rp_sys_clk_p;
-  wire               rp_sys_clk_n;
-
-
+  wire ep_sys_clk;
+  wire rp_sys_clk;
+  wire ep_sys_clk_p;
+  wire ep_sys_clk_n;
+  wire rp_sys_clk_p;
+  wire rp_sys_clk_n;
 
   //
   // PCI-Express Serial Interconnect
   //
-
   wire  [(LINK_WIDTH-1):0]  ep_pci_exp_txn;
   wire  [(LINK_WIDTH-1):0]  ep_pci_exp_txp;
   wire  [(LINK_WIDTH-1):0]  rp_pci_exp_txn;
   wire  [(LINK_WIDTH-1):0]  rp_pci_exp_txp;
-
-
-
 
   //------------------------------------------------------------------------------//
   // Generate system clock
@@ -148,20 +123,10 @@ module board;
     .sys_clk_n(ep_sys_clk_n)
   );
 
-
-
   //------------------------------------------------------------------------------//
   // Generate system-level reset
   //------------------------------------------------------------------------------//
   parameter ON=3, OFF=4, UNIQUE=32, UNIQUE0=64, PRIORITY=128;
-  reg lpdcpmtopswclk;
-  
-  initial begin
-    // Create clocks for the CPM LPD domain to NOC clock (lpdcpmtopswclk)
-    // Set the frequency based on GUI selection.
-    lpdcpmtopswclk = 0;
-    forever #(500) lpdcpmtopswclk = ~lpdcpmtopswclk;
-  end
 
    // Enable PIPESIM
    defparam board.EP.design_1_wrapper_i.design_1_i.versal_cips_0.inst.cpm_0.inst.C_CPM_PIPESIM = "TRUE";
@@ -215,63 +180,27 @@ module board;
    
   initial begin
     // New Bug.. NoC
-     //force board.EP.design_1_wrapper_i.design_1_i.axi_noc_0.M01_AXI_bid = 2'h0;
-     //force board.EP.design_1_wrapper_i.design_1_i.axi_noc_0.M01_AXI_rid = 2'h0 ;
+  //force board.EP.design_1_wrapper_i.design_1_i.axi_noc_0.M01_AXI_bid = 2'h0;
+  //force board.EP.design_1_wrapper_i.design_1_i.axi_noc_0.M01_AXI_rid = 2'h0 ;
   
     // CR-1118514
-//    force board.EP.design_1_wrapper_i.design_1_i.versal_cips_0.inst.cpm_0.inst.qdma_0_wrapper_i.s_axis_mdma_c2h_ctrl_qid[11] = 1'b0;
-//    force board.EP.design_1_wrapper_i.design_1_i.versal_cips_0.inst.cpm_0.inst.qdma_0_wrapper_i.mdma_dsc_crdt_in_qid[12:11]  = 2'b00;
-//    force board.EP.design_1_wrapper_i.design_1_i.versal_cips_0.inst.cpm_0.inst.qdma_0_wrapper_i.h2c_byp_in_st_qid[12:11]     = 2'b00;
+  //force board.EP.design_1_wrapper_i.design_1_i.versal_cips_0.inst.cpm_0.inst.qdma_0_wrapper_i.s_axis_mdma_c2h_ctrl_qid[11] = 1'b0;
+  //force board.EP.design_1_wrapper_i.design_1_i.versal_cips_0.inst.cpm_0.inst.qdma_0_wrapper_i.mdma_dsc_crdt_in_qid[12:11]  = 2'b00;
+  //force board.EP.design_1_wrapper_i.design_1_i.versal_cips_0.inst.cpm_0.inst.qdma_0_wrapper_i.h2c_byp_in_st_qid[12:11]     = 2'b00;
     
-//    force board.EP.design_1_wrapper_i.design_1_i.versal_cips_0.inst.cpm_0.inst.qdma_0_wrapper_i.c2h_byp_in_mm_0_qid[12:11]   = 2'b00;
-//    force board.EP.design_1_wrapper_i.design_1_i.versal_cips_0.inst.cpm_0.inst.qdma_0_wrapper_i.c2h_byp_in_mm_1_qid[12:11]   = 2'b00;
-//    force board.EP.design_1_wrapper_i.design_1_i.versal_cips_0.inst.cpm_0.inst.qdma_0_wrapper_i.h2c_byp_in_mm_0_qid[12:11]   = 2'b00;
-//    force board.EP.design_1_wrapper_i.design_1_i.versal_cips_0.inst.cpm_0.inst.qdma_0_wrapper_i.h2c_byp_in_mm_1_qid[12:11]   = 2'b00;
+  //force board.EP.design_1_wrapper_i.design_1_i.versal_cips_0.inst.cpm_0.inst.qdma_0_wrapper_i.c2h_byp_in_mm_0_qid[12:11]   = 2'b00;
+  //force board.EP.design_1_wrapper_i.design_1_i.versal_cips_0.inst.cpm_0.inst.qdma_0_wrapper_i.c2h_byp_in_mm_1_qid[12:11]   = 2'b00;
+  //force board.EP.design_1_wrapper_i.design_1_i.versal_cips_0.inst.cpm_0.inst.qdma_0_wrapper_i.h2c_byp_in_mm_0_qid[12:11]   = 2'b00;
+  //force board.EP.design_1_wrapper_i.design_1_i.versal_cips_0.inst.cpm_0.inst.qdma_0_wrapper_i.h2c_byp_in_mm_1_qid[12:11]   = 2'b00;
+  
     // Enable Multi Clock Support API
     board.EP.design_1_wrapper_i.design_1_i.versal_cips_0.inst.pspmc_0.inst.PS9_VIP_inst.inst.en_multi_clock_support();
     board.RP.design_rp_wrapper_i.design_rp_i.versal_cips_0.inst.pspmc_0.inst.PS9_VIP_inst.inst.en_multi_clock_support();
     // cpm_osc_clk_div2_gen_clock = 200MHz
     // cpm_gen_clock = 33.33MHz
     // ps_gen_clk = 1GHz
-    board.EP.design_1_wrapper_i.design_1_i.versal_cips_0.inst.pspmc_0.inst.PS9_VIP_inst.inst.ps_gen_clock(5'd0,1000);
-    board.EP.design_1_wrapper_i.design_1_i.versal_cips_0.inst.pspmc_0.inst.PS9_VIP_inst.inst.ps_gen_clock(5'd1,1000);
-    board.EP.design_1_wrapper_i.design_1_i.versal_cips_0.inst.pspmc_0.inst.PS9_VIP_inst.inst.ps_gen_clock(5'd2,1000);
-    board.EP.design_1_wrapper_i.design_1_i.versal_cips_0.inst.pspmc_0.inst.PS9_VIP_inst.inst.ps_gen_clock(5'd3,1000);
-    board.EP.design_1_wrapper_i.design_1_i.versal_cips_0.inst.pspmc_0.inst.PS9_VIP_inst.inst.ps_gen_clock(5'd4,1000);
-    board.EP.design_1_wrapper_i.design_1_i.versal_cips_0.inst.pspmc_0.inst.PS9_VIP_inst.inst.ps_gen_clock(5'd5,1000);
-    board.EP.design_1_wrapper_i.design_1_i.versal_cips_0.inst.pspmc_0.inst.PS9_VIP_inst.inst.ps_gen_clock(5'd6,1000);
-    board.EP.design_1_wrapper_i.design_1_i.versal_cips_0.inst.pspmc_0.inst.PS9_VIP_inst.inst.ps_gen_clock(5'd7,1000);
-    board.EP.design_1_wrapper_i.design_1_i.versal_cips_0.inst.pspmc_0.inst.PS9_VIP_inst.inst.ps_gen_clock(5'd8,1000);
-    board.EP.design_1_wrapper_i.design_1_i.versal_cips_0.inst.pspmc_0.inst.PS9_VIP_inst.inst.ps_gen_clock(5'd9,1000);
-    board.EP.design_1_wrapper_i.design_1_i.versal_cips_0.inst.pspmc_0.inst.PS9_VIP_inst.inst.ps_gen_clock(5'd10,1000);
-    board.EP.design_1_wrapper_i.design_1_i.versal_cips_0.inst.pspmc_0.inst.PS9_VIP_inst.inst.ps_gen_clock(5'd11,1000);
-    board.EP.design_1_wrapper_i.design_1_i.versal_cips_0.inst.pspmc_0.inst.PS9_VIP_inst.inst.ps_gen_clock(5'd12,1000);
-    board.EP.design_1_wrapper_i.design_1_i.versal_cips_0.inst.pspmc_0.inst.PS9_VIP_inst.inst.ps_gen_clock(5'd13,1000);
-    board.EP.design_1_wrapper_i.design_1_i.versal_cips_0.inst.pspmc_0.inst.PS9_VIP_inst.inst.ps_gen_clock(5'd14,1000);
-    board.EP.design_1_wrapper_i.design_1_i.versal_cips_0.inst.pspmc_0.inst.PS9_VIP_inst.inst.ps_gen_clock(5'd15,1000);
-    board.EP.design_1_wrapper_i.design_1_i.versal_cips_0.inst.pspmc_0.inst.PS9_VIP_inst.inst.ps_gen_clock(5'd16,1000);
-    board.RP.design_rp_wrapper_i.design_rp_i.versal_cips_0.inst.pspmc_0.inst.PS9_VIP_inst.inst.ps_gen_clock(5'd0,1000);
-    board.RP.design_rp_wrapper_i.design_rp_i.versal_cips_0.inst.pspmc_0.inst.PS9_VIP_inst.inst.ps_gen_clock(5'd1,1000);
-    board.RP.design_rp_wrapper_i.design_rp_i.versal_cips_0.inst.pspmc_0.inst.PS9_VIP_inst.inst.ps_gen_clock(5'd2,1000);
-    board.RP.design_rp_wrapper_i.design_rp_i.versal_cips_0.inst.pspmc_0.inst.PS9_VIP_inst.inst.ps_gen_clock(5'd3,1000);
-    board.RP.design_rp_wrapper_i.design_rp_i.versal_cips_0.inst.pspmc_0.inst.PS9_VIP_inst.inst.ps_gen_clock(5'd4,1000);
-    board.RP.design_rp_wrapper_i.design_rp_i.versal_cips_0.inst.pspmc_0.inst.PS9_VIP_inst.inst.ps_gen_clock(5'd5,1000);
-    board.RP.design_rp_wrapper_i.design_rp_i.versal_cips_0.inst.pspmc_0.inst.PS9_VIP_inst.inst.ps_gen_clock(5'd6,1000);
-    board.RP.design_rp_wrapper_i.design_rp_i.versal_cips_0.inst.pspmc_0.inst.PS9_VIP_inst.inst.ps_gen_clock(5'd7,1000);
-    board.RP.design_rp_wrapper_i.design_rp_i.versal_cips_0.inst.pspmc_0.inst.PS9_VIP_inst.inst.ps_gen_clock(5'd8,1000);
-    board.RP.design_rp_wrapper_i.design_rp_i.versal_cips_0.inst.pspmc_0.inst.PS9_VIP_inst.inst.ps_gen_clock(5'd9,1000);
-    board.RP.design_rp_wrapper_i.design_rp_i.versal_cips_0.inst.pspmc_0.inst.PS9_VIP_inst.inst.ps_gen_clock(5'd10,1000);
-    board.RP.design_rp_wrapper_i.design_rp_i.versal_cips_0.inst.pspmc_0.inst.PS9_VIP_inst.inst.ps_gen_clock(5'd11,1000);
-    board.RP.design_rp_wrapper_i.design_rp_i.versal_cips_0.inst.pspmc_0.inst.PS9_VIP_inst.inst.ps_gen_clock(5'd12,1000);
-    board.RP.design_rp_wrapper_i.design_rp_i.versal_cips_0.inst.pspmc_0.inst.PS9_VIP_inst.inst.ps_gen_clock(5'd13,1000);
-    board.RP.design_rp_wrapper_i.design_rp_i.versal_cips_0.inst.pspmc_0.inst.PS9_VIP_inst.inst.ps_gen_clock(5'd14,1000);
-    board.RP.design_rp_wrapper_i.design_rp_i.versal_cips_0.inst.pspmc_0.inst.PS9_VIP_inst.inst.ps_gen_clock(5'd15,1000);
-    board.RP.design_rp_wrapper_i.design_rp_i.versal_cips_0.inst.pspmc_0.inst.PS9_VIP_inst.inst.ps_gen_clock(5'd16,1000);
-    // Create the PS-VIP clock
-    force board.EP.design_1_wrapper_i.design_1_i.versal_cips_0.inst.pspmc_0.inst.PS9_VIP_inst.inst.versal_cips_ps_vip_clk = lpdcpmtopswclk;
-    force board.RP.design_rp_wrapper_i.design_rp_i.versal_cips_0.inst.pspmc_0.inst.PS9_VIP_inst.inst.versal_cips_ps_vip_clk = lpdcpmtopswclk;
-    
-    // Set VIP PL output clocks based on GUI selection
+
+    // Set VIP PL output clocks
     board.EP.design_1_wrapper_i.design_1_i.versal_cips_0.inst.pspmc_0.inst.PS9_VIP_inst.inst.pl_gen_clock(0,250);
     board.EP.design_1_wrapper_i.design_1_i.versal_cips_0.inst.pspmc_0.inst.PS9_VIP_inst.inst.pl_gen_clock(1,250);
     board.EP.design_1_wrapper_i.design_1_i.versal_cips_0.inst.pspmc_0.inst.PS9_VIP_inst.inst.pl_gen_clock(2,250);
@@ -281,19 +210,6 @@ module board;
     board.RP.design_rp_wrapper_i.design_rp_i.versal_cips_0.inst.pspmc_0.inst.PS9_VIP_inst.inst.pl_gen_clock(1,250);
     board.RP.design_rp_wrapper_i.design_rp_i.versal_cips_0.inst.pspmc_0.inst.PS9_VIP_inst.inst.pl_gen_clock(2,250);
     board.RP.design_rp_wrapper_i.design_rp_i.versal_cips_0.inst.pspmc_0.inst.PS9_VIP_inst.inst.pl_gen_clock(3,250);
-    
-    // Generate Reference Clocks for the CPM
-    board.EP.design_1_wrapper_i.design_1_i.versal_cips_0.inst.pspmc_0.inst.PS9_VIP_inst.inst.cpm_gen_clock(33.33);
-    board.EP.design_1_wrapper_i.design_1_i.versal_cips_0.inst.pspmc_0.inst.PS9_VIP_inst.inst.cpm_osc_clk_div2_gen_clock(200);
-
-    board.RP.design_rp_wrapper_i.design_rp_i.versal_cips_0.inst.pspmc_0.inst.PS9_VIP_inst.inst.cpm_gen_clock(33.33);
-    board.RP.design_rp_wrapper_i.design_rp_i.versal_cips_0.inst.pspmc_0.inst.PS9_VIP_inst.inst.cpm_osc_clk_div2_gen_clock(200);
-      
-    //board.EP.design_1_wrapper_i.design_1_i.versal_cips_0.inst.pspmc_0.inst.PS9_VIP_inst.inst.cpm_gen_clock(100);
-    //board.EP.design_1_wrapper_i.design_1_i.versal_cips_0.inst.pspmc_0.inst.PS9_VIP_inst.inst.cpm_osc_clk_div2_gen_clock(100);
-
-    //board.RP.design_rp_wrapper_i.design_rp_i.versal_cips_0.inst.pspmc_0.inst.PS9_VIP_inst.inst.cpm_gen_clock(100);
-    //board.RP.design_rp_wrapper_i.design_rp_i.versal_cips_0.inst.pspmc_0.inst.PS9_VIP_inst.inst.cpm_osc_clk_div2_gen_clock(100);  
     
     // Enable CPM PS AXI to PS NOC AXI routing (both AXI MM 0 and AXI MM 1)
     board.EP.design_1_wrapper_i.design_1_i.versal_cips_0.inst.pspmc_0.inst.PS9_VIP_inst.inst.set_routing_config("CPMPSAXI0","PSNOCPCIAXI0",1);
@@ -307,18 +223,18 @@ module board;
     $display("[%t] : System Reset Is Asserted...", $realtime);
     // Root Port reset assert
     sys_rst_n = 1'b0;
-    // Endpoint reset assert based on GUI selection for each controller
+    // Endpoint reset assert
     force board.EP.design_1_wrapper_i.design_1_i.versal_cips_0.inst.pspmc_0.inst.PS9_VIP_inst.inst.PERST0N = 1'b0;
     force board.EP.design_1_wrapper_i.design_1_i.versal_cips_0.inst.pspmc_0.inst.PS9_VIP_inst.inst.PERST1N = 1'b0;
-    // Assert VIP PL output resets based on GUI Selection
+    // Assert VIP PL output resets
     board.EP.design_1_wrapper_i.design_1_i.versal_cips_0.inst.pspmc_0.inst.PS9_VIP_inst.inst.pl_gen_reset(4'h0);
     // POR reset is the master reset for the PS Simulation Model. Deserting will enable the PS-VIP.
     board.EP.design_1_wrapper_i.design_1_i.versal_cips_0.inst.pspmc_0.inst.PS9_VIP_inst.inst.por_reset(0);
     
-    // RP reset assert based on GUI selection for each controller
+    // RP reset assert 
     force board.RP.design_rp_wrapper_i.design_rp_i.versal_cips_0.inst.pspmc_0.inst.PS9_VIP_inst.inst.PERST0N = 1'b0;
     force board.RP.design_rp_wrapper_i.design_rp_i.versal_cips_0.inst.pspmc_0.inst.PS9_VIP_inst.inst.PERST1N = 1'b0;
-    // Assert VIP PL output resets based on GUI Selection
+    // Assert VIP PL output resets
     board.RP.design_rp_wrapper_i.design_rp_i.versal_cips_0.inst.pspmc_0.inst.PS9_VIP_inst.inst.pl_gen_reset(4'h0);
     // POR reset is the master reset for the PS Simulation Model. Deserting will enable the PS-VIP.
     board.RP.design_rp_wrapper_i.design_rp_i.versal_cips_0.inst.pspmc_0.inst.PS9_VIP_inst.inst.por_reset(0);
@@ -332,12 +248,12 @@ module board;
     $display("[%t] : System Reset Is De-asserted...", $realtime);
     // Root port reset release
     sys_rst_n = 1'b1;
-    // De-assert VIP PL output resets based on GUI Selection
+    // De-assert VIP PL output resets
     board.EP.design_1_wrapper_i.design_1_i.versal_cips_0.inst.pspmc_0.inst.PS9_VIP_inst.inst.pl_gen_reset(4'hF);
     // Release reset on the PS-VIP
     board.EP.design_1_wrapper_i.design_1_i.versal_cips_0.inst.pspmc_0.inst.PS9_VIP_inst.inst.por_reset(1);
     
-    // De-assert VIP PL output resets based on GUI Selection
+    // De-assert VIP PL output resets
     board.RP.design_rp_wrapper_i.design_rp_i.versal_cips_0.inst.pspmc_0.inst.PS9_VIP_inst.inst.pl_gen_reset(4'hF);
     // Release reset on the PS-VIP
     board.RP.design_rp_wrapper_i.design_rp_i.versal_cips_0.inst.pspmc_0.inst.PS9_VIP_inst.inst.por_reset(1);
@@ -346,12 +262,13 @@ module board;
     force board.EP.design_1_wrapper_i.design_1_i.versal_cips_0.inst.cpm_0.inst.lpd_cpm5_por_n = 1'b1;
     force board.RP.design_rp_wrapper_i.design_rp_i.versal_cips_0.inst.cpm_0.inst.lpd_cpm5_por_n = 1'b1;
     
-    //repeat (545000) @(posedge rp_sys_clk_p);
-    repeat (5200) @(posedge rp_sys_clk_p);
-    // Endpoint reset release based on GUI selection.
+    wait(board.RP.design_rp_wrapper_i.design_rp_i.versal_cips_0.inst.cpm_0.inst.CPM_INST.SIP_CPM5_INST.i_cpm_sim_cfg_wrap.u_cpm_sim_cfg.cdo_programming_done);
+    wait(board.EP.design_1_wrapper_i.design_1_i.versal_cips_0.inst.cpm_0.inst.CPM_INST.SIP_CPM5_INST.i_cpm_sim_cfg_wrap.u_cpm_sim_cfg.cdo_programming_done);
+
+    // Endpoint reset release
     force board.EP.design_1_wrapper_i.design_1_i.versal_cips_0.inst.pspmc_0.inst.PS9_VIP_inst.inst.PERST0N = 1'b1;
     force board.EP.design_1_wrapper_i.design_1_i.versal_cips_0.inst.pspmc_0.inst.PS9_VIP_inst.inst.PERST1N = 1'b1;
-    // RP reset release based on GUI selection.
+    // RP reset release
     force board.RP.design_rp_wrapper_i.design_rp_i.versal_cips_0.inst.pspmc_0.inst.PS9_VIP_inst.inst.PERST0N = 1'b1;
     force board.RP.design_rp_wrapper_i.design_rp_i.versal_cips_0.inst.pspmc_0.inst.PS9_VIP_inst.inst.PERST1N = 1'b1;
  

@@ -22,38 +22,22 @@
 `define XIL_TIMING
 module board;
 
-  parameter          REF_CLK_FREQ       = 0 ;      // 0 - 100 MHz, 1 - 125 MHz,  2 - 250 MHz
-  parameter    [4:0] LINK_WIDTH         = 5'd8;
-  `ifdef LINKSPEED
-  localparam   [3:0] LINK_SPEED_US      = 4'h`LINKSPEED;
-  `else
-  localparam   [3:0] LINK_SPEED_US      = 4'h4;
-  `endif
-  localparam   [1:0] LINK_SPEED         = (LINK_SPEED_US == 4'h8) ? 2'h3 :
-                                          (LINK_SPEED_US == 4'h4) ? 2'h2 :
-                                          (LINK_SPEED_US == 4'h2) ? 2'h1 : 2'h0;
+  parameter     REF_CLK_FREQ = 0 ;      // 0 - 100 MHz, 1 - 125 MHz,  2 - 250 MHz
+  parameter [4:0] LINK_WIDTH = 5'd8;
 
-  localparam         REF_CLK_HALF_CYCLE = (REF_CLK_FREQ == 0) ? 5000 :
-                                          (REF_CLK_FREQ == 1) ? 4000 :
-                                          (REF_CLK_FREQ == 2) ? 2000 : 0;
+  localparam REF_CLK_HALF_CYCLE = (REF_CLK_FREQ == 0) ? 5000 :
+                                  (REF_CLK_FREQ == 1) ? 4000 :
+                                  (REF_CLK_FREQ == 2) ? 2000 : 0;
 
   localparam   [2:0] PF0_DEV_CAP_MAX_PAYLOAD_SIZE = 3'b011;
-//  Comment below line to support post synth/impl simulation support
-//  defparam board.EP.pcie4_uscale_plus_0_i.inst.PL_SIM_FAST_LINK_TRAINING=2'h3;
-
-  localparam EXT_PIPE_SIM = "FALSE";
-// defparam board.RP.pcie_4_0_rport.pcie_4_0_int_inst.PHY_GTWIZARD = "FALSE";
-  // RP cdo file
-//  defparam board.RP.design_rp_i.versal_cips_0.inst.cpm_0.inst.CPM_INST.SIM_CPM_CDO_FILE_NAME = "rp_cpm_data_sim.cdo";
-  integer            i;
 
   // System-level clock and reset
-  reg                sys_rst_n;
+  reg sys_rst_n;
 
-  wire               ep_sys_clk_p;
-  wire               ep_sys_clk_n;
-  wire               rp_sys_clk_p;
-  wire               rp_sys_clk_n;
+  wire ep_sys_clk_p;
+  wire ep_sys_clk_n;
+  wire rp_sys_clk_p;
+  wire rp_sys_clk_n;
 
   //
   // PCI-Express Serial Interconnect
@@ -86,89 +70,26 @@ module board;
   // Generate system-level reset
   //------------------------------------------------------------------------------//
   parameter ON=3, OFF=4, UNIQUE=32, UNIQUE0=64, PRIORITY=128;
-  reg lpdcpmtopswclk;
   
   initial begin
-    // Create clocks for the CPM LPD domain to NOC clock (lpdcpmtopswclk)
-    // Set the frequency based on GUI selection.
-    lpdcpmtopswclk = 0;
-    forever #(500) lpdcpmtopswclk = ~lpdcpmtopswclk;
-  end
-  
-  initial begin
-    // Create the PS-VIP clock
-    force board.EP.design_1_i.versal_cips_0.inst.pspmc_0.inst.PS9_VIP_inst.inst.versal_cips_ps_vip_clk = lpdcpmtopswclk;
-    force board.RP.design_rp_i.versal_cips_0.inst.pspmc_0.inst.PS9_VIP_inst.inst.versal_cips_ps_vip_clk = lpdcpmtopswclk;
-    
-  // Enable Multi Clock Support API
+    // Enable Multi Clock Support API
     board.EP.design_1_i.versal_cips_0.inst.pspmc_0.inst.PS9_VIP_inst.inst.en_multi_clock_support();
     board.RP.design_rp_i.versal_cips_0.inst.pspmc_0.inst.PS9_VIP_inst.inst.en_multi_clock_support();
-  // ps_gen_clk = 1GHz
-    board.EP.design_1_i.versal_cips_0.inst.pspmc_0.inst.PS9_VIP_inst.inst.ps_gen_clock(5'd0,1000);
-    board.EP.design_1_i.versal_cips_0.inst.pspmc_0.inst.PS9_VIP_inst.inst.ps_gen_clock(5'd1,1000);
-    board.EP.design_1_i.versal_cips_0.inst.pspmc_0.inst.PS9_VIP_inst.inst.ps_gen_clock(5'd2,1000);
-    board.EP.design_1_i.versal_cips_0.inst.pspmc_0.inst.PS9_VIP_inst.inst.ps_gen_clock(5'd3,1000);
-    board.EP.design_1_i.versal_cips_0.inst.pspmc_0.inst.PS9_VIP_inst.inst.ps_gen_clock(5'd4,1000);
-    board.EP.design_1_i.versal_cips_0.inst.pspmc_0.inst.PS9_VIP_inst.inst.ps_gen_clock(5'd5,1000);
-    board.EP.design_1_i.versal_cips_0.inst.pspmc_0.inst.PS9_VIP_inst.inst.ps_gen_clock(5'd6,1000);
-    board.EP.design_1_i.versal_cips_0.inst.pspmc_0.inst.PS9_VIP_inst.inst.ps_gen_clock(5'd7,1000);
-    board.EP.design_1_i.versal_cips_0.inst.pspmc_0.inst.PS9_VIP_inst.inst.ps_gen_clock(5'd8,1000);
-    board.EP.design_1_i.versal_cips_0.inst.pspmc_0.inst.PS9_VIP_inst.inst.ps_gen_clock(5'd9,1000);
-    board.EP.design_1_i.versal_cips_0.inst.pspmc_0.inst.PS9_VIP_inst.inst.ps_gen_clock(5'd10,1000);
-    board.EP.design_1_i.versal_cips_0.inst.pspmc_0.inst.PS9_VIP_inst.inst.ps_gen_clock(5'd11,1000);
-    board.EP.design_1_i.versal_cips_0.inst.pspmc_0.inst.PS9_VIP_inst.inst.ps_gen_clock(5'd12,1000);
-    board.EP.design_1_i.versal_cips_0.inst.pspmc_0.inst.PS9_VIP_inst.inst.ps_gen_clock(5'd13,1000);
-    board.EP.design_1_i.versal_cips_0.inst.pspmc_0.inst.PS9_VIP_inst.inst.ps_gen_clock(5'd14,1000);
-    board.EP.design_1_i.versal_cips_0.inst.pspmc_0.inst.PS9_VIP_inst.inst.ps_gen_clock(5'd15,1000);
-    board.EP.design_1_i.versal_cips_0.inst.pspmc_0.inst.PS9_VIP_inst.inst.ps_gen_clock(5'd16,1000);
-    board.RP.design_rp_i.versal_cips_0.inst.pspmc_0.inst.PS9_VIP_inst.inst.ps_gen_clock(5'd0,1000);
-    board.RP.design_rp_i.versal_cips_0.inst.pspmc_0.inst.PS9_VIP_inst.inst.ps_gen_clock(5'd1,1000);
-    board.RP.design_rp_i.versal_cips_0.inst.pspmc_0.inst.PS9_VIP_inst.inst.ps_gen_clock(5'd2,1000);
-    board.RP.design_rp_i.versal_cips_0.inst.pspmc_0.inst.PS9_VIP_inst.inst.ps_gen_clock(5'd3,1000);
-    board.RP.design_rp_i.versal_cips_0.inst.pspmc_0.inst.PS9_VIP_inst.inst.ps_gen_clock(5'd4,1000);
-    board.RP.design_rp_i.versal_cips_0.inst.pspmc_0.inst.PS9_VIP_inst.inst.ps_gen_clock(5'd5,1000);
-    board.RP.design_rp_i.versal_cips_0.inst.pspmc_0.inst.PS9_VIP_inst.inst.ps_gen_clock(5'd6,1000);
-    board.RP.design_rp_i.versal_cips_0.inst.pspmc_0.inst.PS9_VIP_inst.inst.ps_gen_clock(5'd7,1000);
-    board.RP.design_rp_i.versal_cips_0.inst.pspmc_0.inst.PS9_VIP_inst.inst.ps_gen_clock(5'd8,1000);
-    board.RP.design_rp_i.versal_cips_0.inst.pspmc_0.inst.PS9_VIP_inst.inst.ps_gen_clock(5'd9,1000);
-    board.RP.design_rp_i.versal_cips_0.inst.pspmc_0.inst.PS9_VIP_inst.inst.ps_gen_clock(5'd10,1000);
-    board.RP.design_rp_i.versal_cips_0.inst.pspmc_0.inst.PS9_VIP_inst.inst.ps_gen_clock(5'd11,1000);
-    board.RP.design_rp_i.versal_cips_0.inst.pspmc_0.inst.PS9_VIP_inst.inst.ps_gen_clock(5'd12,1000);
-    board.RP.design_rp_i.versal_cips_0.inst.pspmc_0.inst.PS9_VIP_inst.inst.ps_gen_clock(5'd13,1000);
-    board.RP.design_rp_i.versal_cips_0.inst.pspmc_0.inst.PS9_VIP_inst.inst.ps_gen_clock(5'd14,1000);
-    board.RP.design_rp_i.versal_cips_0.inst.pspmc_0.inst.PS9_VIP_inst.inst.ps_gen_clock(5'd15,1000);
-    board.RP.design_rp_i.versal_cips_0.inst.pspmc_0.inst.PS9_VIP_inst.inst.ps_gen_clock(5'd16,1000);
-    
-    // cpm_osc_clk_div2_gen_clock = 200MHz
-    // cpm_gen_clock = 33.33MHz
-    // Generate Reference Clocks for the CPM
-    board.EP.design_1_i.versal_cips_0.inst.pspmc_0.inst.PS9_VIP_inst.inst.cpm_gen_clock(33.33);
-    board.EP.design_1_i.versal_cips_0.inst.pspmc_0.inst.PS9_VIP_inst.inst.cpm_osc_clk_div2_gen_clock(200);
 
-    board.RP.design_rp_i.versal_cips_0.inst.pspmc_0.inst.PS9_VIP_inst.inst.cpm_gen_clock(33.33);
-    board.RP.design_rp_i.versal_cips_0.inst.pspmc_0.inst.PS9_VIP_inst.inst.cpm_osc_clk_div2_gen_clock(200);  
-
-
-    //// Generate Reference Clocks for the CPM
-    //board.EP.design_1_i.versal_cips_0.inst.pspmc_0.inst.PS9_VIP_inst.inst.cpm_gen_clock(100);
-    //board.EP.design_1_i.versal_cips_0.inst.pspmc_0.inst.PS9_VIP_inst.inst.cpm_osc_clk_div2_gen_clock(100);
-
-    //board.RP.design_rp_i.versal_cips_0.inst.pspmc_0.inst.PS9_VIP_inst.inst.cpm_gen_clock(100);
-    //board.RP.design_rp_i.versal_cips_0.inst.pspmc_0.inst.PS9_VIP_inst.inst.cpm_osc_clk_div2_gen_clock(100);  
     // Assert PCIe reset
     $display("[%t] : System Reset Is Asserted...", $realtime);
     // Root Port reset assert
     sys_rst_n = 1'b0;
-    // Endpoint reset assert based on GUI selection for each controller
+    // Endpoint reset assert
     force board.EP.design_1_i.versal_cips_0.inst.pspmc_0.inst.PS9_VIP_inst.inst.PERST0N = 1'b0;
     force board.EP.design_1_i.versal_cips_0.inst.pspmc_0.inst.PS9_VIP_inst.inst.PERST1N = 1'b0;
-    // POR reset is the master reset for the PS Simulation Model. Deserting will enable the PS-VIP.
+    // POR reset is the master reset for the PS Simulation Model. Deasserting will enable the PS-VIP.
     board.EP.design_1_i.versal_cips_0.inst.pspmc_0.inst.PS9_VIP_inst.inst.por_reset(0);
     
-    // RP reset assert based on GUI selection for each controller
+    // RP reset assert
     force board.RP.design_rp_i.versal_cips_0.inst.pspmc_0.inst.PS9_VIP_inst.inst.PERST0N = 1'b0;
     force board.RP.design_rp_i.versal_cips_0.inst.pspmc_0.inst.PS9_VIP_inst.inst.PERST1N = 1'b0;
-    // POR reset is the master reset for the PS Simulation Model. Deserting will enable the PS-VIP.
+    // POR reset is the master reset for the PS Simulation Model. Deasserting will enable the PS-VIP.
     board.RP.design_rp_i.versal_cips_0.inst.pspmc_0.inst.PS9_VIP_inst.inst.por_reset(0);
     
     // Need hack for LPD CPM5 POR_N
@@ -180,13 +101,13 @@ module board;
     $display("[%t] : System Reset Is De-asserted...", $realtime);
     // Root port reset release
     sys_rst_n = 1'b1;
-    // Endpoint reset release based on GIU selection.
+    // Endpoint reset release
     force board.EP.design_1_i.versal_cips_0.inst.pspmc_0.inst.PS9_VIP_inst.inst.PERST0N = 1'b1;
     force board.EP.design_1_i.versal_cips_0.inst.pspmc_0.inst.PS9_VIP_inst.inst.PERST1N = 1'b1;
     // Release reset on the PS-VIP
     board.EP.design_1_i.versal_cips_0.inst.pspmc_0.inst.PS9_VIP_inst.inst.por_reset(1);
     
-    // RP reset release based on GIU selection.
+    // RP reset release
     force board.RP.design_rp_i.versal_cips_0.inst.pspmc_0.inst.PS9_VIP_inst.inst.PERST0N = 1'b1;
     force board.RP.design_rp_i.versal_cips_0.inst.pspmc_0.inst.PS9_VIP_inst.inst.PERST1N = 1'b1;
     // Release reset on the PS-VIP

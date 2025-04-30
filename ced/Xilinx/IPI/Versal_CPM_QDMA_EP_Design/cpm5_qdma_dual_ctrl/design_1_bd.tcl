@@ -536,8 +536,8 @@ NONE HBM_PC1_USER_DEFINED_ADDRESS_MAP NONE} \
   set_property CONFIG.NUM_SI {1} $smartconnect_2
 
 
-  # Create instance: versal_cips_1, and set properties
-  set versal_cips_1 [ create_bd_cell -type ip -vlnv xilinx.com:ip:versal_cips versal_cips_1 ]
+  # Create instance: versal_cips_0, and set properties
+  set versal_cips_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:versal_cips versal_cips_0 ]
   set_property -dict [list \
     CONFIG.BOOT_MODE {Custom} \
     CONFIG.CLOCK_MODE {Custom} \
@@ -721,15 +721,15 @@ NONE HBM_PC1_USER_DEFINED_ADDRESS_MAP NONE} \
       SMON_TEMP_AVERAGING_SAMPLES {0} \
     } \
     CONFIG.PS_PMC_CONFIG_APPLIED {1} \
-  ] $versal_cips_1
+  ] $versal_cips_0
 
 set board_part [get_property NAME [current_board_part]]
 if [regexp "vpk120_es:part0:1.3" $board_part] {
-set_property CONFIG.PS_PMC_CONFIG { PS_PCIE_EP_RESET1_IO {PMC_MIO 38} PS_PCIE_RESET {{ENABLE 1}} } [get_bd_cells versal_cips_1] 
-set_property CONFIG.PS_PMC_CONFIG { PS_PCIE_EP_RESET2_IO {PMC_MIO 39} PS_PCIE_RESET {{ENABLE 1}} } [get_bd_cells versal_cips_1]
+set_property CONFIG.PS_PMC_CONFIG { PS_PCIE_EP_RESET1_IO {PMC_MIO 38} PS_PCIE_RESET {{ENABLE 1}} } [get_bd_cells versal_cips_0] 
+set_property CONFIG.PS_PMC_CONFIG { PS_PCIE_EP_RESET2_IO {PMC_MIO 39} PS_PCIE_RESET {{ENABLE 1}} } [get_bd_cells versal_cips_0]
 } else {
-set_property CONFIG.PS_PMC_CONFIG { PS_PCIE_EP_RESET1_IO {PS_MIO 18} PS_PCIE_RESET {{ENABLE 1}} } [get_bd_cells versal_cips_1] 
-set_property CONFIG.PS_PMC_CONFIG { PS_PCIE_EP_RESET2_IO {PS_MIO 19} PS_PCIE_RESET {{ENABLE 1}} } [get_bd_cells versal_cips_1] }
+set_property CONFIG.PS_PMC_CONFIG { PS_PCIE_EP_RESET1_IO {PS_MIO 18} PS_PCIE_RESET {{ENABLE 1}} } [get_bd_cells versal_cips_0] 
+set_property CONFIG.PS_PMC_CONFIG { PS_PCIE_EP_RESET2_IO {PS_MIO 19} PS_PCIE_RESET {{ENABLE 1}} } [get_bd_cells versal_cips_0] }
 
   # Create interface connections
   connect_bd_intf_net -intf_net S_AXI_0_1 [get_bd_intf_ports S_AXIL_0] [get_bd_intf_pins axi_bram_ctrl_1/S_AXI]
@@ -743,32 +743,32 @@ set_property CONFIG.PS_PMC_CONFIG { PS_PCIE_EP_RESET2_IO {PS_MIO 19} PS_PCIE_RES
   connect_bd_intf_net -intf_net axi_noc_0_M01_AXI [get_bd_intf_pins axi_noc_0/M01_AXI] [get_bd_intf_pins smartconnect_0/S00_AXI]
   connect_bd_intf_net -intf_net axi_noc_0_M02_AXI [get_bd_intf_pins axi_noc_0/M02_AXI] [get_bd_intf_pins smartconnect_1/S00_AXI]
   connect_bd_intf_net -intf_net axi_noc_0_M03_AXI [get_bd_intf_pins axi_noc_0/M03_AXI] [get_bd_intf_pins smartconnect_2/S00_AXI]
-  connect_bd_intf_net -intf_net dma0_c2h_byp_in_mm_0_0_1 [get_bd_intf_ports dma0_c2h_byp_in_mm_0_0] [get_bd_intf_pins versal_cips_1/dma0_c2h_byp_in_mm_0]
-  connect_bd_intf_net -intf_net dma0_c2h_byp_in_mm_1_0_1 [get_bd_intf_ports dma0_c2h_byp_in_mm_1_0] [get_bd_intf_pins versal_cips_1/dma0_c2h_byp_in_mm_1]
-  connect_bd_intf_net -intf_net dma0_c2h_byp_in_st_csh_0_1 [get_bd_intf_ports dma0_c2h_byp_in_st_csh_0] [get_bd_intf_pins versal_cips_1/dma0_c2h_byp_in_st_csh]
-  connect_bd_intf_net -intf_net dma0_dsc_crdt_in_0_1 [get_bd_intf_ports dma0_dsc_crdt_in_0] [get_bd_intf_pins versal_cips_1/dma0_dsc_crdt_in]
-  connect_bd_intf_net -intf_net dma0_h2c_byp_in_mm_0_0_1 [get_bd_intf_ports dma0_h2c_byp_in_mm_0_0] [get_bd_intf_pins versal_cips_1/dma0_h2c_byp_in_mm_0]
-  connect_bd_intf_net -intf_net dma0_h2c_byp_in_mm_1_0_1 [get_bd_intf_ports dma0_h2c_byp_in_mm_1_0] [get_bd_intf_pins versal_cips_1/dma0_h2c_byp_in_mm_1]
-  connect_bd_intf_net -intf_net dma0_h2c_byp_in_st_0_1 [get_bd_intf_ports dma0_h2c_byp_in_st_0] [get_bd_intf_pins versal_cips_1/dma0_h2c_byp_in_st]
-  connect_bd_intf_net -intf_net dma0_s_axis_c2h_0_1 [get_bd_intf_ports dma0_s_axis_c2h_0] [get_bd_intf_pins versal_cips_1/dma0_s_axis_c2h]
-  connect_bd_intf_net -intf_net dma0_s_axis_c2h_cmpt_0_1 [get_bd_intf_ports dma0_s_axis_c2h_cmpt_0] [get_bd_intf_pins versal_cips_1/dma0_s_axis_c2h_cmpt]
-  connect_bd_intf_net -intf_net dma1_c2h_byp_in_mm_0_0_1 [get_bd_intf_ports dma1_c2h_byp_in_mm_0_0] [get_bd_intf_pins versal_cips_1/dma1_c2h_byp_in_mm_0]
-  connect_bd_intf_net -intf_net dma1_c2h_byp_in_mm_1_0_1 [get_bd_intf_ports dma1_c2h_byp_in_mm_1_0] [get_bd_intf_pins versal_cips_1/dma1_c2h_byp_in_mm_1]
-  connect_bd_intf_net -intf_net dma1_c2h_byp_in_st_csh_0_1 [get_bd_intf_ports dma1_c2h_byp_in_st_csh_0] [get_bd_intf_pins versal_cips_1/dma1_c2h_byp_in_st_csh]
-  connect_bd_intf_net -intf_net dma1_dsc_crdt_in_0_1 [get_bd_intf_ports dma1_dsc_crdt_in_0] [get_bd_intf_pins versal_cips_1/dma1_dsc_crdt_in]
-  connect_bd_intf_net -intf_net dma1_h2c_byp_in_mm_0_0_1 [get_bd_intf_ports dma1_h2c_byp_in_mm_0_0] [get_bd_intf_pins versal_cips_1/dma1_h2c_byp_in_mm_0]
-  connect_bd_intf_net -intf_net dma1_h2c_byp_in_mm_1_0_1 [get_bd_intf_ports dma1_h2c_byp_in_mm_1_0] [get_bd_intf_pins versal_cips_1/dma1_h2c_byp_in_mm_1]
-  connect_bd_intf_net -intf_net dma1_h2c_byp_in_st_0_1 [get_bd_intf_ports dma1_h2c_byp_in_st_0] [get_bd_intf_pins versal_cips_1/dma1_h2c_byp_in_st]
-  connect_bd_intf_net -intf_net dma1_s_axis_c2h_0_1 [get_bd_intf_ports dma1_s_axis_c2h_0] [get_bd_intf_pins versal_cips_1/dma1_s_axis_c2h]
-  connect_bd_intf_net -intf_net dma1_s_axis_c2h_cmpt_0_1 [get_bd_intf_ports dma1_s_axis_c2h_cmpt_0] [get_bd_intf_pins versal_cips_1/dma1_s_axis_c2h_cmpt]
-  connect_bd_intf_net -intf_net gt_refclk0_0_1 [get_bd_intf_ports gt_refclk0_0] [get_bd_intf_pins versal_cips_1/gt_refclk0]
-  connect_bd_intf_net -intf_net gt_refclk1_0_1 [get_bd_intf_ports gt_refclk1_0] [get_bd_intf_pins versal_cips_1/gt_refclk1]
-  connect_bd_intf_net -intf_net pcie_qdma_mailbox_0_dma_flr [get_bd_intf_pins pcie_qdma_mailbox_0/dma_flr] [get_bd_intf_pins versal_cips_1/dma0_usr_flr]
-  connect_bd_intf_net -intf_net pcie_qdma_mailbox_0_dma_usr_irq [get_bd_intf_pins pcie_qdma_mailbox_0/dma_usr_irq] [get_bd_intf_pins versal_cips_1/dma0_usr_irq]
-  connect_bd_intf_net -intf_net pcie_qdma_mailbox_0_pcie_mgmt [get_bd_intf_pins pcie_qdma_mailbox_0/pcie_mgmt] [get_bd_intf_pins versal_cips_1/dma0_mgmt]
-  connect_bd_intf_net -intf_net pcie_qdma_mailbox_1_dma_flr [get_bd_intf_pins pcie_qdma_mailbox_1/dma_flr] [get_bd_intf_pins versal_cips_1/dma1_usr_flr]
-  connect_bd_intf_net -intf_net pcie_qdma_mailbox_1_dma_usr_irq [get_bd_intf_pins pcie_qdma_mailbox_1/dma_usr_irq] [get_bd_intf_pins versal_cips_1/dma1_usr_irq]
-  connect_bd_intf_net -intf_net pcie_qdma_mailbox_1_pcie_mgmt [get_bd_intf_pins pcie_qdma_mailbox_1/pcie_mgmt] [get_bd_intf_pins versal_cips_1/dma1_mgmt]
+  connect_bd_intf_net -intf_net dma0_c2h_byp_in_mm_0_0_1 [get_bd_intf_ports dma0_c2h_byp_in_mm_0_0] [get_bd_intf_pins versal_cips_0/dma0_c2h_byp_in_mm_0]
+  connect_bd_intf_net -intf_net dma0_c2h_byp_in_mm_1_0_1 [get_bd_intf_ports dma0_c2h_byp_in_mm_1_0] [get_bd_intf_pins versal_cips_0/dma0_c2h_byp_in_mm_1]
+  connect_bd_intf_net -intf_net dma0_c2h_byp_in_st_csh_0_1 [get_bd_intf_ports dma0_c2h_byp_in_st_csh_0] [get_bd_intf_pins versal_cips_0/dma0_c2h_byp_in_st_csh]
+  connect_bd_intf_net -intf_net dma0_dsc_crdt_in_0_1 [get_bd_intf_ports dma0_dsc_crdt_in_0] [get_bd_intf_pins versal_cips_0/dma0_dsc_crdt_in]
+  connect_bd_intf_net -intf_net dma0_h2c_byp_in_mm_0_0_1 [get_bd_intf_ports dma0_h2c_byp_in_mm_0_0] [get_bd_intf_pins versal_cips_0/dma0_h2c_byp_in_mm_0]
+  connect_bd_intf_net -intf_net dma0_h2c_byp_in_mm_1_0_1 [get_bd_intf_ports dma0_h2c_byp_in_mm_1_0] [get_bd_intf_pins versal_cips_0/dma0_h2c_byp_in_mm_1]
+  connect_bd_intf_net -intf_net dma0_h2c_byp_in_st_0_1 [get_bd_intf_ports dma0_h2c_byp_in_st_0] [get_bd_intf_pins versal_cips_0/dma0_h2c_byp_in_st]
+  connect_bd_intf_net -intf_net dma0_s_axis_c2h_0_1 [get_bd_intf_ports dma0_s_axis_c2h_0] [get_bd_intf_pins versal_cips_0/dma0_s_axis_c2h]
+  connect_bd_intf_net -intf_net dma0_s_axis_c2h_cmpt_0_1 [get_bd_intf_ports dma0_s_axis_c2h_cmpt_0] [get_bd_intf_pins versal_cips_0/dma0_s_axis_c2h_cmpt]
+  connect_bd_intf_net -intf_net dma1_c2h_byp_in_mm_0_0_1 [get_bd_intf_ports dma1_c2h_byp_in_mm_0_0] [get_bd_intf_pins versal_cips_0/dma1_c2h_byp_in_mm_0]
+  connect_bd_intf_net -intf_net dma1_c2h_byp_in_mm_1_0_1 [get_bd_intf_ports dma1_c2h_byp_in_mm_1_0] [get_bd_intf_pins versal_cips_0/dma1_c2h_byp_in_mm_1]
+  connect_bd_intf_net -intf_net dma1_c2h_byp_in_st_csh_0_1 [get_bd_intf_ports dma1_c2h_byp_in_st_csh_0] [get_bd_intf_pins versal_cips_0/dma1_c2h_byp_in_st_csh]
+  connect_bd_intf_net -intf_net dma1_dsc_crdt_in_0_1 [get_bd_intf_ports dma1_dsc_crdt_in_0] [get_bd_intf_pins versal_cips_0/dma1_dsc_crdt_in]
+  connect_bd_intf_net -intf_net dma1_h2c_byp_in_mm_0_0_1 [get_bd_intf_ports dma1_h2c_byp_in_mm_0_0] [get_bd_intf_pins versal_cips_0/dma1_h2c_byp_in_mm_0]
+  connect_bd_intf_net -intf_net dma1_h2c_byp_in_mm_1_0_1 [get_bd_intf_ports dma1_h2c_byp_in_mm_1_0] [get_bd_intf_pins versal_cips_0/dma1_h2c_byp_in_mm_1]
+  connect_bd_intf_net -intf_net dma1_h2c_byp_in_st_0_1 [get_bd_intf_ports dma1_h2c_byp_in_st_0] [get_bd_intf_pins versal_cips_0/dma1_h2c_byp_in_st]
+  connect_bd_intf_net -intf_net dma1_s_axis_c2h_0_1 [get_bd_intf_ports dma1_s_axis_c2h_0] [get_bd_intf_pins versal_cips_0/dma1_s_axis_c2h]
+  connect_bd_intf_net -intf_net dma1_s_axis_c2h_cmpt_0_1 [get_bd_intf_ports dma1_s_axis_c2h_cmpt_0] [get_bd_intf_pins versal_cips_0/dma1_s_axis_c2h_cmpt]
+  connect_bd_intf_net -intf_net gt_refclk0_0_1 [get_bd_intf_ports gt_refclk0_0] [get_bd_intf_pins versal_cips_0/gt_refclk0]
+  connect_bd_intf_net -intf_net gt_refclk1_0_1 [get_bd_intf_ports gt_refclk1_0] [get_bd_intf_pins versal_cips_0/gt_refclk1]
+  connect_bd_intf_net -intf_net pcie_qdma_mailbox_0_dma_flr [get_bd_intf_pins pcie_qdma_mailbox_0/dma_flr] [get_bd_intf_pins versal_cips_0/dma0_usr_flr]
+  connect_bd_intf_net -intf_net pcie_qdma_mailbox_0_dma_usr_irq [get_bd_intf_pins pcie_qdma_mailbox_0/dma_usr_irq] [get_bd_intf_pins versal_cips_0/dma0_usr_irq]
+  connect_bd_intf_net -intf_net pcie_qdma_mailbox_0_pcie_mgmt [get_bd_intf_pins pcie_qdma_mailbox_0/pcie_mgmt] [get_bd_intf_pins versal_cips_0/dma0_mgmt]
+  connect_bd_intf_net -intf_net pcie_qdma_mailbox_1_dma_flr [get_bd_intf_pins pcie_qdma_mailbox_1/dma_flr] [get_bd_intf_pins versal_cips_0/dma1_usr_flr]
+  connect_bd_intf_net -intf_net pcie_qdma_mailbox_1_dma_usr_irq [get_bd_intf_pins pcie_qdma_mailbox_1/dma_usr_irq] [get_bd_intf_pins versal_cips_0/dma1_usr_irq]
+  connect_bd_intf_net -intf_net pcie_qdma_mailbox_1_pcie_mgmt [get_bd_intf_pins pcie_qdma_mailbox_1/pcie_mgmt] [get_bd_intf_pins versal_cips_0/dma1_mgmt]
   connect_bd_intf_net -intf_net smartconnect_0_M00_AXI [get_bd_intf_ports M00_AXI_0] [get_bd_intf_pins smartconnect_0/M00_AXI]
   connect_bd_intf_net -intf_net smartconnect_0_M01_AXI [get_bd_intf_ports M01_AXI_0] [get_bd_intf_pins smartconnect_0/M01_AXI]
   connect_bd_intf_net -intf_net smartconnect_1_M00_AXI [get_bd_intf_pins pcie_qdma_mailbox_0/S_AXI_LITE] [get_bd_intf_pins smartconnect_1/M00_AXI]
@@ -778,55 +778,55 @@ set_property CONFIG.PS_PMC_CONFIG { PS_PCIE_EP_RESET2_IO {PS_MIO 19} PS_PCIE_RES
   connect_bd_intf_net -intf_net usr_flr_1_1 [get_bd_intf_ports usr_flr_1] [get_bd_intf_pins pcie_qdma_mailbox_1/usr_flr]
   connect_bd_intf_net -intf_net usr_irq_0_1 [get_bd_intf_ports usr_irq_0] [get_bd_intf_pins pcie_qdma_mailbox_0/usr_irq]
   connect_bd_intf_net -intf_net usr_irq_1_1 [get_bd_intf_ports usr_irq_1] [get_bd_intf_pins pcie_qdma_mailbox_1/usr_irq]
-  connect_bd_intf_net -intf_net versal_cips_1_CPM_PCIE_NOC_0 [get_bd_intf_pins axi_noc_0/S00_AXI] [get_bd_intf_pins versal_cips_1/CPM_PCIE_NOC_0]
-  connect_bd_intf_net -intf_net versal_cips_1_CPM_PCIE_NOC_1 [get_bd_intf_pins axi_noc_0/S01_AXI] [get_bd_intf_pins versal_cips_1/CPM_PCIE_NOC_1]
-  connect_bd_intf_net -intf_net versal_cips_1_PCIE0_GT [get_bd_intf_ports PCIE0_GT_0] [get_bd_intf_pins versal_cips_1/PCIE0_GT]
-  connect_bd_intf_net -intf_net versal_cips_1_PCIE1_GT [get_bd_intf_ports PCIE1_GT_0] [get_bd_intf_pins versal_cips_1/PCIE1_GT]
-  connect_bd_intf_net -intf_net versal_cips_1_dma0_axis_c2h_dmawr [get_bd_intf_ports dma0_axis_c2h_dmawr_0] [get_bd_intf_pins versal_cips_1/dma0_axis_c2h_dmawr]
-  connect_bd_intf_net -intf_net versal_cips_1_dma0_axis_c2h_status [get_bd_intf_ports dma0_axis_c2h_status_0] [get_bd_intf_pins versal_cips_1/dma0_axis_c2h_status]
-  connect_bd_intf_net -intf_net versal_cips_1_dma0_c2h_byp_out [get_bd_intf_ports dma0_c2h_byp_out_0] [get_bd_intf_pins versal_cips_1/dma0_c2h_byp_out]
-  connect_bd_intf_net -intf_net versal_cips_1_dma0_h2c_byp_out [get_bd_intf_ports dma0_h2c_byp_out_0] [get_bd_intf_pins versal_cips_1/dma0_h2c_byp_out]
-  connect_bd_intf_net -intf_net versal_cips_1_dma0_m_axis_h2c [get_bd_intf_ports dma0_m_axis_h2c_0] [get_bd_intf_pins versal_cips_1/dma0_m_axis_h2c]
-  connect_bd_intf_net -intf_net versal_cips_1_dma0_qsts_out [get_bd_intf_ports dma0_qsts_out_0] [get_bd_intf_pins versal_cips_1/dma0_qsts_out]
-  connect_bd_intf_net -intf_net versal_cips_1_dma0_st_rx_msg [get_bd_intf_ports dma0_st_rx_msg_0] [get_bd_intf_pins versal_cips_1/dma0_st_rx_msg]
-  connect_bd_intf_net -intf_net versal_cips_1_dma0_tm_dsc_sts [get_bd_intf_ports dma0_tm_dsc_sts_0] [get_bd_intf_pins versal_cips_1/dma0_tm_dsc_sts]
-  connect_bd_intf_net -intf_net versal_cips_1_dma1_axis_c2h_dmawr [get_bd_intf_ports dma1_axis_c2h_dmawr_0] [get_bd_intf_pins versal_cips_1/dma1_axis_c2h_dmawr]
-  connect_bd_intf_net -intf_net versal_cips_1_dma1_axis_c2h_status [get_bd_intf_ports dma1_axis_c2h_status_0] [get_bd_intf_pins versal_cips_1/dma1_axis_c2h_status]
-  connect_bd_intf_net -intf_net versal_cips_1_dma1_c2h_byp_out [get_bd_intf_ports dma1_c2h_byp_out_0] [get_bd_intf_pins versal_cips_1/dma1_c2h_byp_out]
-  connect_bd_intf_net -intf_net versal_cips_1_dma1_h2c_byp_out [get_bd_intf_ports dma1_h2c_byp_out_0] [get_bd_intf_pins versal_cips_1/dma1_h2c_byp_out]
-  connect_bd_intf_net -intf_net versal_cips_1_dma1_m_axis_h2c [get_bd_intf_ports dma1_m_axis_h2c_0] [get_bd_intf_pins versal_cips_1/dma1_m_axis_h2c]
-  connect_bd_intf_net -intf_net versal_cips_1_dma1_qsts_out [get_bd_intf_ports dma1_qsts_out_0] [get_bd_intf_pins versal_cips_1/dma1_qsts_out]
-  connect_bd_intf_net -intf_net versal_cips_1_dma1_st_rx_msg [get_bd_intf_ports dma1_st_rx_msg_0] [get_bd_intf_pins versal_cips_1/dma1_st_rx_msg]
-  connect_bd_intf_net -intf_net versal_cips_1_dma1_tm_dsc_sts [get_bd_intf_ports dma1_tm_dsc_sts_0] [get_bd_intf_pins versal_cips_1/dma1_tm_dsc_sts]
+  connect_bd_intf_net -intf_net versal_cips_0_CPM_PCIE_NOC_0 [get_bd_intf_pins axi_noc_0/S00_AXI] [get_bd_intf_pins versal_cips_0/CPM_PCIE_NOC_0]
+  connect_bd_intf_net -intf_net versal_cips_0_CPM_PCIE_NOC_1 [get_bd_intf_pins axi_noc_0/S01_AXI] [get_bd_intf_pins versal_cips_0/CPM_PCIE_NOC_1]
+  connect_bd_intf_net -intf_net versal_cips_0_PCIE0_GT [get_bd_intf_ports PCIE0_GT_0] [get_bd_intf_pins versal_cips_0/PCIE0_GT]
+  connect_bd_intf_net -intf_net versal_cips_0_PCIE1_GT [get_bd_intf_ports PCIE1_GT_0] [get_bd_intf_pins versal_cips_0/PCIE1_GT]
+  connect_bd_intf_net -intf_net versal_cips_0_dma0_axis_c2h_dmawr [get_bd_intf_ports dma0_axis_c2h_dmawr_0] [get_bd_intf_pins versal_cips_0/dma0_axis_c2h_dmawr]
+  connect_bd_intf_net -intf_net versal_cips_0_dma0_axis_c2h_status [get_bd_intf_ports dma0_axis_c2h_status_0] [get_bd_intf_pins versal_cips_0/dma0_axis_c2h_status]
+  connect_bd_intf_net -intf_net versal_cips_0_dma0_c2h_byp_out [get_bd_intf_ports dma0_c2h_byp_out_0] [get_bd_intf_pins versal_cips_0/dma0_c2h_byp_out]
+  connect_bd_intf_net -intf_net versal_cips_0_dma0_h2c_byp_out [get_bd_intf_ports dma0_h2c_byp_out_0] [get_bd_intf_pins versal_cips_0/dma0_h2c_byp_out]
+  connect_bd_intf_net -intf_net versal_cips_0_dma0_m_axis_h2c [get_bd_intf_ports dma0_m_axis_h2c_0] [get_bd_intf_pins versal_cips_0/dma0_m_axis_h2c]
+  connect_bd_intf_net -intf_net versal_cips_0_dma0_qsts_out [get_bd_intf_ports dma0_qsts_out_0] [get_bd_intf_pins versal_cips_0/dma0_qsts_out]
+  connect_bd_intf_net -intf_net versal_cips_0_dma0_st_rx_msg [get_bd_intf_ports dma0_st_rx_msg_0] [get_bd_intf_pins versal_cips_0/dma0_st_rx_msg]
+  connect_bd_intf_net -intf_net versal_cips_0_dma0_tm_dsc_sts [get_bd_intf_ports dma0_tm_dsc_sts_0] [get_bd_intf_pins versal_cips_0/dma0_tm_dsc_sts]
+  connect_bd_intf_net -intf_net versal_cips_0_dma1_axis_c2h_dmawr [get_bd_intf_ports dma1_axis_c2h_dmawr_0] [get_bd_intf_pins versal_cips_0/dma1_axis_c2h_dmawr]
+  connect_bd_intf_net -intf_net versal_cips_0_dma1_axis_c2h_status [get_bd_intf_ports dma1_axis_c2h_status_0] [get_bd_intf_pins versal_cips_0/dma1_axis_c2h_status]
+  connect_bd_intf_net -intf_net versal_cips_0_dma1_c2h_byp_out [get_bd_intf_ports dma1_c2h_byp_out_0] [get_bd_intf_pins versal_cips_0/dma1_c2h_byp_out]
+  connect_bd_intf_net -intf_net versal_cips_0_dma1_h2c_byp_out [get_bd_intf_ports dma1_h2c_byp_out_0] [get_bd_intf_pins versal_cips_0/dma1_h2c_byp_out]
+  connect_bd_intf_net -intf_net versal_cips_0_dma1_m_axis_h2c [get_bd_intf_ports dma1_m_axis_h2c_0] [get_bd_intf_pins versal_cips_0/dma1_m_axis_h2c]
+  connect_bd_intf_net -intf_net versal_cips_0_dma1_qsts_out [get_bd_intf_ports dma1_qsts_out_0] [get_bd_intf_pins versal_cips_0/dma1_qsts_out]
+  connect_bd_intf_net -intf_net versal_cips_0_dma1_st_rx_msg [get_bd_intf_ports dma1_st_rx_msg_0] [get_bd_intf_pins versal_cips_0/dma1_st_rx_msg]
+  connect_bd_intf_net -intf_net versal_cips_0_dma1_tm_dsc_sts [get_bd_intf_ports dma1_tm_dsc_sts_0] [get_bd_intf_pins versal_cips_0/dma1_tm_dsc_sts]
 
   # Create port connections
-  connect_bd_net -net cpm_irq0_0_1 [get_bd_ports cpm_irq0_0] [get_bd_pins versal_cips_1/cpm_irq0]
-  connect_bd_net -net cpm_irq1_0_1 [get_bd_ports cpm_irq1_0] [get_bd_pins versal_cips_1/cpm_irq1]
-  connect_bd_net -net dma0_intrfc_resetn_0_1 [get_bd_ports dma0_intrfc_resetn_0] [get_bd_pins versal_cips_1/dma0_intrfc_resetn] [get_bd_pins versal_cips_1/dma1_intrfc_resetn]
-  connect_bd_net -net versal_cips_0_dma0_axi_aresetn [get_bd_pins versal_cips_1/dma0_axi_aresetn] [get_bd_ports dma0_axi_aresetn_0] [get_bd_pins axi_bram_ctrl_0/s_axi_aresetn] [get_bd_pins axi_bram_ctrl_1/s_axi_aresetn] [get_bd_pins axi_bram_ctrl_2/s_axi_aresetn] [get_bd_pins pcie_qdma_mailbox_0/axi_aresetn] [get_bd_pins pcie_qdma_mailbox_1/axi_aresetn] [get_bd_pins smartconnect_0/aresetn] [get_bd_pins smartconnect_1/aresetn] [get_bd_pins smartconnect_2/aresetn] [get_bd_pins pcie_qdma_mailbox_1/ip_resetn] [get_bd_pins pcie_qdma_mailbox_0/ip_resetn]
-  connect_bd_net -net versal_cips_0_pl0_user_clk [get_bd_pins versal_cips_1/pl0_ref_clk] [get_bd_ports dma0_user_clk_0] [get_bd_pins axi_bram_ctrl_0/s_axi_aclk] [get_bd_pins axi_bram_ctrl_1/s_axi_aclk] [get_bd_pins axi_bram_ctrl_2/s_axi_aclk] [get_bd_pins axi_noc_0/aclk2] [get_bd_pins pcie_qdma_mailbox_0/axi_aclk] [get_bd_pins pcie_qdma_mailbox_1/axi_aclk] [get_bd_pins smartconnect_0/aclk] [get_bd_pins smartconnect_1/aclk] [get_bd_pins smartconnect_2/aclk] [get_bd_pins versal_cips_1/dma0_intrfc_clk] [get_bd_pins versal_cips_1/dma1_intrfc_clk] [get_bd_pins pcie_qdma_mailbox_1/ip_clk] [get_bd_pins pcie_qdma_mailbox_0/ip_clk]
-  connect_bd_net -net versal_cips_1_cpm_cor_irq [get_bd_pins versal_cips_1/cpm_cor_irq] [get_bd_ports cpm_cor_irq_0]
-  connect_bd_net -net versal_cips_1_cpm_misc_irq [get_bd_pins versal_cips_1/cpm_misc_irq] [get_bd_ports cpm_misc_irq_0]
-  connect_bd_net -net versal_cips_1_cpm_pcie_noc_axi0_clk [get_bd_pins versal_cips_1/cpm_pcie_noc_axi0_clk] [get_bd_pins axi_noc_0/aclk0]
-  connect_bd_net -net versal_cips_1_cpm_pcie_noc_axi1_clk [get_bd_pins versal_cips_1/cpm_pcie_noc_axi1_clk] [get_bd_pins axi_noc_0/aclk1]
-  connect_bd_net -net versal_cips_1_cpm_uncor_irq [get_bd_pins versal_cips_1/cpm_uncor_irq] [get_bd_ports cpm_uncor_irq_0]
-  connect_bd_net -net versal_cips_1_dma1_axi_aresetn [get_bd_pins versal_cips_1/dma1_axi_aresetn] [get_bd_ports dma1_axi_aresetn_0]
+  connect_bd_net -net cpm_irq0_0_1 [get_bd_ports cpm_irq0_0] [get_bd_pins versal_cips_0/cpm_irq0]
+  connect_bd_net -net cpm_irq1_0_1 [get_bd_ports cpm_irq1_0] [get_bd_pins versal_cips_0/cpm_irq1]
+  connect_bd_net -net dma0_intrfc_resetn_0_1 [get_bd_ports dma0_intrfc_resetn_0] [get_bd_pins versal_cips_0/dma0_intrfc_resetn] [get_bd_pins versal_cips_0/dma1_intrfc_resetn]
+  connect_bd_net -net versal_cips_0_dma0_axi_aresetn [get_bd_pins versal_cips_0/dma0_axi_aresetn] [get_bd_ports dma0_axi_aresetn_0] [get_bd_pins axi_bram_ctrl_0/s_axi_aresetn] [get_bd_pins axi_bram_ctrl_1/s_axi_aresetn] [get_bd_pins axi_bram_ctrl_2/s_axi_aresetn] [get_bd_pins pcie_qdma_mailbox_0/axi_aresetn] [get_bd_pins pcie_qdma_mailbox_1/axi_aresetn] [get_bd_pins smartconnect_0/aresetn] [get_bd_pins smartconnect_1/aresetn] [get_bd_pins smartconnect_2/aresetn] [get_bd_pins pcie_qdma_mailbox_1/ip_resetn] [get_bd_pins pcie_qdma_mailbox_0/ip_resetn]
+  connect_bd_net -net versal_cips_0_pl0_user_clk [get_bd_pins versal_cips_0/pl0_ref_clk] [get_bd_ports dma0_user_clk_0] [get_bd_pins axi_bram_ctrl_0/s_axi_aclk] [get_bd_pins axi_bram_ctrl_1/s_axi_aclk] [get_bd_pins axi_bram_ctrl_2/s_axi_aclk] [get_bd_pins axi_noc_0/aclk2] [get_bd_pins pcie_qdma_mailbox_0/axi_aclk] [get_bd_pins pcie_qdma_mailbox_1/axi_aclk] [get_bd_pins smartconnect_0/aclk] [get_bd_pins smartconnect_1/aclk] [get_bd_pins smartconnect_2/aclk] [get_bd_pins versal_cips_0/dma0_intrfc_clk] [get_bd_pins versal_cips_0/dma1_intrfc_clk] [get_bd_pins pcie_qdma_mailbox_1/ip_clk] [get_bd_pins pcie_qdma_mailbox_0/ip_clk]
+  connect_bd_net -net versal_cips_0_cpm_cor_irq [get_bd_pins versal_cips_0/cpm_cor_irq] [get_bd_ports cpm_cor_irq_0]
+  connect_bd_net -net versal_cips_0_cpm_misc_irq [get_bd_pins versal_cips_0/cpm_misc_irq] [get_bd_ports cpm_misc_irq_0]
+  connect_bd_net -net versal_cips_0_cpm_pcie_noc_axi0_clk [get_bd_pins versal_cips_0/cpm_pcie_noc_axi0_clk] [get_bd_pins axi_noc_0/aclk0]
+  connect_bd_net -net versal_cips_0_cpm_pcie_noc_axi1_clk [get_bd_pins versal_cips_0/cpm_pcie_noc_axi1_clk] [get_bd_pins axi_noc_0/aclk1]
+  connect_bd_net -net versal_cips_0_cpm_uncor_irq [get_bd_pins versal_cips_0/cpm_uncor_irq] [get_bd_ports cpm_uncor_irq_0]
+  connect_bd_net -net versal_cips_0_dma1_axi_aresetn [get_bd_pins versal_cips_0/dma1_axi_aresetn] [get_bd_ports dma1_axi_aresetn_0]
 
   # Create address segments
-  assign_bd_address -offset 0x020180000000 -range 0x00100000 -target_address_space [get_bd_addr_spaces versal_cips_1/CPM_PCIE_NOC_0] [get_bd_addr_segs M00_AXI_0/Reg] -force
-  assign_bd_address -offset 0x020180100000 -range 0x00100000 -target_address_space [get_bd_addr_spaces versal_cips_1/CPM_PCIE_NOC_0] [get_bd_addr_segs M01_AXI_0/Reg] -force
-  assign_bd_address -offset 0x020100000000 -range 0x00100000 -target_address_space [get_bd_addr_spaces versal_cips_1/CPM_PCIE_NOC_0] [get_bd_addr_segs axi_bram_ctrl_0/S_AXI/Mem0] -force
-  assign_bd_address -offset 0x00000000 -range 0x80000000 -target_address_space [get_bd_addr_spaces versal_cips_1/CPM_PCIE_NOC_0] [get_bd_addr_segs axi_noc_0/S00_AXI/C0_DDR_LOW0] -force
-  assign_bd_address -offset 0x000800000000 -range 0x80000000 -target_address_space [get_bd_addr_spaces versal_cips_1/CPM_PCIE_NOC_0] [get_bd_addr_segs axi_noc_0/S00_AXI/C0_DDR_LOW1] -force
-  assign_bd_address -offset 0x020800000000 -range 0x80000000 -target_address_space [get_bd_addr_spaces versal_cips_1/CPM_PCIE_NOC_0] [get_bd_addr_segs pcie_qdma_mailbox_0/S_AXI_LITE/Reg] -force
-  assign_bd_address -offset 0x020200000000 -range 0x80000000 -target_address_space [get_bd_addr_spaces versal_cips_1/CPM_PCIE_NOC_0] [get_bd_addr_segs pcie_qdma_mailbox_1/S_AXI_LITE/Reg] -force
-  assign_bd_address -offset 0x020180000000 -range 0x00100000 -target_address_space [get_bd_addr_spaces versal_cips_1/CPM_PCIE_NOC_1] [get_bd_addr_segs M00_AXI_0/Reg] -force
-  assign_bd_address -offset 0x020180100000 -range 0x00100000 -target_address_space [get_bd_addr_spaces versal_cips_1/CPM_PCIE_NOC_1] [get_bd_addr_segs M01_AXI_0/Reg] -force
-  assign_bd_address -offset 0x020100000000 -range 0x00100000 -target_address_space [get_bd_addr_spaces versal_cips_1/CPM_PCIE_NOC_1] [get_bd_addr_segs axi_bram_ctrl_0/S_AXI/Mem0] -force
-  assign_bd_address -offset 0x00000000 -range 0x80000000 -target_address_space [get_bd_addr_spaces versal_cips_1/CPM_PCIE_NOC_1] [get_bd_addr_segs axi_noc_0/S01_AXI/C0_DDR_LOW0] -force
-  assign_bd_address -offset 0x000800000000 -range 0x80000000 -target_address_space [get_bd_addr_spaces versal_cips_1/CPM_PCIE_NOC_1] [get_bd_addr_segs axi_noc_0/S01_AXI/C0_DDR_LOW1] -force
-  assign_bd_address -offset 0x020800000000 -range 0x80000000 -target_address_space [get_bd_addr_spaces versal_cips_1/CPM_PCIE_NOC_1] [get_bd_addr_segs pcie_qdma_mailbox_0/S_AXI_LITE/Reg] -force
-  assign_bd_address -offset 0x020200000000 -range 0x80000000 -target_address_space [get_bd_addr_spaces versal_cips_1/CPM_PCIE_NOC_1] [get_bd_addr_segs pcie_qdma_mailbox_1/S_AXI_LITE/Reg] -force
+  assign_bd_address -offset 0x020180000000 -range 0x00100000 -target_address_space [get_bd_addr_spaces versal_cips_0/CPM_PCIE_NOC_0] [get_bd_addr_segs M00_AXI_0/Reg] -force
+  assign_bd_address -offset 0x020180100000 -range 0x00100000 -target_address_space [get_bd_addr_spaces versal_cips_0/CPM_PCIE_NOC_0] [get_bd_addr_segs M01_AXI_0/Reg] -force
+  assign_bd_address -offset 0x020100000000 -range 0x00100000 -target_address_space [get_bd_addr_spaces versal_cips_0/CPM_PCIE_NOC_0] [get_bd_addr_segs axi_bram_ctrl_0/S_AXI/Mem0] -force
+  assign_bd_address -offset 0x00000000 -range 0x80000000 -target_address_space [get_bd_addr_spaces versal_cips_0/CPM_PCIE_NOC_0] [get_bd_addr_segs axi_noc_0/S00_AXI/C0_DDR_LOW0] -force
+  assign_bd_address -offset 0x000800000000 -range 0x80000000 -target_address_space [get_bd_addr_spaces versal_cips_0/CPM_PCIE_NOC_0] [get_bd_addr_segs axi_noc_0/S00_AXI/C0_DDR_LOW1] -force
+  assign_bd_address -offset 0x020800000000 -range 0x80000000 -target_address_space [get_bd_addr_spaces versal_cips_0/CPM_PCIE_NOC_0] [get_bd_addr_segs pcie_qdma_mailbox_0/S_AXI_LITE/Reg] -force
+  assign_bd_address -offset 0x020200000000 -range 0x80000000 -target_address_space [get_bd_addr_spaces versal_cips_0/CPM_PCIE_NOC_0] [get_bd_addr_segs pcie_qdma_mailbox_1/S_AXI_LITE/Reg] -force
+  assign_bd_address -offset 0x020180000000 -range 0x00100000 -target_address_space [get_bd_addr_spaces versal_cips_0/CPM_PCIE_NOC_1] [get_bd_addr_segs M00_AXI_0/Reg] -force
+  assign_bd_address -offset 0x020180100000 -range 0x00100000 -target_address_space [get_bd_addr_spaces versal_cips_0/CPM_PCIE_NOC_1] [get_bd_addr_segs M01_AXI_0/Reg] -force
+  assign_bd_address -offset 0x020100000000 -range 0x00100000 -target_address_space [get_bd_addr_spaces versal_cips_0/CPM_PCIE_NOC_1] [get_bd_addr_segs axi_bram_ctrl_0/S_AXI/Mem0] -force
+  assign_bd_address -offset 0x00000000 -range 0x80000000 -target_address_space [get_bd_addr_spaces versal_cips_0/CPM_PCIE_NOC_1] [get_bd_addr_segs axi_noc_0/S01_AXI/C0_DDR_LOW0] -force
+  assign_bd_address -offset 0x000800000000 -range 0x80000000 -target_address_space [get_bd_addr_spaces versal_cips_0/CPM_PCIE_NOC_1] [get_bd_addr_segs axi_noc_0/S01_AXI/C0_DDR_LOW1] -force
+  assign_bd_address -offset 0x020800000000 -range 0x80000000 -target_address_space [get_bd_addr_spaces versal_cips_0/CPM_PCIE_NOC_1] [get_bd_addr_segs pcie_qdma_mailbox_0/S_AXI_LITE/Reg] -force
+  assign_bd_address -offset 0x020200000000 -range 0x80000000 -target_address_space [get_bd_addr_spaces versal_cips_0/CPM_PCIE_NOC_1] [get_bd_addr_segs pcie_qdma_mailbox_1/S_AXI_LITE/Reg] -force
   assign_bd_address -offset 0x00000000 -range 0x00008000 -target_address_space [get_bd_addr_spaces S_AXIL_0] [get_bd_addr_segs axi_bram_ctrl_1/S_AXI/Mem0] -force
   assign_bd_address -offset 0x00000000 -range 0x00001000 -target_address_space [get_bd_addr_spaces S_AXIL_1] [get_bd_addr_segs axi_bram_ctrl_2/S_AXI/Mem0] -force
 

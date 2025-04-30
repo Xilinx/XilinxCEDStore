@@ -74,28 +74,12 @@ module board;
 
   parameter REF_CLK_FREQ = 0;  // 0 - 100 MHz, 1 - 125 MHz,  2 - 250 MHz
   parameter [4:0] LINK_WIDTH = 5'd4;
-`ifdef LINKSPEED
-  localparam [4:0] LINK_SPEED_US = 5'h`LINKSPEED;
-`else
-  localparam [4:0] LINK_SPEED_US = 5'h16;
-`endif
-  localparam   [2:0] LINK_SPEED         = (LINK_SPEED_US == 5'h16) ? 3'h4 :
-                                          (LINK_SPEED_US == 5'h8)  ? 3'h3 :
-                                          (LINK_SPEED_US == 5'h4)  ? 3'h2 :
-                                          (LINK_SPEED_US == 5'h2)  ? 3'h1 : 3'h0;
 
-  localparam         REF_CLK_HALF_CYCLE = (REF_CLK_FREQ == 0) ? 5000 :
-                                          (REF_CLK_FREQ == 1) ? 4000 :
-                                          (REF_CLK_FREQ == 2) ? 2000 : 0;
+  localparam REF_CLK_HALF_CYCLE = (REF_CLK_FREQ == 0) ? 5000 :
+                                  (REF_CLK_FREQ == 1) ? 4000 :
+                                  (REF_CLK_FREQ == 2) ? 2000 : 0;
 
   localparam [2:0] PF0_DEV_CAP_MAX_PAYLOAD_SIZE = 3'b000;
-
-  localparam CLK_HALF_CYCLE_33MHZ = 15000;
-
-  localparam EXT_PIPE_SIM = "FALSE";
-
-
-  integer i;
 
   // System-level clock and reset
   reg sys_rst_n;
@@ -105,8 +89,6 @@ module board;
   wire ep_sys_clk_n;
   wire rp_sys_clk_p;
   wire rp_sys_clk_n;
-  wire cpm_clk_n;
-  wire cpm_clk_p;
 
   wire [13:0] common_commands_out_usp;
   wire [25:0] common_commands_out_dsp;
@@ -180,18 +162,15 @@ module board;
   wire [83:0] xil_rx14_sigs_rp;
   wire [83:0] xil_rx15_sigs_rp;
 
+  wire [LINK_WIDTH-1:0] dsp_pcie_mgt_grx_n;
+  wire [LINK_WIDTH-1:0] dsp_pcie_mgt_grx_p;
+  wire [LINK_WIDTH-1:0] dsp_pcie_mgt_gtx_n;
+  wire [LINK_WIDTH-1:0] dsp_pcie_mgt_gtx_p;
 
-
-  wire [3:0] dsp_pcie_mgt_grx_n;
-  wire [3:0] dsp_pcie_mgt_grx_p;
-  wire [3:0] dsp_pcie_mgt_gtx_n;
-  wire [3:0] dsp_pcie_mgt_gtx_p;
-
-  wire [3:0] usp_PCIE0_GT_grx_n;
-  wire [3:0] usp_PCIE0_GT_grx_p;
-  wire [3:0] usp_PCIE0_GT_gtx_n;
-  wire [3:0] usp_PCIE0_GT_gtx_p;
-
+  wire [LINK_WIDTH-1:0] usp_PCIE0_GT_grx_n;
+  wire [LINK_WIDTH-1:0] usp_PCIE0_GT_grx_p;
+  wire [LINK_WIDTH-1:0] usp_PCIE0_GT_gtx_n;
+  wire [LINK_WIDTH-1:0] usp_PCIE0_GT_gtx_p;
 
   sys_clk_gen_ds #(
       .halfcycle(REF_CLK_HALF_CYCLE),
@@ -209,14 +188,6 @@ module board;
       .sys_clk_n(ep_sys_clk_n)
   );
 
-  sys_clk_gen_ds #(
-      .halfcycle(CLK_HALF_CYCLE_33MHZ),
-      .offset(0)
-  ) CLK_GEN_CPM (
-      .sys_clk_p(cpm_clk_p),
-      .sys_clk_n(cpm_clk_n)
-  );
-
   defparam board.RP.design_rp_i.pcie_versal_0.inst.PL_EQ_RX_ADAPTATION_MODE = 3'h1;
   defparam board.RP.design_rp_i.pcie_versal_0.inst.PL_EQ_RX_ADV_EQ_PER_DATA_RATE_ENABLE = 5'h00;
   defparam board.RP.design_rp_i.pcie_versal_0.inst.PL_EQ_BYPASS_PHASE23 = 3'b111;
@@ -231,33 +202,27 @@ module board;
   defparam board.EP.design_ep_i.pcie_versal_0.inst.PIPE_SIM = "FALSE";
   defparam board.SWITCH_TOP.gen_ext_pipe_sim_dsp.switch_dsp.pcie_versal_0.inst.PIPE_SIM = "FALSE";
 
-
   initial begin
     force SWITCH_TOP.gen_ext_pipe_sim_usp.switch_usp.versal_cips_0.inst.cpm_0.inst.lpd_cpm5_por_n = sys_rst_n;
     force SWITCH_TOP.gen_ext_pipe_sim_usp.switch_usp.versal_cips_0.inst.cpm_0.inst.perst0n = perstn;
     force SWITCH_TOP.gen_ext_pipe_sim_usp.switch_usp.versal_cips_0.inst.cpm_0.inst.cpm_pcr_init_state = ~sys_rst_n;
-    force SWITCH_TOP.gen_ext_pipe_sim_usp.switch_usp.versal_cips_0.inst.pspmc_0.inst.PS9_VIP_inst.inst.versal_cips_ps_vip_clk = cpm_clk_p;
-    force SWITCH_TOP.gen_ext_pipe_sim_usp.switch_usp.versal_cips_0.inst.cpm_0.inst.cpm_osc_clk_div2 = cpm_clk_p;
   end
 
   //------------------------------------------------------------------------------//
   // Generate system-level reset
   //------------------------------------------------------------------------------//
   initial begin
+    SWITCH_TOP.gen_ext_pipe_sim_usp.switch_usp.versal_cips_0.inst.pspmc_0.inst.PS9_VIP_inst.inst.en_multi_clock_support();
     $display("[%t] : System Reset Is Asserted...", $realtime);
     sys_rst_n = 1'b0;
     perstn = 1'b0;
-    SWITCH_TOP.gen_ext_pipe_sim_usp.switch_usp.versal_cips_0.inst.pspmc_0.inst.PS9_VIP_inst.inst.por_reset(
-        0);
+    SWITCH_TOP.gen_ext_pipe_sim_usp.switch_usp.versal_cips_0.inst.pspmc_0.inst.PS9_VIP_inst.inst.por_reset(0);
     repeat (500) @(posedge rp_sys_clk_p);
     $display("[%t] : System Reset Is De-asserted...", $realtime);
     sys_rst_n = 1'b1;
-    SWITCH_TOP.gen_ext_pipe_sim_usp.switch_usp.versal_cips_0.inst.pspmc_0.inst.PS9_VIP_inst.inst.por_reset(
-        1);
-    #412590;
-    // repeat (45000) @(posedge rp_sys_clk_p);
-    // @(SWITCH_TOP.switch_usp.versal_cips_0.inst.cpm_0.inst.phy_rdy);
-    // @(SWITCH_TOP.switch_usp.versal_cips_0.inst.cpm_0.inst.genblk1.gt_quad_inst0.ch0_phyready);
+    SWITCH_TOP.gen_ext_pipe_sim_usp.switch_usp.versal_cips_0.inst.pspmc_0.inst.PS9_VIP_inst.inst.por_reset(1);
+
+    wait(SWITCH_TOP.gen_ext_pipe_sim_usp.switch_usp.versal_cips_0.inst.cpm_0.inst.CPM_INST.SIP_CPM5_INST.i_cpm_sim_cfg_wrap.u_cpm_sim_cfg.cdo_programming_done);
     perstn = 1'b1;
     $display("[%t] : perstn Is De-asserted...", $realtime);
   end
@@ -269,18 +234,20 @@ module board;
   // PCI-Express Endpoint Instance
   //
   xilinx_pcie_versal_ep #(
-      .EXT_PIPE_SIM("FALSE")
+    .EXT_PIPE_SIM("FALSE")
   ) EP (
-      .pci_exp_txp(dsp_pcie_mgt_grx_p),
-      .pci_exp_txn(dsp_pcie_mgt_grx_n),
-      .pci_exp_rxp(dsp_pcie_mgt_gtx_p),
-      .pci_exp_rxn(dsp_pcie_mgt_gtx_n),
-      // SYS Inteface
-      .sys_clk_n  (ep_sys_clk_n),
-      .sys_clk_p  (ep_sys_clk_p),
+    .pci_exp_txp(dsp_pcie_mgt_grx_p),
+    .pci_exp_txn(dsp_pcie_mgt_grx_n),
+    .pci_exp_rxp(dsp_pcie_mgt_gtx_p),
+    .pci_exp_rxn(dsp_pcie_mgt_gtx_n),
+    
+    // SYS Inteface
+    .sys_clk_n(ep_sys_clk_n),
+    .sys_clk_p(ep_sys_clk_p),
 
-      .sys_rst_n          (sys_rst_n)
+    .sys_rst_n(sys_rst_n)
   );
+
   //------------------------------------------------------------------------------//
   // Simulation Root Port Model
   // (Comment out this module to interface EndPoint with BFM)
@@ -333,29 +300,22 @@ module board;
     if ($test$plusargs("dump_all")) begin
 
 `ifdef NCV  // Cadence TRN dump
-
       $recordsetup("design=board", "compress", "wrapsize=100M", "version=1", "run=1");
       $recordvars();
 
 `elsif VCS  //Synopsys VPD dump
-
       $vcdplusfile("board.vpd");
       $vcdpluson;
       $vcdplusglitchon;
       $vcdplusflush;
 
 `else
-
       // Verilog VC dump
       $dumpfile("board.vcd");
       $dumpvars(0, board);
 
 `endif
-
     end
-
   end
-
-
 
 endmodule  // BOARD
