@@ -1626,25 +1626,8 @@ NA DDRMC5_FPGA_DEVICE_TYPE NON_KSB DDRMC5_SELF_REFRESH DISABLE DDRMC5_LBDQ_SWAP 
   # Create address segments
   assign_bd_address -offset 0x00000000 -range 0x80000000 -target_address_space [get_bd_addr_spaces ps_wizard_0/mmi_0_mmi_dc_0] [get_bd_addr_segs axi_noc2_s0/DDR_MC_PORTS/DDR_CH0_LEGACYx2] -force
   assign_bd_address -offset 0x000800000000 -range 0x80000000 -target_address_space [get_bd_addr_spaces ps_wizard_0/mmi_0_mmi_dc_0] [get_bd_addr_segs axi_noc2_s0/DDR_MC_PORTS/DDR_CH0_MEDx2] -force
-  assign_bd_address -offset 0xB05E0000 -range 0x00010000 -target_address_space [get_bd_addr_spaces ps_wizard_0/mmi_0_mmi_gpu_0] [get_bd_addr_segs Live_input_gpio/S_AXI/Reg] -force
-  assign_bd_address -offset 0xB04A0000 -range 0x00010000 -target_address_space [get_bd_addr_spaces ps_wizard_0/mmi_0_mmi_gpu_0] [get_bd_addr_segs avtpg_s3/av_pat_gen_0/av_axi/Reg] -force
-  assign_bd_address -offset 0xB0400000 -range 0x00010000 -with_name SEG_av_pat_gen_0_Reg_1 -target_address_space [get_bd_addr_spaces ps_wizard_0/mmi_0_mmi_gpu_0] [get_bd_addr_segs avtpg_s0/av_pat_gen_0/av_axi/Reg] -force
-  assign_bd_address -offset 0xB0440000 -range 0x00010000 -with_name SEG_av_pat_gen_0_Reg_2 -target_address_space [get_bd_addr_spaces ps_wizard_0/mmi_0_mmi_gpu_0] [get_bd_addr_segs avtpg_s1/av_pat_gen_0/av_axi/Reg] -force
-  assign_bd_address -offset 0xB0470000 -range 0x00010000 -with_name SEG_av_pat_gen_0_Reg_3 -target_address_space [get_bd_addr_spaces ps_wizard_0/mmi_0_mmi_gpu_0] [get_bd_addr_segs avtpg_s2/av_pat_gen_0/av_axi/Reg] -force
   assign_bd_address -offset 0x00000000 -range 0x80000000 -target_address_space [get_bd_addr_spaces ps_wizard_0/mmi_0_mmi_gpu_0] [get_bd_addr_segs axi_noc2_s0/DDR_MC_PORTS/DDR_CH0_LEGACYx2] -force
   assign_bd_address -offset 0x000800000000 -range 0x80000000 -target_address_space [get_bd_addr_spaces ps_wizard_0/mmi_0_mmi_gpu_0] [get_bd_addr_segs axi_noc2_s0/DDR_MC_PORTS/DDR_CH0_MEDx2] -force
-  assign_bd_address -offset 0xB0560000 -range 0x00010000 -target_address_space [get_bd_addr_spaces ps_wizard_0/mmi_0_mmi_gpu_0] [get_bd_addr_segs clk_wizard_enable/S_AXI/Reg] -force
-  assign_bd_address -offset 0xB0A00000 -range 0x00010000 -target_address_space [get_bd_addr_spaces ps_wizard_0/mmi_0_mmi_gpu_0] [get_bd_addr_segs clkx5_wiz_0/s_axi_lite/Reg] -force
-  assign_bd_address -offset 0xB0A10000 -range 0x00010000 -target_address_space [get_bd_addr_spaces ps_wizard_0/mmi_0_mmi_gpu_0] [get_bd_addr_segs clkx5_wiz_1/s_axi_lite/Reg] -force
-  assign_bd_address -offset 0xB04C0000 -range 0x00010000 -target_address_space [get_bd_addr_spaces ps_wizard_0/mmi_0_mmi_gpu_0] [get_bd_addr_segs avtpg_s3/i2s_transmitter_0/s_axi_ctrl/Reg] -force
-  assign_bd_address -offset 0xB0420000 -range 0x00010000 -with_name SEG_i2s_transmitter_0_Reg_1 -target_address_space [get_bd_addr_spaces ps_wizard_0/mmi_0_mmi_gpu_0] [get_bd_addr_segs avtpg_s0/i2s_transmitter_0/s_axi_ctrl/Reg] -force
-  assign_bd_address -offset 0xB0460000 -range 0x00010000 -with_name SEG_i2s_transmitter_0_Reg_2 -target_address_space [get_bd_addr_spaces ps_wizard_0/mmi_0_mmi_gpu_0] [get_bd_addr_segs avtpg_s1/i2s_transmitter_0/s_axi_ctrl/Reg] -force
-  assign_bd_address -offset 0xB0490000 -range 0x00010000 -with_name SEG_i2s_transmitter_0_Reg_3 -target_address_space [get_bd_addr_spaces ps_wizard_0/mmi_0_mmi_gpu_0] [get_bd_addr_segs avtpg_s2/i2s_transmitter_0/s_axi_ctrl/Reg] -force
-  assign_bd_address -offset 0xB05B0000 -range 0x00010000 -target_address_space [get_bd_addr_spaces ps_wizard_0/mmi_0_mmi_gpu_0] [get_bd_addr_segs rd_clk_wiz_status_gpio/S_AXI/Reg] -force
-  assign_bd_address -offset 0xB0410000 -range 0x00010000 -target_address_space [get_bd_addr_spaces ps_wizard_0/mmi_0_mmi_gpu_0] [get_bd_addr_segs avtpg_s0/v_tc_0/ctrl/Reg] -force
-  assign_bd_address -offset 0xB04B0000 -range 0x00010000 -with_name SEG_v_tc_0_Reg_1 -target_address_space [get_bd_addr_spaces ps_wizard_0/mmi_0_mmi_gpu_0] [get_bd_addr_segs avtpg_s3/v_tc_0/ctrl/Reg] -force
-  assign_bd_address -offset 0xB0450000 -range 0x00010000 -with_name SEG_v_tc_0_Reg_2 -target_address_space [get_bd_addr_spaces ps_wizard_0/mmi_0_mmi_gpu_0] [get_bd_addr_segs avtpg_s1/v_tc_0/ctrl/Reg] -force
-  assign_bd_address -offset 0xB0480000 -range 0x00010000 -with_name SEG_v_tc_0_Reg_3 -target_address_space [get_bd_addr_spaces ps_wizard_0/mmi_0_mmi_gpu_0] [get_bd_addr_segs avtpg_s2/v_tc_0/ctrl/Reg] -force
   assign_bd_address -offset 0xB0400000 -range 0x00010000 -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_cortexa78_0] [get_bd_addr_segs avtpg_s0/av_pat_gen_0/av_axi/Reg] -force
   assign_bd_address -offset 0xB0440000 -range 0x00010000 -with_name SEG_av_pat_gen_0_Reg_1 -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_cortexa78_0] [get_bd_addr_segs avtpg_s1/av_pat_gen_0/av_axi/Reg] -force
   assign_bd_address -offset 0xB04A0000 -range 0x00010000 -with_name SEG_av_pat_gen_0_Reg_2 -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_cortexa78_0] [get_bd_addr_segs avtpg_s3/av_pat_gen_0/av_axi/Reg] -force
