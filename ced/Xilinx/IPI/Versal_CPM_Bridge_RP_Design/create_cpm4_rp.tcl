@@ -10,7 +10,6 @@
    CONFIG.FREQ_HZ {200000000} \
    ] $sys_clk0_0
 
-
   # Create ports
 
   # Create instance: axi_noc_0, and set properties
