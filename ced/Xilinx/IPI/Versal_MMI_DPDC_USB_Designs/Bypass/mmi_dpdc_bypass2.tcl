@@ -914,7 +914,7 @@ NA DDRMC5_FPGA_DEVICE_TYPE NON_KSB DDRMC5_SELF_REFRESH DISABLE DDRMC5_LBDQ_SWAP 
   set smartconnect_gp0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:smartconnect smartconnect_gp0 ]
   set_property -dict [list \
     CONFIG.NUM_CLKS {3} \
-    CONFIG.NUM_MI {7} \
+    CONFIG.NUM_MI {6} \
     CONFIG.NUM_SI {1} \
   ] $smartconnect_gp0
 
@@ -923,7 +923,7 @@ NA DDRMC5_FPGA_DEVICE_TYPE NON_KSB DDRMC5_SELF_REFRESH DISABLE DDRMC5_LBDQ_SWAP 
   set smartconnect_1 [ create_bd_cell -type ip -vlnv xilinx.com:ip:smartconnect smartconnect_1 ]
   set_property -dict [list \
     CONFIG.NUM_CLKS {2} \
-    CONFIG.NUM_MI {7} \
+    CONFIG.NUM_MI {6} \
     CONFIG.NUM_SI {1} \
   ] $smartconnect_1
 
@@ -1039,16 +1039,15 @@ NA DDRMC5_FPGA_DEVICE_TYPE NON_KSB DDRMC5_SELF_REFRESH DISABLE DDRMC5_LBDQ_SWAP 
   connect_bd_intf_net -intf_net smartconnect_1_M00_AXI [get_bd_intf_pins smartconnect_1/M00_AXI] [get_bd_intf_pins avtpg_s0/av_axi]
   connect_bd_intf_net -intf_net smartconnect_1_M01_AXI [get_bd_intf_pins smartconnect_1/M01_AXI] [get_bd_intf_pins avtpg_s0/ctrl]
   connect_bd_intf_net -intf_net smartconnect_1_M02_AXI [get_bd_intf_pins smartconnect_1/M02_AXI] [get_bd_intf_pins avtpg_s0/s_axi_ctrl]
-  connect_bd_intf_net -intf_net smartconnect_1_M03_AXI1 [get_bd_intf_pins smartconnect_1/M03_AXI] [get_bd_intf_pins avtpg_s1/S_AXI]
-  connect_bd_intf_net -intf_net smartconnect_1_M04_AXI [get_bd_intf_pins smartconnect_1/M04_AXI] [get_bd_intf_pins avtpg_s1/av_axi]
-  connect_bd_intf_net -intf_net smartconnect_1_M05_AXI [get_bd_intf_pins smartconnect_1/M05_AXI] [get_bd_intf_pins avtpg_s1/ctrl]
-  connect_bd_intf_net -intf_net smartconnect_1_M06_AXI [get_bd_intf_pins smartconnect_1/M06_AXI] [get_bd_intf_pins avtpg_s1/s_axi_ctrl]
+  connect_bd_intf_net -intf_net smartconnect_1_M03_AXI [get_bd_intf_pins smartconnect_1/M03_AXI] [get_bd_intf_pins avtpg_s1/av_axi]
+  connect_bd_intf_net -intf_net smartconnect_1_M04_AXI [get_bd_intf_pins smartconnect_1/M04_AXI] [get_bd_intf_pins avtpg_s1/ctrl]
+  connect_bd_intf_net -intf_net smartconnect_1_M05_AXI [get_bd_intf_pins smartconnect_1/M05_AXI] [get_bd_intf_pins avtpg_s1/s_axi_ctrl]
   connect_bd_intf_net -intf_net smartconnect_gp0_M00_AXI [get_bd_intf_pins smartconnect_gp0/M00_AXI] [get_bd_intf_pins smartconnect_1/S00_AXI]
   connect_bd_intf_net -intf_net smartconnect_gp0_M01_AXI [get_bd_intf_pins smartconnect_gp0/M01_AXI] [get_bd_intf_pins clkx5_wiz_1/s_axi_lite]
-  connect_bd_intf_net -intf_net smartconnect_gp0_M02_AXI [get_bd_intf_pins smartconnect_gp0/M03_AXI] [get_bd_intf_pins Live_input_gpio/S_AXI]
-  connect_bd_intf_net -intf_net smartconnect_gp0_M03_AXI [get_bd_intf_pins smartconnect_gp0/M04_AXI] [get_bd_intf_pins rd_clk_wiz_status_gpio/S_AXI]
-  connect_bd_intf_net -intf_net smartconnect_gp0_M04_AXI [get_bd_intf_pins smartconnect_gp0/M05_AXI] [get_bd_intf_pins clk_wizard_enable/S_AXI]
-  connect_bd_intf_net -intf_net smartconnect_gp0_M05_AXI [get_bd_intf_pins smartconnect_gp0/M06_AXI] [get_bd_intf_pins clkx5_wiz_0/s_axi_lite]
+  connect_bd_intf_net -intf_net smartconnect_gp0_M02_AXI [get_bd_intf_pins smartconnect_gp0/M02_AXI] [get_bd_intf_pins Live_input_gpio/S_AXI]
+  connect_bd_intf_net -intf_net smartconnect_gp0_M03_AXI [get_bd_intf_pins smartconnect_gp0/M03_AXI] [get_bd_intf_pins rd_clk_wiz_status_gpio/S_AXI]
+  connect_bd_intf_net -intf_net smartconnect_gp0_M04_AXI [get_bd_intf_pins smartconnect_gp0/M04_AXI] [get_bd_intf_pins clk_wizard_enable/S_AXI]
+  connect_bd_intf_net -intf_net smartconnect_gp0_M05_AXI [get_bd_intf_pins smartconnect_gp0/M05_AXI] [get_bd_intf_pins clkx5_wiz_0/s_axi_lite]
 
   # Create port connections
   connect_bd_net -net TPG_GEN_EN_1  [get_bd_pins Live_input_gpio/gpio_io_o] \
@@ -1201,19 +1200,8 @@ NA DDRMC5_FPGA_DEVICE_TYPE NON_KSB DDRMC5_SELF_REFRESH DISABLE DDRMC5_LBDQ_SWAP 
   # Create address segments
   assign_bd_address -offset 0x00000000 -range 0x80000000 -target_address_space [get_bd_addr_spaces ps_wizard_0/mmi_0_mmi_dc_0] [get_bd_addr_segs axi_noc2_s0/DDR_MC_PORTS/DDR_CH0_LEGACYx2] -force
   assign_bd_address -offset 0x000800000000 -range 0x80000000 -target_address_space [get_bd_addr_spaces ps_wizard_0/mmi_0_mmi_dc_0] [get_bd_addr_segs axi_noc2_s0/DDR_MC_PORTS/DDR_CH0_MEDx2] -force
-  assign_bd_address -offset 0xB05E0000 -range 0x00010000 -target_address_space [get_bd_addr_spaces ps_wizard_0/mmi_0_mmi_gpu_0] [get_bd_addr_segs Live_input_gpio/S_AXI/Reg] -force
-  assign_bd_address -offset 0xB0440000 -range 0x00010000 -target_address_space [get_bd_addr_spaces ps_wizard_0/mmi_0_mmi_gpu_0] [get_bd_addr_segs avtpg_s1/av_pat_gen_0/av_axi/Reg] -force
-  assign_bd_address -offset 0xB0400000 -range 0x00010000 -with_name SEG_av_pat_gen_0_Reg_1 -target_address_space [get_bd_addr_spaces ps_wizard_0/mmi_0_mmi_gpu_0] [get_bd_addr_segs avtpg_s0/av_pat_gen_0/av_axi/Reg] -force
   assign_bd_address -offset 0x00000000 -range 0x80000000 -target_address_space [get_bd_addr_spaces ps_wizard_0/mmi_0_mmi_gpu_0] [get_bd_addr_segs axi_noc2_s0/DDR_MC_PORTS/DDR_CH0_LEGACYx2] -force
   assign_bd_address -offset 0x000800000000 -range 0x80000000 -target_address_space [get_bd_addr_spaces ps_wizard_0/mmi_0_mmi_gpu_0] [get_bd_addr_segs axi_noc2_s0/DDR_MC_PORTS/DDR_CH0_MEDx2] -force
-  assign_bd_address -offset 0xB0560000 -range 0x00010000 -target_address_space [get_bd_addr_spaces ps_wizard_0/mmi_0_mmi_gpu_0] [get_bd_addr_segs clk_wizard_enable/S_AXI/Reg] -force
-  assign_bd_address -offset 0xB0A00000 -range 0x00010000 -target_address_space [get_bd_addr_spaces ps_wizard_0/mmi_0_mmi_gpu_0] [get_bd_addr_segs clkx5_wiz_0/s_axi_lite/Reg] -force
-  assign_bd_address -offset 0xB0A10000 -range 0x00010000 -target_address_space [get_bd_addr_spaces ps_wizard_0/mmi_0_mmi_gpu_0] [get_bd_addr_segs clkx5_wiz_1/s_axi_lite/Reg] -force
-  assign_bd_address -offset 0xB0460000 -range 0x00010000 -target_address_space [get_bd_addr_spaces ps_wizard_0/mmi_0_mmi_gpu_0] [get_bd_addr_segs avtpg_s1/i2s_transmitter_0/s_axi_ctrl/Reg] -force
-  assign_bd_address -offset 0xB0420000 -range 0x00010000 -with_name SEG_i2s_transmitter_0_Reg_1 -target_address_space [get_bd_addr_spaces ps_wizard_0/mmi_0_mmi_gpu_0] [get_bd_addr_segs avtpg_s0/i2s_transmitter_0/s_axi_ctrl/Reg] -force
-  assign_bd_address -offset 0xB05B0000 -range 0x00010000 -target_address_space [get_bd_addr_spaces ps_wizard_0/mmi_0_mmi_gpu_0] [get_bd_addr_segs rd_clk_wiz_status_gpio/S_AXI/Reg] -force
-  assign_bd_address -offset 0xB0410000 -range 0x00010000 -target_address_space [get_bd_addr_spaces ps_wizard_0/mmi_0_mmi_gpu_0] [get_bd_addr_segs avtpg_s0/v_tc_0/ctrl/Reg] -force
-  assign_bd_address -offset 0xB0450000 -range 0x00010000 -with_name SEG_v_tc_0_Reg_1 -target_address_space [get_bd_addr_spaces ps_wizard_0/mmi_0_mmi_gpu_0] [get_bd_addr_segs avtpg_s1/v_tc_0/ctrl/Reg] -force
   assign_bd_address -offset 0xB0400000 -range 0x00010000 -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_cortexa78_0] [get_bd_addr_segs avtpg_s0/av_pat_gen_0/av_axi/Reg] -force
   assign_bd_address -offset 0xB0440000 -range 0x00010000 -with_name SEG_av_pat_gen_0_Reg_1 -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_cortexa78_0] [get_bd_addr_segs avtpg_s1/av_pat_gen_0/av_axi/Reg] -force
   assign_bd_address -offset 0xB0560000 -range 0x00010000 -with_name SEG_axi_gpio_0_Reg_2 -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_cortexa78_0] [get_bd_addr_segs clk_wizard_enable/S_AXI/Reg] -force

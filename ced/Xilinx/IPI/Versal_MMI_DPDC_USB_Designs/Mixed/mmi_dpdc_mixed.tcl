@@ -1453,14 +1453,6 @@ proc create_root_design { parentCell design_name } {
   assign_bd_address -offset 0xB04E0000 -range 0x00010000 -with_name SEG_v_tc_0_Reg_1 -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_cortexr52_9] [get_bd_addr_segs dc_input_pipeline/avtpg_vp0/v_tc_0/ctrl/Reg] -force
 
   # Exclude Address Segments
-  exclude_bd_addr_seg -offset 0xB05E0000 -range 0x00010000 -target_address_space [get_bd_addr_spaces ps_wizard_0/mmi_0_mmi_gpu_0] [get_bd_addr_segs Live_input_gpio/S_AXI/Reg]
-  exclude_bd_addr_seg -offset 0xB04D0000 -range 0x00010000 -target_address_space [get_bd_addr_spaces ps_wizard_0/mmi_0_mmi_gpu_0] [get_bd_addr_segs dc_input_pipeline/avtpg_vp0/av_pat_gen_0/av_axi/Reg]
-  exclude_bd_addr_seg -offset 0xB0560000 -range 0x00010000 -target_address_space [get_bd_addr_spaces ps_wizard_0/mmi_0_mmi_gpu_0] [get_bd_addr_segs clk_wizard_enable/S_AXI/Reg]
-  exclude_bd_addr_seg -offset 0xB0A00000 -range 0x00010000 -target_address_space [get_bd_addr_spaces ps_wizard_0/mmi_0_mmi_gpu_0] [get_bd_addr_segs clkx5_wiz_0/s_axi_lite/Reg]
-  exclude_bd_addr_seg -offset 0xB0A10000 -range 0x00010000 -target_address_space [get_bd_addr_spaces ps_wizard_0/mmi_0_mmi_gpu_0] [get_bd_addr_segs clkx5_wiz_1/s_axi_lite/Reg]
-  exclude_bd_addr_seg -offset 0xB0020000 -range 0x00010000 -target_address_space [get_bd_addr_spaces ps_wizard_0/mmi_0_mmi_gpu_0] [get_bd_addr_segs dc_input_pipeline/avtpg_vp0/i2s_transmitter_0/s_axi_ctrl/Reg]
-  exclude_bd_addr_seg -offset 0xB05B0000 -range 0x00010000 -target_address_space [get_bd_addr_spaces ps_wizard_0/mmi_0_mmi_gpu_0] [get_bd_addr_segs rd_clk_wiz_status_gpio/S_AXI/Reg]
-  exclude_bd_addr_seg -offset 0xB04E0000 -range 0x00010000 -target_address_space [get_bd_addr_spaces ps_wizard_0/mmi_0_mmi_gpu_0] [get_bd_addr_segs dc_input_pipeline/avtpg_vp0/v_tc_0/ctrl/Reg]
   exclude_bd_addr_seg -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_cortexr52_0] [get_bd_addr_segs axi_noc2_s0/DDR_MC_PORTS/DDR_CH0_LEGACYx2]
   exclude_bd_addr_seg -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_cortexr52_0] [get_bd_addr_segs axi_noc2_s0/DDR_MC_PORTS/DDR_CH0_MEDx2]
   exclude_bd_addr_seg -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_cortexr52_1] [get_bd_addr_segs axi_noc2_s0/DDR_MC_PORTS/DDR_CH0_LEGACYx2]
