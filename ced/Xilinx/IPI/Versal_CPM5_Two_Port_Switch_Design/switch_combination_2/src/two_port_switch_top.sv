@@ -451,7 +451,7 @@ module two_port_switch_top #(
   wire usp_pcie_cfg_control_hot_reset_in;
   wire usp_pcie_cfg_control_hot_reset_out;
   wire usp_pcie_cfg_control_link_training_enable;
-  wire [15:0] usp_pcie_cfg_control_per_function_func_num;
+  wire [15:0] usp_pcie_cfg_control_per_function_number;
   wire usp_pcie_cfg_control_per_function_req;
   wire usp_pcie_cfg_control_pm_aspm_l1entry_reject;
   wire usp_pcie_cfg_control_pm_aspm_tx_l0s_entry_disable;
@@ -1179,7 +1179,7 @@ module two_port_switch_top #(
           .pcie_cfg_control_hot_reset_in(usp_pcie_cfg_control_hot_reset_in),
           .pcie_cfg_control_hot_reset_out(usp_pcie_cfg_control_hot_reset_out),
           .pcie_cfg_control_link_training_enable(usp_pcie_cfg_control_link_training_enable),
-          .pcie_cfg_control_per_function_func_num(usp_pcie_cfg_control_per_function_func_num),
+          .pcie_cfg_control_per_function_number(usp_pcie_cfg_control_per_function_number),
           .pcie_cfg_control_per_function_req(usp_pcie_cfg_control_per_function_req),
           .pcie_cfg_control_pm_aspm_l1entry_reject(usp_pcie_cfg_control_pm_aspm_l1entry_reject),
           .pcie_cfg_control_pm_aspm_tx_l0s_entry_disable(usp_pcie_cfg_control_pm_aspm_tx_l0s_entry_disable),
@@ -1416,7 +1416,7 @@ module two_port_switch_top #(
           .pcie_cfg_control_hot_reset_in(usp_pcie_cfg_control_hot_reset_in),
           .pcie_cfg_control_hot_reset_out(usp_pcie_cfg_control_hot_reset_out),
           .pcie_cfg_control_link_training_enable(usp_pcie_cfg_control_link_training_enable),
-          .pcie_cfg_control_per_function_func_num(usp_pcie_cfg_control_per_function_func_num),
+          .pcie_cfg_control_per_function_number(usp_pcie_cfg_control_per_function_number),
           .pcie_cfg_control_per_function_req(usp_pcie_cfg_control_per_function_req),
           .pcie_cfg_control_pm_aspm_l1entry_reject(usp_pcie_cfg_control_pm_aspm_l1entry_reject),
           .pcie_cfg_control_pm_aspm_tx_l0s_entry_disable(usp_pcie_cfg_control_pm_aspm_tx_l0s_entry_disable),
