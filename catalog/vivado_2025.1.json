@@ -157,11 +157,11 @@
         "name": "two_port_switch",
         "display": "Versal CPM5 Two Port Switch Design",
         "latest_revision": "1.0",
-        "commit_id": "6c1d2231c6ff42fc126748d4c20d240b0e39d0c1",
+        "commit_id": "a41f4816aae80d52afbfead7767f5d971d43265e",
         "revisions": [
           {
             "revision": "1.0",
-            "commit_id": "6c1d2231c6ff42fc126748d4c20d240b0e39d0c1",
+            "commit_id": "a41f4816aae80d52afbfead7767f5d971d43265e",
             "date": "01-04-2025:13:33:38",
             "history": "Added board Versal CPM5 Two Port Switch Design v1.0"
           }
@@ -176,11 +176,11 @@
         "name": "cpm_rp",
         "display": "Versal CPM Bridge RP Design",
         "latest_revision": "1.0",
-        "commit_id": "d07367b7dc005a98568a6dbeaf3e757052c26ba1",
+        "commit_id": "a41f4816aae80d52afbfead7767f5d971d43265e",
         "revisions": [
           {
             "revision": "1.0",
-            "commit_id": "d07367b7dc005a98568a6dbeaf3e757052c26ba1",
+            "commit_id": "a41f4816aae80d52afbfead7767f5d971d43265e",
             "date": "01-04-2025:13:33:38",
             "history": "Added board Versal CPM Bridge RP Design v1.0"
           }
@@ -271,11 +271,11 @@
         "name": "Versal_CPM_Tandem_PCIe_DFX",
         "display": "Versal CPM Tandem PCIe and DFX",
         "latest_revision": "2.0",
-        "commit_id": "266c1985700ac2e0ae4cf0f9a268c79279a4cd6c",
+        "commit_id": "a41f4816aae80d52afbfead7767f5d971d43265e",
         "revisions": [
           {
             "revision": "2.0",
-            "commit_id": "266c1985700ac2e0ae4cf0f9a268c79279a4cd6c",
+            "commit_id": "a41f4816aae80d52afbfead7767f5d971d43265e",
             "date": "01-04-2025:13:33:38",
             "history": "Added board Versal CPM Tandem PCIe and DFX v2.0"
           }
@@ -290,11 +290,11 @@
         "name": "cpm_pcie_qdma_ep",
         "display": "Versal CPM QDMA EP Design",
         "latest_revision": "1.0",
-        "commit_id": "b7acd6adc5d18a8ea0648c332e1369fbb923a28c",
+        "commit_id": "a41f4816aae80d52afbfead7767f5d971d43265e",
         "revisions": [
           {
             "revision": "1.0",
-            "commit_id": "b7acd6adc5d18a8ea0648c332e1369fbb923a28c",
+            "commit_id": "a41f4816aae80d52afbfead7767f5d971d43265e",
             "date": "01-04-2025:13:33:38",
             "history": "Added board Versal CPM QDMA EP Design v1.0"
           }
@@ -309,11 +309,11 @@
         "name": "cpm_qdma_ep_part",
         "display": "Versal CPM QDMA EP Design (Part based)",
         "latest_revision": "1.0",
-        "commit_id": "b7acd6adc5d18a8ea0648c332e1369fbb923a28c",
+        "commit_id": "a41f4816aae80d52afbfead7767f5d971d43265e",
         "revisions": [
           {
             "revision": "1.0",
-            "commit_id": "b7acd6adc5d18a8ea0648c332e1369fbb923a28c",
+            "commit_id": "a41f4816aae80d52afbfead7767f5d971d43265e",
             "date": "01-04-2025:13:33:39",
             "history": "Added board Versal CPM QDMA EP Design (Part based) v1.0"
           }
@@ -328,11 +328,11 @@
         "name": "cpm_qdma",
         "display": "Versal CPM QDMA EP Simulation Design",
         "latest_revision": "1.0",
-        "commit_id": "b7acd6adc5d18a8ea0648c332e1369fbb923a28c",
+        "commit_id": "a41f4816aae80d52afbfead7767f5d971d43265e",
         "revisions": [
           {
             "revision": "1.0",
-            "commit_id": "b7acd6adc5d18a8ea0648c332e1369fbb923a28c",
+            "commit_id": "a41f4816aae80d52afbfead7767f5d971d43265e",
             "date": "01-04-2025:13:33:39",
             "history": "Added board Versal CPM QDMA EP Simulation Design v1.0"
           }
