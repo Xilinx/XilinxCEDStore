@@ -328,42 +328,42 @@ module user_control
 
    always_comb begin
       case (rd_addr)
-	32'h00 : m_axil_rdata  = (32'h0 | c2h_st_qid[10:0]);
-	32'h04 : m_axil_rdata  = (32'h0 | c2h_st_len);
-	32'h08 : m_axil_rdata  = (32'h0 | control_reg_c2h[31:0]);
-	32'h0C : m_axil_rdata  = (32'h0 | control_reg_h2c[31:0]);
-	32'h10 : m_axil_rdata  = (32'h0 | {h2c_qid[10:0],1'b0,h2c_match[1],h2c_zero_byte_reg,h2c_match[0]});
-	32'h14 : m_axil_rdata  = h2c_count;
-	32'h20 : m_axil_rdata  = (32'h0 | c2h_num_pkt[10:0]);
-	32'h30 : m_axil_rdata  = wb_dat[31:0];
-	32'h34 : m_axil_rdata  = wb_dat[63:32];
-	32'h38 : m_axil_rdata  = wb_dat[95:64];
-	32'h3C : m_axil_rdata  = wb_dat[127:96];
-	32'h40 : m_axil_rdata  = wb_dat[159:128];
-	32'h44 : m_axil_rdata  = wb_dat[191:160];
-	32'h48 : m_axil_rdata  = wb_dat[223:192];
-	32'h4C : m_axil_rdata  = wb_dat[255:224];
-	32'h50 : m_axil_rdata  = cmpt_size[31:0];
-	32'h60 : m_axil_rdata  = scratch_reg1[31:0];
-	32'h64 : m_axil_rdata  = scratch_reg2[31:0];
-	32'h70 : m_axil_rdata  = {32'h0 | perf_ctl[4:0]};
-	32'h74 : m_axil_rdata  = data_count[31:0];
-	32'h78 : m_axil_rdata  = data_count[63:32];
-	32'h7C : m_axil_rdata  = valid_count[31:0];
-	32'h80 : m_axil_rdata  = valid_count[63:32];
-	32'h84 : m_axil_rdata  = c2h_st_buffsz[15:0];
-	32'h88 : m_axil_rdata  = {32'h0 | axis_pkt_drop[7:0]};
-	32'h8C : m_axil_rdata  = {32'h0 | axis_pkt_accept[7:0]};
-	32'h90 : m_axil_rdata  = {12'h0, c2h_st_marker_rsp_reg, h2c_st_marker_rsp_reg, c2h_mm_marker_rsp_reg, h2c_mm_marker_rsp_reg, 9'h0, dsc_bypass[6:0]};
-	32'h94 : m_axil_rdata  = {32'h0 | usr_irq[16:0]};
-	32'h98 : m_axil_rdata  = {32'h0 | usr_irq_msk[31:0]};
-	32'h9C : m_axil_rdata  = {32'h0 | usr_irq_num[31:0]};
-	32'hA0 : m_axil_rdata  = {32'h0 | gen_qdma_reset};
-	32'hA4 : m_axil_rdata  = {32'h0 | vdm_msg_rd_dout};
-	32'hFFFFFFFF: m_axil_rdata = {32'h0 | invalid_axilm_addr};
-    default : m_axil_rdata  = m_axil_rdata_bram;
+         32'h00 : m_axil_rdata = (32'h0 | c2h_st_qid[10:0]);
+         32'h04 : m_axil_rdata = (32'h0 | c2h_st_len);
+         32'h08 : m_axil_rdata = (32'h0 | control_reg_c2h[31:0]);
+         32'h0C : m_axil_rdata = (32'h0 | control_reg_h2c[31:0]);
+         32'h10 : m_axil_rdata = (32'h0 | {h2c_qid[10:0],1'b0,h2c_match[1],h2c_zero_byte_reg,h2c_match[0]});
+         32'h14 : m_axil_rdata = h2c_count;
+         32'h20 : m_axil_rdata = (32'h0 | c2h_num_pkt[10:0]);
+         32'h30 : m_axil_rdata = wb_dat[31:0];
+         32'h34 : m_axil_rdata = wb_dat[63:32];
+         32'h38 : m_axil_rdata = wb_dat[95:64];
+         32'h3C : m_axil_rdata = wb_dat[127:96];
+         32'h40 : m_axil_rdata = wb_dat[159:128];
+         32'h44 : m_axil_rdata = wb_dat[191:160];
+         32'h48 : m_axil_rdata = wb_dat[223:192];
+         32'h4C : m_axil_rdata = wb_dat[255:224];
+         32'h50 : m_axil_rdata = cmpt_size[31:0];
+         32'h60 : m_axil_rdata = scratch_reg1[31:0];
+         32'h64 : m_axil_rdata = scratch_reg2[31:0];
+         32'h70 : m_axil_rdata = {32'h0 | perf_ctl[4:0]};
+         32'h74 : m_axil_rdata = data_count[31:0];
+         32'h78 : m_axil_rdata = data_count[63:32];
+         32'h7C : m_axil_rdata = valid_count[31:0];
+         32'h80 : m_axil_rdata = valid_count[63:32];
+         32'h84 : m_axil_rdata = c2h_st_buffsz[15:0];
+         32'h88 : m_axil_rdata = {32'h0 | axis_pkt_drop[7:0]};
+         32'h8C : m_axil_rdata = {32'h0 | axis_pkt_accept[7:0]};
+         32'h90 : m_axil_rdata = {12'h0, c2h_st_marker_rsp_reg, h2c_st_marker_rsp_reg, c2h_mm_marker_rsp_reg, h2c_mm_marker_rsp_reg, 9'h0, dsc_bypass[6:0]};
+         32'h94 : m_axil_rdata = {32'h0 | usr_irq[16:0]};
+         32'h98 : m_axil_rdata = {32'h0 | usr_irq_msk[31:0]};
+         32'h9C : m_axil_rdata = {32'h0 | usr_irq_num[31:0]};
+         32'hA0 : m_axil_rdata = {32'h0 | gen_qdma_reset};
+         32'hA4 : m_axil_rdata = {32'h0 | vdm_msg_rd_dout};
+         32'hFFFFFFFF: m_axil_rdata = {32'h0 | invalid_axilm_addr};
+         default: m_axil_rdata = m_axil_rdata_bram;
       endcase // case (m_axil_araddr[31:0]...
-    end // always_comb begin
+   end // always_comb begin
    reg perf_ctl_stp;
    reg perf_ctl_clr;
 

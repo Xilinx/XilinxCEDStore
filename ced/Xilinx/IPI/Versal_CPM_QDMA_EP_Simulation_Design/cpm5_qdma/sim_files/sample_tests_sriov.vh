@@ -82,9 +82,12 @@ end
 else if (testname == "qdma_msix_test")
 begin
 
-   usr_irq = 1'b1;  
-   usr_irq_in_vec = 5'h0;  
-   
+   reg usr_irq = 1'b1;  
+   reg [4:0] usr_irq_in_vec = 5'd0;  
+   reg [7:0] fnc;
+   integer pf_i;
+   integer vf_i;
+
    for(fnc=0; fnc < NUM_PFS; fnc = fnc + 1)
 	begin
 	$display ("###################################################################");
