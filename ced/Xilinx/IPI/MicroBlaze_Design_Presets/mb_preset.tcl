@@ -235,6 +235,24 @@ if {([lsearch $temp_options Preset.VALUE] == -1) || ([lsearch $temp_options "Mic
 			puts $fd "set_property CLOCK_DELAY_GROUP ddr_clk_grp \[get_nets -hier -filter {name =~ */addn_ui_clkout1}\]"
 			puts $fd "set_property CLOCK_DELAY_GROUP ddr_clk_grp \[get_nets -hier -filter {name =~ */c0_ddr4_ui_clk}\]"	  
 	     }
+		 
+	if {[regexp vcu129 $board_name]} {
+	file mkdir $proj_dir/$proj_name.srcs/utils_1/utils
+	set fd1 [ open $proj_dir/$proj_name.srcs/utils_1/utils/timing_postopt.tcl w ]
+	set fd2 [ open $proj_dir/$proj_name.srcs/utils_1/utils/timing_preroute.tcl w ]
+	
+	puts $fd1 "set_clock_uncertainty -setup 0.3 \[get_clocks mmcm_clkout1\]"
+	puts $fd2 "set_clock_uncertainty -setup 0 \[get_clocks mmcm_clkout1\]"
+	close $fd1
+	close $fd2
+	add_files  -fileset utils_1 [ list "$proj_dir/$proj_name.srcs/utils_1/utils/timing_postopt.tcl" ]
+	add_files  -fileset utils_1 [ list "$proj_dir/$proj_name.srcs/utils_1/utils/timing_preroute.tcl" ]
+	
+	set_property STEPS.OPT_DESIGN.TCL.POST [ get_files $proj_dir/$proj_name.srcs/utils_1/utils/timing_postopt.tcl -of [get_fileset utils_1] ] [get_runs impl_1]
+	set_property STEPS.ROUTE_DESIGN.TCL.PRE [ get_files $proj_dir/$proj_name.srcs/utils_1/utils/timing_preroute.tcl -of [get_fileset utils_1] ] [get_runs impl_1]
+	
+	}
+	
 	close $fd
 	add_files  -fileset constrs_1 [ list "$proj_dir/$proj_name.srcs/constrs_1/constrs/top.xdc" ]
 		 
