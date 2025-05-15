@@ -43,11 +43,11 @@
         "name": "mb_preset",
         "display": "MicroBlaze Design Presets",
         "latest_revision": "1.0",
-        "commit_id": "bea9af088bb472fbddcb56425585bc623e955ab0",
+        "commit_id": "fd01088a2857fc99d417a3b967ba02d8800c93df",
         "revisions": [
           {
             "revision": "1.0",
-            "commit_id": "bea9af088bb472fbddcb56425585bc623e955ab0",
+            "commit_id": "fd01088a2857fc99d417a3b967ba02d8800c93df",
             "date": "01-04-2025:13:33:38",
             "history": "Added board MicroBlaze Design Presets v1.0"
           }
