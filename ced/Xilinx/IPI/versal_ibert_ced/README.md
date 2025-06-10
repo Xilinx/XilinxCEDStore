@@ -9,6 +9,10 @@ can be done after the design is generated.  Location and timing constraints are 
 In Vivado from the opening screen, choose "Open Example Project" and the "Versal IBERT" CED.  After choosing a project
 name and a part, you will get to the customization GUI.
 
+IMPORTANT: Spaces in directory and file names are supported by the Windows operation.However, you should avoid using
+spaces to preserve portability of the project or files between the Windows and Linux operating systems. Please refer to
+https://docs.amd.com/r/en-US/ug937-vivado-design-suite-simulation-tutorial/Introduction for further instructions.
+
 ![IBERT CED screencap](./images/screencap.png)
 
 The best practice is to go from left to right.  First enable all the quads you want in the design.  Then choose the reference
