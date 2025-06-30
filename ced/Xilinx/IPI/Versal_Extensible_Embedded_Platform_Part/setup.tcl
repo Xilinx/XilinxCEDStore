@@ -27,7 +27,7 @@ proc createDesign {design_name options} {
 	set fpga_part [get_property PART [current_project ]]
 	set part_family [get_property FAMILY $fpga_part]
 
-	if { [regexp "xcvm2152" $fpga_part] || [regexp "xc2v" $fpga_part] || [regexp "xcvr1652" $fpga_part]|| [regexp "xcvr1602" $fpga_part] || [regexp "xa2ve3288" $fpga_part] || [regexp "xc10S70" $fpga_part] || [regexp "xc10T21" $fpga_part] } {
+	if { [regexp "xcvm2152" $fpga_part] || [regexp "xc2v" $fpga_part] || [regexp "xcvr1652" $fpga_part]|| [regexp "xcvr1602" $fpga_part] || [regexp "xc10S70" $fpga_part] || [regexp "xc10T21" $fpga_part] } {
 
 		puts "INFO : PS_wizard part selected"
 		source "$currentDir/run_ps_wizard.tcl"
@@ -36,6 +36,11 @@ proc createDesign {design_name options} {
 
 		puts "INFO : PS_wizard part selected : Versal Premium Series"
 		source "$currentDir/run_p.tcl"
+		
+	} elseif {[regexp "xa2ve3288" $fpga_part]} {
+
+		puts "INFO : PS_wizard part selected : Automotive Custom Device 2VE3288"
+		source "$currentDir/run_2ve3288.tcl"
 
 	} else {
 
