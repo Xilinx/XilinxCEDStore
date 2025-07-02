@@ -1,0 +1,9 @@
+######### Versal Gen2 Platform example design change log ##############
+1.1 - 2025.1_web
+Updated TSU_REF clk, IPI interrupts and DDRMC 2/3/4 configuration to use internal sys_clk,and added ncr to project utils.
+
+1.0 - 2025.1
+Initial design for vek385 device
+
+
+
