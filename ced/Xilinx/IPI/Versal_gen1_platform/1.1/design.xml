@@ -1,0 +1,35 @@
+﻿<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+
+<ExampleDesign>
+ 
+<Vendor>xilinx.com</Vendor>
+ 
+<Library>design</Library>
+ 
+<Name>versal_gen1_platform</Name>
+ 
+<DisplayName>Versal Embedded Common Platform</DisplayName>
+ 
+<Description>The embedded base platform is the foundation for embedded software flows including Vitis Software Acceleration, enablement of Linux and Real time Operating Systems.  It is also the starting point for application specific platforms and examples.  
+
+This platform provides:
+
+CIPS / PS configuration including minimal PS IP
+NOC and Memory configuration
+Clocking
+
+BSP base platform  - A minimal PL payload (default)   
+Vitis Extensible Platform - Application Specific Platform Configurations and PL payloads
+
+</Description>
+ 
+<Version>1.1</Version>
+ 
+<Design>init.tcl</Design>
+ 
+<Image></Image>
+ 
+<DesignType>IPI</DesignType>
+ 
+</ExampleDesign>
+
