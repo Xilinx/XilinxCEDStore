@@ -458,25 +458,6 @@
         "company": "xilinx.com"
       },
       {
-        "name": "versal_gen1_platform",
-        "display": "Versal Embedded Common Platform",
-        "latest_revision": "1.0",
-        "commit_id": "93a6135b3a805c451c21b0ac2d7563c3bc58f773",
-        "revisions": [
-          {
-            "revision": "1.0",
-            "commit_id": "93a6135b3a805c451c21b0ac2d7563c3bc58f773",
-            "date": "01-04-2025:13:33:39",
-            "history": "Added board Versal Embedded Common Platform v1.0"
-          }
-        ],
-        "config": {
-          "root": "ced/Xilinx/IPI/Versal_gen1_platform",
-          "metadata_file": "xitem.json"
-        },
-        "company": "xilinx.com"
-      },
-      {
         "name": "zynq7000_preset",
         "display": "Zynq-7000 Design Presets",
         "latest_revision": "1.0",
@@ -852,6 +833,44 @@
         ],
         "config": {
           "root": "ced/Xilinx/IPI/Versal_gen2_platform/1.1",
+          "metadata_file": "xitem.json"
+        },
+        "company": "xilinx.com"
+      },
+      {
+        "name": "versal_gen1_platform",
+        "display": "Versal Embedded Common Platform",
+        "latest_revision": "1.0",
+        "commit_id": "faabd13f7fa5a593f9f6eddaa658b3a934ca998e",
+        "revisions": [
+          {
+            "revision": "1.0",
+            "commit_id": "faabd13f7fa5a593f9f6eddaa658b3a934ca998e",
+            "date": "08-07-2025:05:41:29",
+            "history": "Added board Versal Embedded Common Platform v1.0"
+          }
+        ],
+        "config": {
+          "root": "ced/Xilinx/IPI/Versal_gen1_platform/1.0",
+          "metadata_file": "xitem.json"
+        },
+        "company": "xilinx.com"
+      },
+      {
+        "name": "versal_gen1_platform",
+        "display": "Versal Embedded Common Platform",
+        "latest_revision": "1.1",
+        "commit_id": "faabd13f7fa5a593f9f6eddaa658b3a934ca998e",
+        "revisions": [
+          {
+            "revision": "1.1",
+            "commit_id": "faabd13f7fa5a593f9f6eddaa658b3a934ca998e",
+            "date": "08-07-2025:05:41:29",
+            "history": "Added board Versal Embedded Common Platform v1.1"
+          }
+        ],
+        "config": {
+          "root": "ced/Xilinx/IPI/Versal_gen1_platform/1.1",
           "metadata_file": "xitem.json"
         },
         "company": "xilinx.com"
