@@ -36,12 +36,6 @@ proc createDesign {design_name options} {
 
 		puts "INFO : PS_wizard part selected : Versal Premium Series"
 		source "$currentDir/run_p.tcl"
-		
-	} elseif {[regexp "xa2ve3288" $fpga_part]} {
-
-		puts "INFO : PS_wizard part selected : Automotive Custom Device 2VE3288"
-		source "$currentDir/run_2ve3288.tcl"
-
 	} else {
 
 		source "$currentDir/run.tcl"

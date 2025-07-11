@@ -1,7 +1,7 @@
 ######### Extensible Embedded Platform example design change log ##############
 
 2025.1 Changes
-Updated PS config, added support for Automotive Custom Device 2VE3288.
+Updated PS config.
 
 Converted all xlconcat, xlconstant and xlslice Xilinx IP instances to inline HDL references
 
