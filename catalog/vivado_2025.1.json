@@ -860,11 +860,11 @@
         "name": "versal_gen1_platform",
         "display": "Versal Embedded Common Platform",
         "latest_revision": "1.1",
-        "commit_id": "faabd13f7fa5a593f9f6eddaa658b3a934ca998e",
+        "commit_id": "6c722e71dfacf93fd3025b46c6c5dfb2026678e5",
         "revisions": [
           {
             "revision": "1.1",
-            "commit_id": "faabd13f7fa5a593f9f6eddaa658b3a934ca998e",
+            "commit_id": "6c722e71dfacf93fd3025b46c6c5dfb2026678e5",
             "date": "08-07-2025:05:41:29",
             "history": "Added board Versal Embedded Common Platform v1.1"
           }
