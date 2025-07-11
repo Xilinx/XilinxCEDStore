@@ -25,7 +25,7 @@ proc getSupportedParts {} {
 }
 
 proc getSupportedBoards {} {
-   set V_board_unique [get_board_parts -filter {(BOARD_NAME =~"*vek280*" && VENDOR_NAME=="xilinx.com")||(BOARD_NAME =~"*vek385*" && VENDOR_NAME=="xilinx.com")||(BOARD_NAME =~"*vck190*" && VENDOR_NAME=="xilinx.com")||(BOARD_NAME =~"*vrk160*" && VENDOR_NAME=="xilinx.com")||(BOARD_NAME =~"*vrk165*" && VENDOR_NAME=="xilinx.com")} -latest_file_version]
+   set V_board_unique [get_board_parts -filter {(BOARD_NAME =~"*vek280*" && VENDOR_NAME=="xilinx.com")||(BOARD_NAME =~"*vck190*" && VENDOR_NAME=="xilinx.com")||(BOARD_NAME =~"*vrk160*" && VENDOR_NAME=="xilinx.com")||(BOARD_NAME =~"*vrk165*" && VENDOR_NAME=="xilinx.com")} -latest_file_version]
 	return $V_board_unique
 }
 

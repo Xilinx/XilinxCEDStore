@@ -63,9 +63,6 @@ if {[regexp "Base" $bd_typ]} {
 
 	source "$currentDir/vrk_base_board.tcl"
 	
-	} elseif {[regexp "vek385" $board_name]} {
-	source "$currentDir/vek385_base.tcl" 
-	
 	} else {
 	source "$currentDir/vck_vek_base.tcl" }
 	
@@ -77,8 +74,6 @@ set_property platform.extensible true [current_project]
 	if {[regexp "vrk160" $board_name]||[regexp "vrk165" $board_name]} {
 
 	source "$currentDir/vrk_ext_board.tcl"
-	} elseif {[regexp "vek385" $board_name]} {
-	source "$currentDir/vek385_ext.tcl"
 	} else {
 	source "$currentDir/vck_vek_ext_design.tcl" }
 
@@ -123,12 +118,8 @@ create_root_design $currentDir $design_name $clk_options $irqs $use_aie
 # }
 
 if {$sgc == "true"} {
-puts "INFO: Importing the golden_noc_solution.ncr to the design!"
 
-if {[regexp "vek385" $board_name]} {
-set noc_ncr [file join $currentDir golen_ncr vek385_6081405_0xaefc5ee0.ncr]
-set file_name vek385_6081405_0xaefc5ee0.ncr
-} elseif {[regexp "vek280" $board_name]} {
+if {[regexp "vek280" $board_name]} {
 set noc_ncr [file join $currentDir golen_ncr vek280_6064896_0x4b6273b9.ncr]
 set file_name vek280_6064896_0x4b6273b9.ncr
 } elseif {[regexp "vck190" $board_name]} {
@@ -140,19 +131,10 @@ set file_name vrk160_6140274_0xaefc5ee0.ncr
 } elseif {[regexp "vrk165" $board_name]} {
 set noc_ncr [file join $currentDir golen_ncr vrk165_6140274_0xaefc5ee0.ncr]
 set file_name vrk165_6140274_0xaefc5ee0.ncr
-} elseif {[regexp "vpk120" $board_name]} {
-set noc_ncr [file join $currentDir golen_ncr vpk120_6173546_0xacfe732b.ncr]
-set file_name vpk120_6173546_0xacfe732b.ncr
-} elseif {[regexp "vmk180" $board_name]} {
-set noc_ncr [file join $currentDir golen_ncr vmk180_6173546_0x63e36e11.ncr]
-set file_name vmk180_6173546_0x63e36e11.ncr
-} elseif {[regexp "vpk180" $board_name]} {
-set noc_ncr [file join $currentDir golen_ncr vpk180_6173546_0xd11a3f2e.ncr]
-set file_name vpk180_6173546_0xd11a3f2e.ncr
 } else {
 puts "INFO: Golden NCR is not available for $board_name!!"
 }
-
+puts "INFO: Importing the golden_noc $file_name to the design!"
 import_files -fileset utils_1 $noc_ncr 
 set ncr_path [file join [get_property directory [current_project]] [current_project].srcs utils_1 imports golen_ncr]
 set_property NOC_SOLUTION_FILE $ncr_path/$file_name [get_runs impl_1]
