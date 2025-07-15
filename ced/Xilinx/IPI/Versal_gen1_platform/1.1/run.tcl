@@ -48,8 +48,6 @@ if { [dict exists $options $aie] } {
 	set use_aie [dict get $options $aie ]
 }
 
-puts "running ced with local repo...!!"
-
 open_bd_design [get_bd_files $design_name]
 set board_name [get_property BOARD_NAME [current_board]]
 
