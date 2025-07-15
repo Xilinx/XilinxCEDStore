@@ -83,7 +83,7 @@ if { [dict exists $options $irqs_param] } {
 	set irqs [dict get $options $irqs_param ]
 }
 
-if {[regexp "vck190" $board_name]||[regexp "vek280" $board_name]||[regexp "vrk160" $board_name]||[regexp "vrk165" $board_name]||[regexp "vek385" $board_name]} {
+if {[regexp "vck190" $board_name]||[regexp "vek280" $board_name]||[regexp "vrk160" $board_name]||[regexp "vrk165" $board_name]} {
 	set clk_options { clk_out1 625 0 true clk_out2 100 1 false}
 } else {
 	set clk_options { clk_out1 200 0 true } 
@@ -118,11 +118,11 @@ create_root_design $currentDir $design_name $clk_options $irqs $use_aie
 if {$sgc == "true"} {
 
 if {[regexp "vek280" $board_name]} {
-set noc_ncr [file join $currentDir golen_ncr vek280_6064896_0x4b6273b9.ncr]
-set file_name vek280_6064896_0x4b6273b9.ncr
+set noc_ncr [file join $currentDir golen_ncr vek280_6179277_0xf6f76289.ncr]
+set file_name vek280_6179277_0xf6f76289.ncr
 } elseif {[regexp "vck190" $board_name]} {
-set noc_ncr [file join $currentDir golen_ncr vck190_6064896_0xdc0c3165.ncr]
-set file_name vck190_6064896_0xdc0c3165.ncr
+set noc_ncr [file join $currentDir golen_ncr vck190_6179277_0x235e4954.ncr]
+set file_name vck190_6179277_0x235e4954.ncr
 } elseif {[regexp "vrk160" $board_name]} {
 set noc_ncr [file join $currentDir golen_ncr vrk160_6140274_0xaefc5ee0.ncr]
 set file_name vrk160_6140274_0xaefc5ee0.ncr

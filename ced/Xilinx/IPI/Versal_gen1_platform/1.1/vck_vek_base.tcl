@@ -253,29 +253,35 @@ if {[regexp "vpk120" $board_name]||[regexp "vek280" $board_name]} {
 
 } 
 
-set_property -dict [list CONFIG.MC_CHAN_REGION0 {DDR_CH2} CONFIG.NUM_MCP {2} CONFIG.NUM_MI {0} CONFIG.NUM_NSI {2} CONFIG.NUM_SI {0} ] [get_bd_cells $additional_mem2]
-set_property -dict [list CONFIG.CONNECTIONS {MC_1 {read_bw {500} write_bw {500} read_avg_burst {4} write_avg_burst {4}}} CONFIG.INI_STRATEGY {load}] [get_bd_intf_pins /$additional_mem2/S00_INI]
+set_property -dict [list CONFIG.MC_CHAN_REGION0 {DDR_CH2} CONFIG.NUM_MCP {2} CONFIG.NUM_MI {0} CONFIG.NUM_NSI {3} CONFIG.NUM_SI {0} ] [get_bd_cells $additional_mem2]
+set_property -dict [list CONFIG.CONNECTIONS {MC_0 {read_bw {500} write_bw {500} read_avg_burst {4} write_avg_burst {4}}} CONFIG.INI_STRATEGY {load}] [get_bd_intf_pins /$additional_mem2/S00_INI]
 set_property -dict [list CONFIG.CONNECTIONS {MC_0 {read_bw {500} write_bw {500} read_avg_burst {4} write_avg_burst {4}}} CONFIG.INI_STRATEGY {load}] [get_bd_intf_pins /$additional_mem2/S01_INI]
+set_property -dict [list CONFIG.CONNECTIONS {MC_1 {read_bw {500} write_bw {500} read_avg_burst {4} write_avg_burst {4}}} CONFIG.INI_STRATEGY {load}] [get_bd_intf_pins /$additional_mem2/S02_INI]
 
 
-set_property -dict [list CONFIG.MC_CHAN_REGION0 {DDR_CH1} CONFIG.NUM_MCP {2} CONFIG.NUM_MI {0} CONFIG.NUM_NSI {2} CONFIG.NUM_SI {0} ] [get_bd_cells $additional_mem1]
-set_property -dict [list CONFIG.CONNECTIONS {MC_1 {read_bw {500} write_bw {500} read_avg_burst {4} write_avg_burst {4}}} CONFIG.INI_STRATEGY {load}] [get_bd_intf_pins /$additional_mem1/S00_INI]
+set_property -dict [list CONFIG.MC_CHAN_REGION0 {DDR_CH1} CONFIG.NUM_MCP {2} CONFIG.NUM_MI {0} CONFIG.NUM_NSI {3} CONFIG.NUM_SI {0} ] [get_bd_cells $additional_mem1]
+set_property -dict [list CONFIG.CONNECTIONS {MC_0 {read_bw {500} write_bw {500} read_avg_burst {4} write_avg_burst {4}}} CONFIG.INI_STRATEGY {load}] [get_bd_intf_pins /$additional_mem1/S00_INI]
 set_property -dict [list CONFIG.CONNECTIONS {MC_0 {read_bw {500} write_bw {500} read_avg_burst {4} write_avg_burst {4}}} CONFIG.INI_STRATEGY {load}] [get_bd_intf_pins /$additional_mem1/S01_INI]
+set_property -dict [list CONFIG.CONNECTIONS {MC_1 {read_bw {500} write_bw {500} read_avg_burst {4} write_avg_burst {4}}} CONFIG.INI_STRATEGY {load}] [get_bd_intf_pins /$additional_mem1/S02_INI]
 
 # Create instance: aggr_noc, and set properties
 set aggr_noc [ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_noc aggr_noc ]
 
-set_property -dict [list CONFIG.NUM_MI {0} CONFIG.NUM_NMI {3} CONFIG.NUM_SI {0} ] [get_bd_cells aggr_noc]
+set_property -dict [list CONFIG.NUM_MI {0} CONFIG.NUM_NMI {5} CONFIG.NUM_SI {0} ] [get_bd_cells aggr_noc]
 set_property -dict [list CONFIG.INI_STRATEGY {load}] [get_bd_intf_pins /aggr_noc/M00_INI]
 set_property -dict [list CONFIG.INI_STRATEGY {load}] [get_bd_intf_pins /aggr_noc/M01_INI]
 set_property -dict [list CONFIG.INI_STRATEGY {load}] [get_bd_intf_pins /aggr_noc/M02_INI]
+set_property -dict [list CONFIG.INI_STRATEGY {load}] [get_bd_intf_pins /aggr_noc/M03_INI]
+set_property -dict [list CONFIG.INI_STRATEGY {load}] [get_bd_intf_pins /aggr_noc/M04_INI]
 
 connect_bd_intf_net [get_bd_intf_pins Master_NoC/M04_INI] [get_bd_intf_pins $additional_mem1/S00_INI]
 connect_bd_intf_net [get_bd_intf_pins Master_NoC/M05_INI] [get_bd_intf_pins $additional_mem2/S00_INI]
 
 connect_bd_intf_net [get_bd_intf_pins aggr_noc/M00_INI] [get_bd_intf_pins $default_mem/S04_INI]
 connect_bd_intf_net [get_bd_intf_pins aggr_noc/M01_INI] [get_bd_intf_pins $additional_mem1/S01_INI]
-connect_bd_intf_net [get_bd_intf_pins aggr_noc/M02_INI] [get_bd_intf_pins $additional_mem2/S01_INI]
+connect_bd_intf_net [get_bd_intf_pins aggr_noc/M02_INI] [get_bd_intf_pins $additional_mem1/S02_INI]
+connect_bd_intf_net [get_bd_intf_pins aggr_noc/M03_INI] [get_bd_intf_pins $additional_mem2/S01_INI]
+connect_bd_intf_net [get_bd_intf_pins aggr_noc/M04_INI] [get_bd_intf_pins $additional_mem2/S02_INI]
 
 
 # Create instance: ctrl_smc, and set properties
