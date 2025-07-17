@@ -874,6 +874,25 @@
           "metadata_file": "xitem.json"
         },
         "company": "xilinx.com"
+      },
+      {
+        "name": "versal_gen2_platform",
+        "display": "Versal AI Edge Series Gen 2 Embedded Common Platform",
+        "latest_revision": "1.2",
+        "commit_id": "888432428bcdfdc3c4a7234a39addce0aafc8867",
+        "revisions": [
+          {
+            "revision": "1.2",
+            "commit_id": "888432428bcdfdc3c4a7234a39addce0aafc8867",
+            "date": "17-07-2025:07:01:29",
+            "history": "Added board Versal AI Edge Series Gen 2 Embedded Common Platform v1.2"
+          }
+        ],
+        "config": {
+          "root": "ced/Xilinx/IPI/Versal_gen2_platform/1.2",
+          "metadata_file": "xitem.json"
+        },
+        "company": "xilinx.com"
       }
     ],
     "categories": [
