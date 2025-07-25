@@ -25,7 +25,7 @@ proc getSupportedParts {} {
 }
 
 proc getSupportedBoards {} {
-   set V_board_unique [get_board_parts -filter {(BOARD_NAME =~"*vek280*" && VENDOR_NAME=="xilinx.com")||(BOARD_NAME =~"*vck190*" && VENDOR_NAME=="xilinx.com")||(BOARD_NAME =~"*vrk160*" && VENDOR_NAME=="xilinx.com")} -latest_file_version]
+   set V_board_unique [get_board_parts -filter {(BOARD_NAME =~"*vek280*" && VENDOR_NAME=="xilinx.com")||(BOARD_NAME =~"*vck190*" && VENDOR_NAME=="xilinx.com")} -latest_file_version]
 	return $V_board_unique
 }
 
@@ -75,4 +75,22 @@ gui_updater {Design_type.VALUE} {Clocks.VISIBLE IRQS.VISIBLE AIE_Block.VISIBLE} 
 		set IRQS.VISIBLE true
 		#set AIE_Block.VISIBLE true
 	}
+}
+
+gui_updater {PROJECT_PARAM.PART} {Include_AIE.VISIBLE Include_AIE.ENABLEMENT Include_AIE.VALUE} {
+	set gui_flag 0
+	set V_Part [debug::dump_part_properties [get_parts ${PROJECT_PARAM.PART}]]
+	
+	foreach get_aie_prop $V_Part {
+	if {([regexp "AIE_ENGINE" [lindex $get_aie_prop 1 ]] == 1) && ([lindex $get_aie_prop 3 ] != 0) } {
+		#set Include_AIE.VISIBLE true
+		set Include_AIE.ENABLEMENT true
+		set Include_AIE.VALUE true
+		set gui_flag 1
+	} elseif {$gui_flag == 0} {
+		#set Include_AIE.VISIBLE false	 
+		set Include_AIE.ENABLEMENT false
+		set Include_AIE.VALUE false
+	}
+}
 }

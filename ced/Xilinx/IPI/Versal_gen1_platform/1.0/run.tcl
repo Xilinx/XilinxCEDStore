@@ -22,7 +22,7 @@ proc createDesign {design_name options} {
 variable currentDir
 set_property target_language Verilog [current_project]
 
-
+# Updating the default options from the GUI
 set design_typ "Design_type.VALUE"
 set bd_typ Base
 
@@ -41,6 +41,13 @@ puts "INFO: Segmented Configuration option is enbaled"
 set_property SEGMENTED_CONFIGURATION 1 [current_project]
 }
 
+set aie "Include_AIE.VALUE"
+set use_aie 1
+
+if { [dict exists $options $aie] } {
+	set use_aie [dict get $options $aie ]
+}
+
 open_bd_design [get_bd_files $design_name]
 set board_name [get_property BOARD_NAME [current_board]]
 
@@ -49,30 +56,13 @@ puts "creating the root design"
 if {[regexp "Base" $bd_typ]} {
 	
 puts "INFO: Base design is selected"
-#source "$currentDir/base_new_vip.tcl"
-if {[regexp "vrk160" $board_name]} {
-
-source "$currentDir/vrk160_base_board.tcl"
-} else {
-source "$currentDir/vck_vek_base.tcl" }
-
+source "$currentDir/vck_vek_base.tcl"
+	
 } else {
 
 puts "INFO: Extensible design is selected"
 set_property platform.extensible true [current_project]
-
-if {[regexp "vrk160" $board_name]} {
-
-source "$currentDir/vrk160_ext_board.tcl"
-} else {
-source "$currentDir/vck_vek_ext_design.tcl"
-
-set aie "Include_AIE.VALUE"
-set use_aie 1
-
-if { [dict exists $options $aie] } {
-	set use_aie [dict get $options $aie ]
-}
+source "$currentDir/vck_vek_ext_design.tcl" 
 
 # 0 (no interrupts) / 15 (interrupt controller : default) / 32 (interrupt controller) / 63 (interrupt controller + cascade block)
 set irqs_param "IRQS.VALUE"
@@ -82,7 +72,7 @@ if { [dict exists $options $irqs_param] } {
 	set irqs [dict get $options $irqs_param ]
 }
 
-if {[regexp "vck190" $board_name]||[regexp "vek280" $board_name]||[regexp "vrk160" $board_name]} {
+if {[regexp "vck190" $board_name]||[regexp "vek280" $board_name]||[regexp "vrk160" $board_name]||[regexp "vrk165" $board_name]} {
 	set clk_options { clk_out1 625 0 true clk_out2 100 1 false}
 } else {
 	set clk_options { clk_out1 200 0 true } 
@@ -104,27 +94,39 @@ puts "INFO: selected Interrupts:: $irqs"
 puts "INFO: selected design_name:: $design_name"
 puts "INFO: selected Clock_Options:: $clk_options"
 puts "INFO: selected Include_AIE:: $use_aie"
+puts "INFO: Using enhanced Versal extensible platform CED"
 
-create_root_design $currentDir $design_name $clk_options $irqs $use_aie 
-} }
+create_root_design $currentDir $design_name $clk_options $irqs $use_aie
+} 
 
-# assign_bd_address
 
 # if {[regexp "Base" $bd_typ]} {
 # set_property offset 0xA6020000 [get_bd_addr_segs {CIPS_0/M_AXI_FPD/SEG_axi_vip_0_Reg}]
 # }
 
-# if {$sgc == "true"} {
-# puts "INFO: Importing the golden_noc_solution.ncr to the design!"
-# set noc_ncr [file join $currentDir ncr golden_noc_solution.ncr]
+if {$sgc == "true"} {
 
-# import_files -fileset utils_1 $noc_ncr 
-# set ncr_file [file join [get_property directory [current_project]] [current_project].srcs utils_1 imports ncr]
-# set_property NOC_SOLUTION_FILE $ncr_file/golden_noc_solution.ncr [get_runs impl_1]
-# }
+if {[regexp "vek280" $board_name]} {
+set noc_ncr [file join $currentDir golden_ncr vek280_6140274_0x3c2bc555.ncr]
+set file_name vek280_6140274_0x3c2bc555.ncr
 
-regenerate_bd_layout
+} elseif {[regexp "vck190" $board_name]} {
+set noc_ncr [file join $currentDir golden_ncr vck190_6140274_0x6a2607a1.ncr]
+set file_name vck190_6140274_0x6a2607a1.ncr
+
+} else {
+puts "INFO: Golden NCR is not available for $board_name!!"
+}
+
+puts "INFO: Importing the Golden NCR $file_name to the design!"
+import_files -fileset utils_1 $noc_ncr 
+set ncr_path [file join [get_property directory [current_project]] [current_project].srcs utils_1 imports golden_ncr]
+set_property NOC_SOLUTION_FILE $ncr_path/$file_name [get_runs impl_1]
+}
+
+assign_bd_address
 validate_bd_design
+regenerate_bd_layout
 save_bd_design
 
 make_wrapper -files [get_files $design_name.bd] -top -import
