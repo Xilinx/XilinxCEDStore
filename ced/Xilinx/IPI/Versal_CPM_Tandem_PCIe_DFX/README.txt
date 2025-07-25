@@ -1,11 +1,11 @@
 TANDEM PCIE
 
 This example design is provided to show off the tandem PCIe configuration
-method, hereafter "tPCIe capability", for Versal devices. The tPCIe  
+method, hereafter "TPCIe capability", for Versal devices. The TPCIe  
 capability may be required for a Versal device that has a PCIe endpoint
 configured in a system that should meet the PCIe specification timing
 requirement that the device be ready to link train 120 ms after power 
-becomes valid. The tPCIe capability may also be desirable in a system to 
+becomes valid. The TPCIe capability may also be desirable in a system to 
 reduce the storage required for the stage one bitstream, at the expense  
 of additional time, software, and design overhead required to program the
 stage two bitstream to the device. When tandem PCIe is selected as the 
@@ -23,7 +23,7 @@ Extended Capability (VSEC) to enable the tandem PCIe solution, which
 relied on PCIe CfgWr TLPs and a hardened connection to the configuration 
 engine to actually transfer the bitstream data to the device. While using
 the MCAP VSEC is still an option for Versal devices, it is not recommended 
-due to its slow throughput. For improved performance, the AMD DMAs should 
+due to its low throughput. For improved performance, the AMD DMAs should 
 be employed, namely QDMA. For devices containing CPM5, the AMD QDMA is the
 only hardened DMA engine available, while devices containing CPM4 may use 
 either the AMD QDMA or XDMA engine. Detailed information about CPM and the
@@ -37,8 +37,27 @@ they are listed below so they may cross-referenced to the example design.
      PMC interfaces in the CIPS GUI
   2. Create an instance of the AXI NOC IP and connect the CPM master
      to the AXI NOC and the AXI NOC to the PMC slave 
-  3. Assign the pspmc_0_psv_pmc_slave_boot_stream slave to the CPM master 
-     in the Address Editor
+  3. Assign the pspmc_0_psv_pmc_slave_boot slave &  pspmc_0_psv_pmc_slave_boot_stream
+     slave to the CPM master in the Address Editor
+ 
+The following are the PCIe-AXI bridge translations & AXI-AXI NoC translations. 
+Ensure that the address datapath from PCIe to AXI Master interfaces along with
+the aperture size for BAR4 peripherals are appropriate according to the following. 
+
+ADDRESS TRANSLATIONS
+  
+
+     BAR#     BAR_size    Target    Aperture_size    PCIe-AXI Bridge Translation    NoC Translation(Address Remapping)
+                
+  PCIe BAR0    512KB        DMA                                0x0
+                                        
+  PCIe BAR2     2MB     axi_dbg_hub_0                     0x202_4000_0000         
+                                               
+  PCIe BAR4    256KB   axi_bram_ctrl_0  64KB                   0X0                         0x201_C000_0000
+                          m_axil        64KB                 0x1_0000                      0x201_8000_0000
+                         SBI-CTRL       64KB                 0x2_0000                       0x1_0122_0000
+                         SBI-FIFO       64KB                 0x3_0000                       0x1_0210_0000
+
 
 The QDMA driver that should be used with this design can be found on GitHub
 at the below link and there is a set of example Linux shell scripts that can 
@@ -48,7 +67,7 @@ compile and install the driver on your host system.
 
   https://github.com/Xilinx/dma_ip_drivers
 
-The following steps are an example of how a user may test the tPCIe capability
+The following steps are an example of how a user may test the TPCIe capability
 and other design elements, assuming that they've taken this example design
 through bitstream generation and have a stage1.pdi and a stage2.pdi file and
 are unfamiliar with the driver. The details of these commands and instructions 
@@ -59,13 +78,14 @@ for ease of use.
   2. Compile the QDMA driver and applications 
 
     $> cd <path>/dma_ip_drivers/QDMA/linux-kernel
-    $> make TANDEM_BOOT_SUPPORTED=1 //FIXME: option will be changed later 
+    $> make TANDEM_BOOT_SUPPORTED=1 
 
   3. Install the compiled binaries 
 
     $> make install
 
-  4. Load the stage one bitstream to the device through JTAG or another method 
+  4. Load the stage one bitstream to the device through JTAG or another method
+     file: .../<project_name>/<project_name>.runs/impl_1/Versal_CPM_Tandem_PCIe_top_tandem1.pdi     
   5. Reboot the host system 
   6. Load the QDMA driver(s) 
 
@@ -88,7 +108,8 @@ for ease of use.
           ...
           Kernel drive in use: qdma-pf
           ...
-
+ 
+   
      Note the BDF assigned to your device, which is system specific. For the
      purpose of this example, assume that the BDF is b3:00.0, as it can be
      seen in the commands shown here. If using the provided scripts embedded
@@ -101,6 +122,17 @@ for ease of use.
      memory mapped, and 1 H2C streaming.
 
     $> echo 3 > /sys/bus/pci/devices/0000:b3:00.0/qdma/qmax
+     
+     Before adding the queues, ensure proper register access by reading the
+     value at 0x2_0004(SBI-CTRL reg) from the host by executing
+ 
+    $> dma-ctl qdmab3000 reg read bar 4 0x20004 
+     
+     Record this value so that it can be restored later. 
+     Update the value to 0x29 at the offset by issuing.
+    
+    $> dma-ctl qdmab3000 reg write bar 4 0x20004 0x29
+         
 
   8. Add the queues. Queue 0 is the memory-mapped host-to-card queue, Queue 1
      is the memory-mapped card-to-host queue, and Queue 2 is the streaming
@@ -119,14 +151,28 @@ for ease of use.
     $> dma-ctl qdmab3000 q start idx 2 dir h2c 
 
   10. Transfer the stage two bitstream to the device to be programmed, 
-      targeting the SBI FIFO using address 0x102100000 
+      targeting the SBI FIFO using address 0x30000 
 
-    $> dma-to-device -d /dev/qdmab3000-MM-0 -f <stage2.pdi> -s <size> -a 0x102100000
+    $> dma-to-device -d /dev/qdmab3000-MM-0 -f ...<project_name>/<project_name>.runs/impl_1/Versal_CPM_Tandem_PCIe_top_tandem2.pdi -s <size> -a 0x30000
+      
+      One can verify the size of the stage2.pdi file in bytes by navigating to the directory
+      containing the .pdi file and issuing
+ 
+    $> ll <stage2.pdi> 
 
       !! IMPORTANT !! 
       If a device with CPM4 (not CPM5) is selected for this CED, it is required to 
       remove the driver (rmmod qdma-pf), then go back to Step 6 to re-initialize 
       the driver after loading the stage two bitstream to the device.
+
+      Step#7 directs to update the SBI-CTRL register value to 0x29. Make sure to
+      re-update it back to the original value which was stored when you first read
+      it. For this, simply issue the following to update and read back.
+    
+    $> dma-ctl qdmab3000 reg write bar 4 0x20004 <original_value>
+    
+    $> dma-ctl qdmab3000 reg read bar 4 0x20004 
+    
 
   11. (Optional) Perform H2C and C2H MM DMAs to/from BRAM and H2C ST DMA to the PL
       to verify that the stage two has successfully been programmed to the
@@ -138,7 +184,6 @@ for ease of use.
     $> dma-from-device -d /dev/qdmab3000-MM-1 -f frombram.raw -s 32 -a 0x0 -c 1
     $> hexdump frombram.raw //examine the data from card
     // H2C ST DMA to PL (64B of random data written to card)
-
     $> dma-to-device -d /dev/qdmab3000-ST-2 -f /dev/urandom -s 64 
 
 DYNAMIC FUNCTION EXCHANGE (DFX)
@@ -181,6 +226,10 @@ programmed to the device by writing and reading a BRAM word. The BRAM can be
 targeted from the host, across the PCIe link, by targeting the correct PCIe
 BAR, or a user may target the BRAM from the JTAG connection, if it exists. 
 
+For hardware testing the reconfigurable partitions(reverse, cntr8), one can
+navigate to the sub-project directory ../<project_name>.runs/child_0_impl_1 
+to locate the respective PDIs.
+
   1. To generate the static and reconfigurable bitstreams for this example
      project, only one additional step must be taken beyond what is already 
      configured at design generation: after synthesis has been ran, source 
@@ -193,5 +242,5 @@ BAR, or a user may target the BRAM from the JTAG connection, if it exists.
      files (partial bitstreams) have been created in addition to the full
      bitstream image. To deliver a partial bitstream to the device, use the
      QDMA engine of CPM to initiate an AXI-MM H2C transfer to the SBI, as
-     described in the tPCIe section above. The partial bitstreams will be 
+     described in the TPCIe section above. The partial bitstreams will be 
      named <instance pathname>_partial.pdi.
