@@ -1,8 +1,9 @@
 ######### Versal Gen1 Platform example design change log ##############
 1.1
-added support for vrk165.
-
+added support for VRK160 and VRK165.
+ 
 1.0 
-Initial design for vek280,vck190 and vrk160 segmented design
+Initial release 
+Support added for  VEK280,  VCK190
 
  

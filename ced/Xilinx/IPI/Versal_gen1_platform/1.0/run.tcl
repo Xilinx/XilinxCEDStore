@@ -49,7 +49,7 @@ puts "creating the root design"
 if {[regexp "Base" $bd_typ]} {
 	
 puts "INFO: Base design is selected"
-#source "$currentDir/base_new_vip.tcl"
+
 if {[regexp "vrk160" $board_name]} {
 
 source "$currentDir/vrk160_base_board.tcl"
