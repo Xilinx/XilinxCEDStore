@@ -1,6 +1,6 @@
 ######### Versal Gen1 Platform example design change log ##############
 1.1
-added support for VRK160 and VRK165.
+added VRK160, VRK165 board support and updated Lpddr 2 and 3 configuration to internal system clk..
  
 1.0 
 Initial release 

@@ -88,10 +88,13 @@ if {[regexp "vck190" $board_name]||[regexp "vek280" $board_name]||[regexp "vrk16
 } else {
 	set clk_options { clk_out1 200 0 true } 
 }
+set clk_defaut 0
 
 set clk_options_param "Clock_Options.VALUE"
 if { [dict exists $options $clk_options_param] } {
 	set clk_options [ dict get $options $clk_options_param ]
+} else {
+set clk_defaut 1 
 }
 
 set board_part [get_property NAME [current_board_part]]
@@ -107,8 +110,11 @@ puts "INFO: selected Clock_Options:: $clk_options"
 puts "INFO: selected Include_AIE:: $use_aie"
 puts "INFO: Using enhanced Versal extensible platform CED"
 
+if {[regexp "vrk160" $board_name]||[regexp "vrk165" $board_name]} {
+create_root_design $currentDir $design_name $clk_options $irqs $use_aie $clk_defaut
+} else {
 create_root_design $currentDir $design_name $clk_options $irqs $use_aie
-} 
+}
 
 
 # if {[regexp "Base" $bd_typ]} {
@@ -116,23 +122,25 @@ create_root_design $currentDir $design_name $clk_options $irqs $use_aie
 # }
 
 if {$sgc == "true"} {
+set dir_path [file join $currentDir golden_ncr]
 
 if {[regexp "vek280" $board_name]} {
-set noc_ncr [file join $currentDir golden_ncr vek280_6182047_0x3c2bc555.ncr]
-set file_name vek280_6182047_0x3c2bc555.ncr
+set filePattern "vek280_*.ncr"
+set noc_ncr [glob -nocomplain -directory $dir_path $filePattern]
 } elseif {[regexp "vck190" $board_name]} {
-set noc_ncr [file join $currentDir golden_ncr vck190_6182047_0x6a2607a1.ncr]
-set file_name vck190_6182047_0x6a2607a1.ncr
+set filePattern "vck190_*.ncr"
+set noc_ncr [glob -nocomplain -directory $dir_path $filePattern]
 } elseif {[regexp "vrk160" $board_name]} {
-set noc_ncr [file join $currentDir golden_ncr vrk160_6140274_0xaefc5ee0.ncr]
-set file_name vrk160_6140274_0xaefc5ee0.ncr
+set filePattern "vrk160_*.ncr"
+set noc_ncr [glob -nocomplain -directory $dir_path $filePattern]
 } elseif {[regexp "vrk165" $board_name]} {
-set noc_ncr [file join $currentDir golden_ncr vrk165_6140274_0xaefc5ee0.ncr]
-set file_name vrk165_6140274_0xaefc5ee0.ncr
+set filePattern "vrk165_*.ncr"
+set noc_ncr [glob -nocomplain -directory $dir_path $filePattern]
 } else {
 puts "INFO: Golden NCR is not available for $board_name!!"
 }
-puts "INFO: Importing the Golden NCR $file_name to the design!"
+set file_name [ lindex [split $noc_ncr "/"] end]
+puts "INFO: Importing the golden_noc $file_name to the design!"
 import_files -fileset utils_1 $noc_ncr 
 set ncr_path [file join [get_property directory [current_project]] [current_project].srcs utils_1 imports golden_ncr]
 set_property NOC_SOLUTION_FILE $ncr_path/$file_name [get_runs impl_1]

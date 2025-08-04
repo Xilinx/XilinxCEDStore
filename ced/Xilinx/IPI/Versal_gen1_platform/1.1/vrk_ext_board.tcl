@@ -18,7 +18,7 @@
 # MAIN FLOW
 ##################################################################
 
-proc create_root_design {currentDir design_name clk_options irqs use_aie} {
+proc create_root_design {currentDir design_name clk_options irqs use_aie clk_defaut} {
 
 set use_intc_15 [set use_intc_32 [set use_cascaded_irqs [set no_irqs ""]]]
 set use_intc_15 [ expr $irqs eq "15" ]
@@ -27,18 +27,15 @@ set use_cascaded_irqs [ expr $irqs eq "63" ]
 set no_irqs [ expr $irqs eq "0" ]
 
 # Create ports
-set C0_CH0_LPDDR5X_bank700_702 [ create_bd_intf_port -mode Master -vlnv xilinx.com:interface:lpddr5_rtl:1.0 C0_CH0_LPDDR5X_bank700_702 ]
+set Lpddr5_Controller_C0_CH0_Bank_700_701_702 [ create_bd_intf_port -mode Master -vlnv xilinx.com:interface:lpddr5_rtl:1.0 Lpddr5_Controller_C0_CH0_Bank_700_701_702 ]
+set Lpddr5_Controller_C0_CH1_Bank_700_701_702 [ create_bd_intf_port -mode Master -vlnv xilinx.com:interface:lpddr5_rtl:1.0 Lpddr5_Controller_C0_CH1_Bank_700_701_702 ]
 
-set C1_CH0_LPDDR5X_bank703_705 [ create_bd_intf_port -mode Master -vlnv xilinx.com:interface:lpddr5_rtl:1.0 C1_CH0_LPDDR5X_bank703_705 ]
+set Lpddr5_Controller_C1_CH0_Bank_703_704_705 [ create_bd_intf_port -mode Master -vlnv xilinx.com:interface:lpddr5_rtl:1.0 Lpddr5_Controller_C1_CH0_Bank_703_704_705 ]
+set Lpddr5_Controller_C1_CH1_Bank_703_704_705 [ create_bd_intf_port -mode Master -vlnv xilinx.com:interface:lpddr5_rtl:1.0 Lpddr5_Controller_C1_CH1_Bank_703_704_705 ]
 
-set C2_LPDDR5X_bank706_707 [ create_bd_intf_port -mode Master -vlnv xilinx.com:interface:lpddr5_rtl:1.0 C2_LPDDR5X_bank706_707 ]
+set Lpddr5_Controller_C2_Bank_706_707_int [ create_bd_intf_port -mode Master -vlnv xilinx.com:interface:lpddr5_rtl:1.0 Lpddr5_Controller_C2_Bank_706_707_int ]
 
-set C3_LPDDR5X_bank710_711 [ create_bd_intf_port -mode Master -vlnv xilinx.com:interface:lpddr5_rtl:1.0 C3_LPDDR5X_bank710_711 ]
-
-set C0_CH1_LPDDR5X_bank700_702 [ create_bd_intf_port -mode Master -vlnv xilinx.com:interface:lpddr5_rtl:1.0 C0_CH1_LPDDR5X_bank700_702 ]
-
-set C1_CH1_LPDDR5X_bank703_705 [ create_bd_intf_port -mode Master -vlnv xilinx.com:interface:lpddr5_rtl:1.0 C1_CH1_LPDDR5X_bank703_705 ]
-
+set Lpddr5_Controller_C3_Bank_709_7010_int [ create_bd_intf_port -mode Master -vlnv xilinx.com:interface:lpddr5_rtl:1.0 Lpddr5_Controller_C3_Bank_709_7010_int ]
 
 # Create instance: ps_wizard_0, and set properties
 create_bd_cell -type ip -vlnv xilinx.com:ip:ps_wizard:* ps_wizard_0
@@ -69,7 +66,7 @@ set_property -dict [list \
   CONFIG.PS_PMC_CONFIG(PS_I2C0_PERIPHERAL) {ENABLE 1 IO PMC_MIO_46:47 IO_TYPE MIO} \
   CONFIG.PS_PMC_CONFIG(PS_I2C1_PERIPHERAL) {ENABLE 1 IO PMC_MIO_44:45 IO_TYPE MIO} \
   CONFIG.PS_PMC_CONFIG(PS_I2CSYSMON_PERIPHERAL) {ENABLE 0 IO_TYPE MIO IO PS_MIO_13:14} \
-  CONFIG.PS_PMC_CONFIG(PS_IRQ_USAGE) {CH0 1 CH1 0 CH2 0 CH3 0 CH4 0 CH5 0 CH6 0 CH7 0 CH8 0 CH9 0 CH10 0 CH11 0 CH12 0 CH13 0 CH14 0 CH15 0} \
+  CONFIG.PS_PMC_CONFIG(PS_IRQ_USAGE) {CH0 1 CH1 1 CH2 1 CH3 1 CH4 1 CH5 1 CH6 1 CH7 1 CH8 0 CH9 0 CH10 0 CH11 0 CH12 0 CH13 0 CH14 0 CH15 0} \
   CONFIG.PS_PMC_CONFIG(PS_MIO12) {DRIVE_STRENGTH 8mA SLEW slow PULL pullup SCHMITT 0 AUX_IO 0 USAGE GPIO OUTPUT_DATA default DIRECTION out} \
   CONFIG.PS_PMC_CONFIG(PS_MIO15) {DRIVE_STRENGTH 8mA SLEW slow PULL pullup SCHMITT 0 AUX_IO 0 USAGE GPIO OUTPUT_DATA default DIRECTION in} \
   CONFIG.PS_PMC_CONFIG(PS_MIO21) {DRIVE_STRENGTH 8mA SLEW slow PULL pullup SCHMITT 0 AUX_IO 0 USAGE GPIO OUTPUT_DATA default DIRECTION in} \
@@ -91,13 +88,15 @@ set_property -dict [list \
   CONFIG.PS_PMC_CONFIG(SMON_PMBUS_ADDRESS) {0x18} \
 ] [get_bd_cells ps_wizard_0]
 
+set_property -dict [list CONFIG.PS_PMC_CONFIG(PMC_CRP_HSM1_REF_CTRL_FREQMHZ) {200} CONFIG.PS_PMC_CONFIG(PMC_HSM1_CLK_OUT_ENABLE) {1} ] [get_bd_cells ps_wizard_0]
+
 # Create instance: Master_NoC, and set properties
 set Master_NoC [ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_noc2 Master_NoC ]
 
 set_property -dict [list \
   CONFIG.NUM_CLKS {8} \
   CONFIG.NUM_MI {0} \
-  CONFIG.NUM_NMI {6} \
+  CONFIG.NUM_NMI {7} \
   CONFIG.NUM_SI {8} \
   CONFIG.SI_SIDEBAND_PINS {} \
 ] [get_bd_cells Master_NoC]
@@ -108,17 +107,16 @@ set_property -dict [list CONFIG.INI_STRATEGY {load}] [get_bd_intf_pins /Master_N
 set_property -dict [list CONFIG.INI_STRATEGY {load}] [get_bd_intf_pins /Master_NoC/M03_INI]
 set_property -dict [list CONFIG.INI_STRATEGY {load}] [get_bd_intf_pins /Master_NoC/M04_INI]
 set_property -dict [list CONFIG.INI_STRATEGY {load}] [get_bd_intf_pins /Master_NoC/M05_INI]
+set_property -dict [list CONFIG.INI_STRATEGY {load}] [get_bd_intf_pins /Master_NoC/M06_INI]
 
-#puts "INFO:: Segmented Configuration is enbaled on Master_NoC!"
-
-set_property -dict [list CONFIG.CATEGORY {ps_cci} CONFIG.CONNECTIONS {M04_INI {read_bw {500} write_bw {500} initial_boot {true}} M05_INI {read_bw {500} write_bw {500} initial_boot {true}} M00_INI {read_bw {500} write_bw {500} initial_boot {true}}}] [get_bd_intf_pins /Master_NoC/S00_AXI]
-set_property -dict [list CONFIG.CATEGORY {ps_cci} CONFIG.CONNECTIONS {M01_INI {read_bw {500} write_bw {500} initial_boot {true}} M04_INI {read_bw {500} write_bw {500} initial_boot {true}} M05_INI {read_bw {500} write_bw {500} initial_boot {true}}}] [get_bd_intf_pins /Master_NoC/S01_AXI]
-set_property -dict [list CONFIG.CATEGORY {ps_cci} CONFIG.CONNECTIONS {M02_INI {read_bw {500} write_bw {500} initial_boot {true}} M04_INI {read_bw {500} write_bw {500} initial_boot {true}} M05_INI {read_bw {500} write_bw {500} initial_boot {true}}}] [get_bd_intf_pins /Master_NoC/S02_AXI]
-set_property -dict [list CONFIG.CATEGORY {ps_cci} CONFIG.CONNECTIONS {M03_INI {read_bw {500} write_bw {500} initial_boot {true}} M04_INI {read_bw {500} write_bw {500} initial_boot {true}} M05_INI {read_bw {500} write_bw {500} initial_boot {true}}}] [get_bd_intf_pins /Master_NoC/S03_AXI]
-set_property -dict [list CONFIG.CATEGORY {ps_nci} CONFIG.CONNECTIONS {M04_INI {read_bw {500} write_bw {500} initial_boot {true}} M05_INI {read_bw {500} write_bw {500} initial_boot {true}} M00_INI {read_bw {500} write_bw {500} initial_boot {true}}}] [get_bd_intf_pins /Master_NoC/S04_AXI]
-set_property -dict [list CONFIG.CATEGORY {ps_nci} CONFIG.CONNECTIONS {M04_INI {read_bw {500} write_bw {500} initial_boot {true}} M05_INI {read_bw {500} write_bw {500} initial_boot {true}} M00_INI {read_bw {500} write_bw {500} initial_boot {true}}}] [get_bd_intf_pins /Master_NoC/S05_AXI]
+set_property -dict [list CONFIG.CATEGORY {ps_cci} CONFIG.CONNECTIONS {M06_INI {read_bw {500} write_bw {500} initial_boot {true}} M04_INI {read_bw {500} write_bw {500} initial_boot {true}} M05_INI {read_bw {500} write_bw {500} initial_boot {true}} M00_INI {read_bw {500} write_bw {500} initial_boot {true}}}] [get_bd_intf_pins /Master_NoC/S00_AXI]
+set_property -dict [list CONFIG.CATEGORY {ps_cci} CONFIG.CONNECTIONS {M01_INI {read_bw {500} write_bw {500} initial_boot {true}} M06_INI {read_bw {500} write_bw {500} initial_boot {true}} M04_INI {read_bw {500} write_bw {500} initial_boot {true}} M05_INI {read_bw {500} write_bw {500} initial_boot {true}}}] [get_bd_intf_pins /Master_NoC/S01_AXI]
+set_property -dict [list CONFIG.CATEGORY {ps_cci} CONFIG.CONNECTIONS {M02_INI {read_bw {500} write_bw {500} initial_boot {true}} M06_INI {read_bw {500} write_bw {500} initial_boot {true}} M04_INI {read_bw {500} write_bw {500} initial_boot {true}} M05_INI {read_bw {500} write_bw {500} initial_boot {true}}}] [get_bd_intf_pins /Master_NoC/S02_AXI]
+set_property -dict [list CONFIG.CATEGORY {ps_cci} CONFIG.CONNECTIONS {M06_INI {read_bw {500} write_bw {500} initial_boot {true}} M03_INI {read_bw {500} write_bw {500} initial_boot {true}} M04_INI {read_bw {500} write_bw {500} initial_boot {true}} M05_INI {read_bw {500} write_bw {500} initial_boot {true}}}] [get_bd_intf_pins /Master_NoC/S03_AXI]
+set_property -dict [list CONFIG.CATEGORY {ps_nci} CONFIG.CONNECTIONS {M06_INI {read_bw {500} write_bw {500} initial_boot {true}} M04_INI {read_bw {500} write_bw {500} initial_boot {true}} M05_INI {read_bw {500} write_bw {500} initial_boot {true}} M00_INI {read_bw {500} write_bw {500} initial_boot {true}}}] [get_bd_intf_pins /Master_NoC/S04_AXI]
+set_property -dict [list CONFIG.CATEGORY {ps_nci} CONFIG.CONNECTIONS {M06_INI {read_bw {500} write_bw {500} initial_boot {true}} M04_INI {read_bw {500} write_bw {500} initial_boot {true}} M05_INI {read_bw {500} write_bw {500} initial_boot {true}} M00_INI {read_bw {500} write_bw {500} initial_boot {true}}}] [get_bd_intf_pins /Master_NoC/S05_AXI]
 set_property -dict [list CONFIG.CATEGORY {ps_rpu} CONFIG.CONNECTIONS {M00_INI {read_bw {500} write_bw {500} initial_boot {true}}}] [get_bd_intf_pins /Master_NoC/S06_AXI]
-set_property -dict [list CONFIG.CATEGORY {ps_pmc} CONFIG.CONNECTIONS {M04_INI {read_bw {500} write_bw {500} initial_boot {true}} M05_INI {read_bw {500} write_bw {500} initial_boot {true}} M00_INI {read_bw {500} write_bw {500} initial_boot {true}}}] [get_bd_intf_pins /Master_NoC/S07_AXI]
+set_property -dict [list CONFIG.CATEGORY {ps_pmc} CONFIG.CONNECTIONS {M06_INI {read_bw {500} write_bw {500} initial_boot {true}} M04_INI {read_bw {500} write_bw {500} initial_boot {true}} M05_INI {read_bw {500} write_bw {500} initial_boot {true}} M00_INI {read_bw {500} write_bw {500} initial_boot {true}}}] [get_bd_intf_pins /Master_NoC/S07_AXI]
 
 connect_bd_intf_net [get_bd_intf_pins ps_wizard_0/FPD_CCI_NOC0] [get_bd_intf_pins Master_NoC/S00_AXI]
 connect_bd_intf_net [get_bd_intf_pins ps_wizard_0/FPD_CCI_NOC1] [get_bd_intf_pins Master_NoC/S01_AXI]
@@ -138,10 +136,10 @@ connect_bd_net [get_bd_pins Master_NoC/aclk5] [get_bd_pins ps_wizard_0/fpd_axi_n
 connect_bd_net [get_bd_pins ps_wizard_0/lpd_axi_noc0_clk] [get_bd_pins Master_NoC/aclk6]
 connect_bd_net [get_bd_pins ps_wizard_0/pmc_axi_noc0_clk] [get_bd_pins Master_NoC/aclk7]
 
-# Create instance: NoC_C0_C1, and set properties
-set NoC_C0_C1 [ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_noc2 NoC_C0_C1 ]
+# Create instance: NoC_C0, and set properties
+set NoC_C0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_noc2 NoC_C0 ]
 
-set_property -dict [list \
+#set_property -dict [list \
   CONFIG.C0_CH0_LPDDR5_BOARD_INTERFACE {c0_ch0_lpddr5_Controller} \
   CONFIG.C0_CH1_LPDDR5_BOARD_INTERFACE {c0_ch1_lpddr5_Controller} \
   CONFIG.C1_CH0_LPDDR5_BOARD_INTERFACE {c1_ch0_lpddr5_Controller} \
@@ -256,16 +254,256 @@ set_property -dict [list \
   CONFIG.NUM_SI {0} \
 ] [get_bd_cells NoC_C0_C1]
 
-set_property -dict [list CONFIG.CONNECTIONS {MC_0 {read_bw {500} write_bw {500} read_avg_burst {4} write_avg_burst {4} initial_boot {true}} MC_1 {read_bw {500} write_bw {500} read_avg_burst {4} write_avg_burst {4} initial_boot {true}}} CONFIG.INI_STRATEGY {load}] [get_bd_intf_pins /NoC_C0_C1/S00_INI]
-set_property -dict [list CONFIG.CONNECTIONS {MC_0 {read_bw {500} write_bw {500} read_avg_burst {4} write_avg_burst {4} initial_boot {true}} MC_1 {read_bw {500} write_bw {500} read_avg_burst {4} write_avg_burst {4} initial_boot {true}}} CONFIG.INI_STRATEGY {load}] [get_bd_intf_pins /NoC_C0_C1/S01_INI]
-set_property -dict [list CONFIG.CONNECTIONS {MC_0 {read_bw {500} write_bw {500} read_avg_burst {4} write_avg_burst {4} initial_boot {true}} MC_1 {read_bw {500} write_bw {500} read_avg_burst {4} write_avg_burst {4} initial_boot {true}}} CONFIG.INI_STRATEGY {load}] [get_bd_intf_pins /NoC_C0_C1/S02_INI]
-set_property -dict [list CONFIG.CONNECTIONS {MC_0 {read_bw {500} write_bw {500} read_avg_burst {4} write_avg_burst {4} initial_boot {true}} MC_1 {read_bw {500} write_bw {500} read_avg_burst {4} write_avg_burst {4} initial_boot {true}}} CONFIG.INI_STRATEGY {load}] [get_bd_intf_pins /NoC_C0_C1/S03_INI]
-set_property -dict [list CONFIG.CONNECTIONS {MC_0 {read_bw {500} write_bw {500} read_avg_burst {4} write_avg_burst {4} initial_boot {true}} MC_1 {read_bw {500} write_bw {500} read_avg_burst {4} write_avg_burst {4} initial_boot {true}}} CONFIG.INI_STRATEGY {load}] [get_bd_intf_pins /NoC_C0_C1/S04_INI]
+# set_property -dict [list CONFIG.CONNECTIONS {MC_0 {read_bw {500} write_bw {500} read_avg_burst {4} write_avg_burst {4} initial_boot {true}} MC_1 {read_bw {500} write_bw {500} read_avg_burst {4} write_avg_burst {4} initial_boot {true}}} CONFIG.INI_STRATEGY {load}] [get_bd_intf_pins /NoC_C0_C1/S00_INI]
+# set_property -dict [list CONFIG.CONNECTIONS {MC_0 {read_bw {500} write_bw {500} read_avg_burst {4} write_avg_burst {4} initial_boot {true}} MC_1 {read_bw {500} write_bw {500} read_avg_burst {4} write_avg_burst {4} initial_boot {true}}} CONFIG.INI_STRATEGY {load}] [get_bd_intf_pins /NoC_C0_C1/S01_INI]
+# set_property -dict [list CONFIG.CONNECTIONS {MC_0 {read_bw {500} write_bw {500} read_avg_burst {4} write_avg_burst {4} initial_boot {true}} MC_1 {read_bw {500} write_bw {500} read_avg_burst {4} write_avg_burst {4} initial_boot {true}}} CONFIG.INI_STRATEGY {load}] [get_bd_intf_pins /NoC_C0_C1/S02_INI]
+# set_property -dict [list CONFIG.CONNECTIONS {MC_0 {read_bw {500} write_bw {500} read_avg_burst {4} write_avg_burst {4} initial_boot {true}} MC_1 {read_bw {500} write_bw {500} read_avg_burst {4} write_avg_burst {4} initial_boot {true}}} CONFIG.INI_STRATEGY {load}] [get_bd_intf_pins /NoC_C0_C1/S03_INI]
+# set_property -dict [list CONFIG.CONNECTIONS {MC_0 {read_bw {500} write_bw {500} read_avg_burst {4} write_avg_burst {4} initial_boot {true}} MC_1 {read_bw {500} write_bw {500} read_avg_burst {4} write_avg_burst {4} initial_boot {true}}} CONFIG.INI_STRATEGY {load}] [get_bd_intf_pins /NoC_C0_C1/S04_INI]
+
+set_property -dict [list \
+  CONFIG.C0_CH0_LPDDR5_BOARD_INTERFACE {Lpddr5_Controller_C0_CH0_Bank_700_701_702} \
+  CONFIG.C0_CH1_LPDDR5_BOARD_INTERFACE {Lpddr5_Controller_C0_CH1_Bank_700_701_702} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_ADDRESS_MAP) {NA,NA,NA,NA,NA,NA,NA,NA,RA15,RA14,RA13,RA12,RA11,RA10,RA9,RA8,RA7,RA6,RA5,RA4,RA3,RA2,RA1,RA0,BA1,BA0,BG1,BG0,CA5,CA4,CA3,CA2,NC,CA1,CA0,NC,NC,NC,NC,NA} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_AUTO_PRECHARGE) {true} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_BACKGROUND_SCRUB) {false} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_BOARD_INTRF_EN) {true} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_BURST_ADDR_WIDTH) {4} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_COL_ADDR_WIDTH) {6} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_CONTROLLERTYPE) {LPDDR5_SDRAM} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_CRYPTO) {false} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_DATA_WIDTH) {16} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_DDR5_2T) {DISABLE} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_DDR5_TFAW_DLR) {0} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_DDR5_TREFSBRD) {0} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_DDR5_TREFSBRD_DLR) {0} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_DDR5_TREFSBRD_SLR) {0} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_DDR5_TRFC1_DLR) {0} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_DDR5_TRFC1_DPR) {0} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_DDR5_TRFC2_DLR) {0} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_DDR5_TRFC2_DPR) {0} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_DDR5_TRFCSB_DLR) {0} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_DM_EN) {true} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_DQS_OSCI_EN) {DISABLE} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_DRAM_SIZE) {16Gb} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_DRAM_WIDTH) {x16} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_F0_CL) {64} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_F0_DDR5_TCCD_L_WR) {0} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_F0_DDR5_TCCD_L_WR2) {0} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_F0_DDR5_TPD) {0} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_F0_DDR5_TRP) {18000} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_F0_DDR5_TRRD_L) {0} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_F0_LP5_BANK_ARCH) {BG} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_F0_LP5_TCSPD) {10938} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_F0_LP5_TRPAB) {21000} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_F0_LP5_TRPPB) {18000} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_F0_LP5_TRRD) {3750} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_F0_RL) {25} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_F0_TCCD_L) {4} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_F0_TCK) {938} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_F0_TFAW) {15000} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_F0_TRAS) {42000} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_F0_TRCD) {18000} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_F0_TRTP) {7500} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_F0_TXP) {7000} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_F0_TZQLAT) {30000} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_F0_WL) {12} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_F1_CL) {64} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_F1_DDR5_TCCD_L_WR) {0} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_F1_DDR5_TCCD_L_WR2) {0} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_F1_DDR5_TPD) {0} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_F1_DDR5_TRP) {18000} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_F1_DDR5_TRRD_L) {0} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_F1_LP5_BANK_ARCH) {BG} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_F1_LP5_TCSPD) {10938} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_F1_LP5_TRPAB) {21000} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_F1_LP5_TRPPB) {18000} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_F1_LP5_TRRD) {3750} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_F1_RL) {25} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_F1_TCCD_L) {4} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_F1_TCK) {938} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_F1_TFAW) {15000} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_F1_TRAS) {42000} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_F1_TRCD) {18000} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_F1_TRTP) {7500} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_F1_TXP) {7000} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_F1_TZQLAT) {30000} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_F1_WL) {12} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_FREQ_SWITCHING) {false} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_INLINE_ECC) {false} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_INPUTCLK0_PERIOD) {3127} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_INTERLEAVE_SIZE) {128} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_LATENCY_MODE) {x16} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_LOW_TRFC_DPR) {false} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_LP5_TPBR2ACT) {7500} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_LP5_TPBR2PBR) {90000} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_LP5_TRFCAB) {280000} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_LP5_TRFCPB) {140000} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_LP5_TRFMAB) {280000} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_LP5_TRFMPB) {190000} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_MAIN_DEVICE_TYPE) {Components} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_MC0_CONFIG_SEL) {config9} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_MC1_CONFIG_SEL) {config9} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_MEMORY_DENSITY) {2GB} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_NUM_CH) {2} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_NUM_CK) {1} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_NUM_MC) {1} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_NUM_MCP) {1} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_NUM_RANKS) {1} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_ON_DIE_ECC) {false} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_OP_TEMPERATURE) {LOW} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_PERIODIC_READ) {ENABLE} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_PRE_DEF_ADDR_MAP_SEL) {ROW_BANK_COLUMN} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_RD_DBI) {true} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_REFRESH_MODE) {NORMAL} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_REFRESH_TYPE) {ALL_BANK} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_REF_AND_PER_CAL_INTF) {false} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_ROW_ADDR_WIDTH) {16} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_SCRUB_SIZE) {1} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_SELF_REFRESH) {DISABLE} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_SPEED_GRADE) {LPDDR5X-8533} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_SYSTEM_CLOCK) {No_Buffer} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_TREFI) {3906000} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_UBLAZE_BLI_INTF) {false} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_USER_REFRESH) {false} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_WL_SET) {A} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_WR_DBI) {true} \
+  CONFIG.MC_CHAN_REGION1 {DDR_CH0_MED} \
+  CONFIG.NUM_MI {0} \
+  CONFIG.NUM_NSI {5} \
+  CONFIG.NUM_SI {0} \
+] [get_bd_cells NoC_C0]
+
+set_property -dict [list CONFIG.CONNECTIONS {MC_0 {read_bw {500} write_bw {500} read_avg_burst {4} write_avg_burst {4} initial_boot {true}} MC_1 {read_bw {500} write_bw {500} read_avg_burst {4} write_avg_burst {4} initial_boot {true}}} CONFIG.INI_STRATEGY {load}] [get_bd_intf_pins /NoC_C0/S00_INI]
+set_property -dict [list CONFIG.CONNECTIONS {MC_0 {read_bw {500} write_bw {500} read_avg_burst {4} write_avg_burst {4} initial_boot {true}} MC_1 {read_bw {500} write_bw {500} read_avg_burst {4} write_avg_burst {4} initial_boot {true}}} CONFIG.INI_STRATEGY {load}] [get_bd_intf_pins /NoC_C0/S01_INI]
+set_property -dict [list CONFIG.CONNECTIONS {MC_0 {read_bw {500} write_bw {500} read_avg_burst {4} write_avg_burst {4} initial_boot {true}} MC_1 {read_bw {500} write_bw {500} read_avg_burst {4} write_avg_burst {4} initial_boot {true}}} CONFIG.INI_STRATEGY {load}] [get_bd_intf_pins /NoC_C0/S02_INI]
+set_property -dict [list CONFIG.CONNECTIONS {MC_0 {read_bw {500} write_bw {500} read_avg_burst {4} write_avg_burst {4} initial_boot {true}} MC_1 {read_bw {500} write_bw {500} read_avg_burst {4} write_avg_burst {4} initial_boot {true}}} CONFIG.INI_STRATEGY {load}] [get_bd_intf_pins /NoC_C0/S03_INI]
+set_property -dict [list CONFIG.CONNECTIONS {MC_0 {read_bw {500} write_bw {500} read_avg_burst {4} write_avg_burst {4} initial_boot {true}} MC_1 {read_bw {500} write_bw {500} read_avg_burst {4} write_avg_burst {4} initial_boot {true}}} CONFIG.INI_STRATEGY {load}] [get_bd_intf_pins /NoC_C0/S04_INI]
+
+
+# Create instance: NoC_C1, and set properties
+set NoC_C1 [ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_noc2 NoC_C1 ]
+
+set_property -dict [list \
+  CONFIG.C0_CH0_LPDDR5_BOARD_INTERFACE {Lpddr5_Controller_C1_CH0_Bank_703_704_705} \
+  CONFIG.C0_CH1_LPDDR5_BOARD_INTERFACE {Lpddr5_Controller_C1_CH1_Bank_703_704_705} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_ADDRESS_MAP) {NA,NA,NA,NA,NA,NA,NA,NA,RA15,RA14,RA13,RA12,RA11,RA10,RA9,RA8,RA7,RA6,RA5,RA4,RA3,RA2,RA1,RA0,BA1,BA0,BG1,BG0,CA5,CA4,CA3,CA2,NC,CA1,CA0,NC,NC,NC,NC,NA} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_AUTO_PRECHARGE) {true} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_BACKGROUND_SCRUB) {false} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_BOARD_INTRF_EN) {true} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_BURST_ADDR_WIDTH) {4} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_COL_ADDR_WIDTH) {6} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_CONTROLLERTYPE) {LPDDR5_SDRAM} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_CRYPTO) {false} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_DATA_WIDTH) {16} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_DDR5_2T) {DISABLE} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_DDR5_TFAW_DLR) {0} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_DDR5_TREFSBRD) {0} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_DDR5_TREFSBRD_DLR) {0} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_DDR5_TREFSBRD_SLR) {0} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_DDR5_TRFC1_DLR) {0} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_DDR5_TRFC1_DPR) {0} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_DDR5_TRFC2_DLR) {0} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_DDR5_TRFC2_DPR) {0} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_DDR5_TRFCSB_DLR) {0} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_DM_EN) {true} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_DQS_OSCI_EN) {DISABLE} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_DRAM_SIZE) {16Gb} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_DRAM_WIDTH) {x16} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_F0_CL) {64} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_F0_DDR5_TCCD_L_WR) {0} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_F0_DDR5_TCCD_L_WR2) {0} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_F0_DDR5_TPD) {0} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_F0_DDR5_TRP) {18000} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_F0_DDR5_TRRD_L) {0} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_F0_LP5_BANK_ARCH) {BG} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_F0_LP5_TCSPD) {10938} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_F0_LP5_TRPAB) {21000} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_F0_LP5_TRPPB) {18000} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_F0_LP5_TRRD) {3750} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_F0_RL) {25} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_F0_TCCD_L) {4} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_F0_TCK) {938} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_F0_TFAW) {15000} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_F0_TRAS) {42000} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_F0_TRCD) {18000} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_F0_TRTP) {7500} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_F0_TXP) {7000} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_F0_TZQLAT) {30000} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_F0_WL) {12} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_F1_CL) {64} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_F1_DDR5_TCCD_L_WR) {0} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_F1_DDR5_TCCD_L_WR2) {0} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_F1_DDR5_TPD) {0} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_F1_DDR5_TRP) {18000} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_F1_DDR5_TRRD_L) {0} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_F1_LP5_BANK_ARCH) {BG} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_F1_LP5_TCSPD) {10938} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_F1_LP5_TRPAB) {21000} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_F1_LP5_TRPPB) {18000} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_F1_LP5_TRRD) {3750} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_F1_RL) {25} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_F1_TCCD_L) {4} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_F1_TCK) {938} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_F1_TFAW) {15000} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_F1_TRAS) {42000} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_F1_TRCD) {18000} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_F1_TRTP) {7500} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_F1_TXP) {7000} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_F1_TZQLAT) {30000} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_F1_WL) {12} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_FREQ_SWITCHING) {false} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_INLINE_ECC) {false} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_INPUTCLK0_PERIOD) {3127} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_INTERLEAVE_SIZE) {128} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_LATENCY_MODE) {x16} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_LOW_TRFC_DPR) {false} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_LP5_TPBR2ACT) {7500} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_LP5_TPBR2PBR) {90000} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_LP5_TRFCAB) {280000} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_LP5_TRFCPB) {140000} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_LP5_TRFMAB) {280000} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_LP5_TRFMPB) {190000} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_MAIN_DEVICE_TYPE) {Components} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_MC0_CONFIG_SEL) {config9} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_MC1_CONFIG_SEL) {config9} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_MEMORY_DENSITY) {2GB} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_NUM_CH) {2} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_NUM_CK) {1} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_NUM_MC) {1} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_NUM_MCP) {1} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_NUM_RANKS) {1} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_ON_DIE_ECC) {false} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_OP_TEMPERATURE) {LOW} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_PERIODIC_READ) {ENABLE} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_PRE_DEF_ADDR_MAP_SEL) {ROW_BANK_COLUMN} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_RD_DBI) {true} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_REFRESH_MODE) {NORMAL} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_REFRESH_TYPE) {ALL_BANK} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_REF_AND_PER_CAL_INTF) {false} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_ROW_ADDR_WIDTH) {16} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_SCRUB_SIZE) {1} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_SELF_REFRESH) {DISABLE} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_SPEED_GRADE) {LPDDR5X-8533} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_SYSTEM_CLOCK) {No_Buffer} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_TREFI) {3906000} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_UBLAZE_BLI_INTF) {false} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_USER_REFRESH) {false} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_WL_SET) {A} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_WR_DBI) {true} \
+  CONFIG.MC_CHAN_REGION0 {DDR_CH1} \
+  CONFIG.NUM_MI {0} \
+  CONFIG.NUM_NSI {3} \
+  CONFIG.NUM_SI {0} \
+] [get_bd_cells NoC_C1]
+
+set_property -dict [list CONFIG.CONNECTIONS {MC_0 {read_bw {500} write_bw {500} read_avg_burst {4} write_avg_burst {4} initial_boot {true}} MC_1 {read_bw {500} write_bw {500} read_avg_burst {4} write_avg_burst {4} initial_boot {true}}} CONFIG.INI_STRATEGY {load}] [get_bd_intf_pins /NoC_C1/S00_INI]
+set_property -dict [list CONFIG.CONNECTIONS {MC_0 {read_bw {500} write_bw {500} read_avg_burst {4} write_avg_burst {4} initial_boot {true}} MC_1 {read_bw {500} write_bw {500} read_avg_burst {4} write_avg_burst {4} initial_boot {true}}} CONFIG.INI_STRATEGY {load}] [get_bd_intf_pins /NoC_C1/S01_INI]
+set_property -dict [list CONFIG.CONNECTIONS {MC_0 {read_bw {500} write_bw {500} read_avg_burst {4} write_avg_burst {4} initial_boot {true}} MC_1 {read_bw {500} write_bw {500} read_avg_burst {4} write_avg_burst {4} initial_boot {true}}} CONFIG.INI_STRATEGY {load}] [get_bd_intf_pins /NoC_C1/S02_INI]
 
 # Create instance: NoC_C2, and set properties
 set NoC_C2 [ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_noc2 NoC_C2 ]
 
-set_property -dict [list \
+#set_property -dict [list \
   CONFIG.C0_CH0_LPDDR5_BOARD_INTERFACE {c2_lpddr5_Controller} \
   CONFIG.DDRMC5_CONFIG(DDRMC5_ADDRESS_MAP) {NA,NA,NA,NA,NA,NA,NA,NA,RA15,RA14,RA13,RA12,RA11,RA10,RA9,RA8,RA7,RA6,RA5,RA4,RA3,RA2,RA1,RA0,BA1,BA0,BG1,BG0,CA5,CA4,CA3,CA2,CA1,CA0,NC,NC,NC,NC,NA,NA} \
   CONFIG.DDRMC5_CONFIG(DDRMC5_AUTO_PRECHARGE) {true} \
@@ -378,14 +616,127 @@ set_property -dict [list \
   CONFIG.NUM_SI {0} \
 ] [get_bd_cells NoC_C2]
 
-set_property -dict [list CONFIG.CONNECTIONS {MC_0 {read_bw {500} write_bw {500} read_avg_burst {4} write_avg_burst {4} initial_boot {true}}}] [get_bd_intf_pins /NoC_C2/S00_INI]
-set_property -dict [list CONFIG.CONNECTIONS {MC_0 {read_bw {500} write_bw {500} read_avg_burst {4} write_avg_burst {4} initial_boot {true}}}] [get_bd_intf_pins /NoC_C2/S01_INI]
-set_property -dict [list CONFIG.CONNECTIONS {MC_1 {read_bw {500} write_bw {500} read_avg_burst {4} write_avg_burst {4} initial_boot {true}}}] [get_bd_intf_pins /NoC_C2/S02_INI]
+set_property -dict [list \
+  CONFIG.C0_CH0_LPDDR5_BOARD_INTERFACE {Lpddr5_Controller_C2_Bank_706_707_int} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_ADDRESS_MAP) {NA,NA,NA,NA,NA,NA,NA,NA,RA15,RA14,RA13,RA12,RA11,RA10,RA9,RA8,RA7,RA6,RA5,RA4,RA3,RA2,RA1,RA0,BA1,BA0,BG1,BG0,CA5,CA4,CA3,CA2,CA1,CA0,NC,NC,NC,NC,NA,NA} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_AUTO_PRECHARGE) {true} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_BACKGROUND_SCRUB) {false} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_BOARD_INTRF_EN) {true} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_BURST_ADDR_WIDTH) {4} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_COL_ADDR_WIDTH) {6} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_CONTROLLERTYPE) {LPDDR5_SDRAM} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_CRYPTO) {false} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_DATA_WIDTH) {32} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_DDR5_2T) {DISABLE} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_DDR5_TFAW_DLR) {0} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_DDR5_TREFSBRD) {0} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_DDR5_TREFSBRD_DLR) {0} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_DDR5_TREFSBRD_SLR) {0} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_DDR5_TRFC1_DLR) {0} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_DDR5_TRFC1_DPR) {0} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_DDR5_TRFC2_DLR) {0} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_DDR5_TRFC2_DPR) {0} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_DDR5_TRFCSB_DLR) {0} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_DM_EN) {true} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_DQS_OSCI_EN) {DISABLE} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_DRAM_SIZE) {16Gb} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_DRAM_WIDTH) {x16} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_F0_CL) {64} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_F0_DDR5_TCCD_L_WR) {0} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_F0_DDR5_TCCD_L_WR2) {0} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_F0_DDR5_TPD) {0} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_F0_DDR5_TRP) {18000} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_F0_DDR5_TRRD_L) {0} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_F0_LP5_BANK_ARCH) {BG} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_F0_LP5_TCSPD) {10952} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_F0_LP5_TRPAB) {21000} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_F0_LP5_TRPPB) {18000} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_F0_LP5_TRRD) {3750} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_F0_RL) {25} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_F0_TCCD_L) {4} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_F0_TCK) {952} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_F0_TFAW) {15000} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_F0_TRAS) {42000} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_F0_TRCD) {18000} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_F0_TRTP) {7500} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_F0_TXP) {7000} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_F0_TZQLAT) {30000} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_F0_WL) {12} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_F1_CL) {64} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_F1_DDR5_TCCD_L_WR) {0} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_F1_DDR5_TCCD_L_WR2) {0} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_F1_DDR5_TPD) {0} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_F1_DDR5_TRP) {18000} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_F1_DDR5_TRRD_L) {0} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_F1_LP5_BANK_ARCH) {BG} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_F1_LP5_TCSPD) {10952} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_F1_LP5_TRPAB) {21000} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_F1_LP5_TRPPB) {18000} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_F1_LP5_TRRD) {3750} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_F1_RL) {25} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_F1_TCCD_L) {4} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_F1_TCK) {952} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_F1_TFAW) {15000} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_F1_TRAS) {42000} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_F1_TRCD) {18000} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_F1_TRTP) {7500} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_F1_TXP) {7000} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_F1_TZQLAT) {30000} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_F1_WL) {12} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_FREQ_SWITCHING) {false} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_INLINE_ECC) {false} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_INPUTCLK0_PERIOD) {4998} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_INTERLEAVE_SIZE) {0} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_LATENCY_MODE) {x16} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_LOW_TRFC_DPR) {false} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_LP5_TPBR2ACT) {7500} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_LP5_TPBR2PBR) {90000} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_LP5_TRFCAB) {280000} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_LP5_TRFCPB) {140000} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_LP5_TRFMAB) {280000} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_LP5_TRFMPB) {190000} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_MAIN_DEVICE_TYPE) {Components} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_MC0_CONFIG_SEL) {config13} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_MC3_CONFIG_SEL) {config13} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_MEMORY_DENSITY) {4GB} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_NUM_CH) {1} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_NUM_CK) {1} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_NUM_MC) {1} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_NUM_MCP) {1} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_NUM_RANKS) {1} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_ON_DIE_ECC) {false} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_OP_TEMPERATURE) {LOW} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_PERIODIC_READ) {ENABLE} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_PRE_DEF_ADDR_MAP_SEL) {ROW_BANK_COLUMN} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_RD_DBI) {true} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_REFRESH_MODE) {NORMAL} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_REFRESH_TYPE) {ALL_BANK} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_REF_AND_PER_CAL_INTF) {false} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_ROW_ADDR_WIDTH) {16} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_SCRUB_SIZE) {1} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_SELF_REFRESH) {DISABLE} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_SPEED_GRADE) {LPDDR5X-8533} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_SYSTEM_CLOCK) {Internal} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_TREFI) {3906000} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_UBLAZE_BLI_INTF) {false} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_USER_REFRESH) {false} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_WL_SET) {A} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_WR_DBI) {true} \
+  CONFIG.MC_CHAN_REGION0 {DDR_CH2} \
+  CONFIG.NUM_MCP {2} \
+  CONFIG.NUM_MI {0} \
+  CONFIG.NUM_NSI {3} \
+  CONFIG.NUM_SI {0} \
+] [get_bd_cells NoC_C2]
+
+set_property -dict [list CONFIG.CONNECTIONS {MC_0 {read_bw {500} write_bw {500} read_avg_burst {4} write_avg_burst {4} initial_boot {true}}} CONFIG.INI_STRATEGY {load}] [get_bd_intf_pins /NoC_C2/S00_INI]
+set_property -dict [list CONFIG.CONNECTIONS {MC_0 {read_bw {500} write_bw {500} read_avg_burst {4} write_avg_burst {4} initial_boot {true}}} CONFIG.INI_STRATEGY {load}] [get_bd_intf_pins /NoC_C2/S01_INI]
+set_property -dict [list CONFIG.CONNECTIONS {MC_1 {read_bw {500} write_bw {500} read_avg_burst {4} write_avg_burst {4} initial_boot {true}}} CONFIG.INI_STRATEGY {load}] [get_bd_intf_pins /NoC_C2/S02_INI]
 
 # Create instance: NoC_C3, and set properties
 set NoC_C3 [ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_noc2 NoC_C3 ]
 
-set_property -dict [list \
+#set_property -dict [list \
   CONFIG.C0_CH0_LPDDR5_BOARD_INTERFACE {c3_lpddr5_Controller} \
   CONFIG.DDRMC5_CONFIG(DDRMC5_ADDRESS_MAP) {NA,NA,NA,NA,NA,NA,NA,NA,RA15,RA14,RA13,RA12,RA11,RA10,RA9,RA8,RA7,RA6,RA5,RA4,RA3,RA2,RA1,RA0,BA1,BA0,BG1,BG0,CA5,CA4,CA3,CA2,CA1,CA0,NC,NC,NC,NC,NA,NA} \
   CONFIG.DDRMC5_CONFIG(DDRMC5_AUTO_PRECHARGE) {true} \
@@ -498,36 +849,152 @@ set_property -dict [list \
   CONFIG.NUM_SI {0} \
 ] [get_bd_cells NoC_C3]
 
-set_property -dict [list CONFIG.CONNECTIONS {MC_0 {read_bw {500} write_bw {500} read_avg_burst {4} write_avg_burst {4} initial_boot {false}}}] [get_bd_intf_pins /NoC_C3/S00_INI]
-set_property -dict [list CONFIG.CONNECTIONS {MC_0 {read_bw {500} write_bw {500} read_avg_burst {4} write_avg_burst {4} initial_boot {false}}}] [get_bd_intf_pins /NoC_C3/S01_INI]
-set_property -dict [list CONFIG.CONNECTIONS {MC_1 {read_bw {500} write_bw {500} read_avg_burst {4} write_avg_burst {4} initial_boot {false}}}] [get_bd_intf_pins /NoC_C3/S02_INI]
+set_property -dict [list \
+  CONFIG.C0_CH0_LPDDR5_BOARD_INTERFACE {Lpddr5_Controller_C3_Bank_709_7010_int} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_ADDRESS_MAP) {NA,NA,NA,NA,NA,NA,NA,NA,RA15,RA14,RA13,RA12,RA11,RA10,RA9,RA8,RA7,RA6,RA5,RA4,RA3,RA2,RA1,RA0,BA1,BA0,BG1,BG0,CA5,CA4,CA3,CA2,CA1,CA0,NC,NC,NC,NC,NA,NA} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_AUTO_PRECHARGE) {true} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_BACKGROUND_SCRUB) {false} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_BOARD_INTRF_EN) {true} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_BURST_ADDR_WIDTH) {4} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_COL_ADDR_WIDTH) {6} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_CONTROLLERTYPE) {LPDDR5_SDRAM} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_CRYPTO) {false} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_DATA_WIDTH) {32} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_DDR5_2T) {DISABLE} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_DDR5_TFAW_DLR) {0} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_DDR5_TREFSBRD) {0} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_DDR5_TREFSBRD_DLR) {0} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_DDR5_TREFSBRD_SLR) {0} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_DDR5_TRFC1_DLR) {0} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_DDR5_TRFC1_DPR) {0} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_DDR5_TRFC2_DLR) {0} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_DDR5_TRFC2_DPR) {0} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_DDR5_TRFCSB_DLR) {0} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_DM_EN) {true} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_DQS_OSCI_EN) {DISABLE} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_DRAM_SIZE) {16Gb} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_DRAM_WIDTH) {x16} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_F0_CL) {64} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_F0_DDR5_TCCD_L_WR) {0} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_F0_DDR5_TCCD_L_WR2) {0} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_F0_DDR5_TPD) {0} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_F0_DDR5_TRP) {18000} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_F0_DDR5_TRRD_L) {0} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_F0_LP5_BANK_ARCH) {BG} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_F0_LP5_TCSPD) {10952} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_F0_LP5_TRPAB) {21000} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_F0_LP5_TRPPB) {18000} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_F0_LP5_TRRD) {3750} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_F0_RL) {25} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_F0_TCCD_L) {4} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_F0_TCK) {952} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_F0_TFAW) {15000} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_F0_TRAS) {42000} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_F0_TRCD) {18000} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_F0_TRTP) {7500} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_F0_TXP) {7000} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_F0_TZQLAT) {30000} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_F0_WL) {12} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_F1_CL) {64} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_F1_DDR5_TCCD_L_WR) {0} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_F1_DDR5_TCCD_L_WR2) {0} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_F1_DDR5_TPD) {0} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_F1_DDR5_TRP) {18000} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_F1_DDR5_TRRD_L) {0} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_F1_LP5_BANK_ARCH) {BG} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_F1_LP5_TCSPD) {10952} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_F1_LP5_TRPAB) {21000} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_F1_LP5_TRPPB) {18000} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_F1_LP5_TRRD) {3750} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_F1_RL) {25} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_F1_TCCD_L) {4} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_F1_TCK) {952} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_F1_TFAW) {15000} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_F1_TRAS) {42000} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_F1_TRCD) {18000} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_F1_TRTP) {7500} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_F1_TXP) {7000} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_F1_TZQLAT) {30000} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_F1_WL) {12} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_FREQ_SWITCHING) {false} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_INLINE_ECC) {false} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_INPUTCLK0_PERIOD) {4998} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_INTERLEAVE_SIZE) {0} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_LATENCY_MODE) {x16} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_LOW_TRFC_DPR) {false} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_LP5_TPBR2ACT) {7500} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_LP5_TPBR2PBR) {90000} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_LP5_TRFCAB) {280000} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_LP5_TRFCPB) {140000} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_LP5_TRFMAB) {280000} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_LP5_TRFMPB) {190000} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_MAIN_DEVICE_TYPE) {Components} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_MC0_CONFIG_SEL) {config13} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_MC3_CONFIG_SEL) {config13} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_MEMORY_DENSITY) {4GB} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_NUM_CH) {1} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_NUM_CK) {1} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_NUM_MC) {1} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_NUM_MCP) {1} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_NUM_RANKS) {1} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_ON_DIE_ECC) {false} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_OP_TEMPERATURE) {LOW} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_PERIODIC_READ) {ENABLE} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_PRE_DEF_ADDR_MAP_SEL) {ROW_BANK_COLUMN} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_RD_DBI) {true} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_REFRESH_MODE) {NORMAL} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_REFRESH_TYPE) {ALL_BANK} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_REF_AND_PER_CAL_INTF) {false} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_ROW_ADDR_WIDTH) {16} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_SCRUB_SIZE) {1} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_SELF_REFRESH) {DISABLE} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_SPEED_GRADE) {LPDDR5X-8533} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_SYSTEM_CLOCK) {Internal} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_TREFI) {3906000} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_UBLAZE_BLI_INTF) {false} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_USER_REFRESH) {false} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_WL_SET) {A} \
+  CONFIG.DDRMC5_CONFIG(DDRMC5_WR_DBI) {true} \
+  CONFIG.MC_CHAN_REGION0 {DDR_CH3} \
+  CONFIG.NUM_MCP {2} \
+  CONFIG.NUM_MI {0} \
+  CONFIG.NUM_NSI {3} \
+  CONFIG.NUM_SI {0} \
+] [get_bd_cells NoC_C3]
+
+set_property -dict [list CONFIG.CONNECTIONS {MC_0 {read_bw {500} write_bw {500} read_avg_burst {4} write_avg_burst {4} initial_boot {true}}} CONFIG.INI_STRATEGY {load}] [get_bd_intf_pins /NoC_C3/S00_INI]
+set_property -dict [list CONFIG.CONNECTIONS {MC_0 {read_bw {500} write_bw {500} read_avg_burst {4} write_avg_burst {4} initial_boot {true}}} CONFIG.INI_STRATEGY {load}] [get_bd_intf_pins /NoC_C3/S01_INI]
+set_property -dict [list CONFIG.CONNECTIONS {MC_1 {read_bw {500} write_bw {500} read_avg_burst {4} write_avg_burst {4} initial_boot {true}}} CONFIG.INI_STRATEGY {load}] [get_bd_intf_pins /NoC_C3/S02_INI]
 
 # Create instance: util_ds_buf_0, and set properties
 create_bd_cell -type ip -vlnv xilinx.com:ip:util_ds_buf:* util_ds_buf_0
 apply_board_connection -board_interface "lpddr5_clk0_1" -ip_intf "util_ds_buf_0/CLK_IN_D" -diagram $design_name 
 
-# Create instance: util_ds_buf_1, and set properties
-create_bd_cell -type ip -vlnv xilinx.com:ip:util_ds_buf:* util_ds_buf_1
-apply_board_connection -board_interface "lpddr5_clk2_3" -ip_intf "util_ds_buf_1/CLK_IN_D" -diagram $design_name 
+connect_bd_net [get_bd_pins util_ds_buf_0/IBUF_OUT] [get_bd_pins NoC_C0/sys_clk0] [get_bd_pins NoC_C1/sys_clk0]
+connect_bd_net [get_bd_pins ps_wizard_0/hsm1_ref_clk] [get_bd_pins NoC_C2/sys_clk0] [get_bd_pins NoC_C3/sys_clk0]
 
-connect_bd_net [get_bd_pins util_ds_buf_0/IBUF_OUT] [get_bd_pins NoC_C0_C1/sys_clk0] [get_bd_pins NoC_C0_C1/sys_clk1]
-connect_bd_net [get_bd_pins util_ds_buf_1/IBUF_OUT] [get_bd_pins NoC_C3/sys_clk0] [get_bd_pins NoC_C2/sys_clk0]
+# # Create instance: util_ds_buf_1, and set properties
+# create_bd_cell -type ip -vlnv xilinx.com:ip:util_ds_buf:* util_ds_buf_1
+# apply_board_connection -board_interface "lpddr5_clk2_3" -ip_intf "util_ds_buf_1/CLK_IN_D" -diagram $design_name 
 
-connect_bd_intf_net [get_bd_intf_pins Master_NoC/M00_INI] [get_bd_intf_pins NoC_C0_C1/S00_INI]
-connect_bd_intf_net [get_bd_intf_pins Master_NoC/M01_INI] [get_bd_intf_pins NoC_C0_C1/S01_INI]
-connect_bd_intf_net [get_bd_intf_pins Master_NoC/M02_INI] [get_bd_intf_pins NoC_C0_C1/S02_INI]
-connect_bd_intf_net [get_bd_intf_pins Master_NoC/M03_INI] [get_bd_intf_pins NoC_C0_C1/S03_INI]
+# connect_bd_net [get_bd_pins util_ds_buf_0/IBUF_OUT] [get_bd_pins NoC_C0_C1/sys_clk0] [get_bd_pins NoC_C0_C1/sys_clk1]
+# connect_bd_net [get_bd_pins util_ds_buf_1/IBUF_OUT] [get_bd_pins NoC_C3/sys_clk0] [get_bd_pins NoC_C2/sys_clk0]
 
-connect_bd_intf_net [get_bd_intf_ports C0_CH0_LPDDR5X_bank700_702] [get_bd_intf_pins NoC_C0_C1/C0_CH0_LPDDR5]
-connect_bd_intf_net [get_bd_intf_ports C0_CH1_LPDDR5X_bank700_702] [get_bd_intf_pins NoC_C0_C1/C0_CH1_LPDDR5]
-connect_bd_intf_net [get_bd_intf_ports C1_CH0_LPDDR5X_bank703_705] [get_bd_intf_pins NoC_C0_C1/C1_CH0_LPDDR5]
-connect_bd_intf_net [get_bd_intf_ports C1_CH1_LPDDR5X_bank703_705] [get_bd_intf_pins NoC_C0_C1/C1_CH1_LPDDR5]
+connect_bd_intf_net [get_bd_intf_pins Master_NoC/M00_INI] [get_bd_intf_pins NoC_C0/S00_INI]
+connect_bd_intf_net [get_bd_intf_pins Master_NoC/M01_INI] [get_bd_intf_pins NoC_C0/S01_INI]
+connect_bd_intf_net [get_bd_intf_pins Master_NoC/M02_INI] [get_bd_intf_pins NoC_C0/S02_INI]
+connect_bd_intf_net [get_bd_intf_pins Master_NoC/M03_INI] [get_bd_intf_pins NoC_C0/S03_INI]
+
+connect_bd_intf_net [get_bd_intf_ports Lpddr5_Controller_C0_CH0_Bank_700_701_702] [get_bd_intf_pins NoC_C0/C0_CH0_LPDDR5]
+connect_bd_intf_net [get_bd_intf_ports Lpddr5_Controller_C0_CH1_Bank_700_701_702] [get_bd_intf_pins NoC_C0/C0_CH1_LPDDR5]
+connect_bd_intf_net [get_bd_intf_ports Lpddr5_Controller_C1_CH0_Bank_703_704_705] [get_bd_intf_pins NoC_C1/C0_CH0_LPDDR5]
+connect_bd_intf_net [get_bd_intf_ports Lpddr5_Controller_C1_CH1_Bank_703_704_705] [get_bd_intf_pins NoC_C1/C0_CH1_LPDDR5]
 
 #connect_bd_intf_net [get_bd_intf_ports C0_C1_LPDDR5X_sys_clk] [get_bd_intf_pins util_ds_buf_0/CLK_IN_D]
 #connect_bd_intf_net [get_bd_intf_ports C2_C3_LPDDR5X_sys_clk] [get_bd_intf_pins util_ds_buf_1/CLK_IN_D]
 
-connect_bd_intf_net [get_bd_intf_ports C2_LPDDR5X_bank706_707] [get_bd_intf_pins NoC_C2/C0_CH0_LPDDR5]
-connect_bd_intf_net [get_bd_intf_ports C3_LPDDR5X_bank710_711] [get_bd_intf_pins NoC_C3/C0_CH0_LPDDR5]
+connect_bd_intf_net [get_bd_intf_ports Lpddr5_Controller_C2_Bank_706_707_int] [get_bd_intf_pins NoC_C2/C0_CH0_LPDDR5]
+connect_bd_intf_net [get_bd_intf_ports Lpddr5_Controller_C3_Bank_709_7010_int] [get_bd_intf_pins NoC_C3/C0_CH0_LPDDR5]
 
 # Create instance: ctrl_smc, and set properties
 set ctrl_smc [ create_bd_cell -type ip -vlnv xilinx.com:ip:smartconnect ctrl_smc ]
@@ -537,15 +1004,15 @@ set_property -dict [list \
   CONFIG.NUM_SI {1} \
 ] $ctrl_smc
 
-connect_bd_intf_net [get_bd_intf_pins NoC_C2/S00_INI] [get_bd_intf_pins Master_NoC/M04_INI]
-connect_bd_intf_net [get_bd_intf_pins NoC_C3/S00_INI] [get_bd_intf_pins Master_NoC/M05_INI]
+connect_bd_intf_net [get_bd_intf_pins NoC_C1/S00_INI] [get_bd_intf_pins Master_NoC/M04_INI]
+connect_bd_intf_net [get_bd_intf_pins NoC_C2/S00_INI] [get_bd_intf_pins Master_NoC/M05_INI]
+connect_bd_intf_net [get_bd_intf_pins NoC_C3/S00_INI] [get_bd_intf_pins Master_NoC/M06_INI]
 
 # Create instance: aggr_noc, and set properties
 create_bd_cell -type ip -vlnv xilinx.com:ip:axi_noc2 aggr_noc
 set_property -dict [list \
   CONFIG.NUM_MI {0} \
-  CONFIG.NUM_NMI {5} \
-  CONFIG.NUM_NSI {0} \
+  CONFIG.NUM_NMI {7} \
   CONFIG.NUM_SI {0} \
 ] [get_bd_cells aggr_noc]
 
@@ -554,14 +1021,21 @@ set_property -dict [list CONFIG.INI_STRATEGY {load}] [get_bd_intf_pins /aggr_noc
 set_property -dict [list CONFIG.INI_STRATEGY {load}] [get_bd_intf_pins /aggr_noc/M02_INI]
 set_property -dict [list CONFIG.INI_STRATEGY {load}] [get_bd_intf_pins /aggr_noc/M03_INI]
 set_property -dict [list CONFIG.INI_STRATEGY {load}] [get_bd_intf_pins /aggr_noc/M04_INI]
+set_property -dict [list CONFIG.INI_STRATEGY {load}] [get_bd_intf_pins /aggr_noc/M05_INI]
+set_property -dict [list CONFIG.INI_STRATEGY {load}] [get_bd_intf_pins /aggr_noc/M06_INI]
 
-connect_bd_intf_net [get_bd_intf_pins aggr_noc/M00_INI] [get_bd_intf_pins NoC_C0_C1/S04_INI]
-connect_bd_intf_net [get_bd_intf_pins aggr_noc/M01_INI] [get_bd_intf_pins NoC_C2/S01_INI]
-connect_bd_intf_net [get_bd_intf_pins aggr_noc/M02_INI] [get_bd_intf_pins NoC_C2/S02_INI]
-connect_bd_intf_net [get_bd_intf_pins aggr_noc/M03_INI] [get_bd_intf_pins NoC_C3/S01_INI]
-connect_bd_intf_net [get_bd_intf_pins aggr_noc/M04_INI] [get_bd_intf_pins NoC_C3/S02_INI]
+connect_bd_intf_net [get_bd_intf_pins aggr_noc/M00_INI] [get_bd_intf_pins NoC_C0/S04_INI]
+connect_bd_intf_net [get_bd_intf_pins aggr_noc/M01_INI] [get_bd_intf_pins NoC_C1/S01_INI]
+connect_bd_intf_net [get_bd_intf_pins aggr_noc/M02_INI] [get_bd_intf_pins NoC_C1/S02_INI]
+connect_bd_intf_net [get_bd_intf_pins aggr_noc/M03_INI] [get_bd_intf_pins NoC_C2/S01_INI]
+connect_bd_intf_net [get_bd_intf_pins aggr_noc/M04_INI] [get_bd_intf_pins NoC_C2/S02_INI]
+connect_bd_intf_net [get_bd_intf_pins aggr_noc/M05_INI] [get_bd_intf_pins NoC_C3/S01_INI]
+connect_bd_intf_net [get_bd_intf_pins aggr_noc/M06_INI] [get_bd_intf_pins NoC_C3/S02_INI]
 
- if {($use_intc_15)||($use_intc_32)} {
+connect_bd_intf_net [get_bd_intf_pins ps_wizard_0/FPD_AXI_PL] [get_bd_intf_pins ctrl_smc/S00_AXI]
+set_property HDL_ATTRIBUTE.DONT_TOUCH true [get_bd_intf_nets {ps_wizard_0_FPD_AXI_PL}]
+
+if {($use_intc_15)||($use_intc_32)} {
  
 	# Create instance: axi_intc_0, and set properties
 	set axi_intc_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_intc axi_intc_0 ]
@@ -731,11 +1205,6 @@ if { $use_intc_15 } {
 	} 
 }
  
-#connect_bd_intf_net [get_bd_intf_pins ps_wizard_0/FPD_AXI_PL] [get_bd_intf_pins axi_register_slice_0/S_AXI]
-#connect_bd_intf_net [get_bd_intf_pins axi_register_slice_0/M_AXI] [get_bd_intf_pins ctrl_smc/S00_AXI]
-connect_bd_intf_net [get_bd_intf_pins ps_wizard_0/FPD_AXI_PL] [get_bd_intf_pins ctrl_smc/S00_AXI]
-#set_property HDL_ATTRIBUTE.DEBUG true [get_bd_intf_nets {ps_wizard_0_FPD_AXI_PL}]
-set_property HDL_ATTRIBUTE.DONT_TOUCH true [get_bd_intf_nets {ps_wizard_0_FPD_AXI_PL}]
 
 
 for {set i 0} {$i < $num_clks} {incr i} {
@@ -754,7 +1223,8 @@ for {set i 0} {$i < $num_clks} {incr i} {
 }}
 
 #connect_bd_net -net proc_sys_reset_${default_clk_num}_peripheral_aresetn [get_bd_pins proc_sys_reset_${default_clk_num}/peripheral_aresetn] [get_bd_pins ctrl_smc/aresetn] [get_bd_pins axi_register_slice_0/aresetn]
-connect_bd_net -net proc_sys_reset_${default_clk_num}_peripheral_aresetn [get_bd_pins proc_sys_reset_${default_clk_num}/peripheral_aresetn] [get_bd_pins ctrl_smc/aresetn]
+connect_bd_net -net proc_sys_reset_${default_clk_num}_peripheral_aresetn [get_bd_pins proc_sys_reset_${default_clk_num}/peripheral_aresetn]
+connect_bd_net [get_bd_pins proc_sys_reset_${default_clk_num}/interconnect_aresetn] [get_bd_pins ctrl_smc/aresetn]
 
 if { $use_intc_15 } {
 	#set_property -dict [list CONFIG.NUM_MI {4}] [get_bd_cells ctrl_smc]
@@ -788,16 +1258,18 @@ if { $use_cascaded_irqs } {
 #use_aie
 if { $use_aie } {
 
-set_property CONFIG.NUM_NMI {7} [get_bd_cells Master_NoC]
-set_property -dict [list CONFIG.INI_STRATEGY {load}] [get_bd_intf_pins /Master_NoC/M06_INI]
+set_property CONFIG.NUM_NMI {8} [get_bd_cells Master_NoC]
+set_property -dict [list CONFIG.INI_STRATEGY {load}] [get_bd_intf_pins /Master_NoC/M07_INI]
 
-set_property -dict [list CONFIG.CONNECTIONS {M06_INI {read_bw {500} write_bw {500} initial_boot {true}} M04_INI {read_bw {500} write_bw {500} initial_boot {true}} M05_INI {read_bw {500} write_bw {500} initial_boot {true}} M00_INI {read_bw {500} write_bw {500} initial_boot {true}}}] [get_bd_intf_pins /Master_NoC/S00_AXI]
-set_property -dict [list CONFIG.CONNECTIONS {M01_INI {read_bw {500} write_bw {500} initial_boot {true}} M06_INI {read_bw {500} write_bw {500} initial_boot {true}} M04_INI {read_bw {500} write_bw {500} initial_boot {true}} M05_INI {read_bw {500} write_bw {500} initial_boot {true}}}] [get_bd_intf_pins /Master_NoC/S01_AXI]
-set_property -dict [list CONFIG.CONNECTIONS {M02_INI {read_bw {500} write_bw {500} initial_boot {true}} M06_INI {read_bw {500} write_bw {500} initial_boot {true}} M04_INI {read_bw {500} write_bw {500} initial_boot {true}} M05_INI {read_bw {500} write_bw {500} initial_boot {true}}}] [get_bd_intf_pins /Master_NoC/S02_AXI]
-set_property -dict [list CONFIG.CONNECTIONS {M06_INI {read_bw {500} write_bw {500} initial_boot {true}} M03_INI {read_bw {500} write_bw {500} initial_boot {true}} M04_INI {read_bw {500} write_bw {500} initial_boot {true}} M05_INI {read_bw {500} write_bw {500} initial_boot {true}}}] [get_bd_intf_pins /Master_NoC/S03_AXI]
-set_property -dict [list CONFIG.CONNECTIONS {M06_INI {read_bw {500} write_bw {500} initial_boot {true}} M04_INI {read_bw {500} write_bw {500} initial_boot {true}} M05_INI {read_bw {500} write_bw {500} initial_boot {true}} M00_INI {read_bw {500} write_bw {500} initial_boot {true}}}] [get_bd_intf_pins /Master_NoC/S04_AXI]
-set_property -dict [list CONFIG.CONNECTIONS {M06_INI {read_bw {500} write_bw {500} initial_boot {true}} M04_INI {read_bw {500} write_bw {500} initial_boot {true}} M05_INI {read_bw {500} write_bw {500} initial_boot {true}} M00_INI {read_bw {500} write_bw {500} initial_boot {true}}}] [get_bd_intf_pins /Master_NoC/S05_AXI]
-set_property -dict [list CONFIG.CONNECTIONS {M06_INI {read_bw {500} write_bw {500} initial_boot {true}} M04_INI {read_bw {500} write_bw {500} initial_boot {true}} M05_INI {read_bw {500} write_bw {500} initial_boot {true}} M00_INI {read_bw {500} write_bw {500} initial_boot {true}}}] [get_bd_intf_pins /Master_NoC/S07_AXI]
+set_property -dict [list CONFIG.CONNECTIONS {M07_INI {read_bw {500} write_bw {500} initial_boot {true}} M06_INI {read_bw {500} write_bw {500} initial_boot {true}} M04_INI {read_bw {500} write_bw {500} initial_boot {true}} M05_INI {read_bw {500} write_bw {500} initial_boot {true}} M00_INI {read_bw {500} write_bw {500} initial_boot {true}}}] [get_bd_intf_pins /Master_NoC/S00_AXI]
+set_property -dict [list CONFIG.CONNECTIONS {M07_INI {read_bw {500} write_bw {500} initial_boot {true}} M01_INI {read_bw {500} write_bw {500} initial_boot {true}} M06_INI {read_bw {500} write_bw {500} initial_boot {true}} M04_INI {read_bw {500} write_bw {500} initial_boot {true}} M05_INI {read_bw {500} write_bw {500} initial_boot {true}}}] [get_bd_intf_pins /Master_NoC/S01_AXI]
+set_property -dict [list CONFIG.CONNECTIONS {M02_INI {read_bw {500} write_bw {500} initial_boot {true}} M07_INI {read_bw {500} write_bw {500} initial_boot {true}} M06_INI {read_bw {500} write_bw {500} initial_boot {true}} M04_INI {read_bw {500} write_bw {500} initial_boot {true}} M05_INI {read_bw {500} write_bw {500} initial_boot {true}}}] [get_bd_intf_pins /Master_NoC/S02_AXI]
+set_property -dict [list CONFIG.CONNECTIONS {M07_INI {read_bw {500} write_bw {500} initial_boot {true}} M06_INI {read_bw {500} write_bw {500} initial_boot {true}} M03_INI {read_bw {500} write_bw {500} initial_boot {true}} M04_INI {read_bw {500} write_bw {500} initial_boot {true}} M05_INI {read_bw {500} write_bw {500} initial_boot {true}}}] [get_bd_intf_pins /Master_NoC/S03_AXI]
+set_property -dict [list CONFIG.CONNECTIONS {M07_INI {read_bw {500} write_bw {500} initial_boot {true}} M06_INI {read_bw {500} write_bw {500} initial_boot {true}} M04_INI {read_bw {500} write_bw {500} initial_boot {true}} M05_INI {read_bw {500} write_bw {500} initial_boot {true}} M00_INI {read_bw {500} write_bw {500} initial_boot {true}}}] [get_bd_intf_pins /Master_NoC/S04_AXI]
+set_property -dict [list CONFIG.CONNECTIONS {M07_INI {read_bw {500} write_bw {500} initial_boot {true}} M06_INI {read_bw {500} write_bw {500} initial_boot {true}} M04_INI {read_bw {500} write_bw {500} initial_boot {true}} M05_INI {read_bw {500} write_bw {500} initial_boot {true}} M00_INI {read_bw {500} write_bw {500} initial_boot {true}}}] [get_bd_intf_pins /Master_NoC/S05_AXI]
+set_property -dict [list CONFIG.CATEGORY {ps_rpu}] [get_bd_intf_pins /Master_NoC/S06_AXI]
+set_property -dict [list CONFIG.CONNECTIONS {M07_INI {read_bw {500} write_bw {500} initial_boot {true}} M06_INI {read_bw {500} write_bw {500} initial_boot {true}} M04_INI {read_bw {500} write_bw {500} initial_boot {true}} M05_INI {read_bw {500} write_bw {500} initial_boot {true}} M00_INI {read_bw {500} write_bw {500} initial_boot {true}}}] [get_bd_intf_pins /Master_NoC/S07_AXI]
+
 
 # Create instance: ai_engine_0, and set properties
 create_bd_cell -type ip -vlnv xilinx.com:ip:ai_engine ai_engine_0
@@ -810,7 +1282,7 @@ set_property -dict [list CONFIG.CONNECTIONS {M00_AXI {read_bw {500} write_bw {50
 
 connect_bd_intf_net [get_bd_intf_pins ConfigNoc/M00_AXI] [get_bd_intf_pins ai_engine_0/S00_AXI]
 connect_bd_net [get_bd_pins ai_engine_0/s00_axi_aclk] [get_bd_pins ConfigNoc/aclk0]
-connect_bd_intf_net [get_bd_intf_pins ConfigNoc/S00_INI] [get_bd_intf_pins Master_NoC/M06_INI]
+connect_bd_intf_net [get_bd_intf_pins ConfigNoc/S00_INI] [get_bd_intf_pins Master_NoC/M07_INI]
 }
 
 assign_bd_address
@@ -820,209 +1292,15 @@ if { ! $use_intc_15 } {
 	group_bd_cells axi_smc_vip_hier [get_bd_cells dummy_slave_*] [get_bd_cells ctrl_smc] [get_bd_cells icn_ctrl_*]  
 }
 
-# #Creating NoC_hier
-# group_bd_cells NoC_hier [get_bd_cells NoC_C2] [get_bd_cells util_ds_buf_1] [get_bd_cells NoC_C0_C1] [get_bd_cells NoC_C3_C4] [get_bd_cells Master_NoC] [get_bd_cells util_ds_buf_0]
-
-# #Creating PL_hier
-# group_bd_cells PL_hier [get_bd_cells proc_sys_reset_6] [get_bd_cells axi_bram_ctrl_0] [get_bd_cells ctrl_smc] [get_bd_cells axi_intc_parent] [get_bd_cells axi_intc_cascaded_1] [get_bd_cells axi_bram_ctrl_0_bram] [get_bd_cells clk_wizard_0] [get_bd_cells proc_sys_reset_0] [get_bd_cells axi_gpio_0] [get_bd_cells proc_sys_reset_1] [get_bd_cells axi_gpio_1] [get_bd_cells proc_sys_reset_2] [get_bd_cells proc_sys_reset_3] [get_bd_cells proc_sys_reset_4] [get_bd_cells proc_sys_reset_5] [get_bd_cells xlconcat_0] [get_bd_cells axi_smc_vip_hier] [get_bd_cells xlconstant_0] [get_bd_cells ctrl_smc] [get_bd_cells axi_intc_0]
-
-puts "INFO: Block design generation completed, yet to set PFM properties"
-# Create PFM attributes
-
-set board_name [get_property BOARD_NAME [current_board]]
-puts "INFO: Creating extensible_platform for $board_name"
-set pfmName "xilinx.com:${board_name}:${board_name}_base:1.0"
-#set pfmName "xilinx.com:VEK385:versal_gen2_platform_base:1.0"
-set_property PFM_NAME $pfmName [get_files [current_bd_design].bd]
-
-if { $irqs eq "15" } {
-	set_property PFM.IRQ {intr {id 0 range 15}}  [get_bd_cells -hierarchical axi_intc_0]
-
-	#set_property PFM.AXI_PORT {M01_AXI {  is_range "true"} M02_AXI {  is_range "true"} M03_AXI {  is_range "true"} M04_AXI {  is_range "true"} M05_AXI {  is_range "true"} M06_AXI {  is_range "true"} M07_AXI {  is_range "true"} M08_AXI {  is_range "true"} M09_AXI {  is_range "true"} M10_AXI {  is_range "true"} M11_AXI {  is_range "true"} M12_AXI {  is_range "true"} M13_AXI {  is_range "true"} M14_AXI {  is_range "true"} M15_AXI {  is_range "true"}} [get_bd_cells /ctrl_smc]
-	set_property PFM.AXI_PORT {M01_AXI {} M02_AXI {} M03_AXI {} M04_AXI {} M05_AXI {} M06_AXI {} M07_AXI {} M08_AXI {} M09_AXI {} M10_AXI {} M11_AXI {} M12_AXI {} M13_AXI {} M14_AXI {} M15_AXI {}} [get_bd_cells /ctrl_smc]
-}
-
-
-if { $irqs eq "32" } {
-
-	set_property PFM.IRQ {intr {id 0 range 31}}  [get_bd_cells -hierarchical axi_intc_0]
-	
-	set_property PFM.AXI_PORT {M03_AXI { } M04_AXI { } } [get_bd_cells -hierarchical ctrl_smc]
-	set_property PFM.AXI_PORT {M01_AXI { } M02_AXI { } M03_AXI { } M04_AXI { } M05_AXI { } M06_AXI { } M07_AXI { } M08_AXI { } M09_AXI { } M10_AXI { } M11_AXI { } M12_AXI { } M13_AXI { } M14_AXI { } M15_AXI { }} [get_bd_cells -hierarchical icn_ctrl_0]
-	set_property PFM.AXI_PORT {M01_AXI { } M02_AXI { } M03_AXI { } M04_AXI { } M05_AXI { } M06_AXI { } M07_AXI { } M08_AXI { } M09_AXI { } M10_AXI { } M11_AXI { } M12_AXI { } M13_AXI { } M14_AXI { } M15_AXI { }} [get_bd_cells -hierarchical icn_ctrl_1]
-}
-	
-if { $irqs eq "63" } {
-
-	set_property PFM.IRQ {intr {id 0 range 32}}  [get_bd_cells -hierarchical axi_intc_cascaded_1]
-	
-	set_property PFM.IRQ {In0 {id 32} In1 {id 33} In2 {id 34} In3 {id 35} In4 {id 36} In5 {id 37} In6 {id 38} In7 {id 39} In8 {id 40} \
-	In9 {id 41} In10 {id 42} In11 {id 43} In12 {id 44} In13 {id 45} In14 {id 46} In15 {id 47} In16 {id 48} In17 {id 49} In18 {id 50} \
-	In19 {id 51} In20 {id 52} In21 {id 53} In22 {id 54} In23 {id 55} In24 {id 56} In25 {id 57} In26 {id 58} In27 {id 59} In28 {id 60} \
-	In29 {id 61} In30 {id 62} } [get_bd_cells -hierarchical xlconcat_0]
-	
-	set_property PFM.AXI_PORT {M06_AXI { } M07_AXI { } M08_AXI { }} [get_bd_cells -hierarchical ctrl_smc]
-	set_property PFM.AXI_PORT {M01_AXI { } M02_AXI { } M03_AXI { } M04_AXI { } M05_AXI { } M06_AXI { } M07_AXI { } M08_AXI { } M09_AXI { } M10_AXI { } M11_AXI { } M12_AXI { } M13_AXI { } M14_AXI { } M15_AXI { }} [get_bd_cells -hierarchical icn_ctrl_0]
-	set_property PFM.AXI_PORT {M01_AXI { } M02_AXI { } M03_AXI { } M04_AXI { } M05_AXI { } M06_AXI { } M07_AXI { } M08_AXI { } M09_AXI { } M10_AXI { } M11_AXI { } M12_AXI { } M13_AXI { } M14_AXI { } M15_AXI { }} [get_bd_cells -hierarchical icn_ctrl_1]
-	set_property PFM.AXI_PORT {M01_AXI { } M02_AXI { } M03_AXI { } M04_AXI { } M05_AXI { } M06_AXI { } M07_AXI { } M08_AXI { } M09_AXI { } M10_AXI { } M11_AXI { } M12_AXI { } M13_AXI { } M14_AXI { } M15_AXI { }} [get_bd_cells -hierarchical icn_ctrl_2]
-	set_property PFM.AXI_PORT {M01_AXI { } M02_AXI { } M03_AXI { } M04_AXI { } M05_AXI { } M06_AXI { } M07_AXI { } M08_AXI { } M09_AXI { } M10_AXI { } M11_AXI { } M12_AXI { } M13_AXI { } M14_AXI { } M15_AXI { }} [get_bd_cells -hierarchical icn_ctrl_3]
-
-}
-	
-if { $use_aie } {
-#set_property PFM.AXI_PORT {S00_AXI {memport "S_AXI_NOC" sptag "S_AXI_AIE" auto "false" memory "ai_engine_0 AIE_ARRAY_0" is_range "true"} S01_AXI {memport "S_AXI_NOC" sptag "S_AXI_AIE" auto "false" memory "ai_engine_0 AIE_ARRAY_0" is_range "true"} S02_AXI {memport "S_AXI_NOC" sptag "S_AXI_AIE" auto "false" memory "ai_engine_0 AIE_ARRAY_0" is_range "true"} S03_AXI {memport "S_AXI_NOC" sptag "S_AXI_AIE" auto "false" memory "ai_engine_0 AIE_ARRAY_0" is_range "true"} S04_AXI {memport "S_AXI_NOC" sptag "S_AXI_AIE" auto "false" memory "ai_engine_0 AIE_ARRAY_0" is_range "true"} S05_AXI {memport "S_AXI_NOC" sptag "S_AXI_AIE" auto "false" memory "ai_engine_0 AIE_ARRAY_0" is_range "true"} S06_AXI {memport "S_AXI_NOC" sptag "S_AXI_AIE" auto "false" memory "ai_engine_0 AIE_ARRAY_0" is_range "true"} S07_AXI {memport "S_AXI_NOC" sptag "S_AXI_AIE" auto "false" memory "ai_engine_0 AIE_ARRAY_0" is_range "true"} S08_AXI {memport "S_AXI_NOC" sptag "S_AXI_AIE" auto "false" memory "ai_engine_0 AIE_ARRAY_0" is_range "true"} S09_AXI {memport "S_AXI_NOC" sptag "S_AXI_AIE" auto "false" memory "ai_engine_0 AIE_ARRAY_0" is_range "true"} S10_AXI {memport "S_AXI_NOC" sptag "S_AXI_AIE" auto "false" memory "ai_engine_0 AIE_ARRAY_0" is_range "true"} S11_AXI {memport "S_AXI_NOC" sptag "S_AXI_AIE" auto "false" memory "ai_engine_0 AIE_ARRAY_0" is_range "true"} S12_AXI {memport "S_AXI_NOC" sptag "S_AXI_AIE" auto "false" memory "ai_engine_0 AIE_ARRAY_0" is_range "true"} S13_AXI {memport "S_AXI_NOC" sptag "S_AXI_AIE" auto "false" memory "ai_engine_0 AIE_ARRAY_0" is_range "true"} S14_AXI {memport "S_AXI_NOC" sptag "S_AXI_AIE" auto "false" memory "ai_engine_0 AIE_ARRAY_0" is_range "true"} S15_AXI {memport "S_AXI_NOC" sptag "S_AXI_AIE" auto "false" memory "ai_engine_0 AIE_ARRAY_0" is_range "true"} S16_AXI {memport "S_AXI_NOC" sptag "S_AXI_AIE" auto "false" memory "ai_engine_0 AIE_ARRAY_0" is_range "true"} S17_AXI {memport "S_AXI_NOC" sptag "S_AXI_AIE" auto "false" memory "ai_engine_0 AIE_ARRAY_0" is_range "true"} S18_AXI {memport "S_AXI_NOC" sptag "S_AXI_AIE" auto "false" memory "ai_engine_0 AIE_ARRAY_0" is_range "true"} S19_AXI {memport "S_AXI_NOC" sptag "S_AXI_AIE" auto "false" memory "ai_engine_0 AIE_ARRAY_0" is_range "true"} S20_AXI {memport "S_AXI_NOC" sptag "S_AXI_AIE" auto "false" memory "ai_engine_0 AIE_ARRAY_0" is_range "true"} S21_AXI {memport "S_AXI_NOC" sptag "S_AXI_AIE" auto "false" memory "ai_engine_0 AIE_ARRAY_0" is_range "true"}} [get_bd_cells -hierarchical ConfigNoc] 
-set_property PFM.AXI_PORT {S00_AXI {sptag AIE auto false } S01_AXI {sptag AIE auto false } S02_AXI {sptag AIE auto false } S03_AXI {sptag AIE auto false } S04_AXI {sptag AIE auto false } S05_AXI {sptag AIE auto false } S06_AXI {sptag AIE auto false } S07_AXI {sptag AIE auto false } S08_AXI {sptag AIE auto false } S09_AXI {sptag AIE auto false } S10_AXI {sptag AIE auto false } S11_AXI {sptag AIE auto false } S12_AXI {sptag AIE auto false } S13_AXI {sptag AIE auto false } S14_AXI {sptag AIE auto false } S15_AXI {sptag AIE auto false } S16_AXI {sptag AIE auto false } S17_AXI {sptag AIE auto false } S18_AXI {sptag AIE auto false } S19_AXI {sptag AIE auto false } S20_AXI {sptag AIE auto false } S21_AXI {sptag AIE auto false }} [get_bd_cells /ConfigNoc] }
-
-#set_property PFM.AXI_PORT {S00_AXI {memport "S_AXI_NOC" sptag "LPDDR01"  is_range "true"} S01_AXI {memport "S_AXI_NOC" sptag "LPDDR01"  is_range "true"} S02_AXI {memport "S_AXI_NOC" sptag "LPDDR01"  is_range "true"} S03_AXI {memport "S_AXI_NOC" sptag "LPDDR01"  is_range "true"} S04_AXI {memport "S_AXI_NOC" sptag "LPDDR01"  is_range "true"} S05_AXI {memport "S_AXI_NOC" sptag "LPDDR01"  is_range "true"} S06_AXI {memport "S_AXI_NOC" sptag "LPDDR01"  is_range "true"} S07_AXI {memport "S_AXI_NOC" sptag "LPDDR01"  is_range "true"} S08_AXI {memport "S_AXI_NOC" sptag "LPDDR01"  is_range "true"} S09_AXI {memport "S_AXI_NOC" sptag "LPDDR01"  is_range "true"} S10_AXI {memport "S_AXI_NOC" sptag "LPDDR01"  is_range "true"} S11_AXI {memport "S_AXI_NOC" sptag "LPDDR01"  is_range "true"} S12_AXI {memport "S_AXI_NOC" sptag "LPDDR01"  is_range "true"} S13_AXI {memport "S_AXI_NOC" sptag "LPDDR01"  is_range "true"} S14_AXI {memport "S_AXI_NOC" sptag "LPDDR01"  is_range "true"} S15_AXI {memport "S_AXI_NOC" sptag "LPDDR01"  is_range "true"} S16_AXI {memport "S_AXI_NOC" sptag "LPDDR01"  is_range "true"} S17_AXI {memport "S_AXI_NOC" sptag "LPDDR01"  is_range "true"} S18_AXI {memport "S_AXI_NOC" sptag "LPDDR01"  is_range "true"} S19_AXI {memport "S_AXI_NOC" sptag "LPDDR01"  is_range "true"} S20_AXI {memport "S_AXI_NOC" sptag "LPDDR01"  is_range "true"} S21_AXI {memport "S_AXI_NOC" sptag "LPDDR01"  is_range "true"}} [get_bd_cells /NoC_C0_C1]
-
-set_property PFM.AXI_PORT {S00_AXI {sptag LPDDR01 } S01_AXI {sptag LPDDR01 } S02_AXI {sptag LPDDR01 } S03_AXI {sptag LPDDR01 } S04_AXI {sptag LPDDR01 } S05_AXI {sptag LPDDR01 } S06_AXI {sptag LPDDR01 } S07_AXI {sptag LPDDR01 } S08_AXI {sptag LPDDR01 } S09_AXI {sptag LPDDR01 } S10_AXI {sptag LPDDR01 } S11_AXI {sptag LPDDR01 } S12_AXI {sptag LPDDR01 } S13_AXI {sptag LPDDR01 } S14_AXI {sptag LPDDR01 } S15_AXI {sptag LPDDR01 } S16_AXI {sptag LPDDR01 } S17_AXI {sptag LPDDR01 } S18_AXI {sptag LPDDR01 } S19_AXI {sptag LPDDR01 } S20_AXI {sptag LPDDR01 } S21_AXI {sptag LPDDR01 }} [get_bd_cells /NoC_C0_C1]
-
-set_property PFM.AXI_PORT {S00_AXI {sptag LPDDR2 } S01_AXI {sptag LPDDR2 } S02_AXI {sptag LPDDR2 } S03_AXI {sptag LPDDR2 } S04_AXI {sptag LPDDR2 } S05_AXI {sptag LPDDR2 } S06_AXI {sptag LPDDR2 } S07_AXI {sptag LPDDR2 } S08_AXI {sptag LPDDR2 } S09_AXI {sptag LPDDR2 } S10_AXI {sptag LPDDR2 } S11_AXI {sptag LPDDR2 } S12_AXI {sptag LPDDR2 } S13_AXI {sptag LPDDR2 } S14_AXI {sptag LPDDR2 } S15_AXI {sptag LPDDR2 } S16_AXI {sptag LPDDR2 } S17_AXI {sptag LPDDR2 } S18_AXI {sptag LPDDR2 } S19_AXI {sptag LPDDR2 } S20_AXI {sptag LPDDR2 } S21_AXI {sptag LPDDR2 }} [get_bd_cells /NoC_C2]
-
-set_property PFM.AXI_PORT {S00_AXI {sptag LPDDR3 } S01_AXI {sptag LPDDR3 } S02_AXI {sptag LPDDR3 } S03_AXI {sptag LPDDR3 } S04_AXI {sptag LPDDR3 } S05_AXI {sptag LPDDR3 } S06_AXI {sptag LPDDR3 } S07_AXI {sptag LPDDR3 } S08_AXI {sptag LPDDR3 } S09_AXI {sptag LPDDR3 } S10_AXI {sptag LPDDR3 } S11_AXI {sptag LPDDR3 } S12_AXI {sptag LPDDR3 } S13_AXI {sptag LPDDR3 } S14_AXI {sptag LPDDR3 } S15_AXI {sptag LPDDR3 } S16_AXI {sptag LPDDR3 } S17_AXI {sptag LPDDR3 } S18_AXI {sptag LPDDR3 } S19_AXI {sptag LPDDR3 } S20_AXI {sptag LPDDR3 } S21_AXI {sptag LPDDR3 }} [get_bd_cells /NoC_C3]
-
-#set_property PFM.AXI_PORT {S00_AXI {memport "S_AXI_NOC" sptag "LPDDR2"  is_range "true"} S01_AXI {memport "S_AXI_NOC" sptag "LPDDR2"  is_range "true"} S02_AXI {memport "S_AXI_NOC" sptag "LPDDR2"  is_range "true"} S03_AXI {memport "S_AXI_NOC" sptag "LPDDR2"  is_range "true"} S04_AXI {memport "S_AXI_NOC" sptag "LPDDR2"  is_range "true"} S05_AXI {memport "S_AXI_NOC" sptag "LPDDR2"  is_range "true"} S06_AXI {memport "S_AXI_NOC" sptag "LPDDR2"  is_range "true"} S07_AXI {memport "S_AXI_NOC" sptag "LPDDR2"  is_range "true"} S08_AXI {memport "S_AXI_NOC" sptag "LPDDR2"  is_range "true"} S09_AXI {memport "S_AXI_NOC" sptag "LPDDR2"  is_range "true"} S10_AXI {memport "S_AXI_NOC" sptag "LPDDR2"  is_range "true"} S11_AXI {memport "S_AXI_NOC" sptag "LPDDR2"  is_range "true"} S12_AXI {memport "S_AXI_NOC" sptag "LPDDR2"  is_range "true"} S13_AXI {memport "S_AXI_NOC" sptag "LPDDR2"  is_range "true"} S14_AXI {memport "S_AXI_NOC" sptag "LPDDR2"  is_range "true"} S15_AXI {memport "S_AXI_NOC" sptag "LPDDR2"  is_range "true"} S16_AXI {memport "S_AXI_NOC" sptag "LPDDR2"  is_range "true"} S17_AXI {memport "S_AXI_NOC" sptag "LPDDR2"  is_range "true"} S18_AXI {memport "S_AXI_NOC" sptag "LPDDR2"  is_range "true"} S19_AXI {memport "S_AXI_NOC" sptag "LPDDR2"  is_range "true"} S20_AXI {memport "S_AXI_NOC" sptag "LPDDR2"  is_range "true"} S21_AXI {memport "S_AXI_NOC" sptag "LPDDR2"  is_range "true"}} [get_bd_cells /NoC_C2]
-
-#set_property PFM.AXI_PORT {S00_AXI {memport "S_AXI_NOC" sptag "LPDDR3"  is_range "true"} S01_AXI {memport "S_AXI_NOC" sptag "LPDDR3"  is_range "true"} S02_AXI {memport "S_AXI_NOC" sptag "LPDDR3"  is_range "true"} S03_AXI {memport "S_AXI_NOC" sptag "LPDDR3"  is_range "true"} S04_AXI {memport "S_AXI_NOC" sptag "LPDDR3"  is_range "true"} S05_AXI {memport "S_AXI_NOC" sptag "LPDDR3"  is_range "true"} S06_AXI {memport "S_AXI_NOC" sptag "LPDDR3"  is_range "true"} S07_AXI {memport "S_AXI_NOC" sptag "LPDDR3"  is_range "true"} S08_AXI {memport "S_AXI_NOC" sptag "LPDDR3"  is_range "true"} S09_AXI {memport "S_AXI_NOC" sptag "LPDDR3"  is_range "true"} S10_AXI {memport "S_AXI_NOC" sptag "LPDDR3"  is_range "true"} S11_AXI {memport "S_AXI_NOC" sptag "LPDDR3"  is_range "true"} S12_AXI {memport "S_AXI_NOC" sptag "LPDDR3"  is_range "true"} S13_AXI {memport "S_AXI_NOC" sptag "LPDDR3"  is_range "true"} S14_AXI {memport "S_AXI_NOC" sptag "LPDDR3"  is_range "true"} S15_AXI {memport "S_AXI_NOC" sptag "LPDDR3"  is_range "true"} S16_AXI {memport "S_AXI_NOC" sptag "LPDDR3"  is_range "true"} S17_AXI {memport "S_AXI_NOC" sptag "LPDDR3"  is_range "true"} S18_AXI {memport "S_AXI_NOC" sptag "LPDDR3"  is_range "true"} S19_AXI {memport "S_AXI_NOC" sptag "LPDDR3"  is_range "true"} S20_AXI {memport "S_AXI_NOC" sptag "LPDDR3"  is_range "true"} S21_AXI {memport "S_AXI_NOC" sptag "LPDDR3"  is_range "true"}} [get_bd_cells /NoC_C3]
-
-#set_property PFM.AXI_PORT {S00_AXI {memport "S_AXI_NOC" sptag "LPDDR" memory "LPDDR" is_range "true"} S01_AXI {memport "S_AXI_NOC" sptag "LPDDR" memory "LPDDR" is_range "true"} S02_AXI {memport "S_AXI_NOC" sptag "LPDDR" memory "LPDDR" is_range "true"} S03_AXI {memport "S_AXI_NOC" sptag "LPDDR" memory "LPDDR" is_range "true"} S04_AXI {memport "S_AXI_NOC" sptag "LPDDR" memory "LPDDR" is_range "true"} S05_AXI {memport "S_AXI_NOC" sptag "LPDDR" memory "LPDDR" is_range "true"} S06_AXI {memport "S_AXI_NOC" sptag "LPDDR" memory "LPDDR" is_range "true"} S07_AXI {memport "S_AXI_NOC" sptag "LPDDR" memory "LPDDR" is_range "true"} S08_AXI {memport "S_AXI_NOC" sptag "LPDDR" memory "LPDDR" is_range "true"} S09_AXI {memport "S_AXI_NOC" sptag "LPDDR" memory "LPDDR" is_range "true"} S10_AXI {memport "S_AXI_NOC" sptag "LPDDR" memory "LPDDR" is_range "true"} S11_AXI {memport "S_AXI_NOC" sptag "LPDDR" memory "LPDDR" is_range "true"} S12_AXI {memport "S_AXI_NOC" sptag "LPDDR" memory "LPDDR" is_range "true"} S13_AXI {memport "S_AXI_NOC" sptag "LPDDR" memory "LPDDR" is_range "true"} S14_AXI {memport "S_AXI_NOC" sptag "LPDDR" memory "LPDDR" is_range "true"} S15_AXI {memport "S_AXI_NOC" sptag "LPDDR" memory "LPDDR" is_range "true"} S16_AXI {memport "S_AXI_NOC" sptag "LPDDR" memory "LPDDR" is_range "true"} S17_AXI {memport "S_AXI_NOC" sptag "LPDDR" memory "LPDDR" is_range "true"} S18_AXI {memport "S_AXI_NOC" sptag "LPDDR" memory "LPDDR" is_range "true"} S19_AXI {memport "S_AXI_NOC" sptag "LPDDR" memory "LPDDR" is_range "true"} S20_AXI {memport "S_AXI_NOC" sptag "LPDDR" memory "LPDDR" is_range "true"} S21_AXI {memport "S_AXI_NOC" sptag "LPDDR" memory "LPDDR" is_range "true"}} [get_bd_cells /aggr_noc]
-
-set_property PFM.AXI_PORT {S00_AXI {sptag LPDDR auto preferred} S01_AXI {sptag LPDDR auto preferred} S02_AXI {sptag LPDDR auto preferred} S03_AXI {sptag LPDDR auto preferred} S04_AXI {sptag LPDDR auto preferred} S05_AXI {sptag LPDDR auto preferred} S06_AXI {sptag LPDDR auto preferred} S07_AXI {sptag LPDDR auto preferred} S08_AXI {sptag LPDDR auto preferred} S09_AXI {sptag LPDDR auto preferred} S10_AXI {sptag LPDDR auto preferred} S11_AXI {sptag LPDDR auto preferred} S12_AXI {sptag LPDDR auto preferred} S13_AXI {sptag LPDDR auto preferred} S14_AXI {sptag LPDDR auto preferred} S15_AXI {sptag LPDDR auto preferred} S16_AXI {sptag LPDDR auto preferred} S17_AXI {sptag LPDDR auto preferred} S18_AXI {sptag LPDDR auto preferred} S19_AXI {sptag LPDDR auto preferred} S20_AXI {sptag LPDDR auto preferred} S21_AXI {sptag LPDDR auto preferred}} [get_bd_cells /aggr_noc]
-
-
-# set clocks {}
-# set i [set k 0]
-# set portl [get_property CONFIG.CLKOUT_PORT [get_ips *clk_wizard*]]
-# set driver [get_property CONFIG.CLKOUT_DRIVES [get_ips *clk_wizard*]]
-# set clk_used [get_property CONFIG.CLKOUT_USED [get_ips *clk_wizard*]]
-# set new_prtl [split $portl ","]
-# set new_d [split $driver ","]
-# set clk_u [split $clk_used ","]
-# #set freql [get_property CONFIG.CLKOUT_REQUESTED_OUT_FREQUENCY [get_ips *clk_wizard*]]
-# set is_default false
-# set id_c [llength [lsearch -all $clk_u true]]
-# #set id_n [expr 	$id_c-1]
-
-
-# foreach { port freq id is_default} $clk_options {
-
-	# set clk_enb [lindex $clk_u $k]
-	# if { $clk_enb == "true"} {
-
-		# if {[regexp "MBUFGCE" $driver]} {
-			
-			# if {($freq == 625) && ($is_default == "true" ) } {
-			
-			# set is_default false
-			# set m_prt ${port}_o1
-			# dict append clocks ${m_prt} "id \"$id\" is_default \"$is_default\" proc_sys_reset \"/proc_sys_reset_$i\" status \"fixed_non_ref\""
-		
-			# incr i
-			# for {set j 2} {$j < 5} {incr j} {
-			# set m_prt ${port}_o${j}
-			# if {$m_prt == "${port}_o2"} {
-			# set is_default true }
-			# dict append clocks ${m_prt} "id \"$id_c\" is_default \"$is_default\" proc_sys_reset \"/proc_sys_reset_$i\" status \"fixed_non_ref\""
-			
-			# set is_default false
-			# incr id_c
-			# incr i
-			# }} else {
-			
-			# dict append clocks ${port} "id \"$id\" is_default \"$is_default\" proc_sys_reset \"/proc_sys_reset_$i\" status \"fixed\""
-			
-			# incr i
-		# }
-	 # } else {
-		
-		# dict append clocks $port "id \"$id\" is_default \"$is_default\" proc_sys_reset \"/proc_sys_reset_$i\" status \"fixed\""
-		
-		# incr i
-	# } 
-	# incr k 
-	# } }
-
-set clocks {}
-set i [set k 0]
-set portl [get_property CONFIG.CLKOUT_PORT [get_ips *clk_wizard*]]
-set driver [get_property CONFIG.CLKOUT_DRIVES [get_ips *clk_wizard*]]
-set clk_used [get_property CONFIG.CLKOUT_USED [get_ips *clk_wizard*]]
-set new_prtl [split $portl ","]
-set new_d [split $driver ","]
-set clk_u [split $clk_used ","]
-#set freql [get_property CONFIG.CLKOUT_REQUESTED_OUT_FREQUENCY [get_ips *clk_wizard*]]
-set is_default false
-set id_c [llength [lsearch -all $clk_u true]]
-#set id_n [expr 	$id_c-1]
-
-
-foreach { port freq id is_default} $clk_options {
-
-	set clk_enb [lindex $clk_u $k]
-	if { $clk_enb == "true"} {
-
-		if {[regexp "MBUFGCE" $driver]} {
-			
-			if {($freq == 625) && ($is_default == "true" ) } {
-			
-			set is_default false
-			set m_prt ${port}_o1
-			dict append clocks ${m_prt} "id \"$id\" is_default \"$is_default\" proc_sys_reset \"/proc_sys_reset_o4\" status \"fixed_non_ref\""
-		
-			#incr i
-			for {set j 2} {$j < 5} {incr j} {
-			set m_prt ${port}_o${j}
-			if {$m_prt == "${port}_o2"} {
-			set is_default true }
-			dict append clocks ${m_prt} "id \"$id_c\" is_default \"$is_default\" proc_sys_reset \"/proc_sys_reset_o4\" status \"fixed_non_ref\""
-			
-			set is_default false
-			incr id_c
-			#incr i
-			}} else {
-			
-			dict append clocks ${port} "id \"$id\" is_default \"$is_default\" proc_sys_reset \"/proc_sys_reset_$i\" status \"fixed\""
-			
-			
-		}
-		incr i
-	 } else {
-		
-		dict append clocks $port "id \"$id\" is_default \"$is_default\" proc_sys_reset \"/proc_sys_reset_$i\" status \"fixed\""
-		
-		incr i
-	} 
-	incr k 
-	} }
-
 set_property SELECTED_SIM_MODEL tlm [get_bd_cells /ps_wizard_0]
 set_property SELECTED_SIM_MODEL tlm [get_bd_cells -hierarchical Master_NoC]
-set_property SELECTED_SIM_MODEL tlm [get_bd_cells -hierarchical NoC_C0_C1]
+set_property SELECTED_SIM_MODEL tlm [get_bd_cells -hierarchical NoC_C0]
+set_property SELECTED_SIM_MODEL tlm [get_bd_cells -hierarchical NoC_C1]
 set_property SELECTED_SIM_MODEL tlm [get_bd_cells -hierarchical NoC_C3]
-#set_property SELECTED_SIM_MODEL tlm [get_bd_cells -hierarchical NoC_C4]
 set_property SELECTED_SIM_MODEL tlm [get_bd_cells -hierarchical NoC_C2]
 set_property preferred_sim_model tlm [current_project]
-set_property PFM.CLOCK $clocks [get_bd_cells -hierarchical clk_wizard_0]
-#puts "clocks :: $clocks  PFM properties"
 
-#Platform Level Properties
-set_property platform.default_output_type "sd_card" [current_project]
-set_property platform.design_intent.embedded "true" [current_project]
-set_property platform.num_compute_units $irqs [current_project]
-set_property platform.design_intent.server_managed "false" [current_project]
-set_property platform.design_intent.external_host "false" [current_project]
-set_property platform.design_intent.datacenter "false" [current_project]
-set_property platform.uses_pr  "false" [current_project]
-set_property platform.extensible true [current_project]
-
-
-# set_property platform.emu.dr_bd_inst_path /tb/DUT/${design_name}_wrapper_i/${design_name}_i [current_project]
-
-#setting Platform level param to have PDI in hw xsa
-#set_param platform.forceEnablePreSynthPDI true
-
-puts "INFO: Platform creation completed!"
-
+source "$currentDir/pfm_decls.tcl"
 
 # Add USER_COMMENTS on $design_name
 #set_property USER_COMMENTS.comment0 "An Example Versal Extensible Embedded Platform" [get_bd_designs $design_name]
