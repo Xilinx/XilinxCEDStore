@@ -860,11 +860,11 @@
         "name": "versal_gen1_platform",
         "display": "Versal Embedded Common Platform",
         "latest_revision": "1.1",
-        "commit_id": "ff36dcc48335270517d6c412bd5ee07ed869161d",
+        "commit_id": "b8cee093624bbfa649fbc5e8305a8b44a56a5b38",
         "revisions": [
           {
             "revision": "1.1",
-            "commit_id": "ff36dcc48335270517d6c412bd5ee07ed869161d",
+            "commit_id": "b8cee093624bbfa649fbc5e8305a8b44a56a5b38",
             "date": "08-07-2025:05:41:29",
             "history": "Added board Versal Embedded Common Platform v1.1"
           }
@@ -879,11 +879,11 @@
         "name": "versal_gen2_platform",
         "display": "Versal AI Edge Series Gen 2 Embedded Common Platform",
         "latest_revision": "1.2",
-        "commit_id": "888432428bcdfdc3c4a7234a39addce0aafc8867",
+        "commit_id": "b8cee093624bbfa649fbc5e8305a8b44a56a5b38",
         "revisions": [
           {
             "revision": "1.2",
-            "commit_id": "888432428bcdfdc3c4a7234a39addce0aafc8867",
+            "commit_id": "b8cee093624bbfa649fbc5e8305a8b44a56a5b38",
             "date": "17-07-2025:07:01:29",
             "history": "Added board Versal AI Edge Series Gen 2 Embedded Common Platform v1.2"
           }
