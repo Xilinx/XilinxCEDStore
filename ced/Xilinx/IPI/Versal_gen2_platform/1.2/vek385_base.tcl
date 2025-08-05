@@ -1239,6 +1239,18 @@ set xdc [file join $currentDir vek385_constrs vek385_base.xdc]
 add_files -fileset constrs_1 -norecurse $xdc
 import_files -fileset constrs_1 $xdc 
 
+set_property -dict [list CONFIG.REMAPS {M04_INI {{0xA_0000_0000 0x500_0000_0000 4G}}}] [get_bd_intf_pins /Master_NoC/S00_AXI]
+set_property -dict [list CONFIG.REMAPS {M04_INI {{0xA_0000_0000 0x500_0000_0000 4G}}}] [get_bd_intf_pins /Master_NoC/S01_AXI]
+set_property -dict [list CONFIG.REMAPS {M04_INI {{0xA_0000_0000 0x500_0000_0000 4G}}}] [get_bd_intf_pins /Master_NoC/S02_AXI]
+set_property -dict [list CONFIG.REMAPS {M04_INI {{0xA_0000_0000 0x500_0000_0000 4G}}}] [get_bd_intf_pins /Master_NoC/S03_AXI]
+set_property -dict [list CONFIG.REMAPS {M04_INI {{0xA_0000_0000 0x500_0000_0000 4G}}}] [get_bd_intf_pins /Master_NoC/S04_AXI]
+set_property -dict [list CONFIG.REMAPS {M04_INI {{0xA_0000_0000 0x500_0000_0000 4G}}}] [get_bd_intf_pins /Master_NoC/S05_AXI]
+set_property -dict [list CONFIG.REMAPS {M04_INI {{0xA_0000_0000 0x500_0000_0000 4G}}}] [get_bd_intf_pins /Master_NoC/S06_AXI]
+set_property -dict [list CONFIG.REMAPS {M04_INI {{0xA_0000_0000 0x500_0000_0000 4G}}}] [get_bd_intf_pins /Master_NoC/S07_AXI]
+#set_property -dict [list CONFIG.REMAPS {M04_INI {{0xA_0000_0000 0x500_0000_0000 4G}}}] [get_bd_intf_pins /Master_NoC/S08_AXI]
+set_property -dict [list CONFIG.REMAPS {M04_INI {{0xA_0000_0000 0x500_0000_0000 4G}}}] [get_bd_intf_pins /Master_NoC/S09_AXI]
+set_property -dict [list CONFIG.REMAPS {M04_INI {{0xA_0000_0000 0x500_0000_0000 4G}}}] [get_bd_intf_pins /Master_NoC/S10_AXI]
+
 assign_bd_address
 
 validate_bd_design

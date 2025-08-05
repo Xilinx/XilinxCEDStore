@@ -71,11 +71,11 @@ source "$currentDir/vek385_ext.tcl"
 
 if {$sgc == "true"} {
 puts "INFO: Importing the golden_noc_solution.ncr to the design!"
-set noc_ncr [file join $currentDir vek385_golden_ncr vek385_6140274_0xe0d2611b.ncr]
+set noc_ncr [file join $currentDir vek385_golden_ncr vek385_6192789_0xe0d2611b.ncr]
 
 import_files -fileset utils_1 $noc_ncr 
 set ncr_file [file join [get_property directory [current_project]] [current_project].srcs utils_1 imports vek385_golden_ncr]
-set_property NOC_SOLUTION_FILE $ncr_file/vek385_6140274_0xe0d2611b.ncr [get_runs impl_1]
+set_property NOC_SOLUTION_FILE $ncr_file/vek385_6192789_0xe0d2611b.ncr [get_runs impl_1]
 }
 
 open_bd_design [get_files $design_name.bd]

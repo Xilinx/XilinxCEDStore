@@ -115,7 +115,7 @@ create_root_design $currentDir $design_name $clk_options $irqs $use_aie $clk_def
 } else {
 create_root_design $currentDir $design_name $clk_options $irqs $use_aie
 }
-
+}
 
 # if {[regexp "Base" $bd_typ]} {
 # set_property offset 0xA6020000 [get_bd_addr_segs {CIPS_0/M_AXI_FPD/SEG_axi_vip_0_Reg}]
@@ -139,6 +139,7 @@ set noc_ncr [glob -nocomplain -directory $dir_path $filePattern]
 } else {
 puts "INFO: Golden NCR is not available for $board_name!!"
 }
+
 set file_name [ lindex [split $noc_ncr "/"] end]
 puts "INFO: Importing the golden_noc $file_name to the design!"
 import_files -fileset utils_1 $noc_ncr 
