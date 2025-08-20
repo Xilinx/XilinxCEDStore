@@ -17,7 +17,6 @@
 set currentFile [file normalize [info script]]
 variable currentDir [file dirname $currentFile]
 #set_param ips.useCIPSv3 1
-#set_param cips.enablePSVIPsimulation  1
 source -notrace "$currentDir/run.tcl"
 # *******************User defined proc (filter versal latest board parts )****************************
 proc get_latest_board_parts {} {

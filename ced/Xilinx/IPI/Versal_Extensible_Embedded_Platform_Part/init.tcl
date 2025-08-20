@@ -25,7 +25,7 @@ proc getSupportedParts {} {
 	
 	foreach item $mylist {
 	# Filtered out unsupported parts
-		if {![regexp "1" [[regexp "xcvp1402-vsvd2197" $item]||[regexp "xcvn3716" $item]||[regexp "xa2ve3288" $item]]]} {
+		if {![regexp "1" [[regexp "xcvp1402-vsvd2197" $item]||[regexp "xcvn3716" $item]]]} {
 			lappend newitem $item 
 		}
 	}
@@ -166,7 +166,7 @@ gui_updater {PROJECT_PARAM.PART} {Include_AIE.VISIBLE Include_AIE.ENABLEMENT Inc
 		if {([regexp "AIE_ENGINE" [lindex $get_aie_prop 1 ]] == 1) && ([lindex $get_aie_prop 3 ] != 0) } {
 			#set Include_AIE.VISIBLE true
 			set Include_AIE.ENABLEMENT true
-			if {[regexp "xcvm2152" ${PROJECT_PARAM.PART}] || [regexp "xa2ve3288" ${PROJECT_PARAM.PART}] || [regexp "xc2v" ${PROJECT_PARAM.PART}] || [regexp "xcvr1652" ${PROJECT_PARAM.PART}] || [regexp "xcvr1602" ${PROJECT_PARAM.PART}] || [regexp "xc10T21" ${PROJECT_PARAM.PART}]} {
+			if {[regexp "xcvm2152" ${PROJECT_PARAM.PART}] || [regexp "xc2v" ${PROJECT_PARAM.PART}] || [regexp "xcvr1652" ${PROJECT_PARAM.PART}] || [regexp "xcvr1602" ${PROJECT_PARAM.PART}] || [regexp "xc10T21" ${PROJECT_PARAM.PART}]} {
 			set Include_BDC.ENABLEMENT false
 			} else {
 			set Include_BDC.ENABLEMENT true
