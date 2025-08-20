@@ -57,7 +57,7 @@ if {[regexp "Base" $bd_typ]} {
 	
 	puts "INFO: Base design is selected"
 	
-	if {[regexp "vrk160" $board_name]||[regexp "vrk165" $board_name]} {
+	if {[regexp "vrk160" $board_name]} {
 
 	source "$currentDir/vrk_base_board.tcl"
 	
@@ -69,7 +69,7 @@ if {[regexp "Base" $bd_typ]} {
 puts "INFO: Extensible design is selected"
 set_property platform.extensible true [current_project]
 
-	if {[regexp "vrk160" $board_name]||[regexp "vrk165" $board_name]} {
+	if {[regexp "vrk160" $board_name]} {
 
 	source "$currentDir/vrk_ext_board.tcl"
 	} else {
@@ -83,7 +83,7 @@ if { [dict exists $options $irqs_param] } {
 	set irqs [dict get $options $irqs_param ]
 }
 
-if {[regexp "vck190" $board_name]||[regexp "vek280" $board_name]||[regexp "vrk160" $board_name]||[regexp "vrk165" $board_name]} {
+if {[regexp "vck190" $board_name]||[regexp "vek280" $board_name]||[regexp "vrk160" $board_name]} {
 	set clk_options { clk_out1 625 0 true clk_out2 100 1 false}
 } else {
 	set clk_options { clk_out1 200 0 true } 
@@ -110,7 +110,7 @@ puts "INFO: selected Clock_Options:: $clk_options"
 puts "INFO: selected Include_AIE:: $use_aie"
 puts "INFO: Using enhanced Versal extensible platform CED"
 
-if {[regexp "vrk160" $board_name]||[regexp "vrk165" $board_name]} {
+if {[regexp "vrk160" $board_name]} {
 create_root_design $currentDir $design_name $clk_options $irqs $use_aie $clk_defaut
 } else {
 create_root_design $currentDir $design_name $clk_options $irqs $use_aie
@@ -132,9 +132,6 @@ set filePattern "vck190_*.ncr"
 set noc_ncr [glob -nocomplain -directory $dir_path $filePattern]
 } elseif {[regexp "vrk160" $board_name]} {
 set filePattern "vrk160_*.ncr"
-set noc_ncr [glob -nocomplain -directory $dir_path $filePattern]
-} elseif {[regexp "vrk165" $board_name]} {
-set filePattern "vrk165_*.ncr"
 set noc_ncr [glob -nocomplain -directory $dir_path $filePattern]
 } else {
 puts "INFO: Golden NCR is not available for $board_name!!"

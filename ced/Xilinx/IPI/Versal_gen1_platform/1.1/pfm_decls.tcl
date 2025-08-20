@@ -1,5 +1,5 @@
 #############################################################
-# vrk160/vrk165 Extensible CED updates for 2025.1.1 release
+# vrk160 Extensible CED updates for 2025.1.1 release
 #############################################################
 puts "INFO: Block design generation completed, yet to set PFM properties"
 # Create PFM attributes
