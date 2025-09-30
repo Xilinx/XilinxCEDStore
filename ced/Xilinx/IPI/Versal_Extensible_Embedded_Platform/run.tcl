@@ -1,0 +1,1154 @@
+# ########################################################################
+# Copyright (C) 2023, Advanced Micro Devices Inc - All rights reserved
+
+# Licensed under the Apache License, Version 2.0 (the "License"). You may
+# not use this file except in compliance with the License. A copy of the
+# License is located at
+
+ # http://www.apache.org/licenses/LICENSE-2.0
+
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations
+# under the License.
+# ########################################################################
+
+proc createDesign {design_name options} {
+
+	##################################################################
+	# DESIGN PROCs													 
+	##################################################################
+	
+	
+	proc board_memory_config { board_selected } {
+	
+		if {[regexp "vpk120" $board_selected]||[regexp "vek280" $board_selected]||[regexp "vpk180" $board_selected]} {
+		
+			set default_mem "noc_lpddr4_0"
+			set additional_mem "noc_lpddr4_1"
+			set bdc_ddr0 "LPDDRNoc0"
+			set bdc_ddr1 "LPDDRNoc1"
+					
+		} elseif {[regexp "vhk158" $board_selected]} {
+		
+			set default_mem "noc_ddr4_0"
+			set additional_mem "noc_ddr4_1"
+			set bdc_ddr0 "DDRNoc0"
+			set bdc_ddr1 "DDRNoc1"
+					
+		} else {
+					
+			set default_mem "noc_ddr4"
+			set additional_mem "noc_lpddr4"
+			set bdc_ddr0 "DDRNoc0"
+			set bdc_ddr1 "LPDDRNoc1"
+		}
+		
+		return [ list $default_mem $additional_mem $bdc_ddr0 $bdc_ddr1]
+	}
+	
+	variable currentDir
+	set_property target_language Verilog [current_project]
+
+	proc create_root_design {currentDir design_name use_lpddr clk_options irqs use_aie} {
+
+		set use_lpddr 1
+		
+		puts "create_root_design"
+		
+		set board_part [get_property NAME [current_board_part]]
+		set board_name [get_property BOARD_NAME [current_board]]
+		set fpga_part [get_property PART_NAME [current_board_part]]
+				
+		# Fetching memory configurations availale on the selected board
+		
+		set mem_config [board_memory_config [get_property BOARD_NAME [current_board]]]
+		
+		set default_mem [lindex $mem_config 0]
+		set additional_mem [lindex $mem_config 1]
+		set bdc_ddr0 [lindex $mem_config 2]
+		set bdc_ddr1 [lindex $mem_config 3]
+
+		set use_intc_15 [set use_intc_32 [set use_cascaded_irqs [set no_irqs ""]]]
+
+		set use_intc_15 [ expr $irqs eq "15" ]
+		set use_intc_32 [ expr $irqs eq "32" ]
+		set use_cascaded_irqs [ expr $irqs eq "63" ]
+		set no_irqs [ expr $irqs eq "0" ]
+
+		# Create instance: CIPS_0, and set properties
+		create_bd_cell -type ip -vlnv xilinx.com:ip:versal_cips:* CIPS_0
+		
+		#apply_board_connection -board_interface "cips_fixed_io" -ip_intf "CIPS_0/FIXED_IO" -diagram $design_name
+		apply_board_connection -board_interface "ps_pmc_fixed_io" -ip_intf "CIPS_0/FIXED_IO" -diagram $design_name
+
+		set_property -dict [list CONFIG.PS_PMC_CONFIG { CLOCK_MODE Custom DDR_MEMORY_MODE Custom PMC_CRP_PL0_REF_CTRL_FREQMHZ 99.999992 PMC_USE_PMC_NOC_AXI0 1 PS_IRQ_USAGE {{CH0 1} {CH1 0} {CH10 0} {CH11 0} {CH12 0} {CH13 0} {CH14 0} {CH15 0} {CH2 0} {CH3 0} {CH4 0} {CH5 0} {CH6 0} {CH7 0} {CH8 0} {CH9 0}} PS_TTC0_PERIPHERAL_ENABLE {1} PS_NUM_FABRIC_RESETS 1 PS_PL_CONNECTIVITY_MODE Custom PS_USE_FPD_AXI_NOC0 1 PS_USE_FPD_AXI_NOC1 1 PS_USE_FPD_CCI_NOC 1 PS_USE_M_AXI_FPD 1 PS_USE_NOC_LPD_AXI0 1 PS_USE_PMCPL_CLK0 1 } CONFIG.CLOCK_MODE {Custom} CONFIG.DDR_MEMORY_MODE {Custom} CONFIG.PS_PL_CONNECTIVITY_MODE {Custom}] [get_bd_cells CIPS_0]
+
+		set_property -dict [list CONFIG.PS_PMC_CONFIG {PS_GEN_IPI0_ENABLE 1 PS_GEN_IPI0_MASTER A72 PS_GEN_IPI1_ENABLE 1 PS_GEN_IPI1_MASTER A72 PS_GEN_IPI2_ENABLE 1 PS_GEN_IPI2_MASTER A72 PS_GEN_IPI3_ENABLE 1 PS_GEN_IPI3_MASTER A72 PS_GEN_IPI4_ENABLE 1 PS_GEN_IPI4_MASTER A72 PS_GEN_IPI5_ENABLE 1 PS_GEN_IPI5_MASTER A72 PS_GEN_IPI6_ENABLE 1 PS_GEN_IPI6_MASTER A72} ] [get_bd_cells CIPS_0]
+		
+		set board_selected [get_property BOARD_NAME [current_board]]
+		if {[regexp "vck190" $board_selected]||[regexp "vek280" $board_selected]||[regexp "vmk180" $board_selected]} {
+		
+			set_property -dict [list \
+				CONFIG.DEBUG_MODE {Custom} \
+				CONFIG.PS_PMC_CONFIG { \
+					DEBUG_MODE {Custom} \
+					PS_HSDP_INGRESS_TRAFFIC {AURORA} \
+					PS_HSDP_MODE {HSDP0} \
+					SMON_ALARMS {Set_Alarms_On} \
+					SMON_ENABLE_TEMP_AVERAGING {0} \
+					SMON_TEMP_AVERAGING_SAMPLES {0} \
+				} \
+			] [get_bd_cells CIPS_0]
+		
+			set gt_refclk0 [ create_bd_intf_port -mode Slave -vlnv xilinx.com:interface:diff_clock_rtl:1.0 gt_refclk0 ]
+			set_property -dict [ list \
+				CONFIG.FREQ_HZ {156250000} \
+			] $gt_refclk0
+			
+			connect_bd_intf_net -intf_net gt_refclk0_0 [get_bd_intf_ports gt_refclk0] [get_bd_intf_pins CIPS_0/gt_refclk0]
+		}
+		
+		
+		if {$use_intc_15} {
+
+			# Create instance: axi_intc_0, and set properties
+			set axi_intc_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_intc axi_intc_0 ]
+			set_property -dict [ list CONFIG.C_ASYNC_INTR {0xFFFFFFFF} CONFIG.C_IRQ_CONNECTION {1} ] $axi_intc_0
+				
+		}
+
+		if {$use_intc_32} {
+		 
+			# Create instance: axi_intc_0, and set properties
+			set axi_intc_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_intc axi_intc_0 ]
+			set_property -dict [ list CONFIG.C_ASYNC_INTR {0xFFFFFFFF} CONFIG.C_IRQ_CONNECTION {1} ] $axi_intc_0
+			
+			#create_bd_cell -type inline_hdl -vlnv xilinx.com:inline_hdl:ilconcat:* xlconcat_0
+			#set_property -dict [list CONFIG.NUM_PORTS {32} CONFIG.IN0_WIDTH {1}] [get_bd_cells xlconcat_0]
+			#connect_bd_net [get_bd_pins xlconcat_0/dout] [get_bd_pins axi_intc_0/intr]
+			
+		}
+
+		if { $use_cascaded_irqs } {
+		 
+			# Create instance: axi_intc_cascaded_1, and set properties
+			set axi_intc_cascaded_1 [ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_intc axi_intc_cascaded_1 ]
+			set_property -dict [ list CONFIG.C_IRQ_CONNECTION {1} CONFIG.C_ASYNC_INTR  {0xFFFFFFFF} ] $axi_intc_cascaded_1
+		  
+			# Create instance: axi_intc_parent, and set properties
+			set axi_intc_parent [ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_intc axi_intc_parent ]
+			set_property -dict [ list CONFIG.C_IRQ_CONNECTION {1} CONFIG.C_ASYNC_INTR  {0xFFFFFFFF} ] $axi_intc_parent
+			
+			# Create instance: xlconcat_0, and set properties
+			create_bd_cell -type inline_hdl -vlnv xilinx.com:inline_hdl:ilconcat:* xlconcat_0
+			set_property -dict [list CONFIG.NUM_PORTS {32} CONFIG.IN0_WIDTH {1}] [get_bd_cells xlconcat_0]
+			
+			# Create instance: xlconcat_1, and set properties
+			#create_bd_cell -type inline_hdl -vlnv xilinx.com:inline_hdl:ilconcat:* xlconcat_1
+			#set_property -dict [list CONFIG.NUM_PORTS {32} CONFIG.IN0_WIDTH {1}] [get_bd_cells xlconcat_1]
+		}
+		
+		# Clocks options, and set properties
+			
+		set clk_freqs [ list 100.000 150.000 300.000 100.000 100.000 100.000 100.000 ]
+		set clk_used [list true false false false false false false ]
+		set clk_ports [list clk_out1 clk_out2 clk_out3 clk_out4 clk_out5 clk_out6 clk_out7 ]
+		set clk_driver [list BUFG BUFG BUFG BUFG BUFG BUFG BUFG ]
+		set default_clk_port clk_out1
+		set default_mbuf_port clk_out1
+		set default_clk_num 0
+		set default_mguf_num 0
+		set mbufgce [set mbufgce_freqs 0]
+
+		set i [set j 0]
+		set clocks {}
+		
+		foreach { port freq id is_default } $clk_options {
+			lset clk_ports $i $port
+			lset clk_freqs $i $freq
+			lset clk_used $i true
+			
+			if {[regexp "vck190" $board_name]||[regexp "vek280" $board_name]} {
+				if {($freq >= 625) && ($is_default == "true") } {
+					lset clk_driver $i MBUFGCE
+					set mbuf_cklport ${port}_o
+					set mbufgce 1
+
+					set mbufgce_freqs $freq
+					set default_clk_port ${mbuf_cklport}2
+				} 
+			}
+			
+			if { $is_default } {
+				if { $mbufgce } {
+					set default_mbuf_port $port
+					set default_clk_num [expr ${i}+1]
+				} else {
+					set default_clk_port $port
+					set default_clk_num $i
+				}
+			}
+			
+			#dict append clocks clk_out$i { id $id is_default $is_default proc_sys_reset "proc_sys_reset$i" status "fixed" }
+			incr i
+
+		}
+		
+		if { $mbufgce } {
+			set num_clks [expr ${i}+3]
+		} else {
+			set num_clks $i 
+		}
+
+		# Create instance: clk_wizard_0, and set properties
+		set clk_wizard_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:clk_wizard clk_wizard_0 ]
+		set_property -dict [ list \
+		   CONFIG.CLKOUT_DRIVES [join $clk_driver ","] \
+		   CONFIG.CLKOUT_DYN_PS {None,None,None,None,None,None,None} \
+		   CONFIG.CLKOUT_MATCHED_ROUTING {false,false,false,false,false,false,false} \
+		   CONFIG.CLKOUT_PORT [join $clk_ports ","] \
+		   CONFIG.CLKOUT_REQUESTED_DUTY_CYCLE {50.000,50.000,50.000,50.000,50.000,50.000,50.000} \
+		   CONFIG.CLKOUT_REQUESTED_OUT_FREQUENCY [join $clk_freqs ","] \
+		   CONFIG.CLKOUT_REQUESTED_PHASE {0.000,0.000,0.000,0.000,0.000,0.000,0.000} \
+		   CONFIG.CLKOUT_USED [join $clk_used "," ]\
+		   CONFIG.JITTER_SEL {Min_O_Jitter} \
+		   CONFIG.RESET_TYPE {ACTIVE_LOW} \
+		   CONFIG.USE_LOCKED {true} \
+		   CONFIG.USE_PHASE_ALIGNMENT {true} \
+		   CONFIG.USE_RESET {true} \
+		 ] $clk_wizard_0
+		
+		if { $mbufgce } {
+		
+			set_property CONFIG.CE_TYPE {HARDSYNC} [get_bd_cells clk_wizard_0]
+		
+			create_bd_cell -type inline_hdl -vlnv xilinx.com:inline_hdl:ilconstant:* xlconstant_0
+			connect_bd_net [get_bd_pins xlconstant_0/dout] [get_bd_pins clk_wizard_0/${default_mbuf_port}_clr_n]
+			connect_bd_net [get_bd_pins clk_wizard_0/${default_mbuf_port}_ce] [get_bd_pins xlconstant_0/dout]
+		
+		}
+
+
+		create_bd_cell -type ip -vlnv xilinx.com:ip:axi_noc:* cips_noc
+
+		# set_property -dict [list CONFIG.NUM_SI {8} CONFIG.NUM_MI {0} CONFIG.NUM_NSI {0} CONFIG.NUM_NMI {1} CONFIG.NUM_CLKS {9}] [get_bd_cells cips_noc]
+		# set_property -dict [list CONFIG.CATEGORY {ps_cci} CONFIG.CONNECTIONS {M00_INI { read_bw {128} write_bw {128}} }] [get_bd_intf_pins /cips_noc/S00_AXI]
+		# set_property -dict [list CONFIG.CATEGORY {ps_cci} CONFIG.CONNECTIONS {M00_INI { read_bw {128} write_bw {128}} }] [get_bd_intf_pins /cips_noc/S01_AXI]
+		# set_property -dict [list CONFIG.CATEGORY {ps_cci} CONFIG.CONNECTIONS {M00_INI { read_bw {128} write_bw {128}} }] [get_bd_intf_pins /cips_noc/S02_AXI]
+		# set_property -dict [list CONFIG.CATEGORY {ps_cci} CONFIG.CONNECTIONS {M00_INI { read_bw {128} write_bw {128}} }] [get_bd_intf_pins /cips_noc/S03_AXI]
+		# set_property -dict [list CONFIG.CATEGORY {ps_nci} CONFIG.CONNECTIONS {M00_INI { read_bw {128} write_bw {128}} }] [get_bd_intf_pins /cips_noc/S04_AXI]
+		# set_property -dict [list CONFIG.CATEGORY {ps_nci} CONFIG.CONNECTIONS {M00_INI { read_bw {128} write_bw {128}} }] [get_bd_intf_pins /cips_noc/S05_AXI]
+		# set_property -dict [list CONFIG.CATEGORY {ps_rpu} CONFIG.CONNECTIONS {M00_INI { read_bw {128} write_bw {128}} }] [get_bd_intf_pins /cips_noc/S06_AXI]
+		# set_property -dict [list CONFIG.CATEGORY {ps_pmc} CONFIG.CONNECTIONS {M00_INI { read_bw {128} write_bw {128}} }] [get_bd_intf_pins /cips_noc/S07_AXI]
+		# set_property -dict [list CONFIG.ASSOCIATED_BUSIF {S03_AXI:S02_AXI:S00_AXI:S01_AXI:S04_AXI:S07_AXI:S06_AXI:S05_AXI}] [get_bd_pins /cips_noc/aclk0]
+
+		set_property -dict [list CONFIG.NUM_CLKS {9} CONFIG.NUM_MI {0} CONFIG.NUM_NMI {4} CONFIG.NUM_NSI {0} CONFIG.NUM_SI {8} CONFIG.SI_SIDEBAND_PINS {} ] [get_bd_cells cips_noc]
+		set_property -dict [list CONFIG.CATEGORY {ps_cci} CONFIG.CONNECTIONS {M00_INI {read_bw {128} write_bw {128}}}] [get_bd_intf_pins /cips_noc/S00_AXI]
+		set_property -dict [list CONFIG.CATEGORY {ps_cci} CONFIG.CONNECTIONS {M01_INI {read_bw {128} write_bw {128}}}] [get_bd_intf_pins /cips_noc/S01_AXI]
+		set_property -dict [list CONFIG.CATEGORY {ps_cci} CONFIG.CONNECTIONS {M02_INI {read_bw {128} write_bw {128}}}] [get_bd_intf_pins /cips_noc/S02_AXI]
+		set_property -dict [list CONFIG.CATEGORY {ps_cci} CONFIG.CONNECTIONS {M03_INI {read_bw {128} write_bw {128}}}] [get_bd_intf_pins /cips_noc/S03_AXI]
+		set_property -dict [list CONFIG.CATEGORY {ps_nci} CONFIG.CONNECTIONS {M00_INI {read_bw {5} write_bw {5}}}] [get_bd_intf_pins /cips_noc/S04_AXI]
+		set_property -dict [list CONFIG.CATEGORY {ps_nci} CONFIG.CONNECTIONS {M00_INI {read_bw {5} write_bw {5}}}] [get_bd_intf_pins /cips_noc/S05_AXI]
+		set_property -dict [list CONFIG.CATEGORY {ps_rpu} CONFIG.CONNECTIONS {M00_INI {read_bw {5} write_bw {5}}}] [get_bd_intf_pins /cips_noc/S06_AXI]
+		set_property -dict [list CONFIG.CATEGORY {ps_pmc} CONFIG.CONNECTIONS {M00_INI {read_bw {5} write_bw {5}}}] [get_bd_intf_pins /cips_noc/S07_AXI]
+
+		create_bd_cell -type ip -vlnv xilinx.com:ip:axi_noc:* $default_mem
+		
+		if {[regexp "vpk120" $board_name]||[regexp "vek280" $board_name]} {
+		
+			apply_board_connection -board_interface "ch0_lpddr4_trip1" -ip_intf "$default_mem/CH0_LPDDR4_0" -diagram $design_name 
+			apply_board_connection -board_interface "ch1_lpddr4_trip1" -ip_intf "$default_mem/CH1_LPDDR4_0" -diagram $design_name 
+			apply_board_connection -board_interface "lpddr4_clk1" -ip_intf "$default_mem/sys_clk0" -diagram $design_name
+			
+		} elseif {[regexp "vpk180" $board_name]} {
+		
+			apply_board_connection -board_interface "ch0_lpddr4_trip3" -ip_intf "/$default_mem/CH0_LPDDR4_0" -diagram $design_name 
+			apply_board_connection -board_interface "ch1_lpddr4_trip3" -ip_intf "/$default_mem/CH1_LPDDR4_0" -diagram $design_name 
+			apply_board_connection -board_interface "lpddr4_clk3" -ip_intf "/$default_mem/sys_clk0" -diagram $design_name
+			
+		} elseif {[regexp "vhk158" $board_name]} {
+		
+			apply_board_connection -board_interface "ddr4_dimm0" -ip_intf "$default_mem/CH0_DDR4_0" -diagram $design_name 
+			apply_board_connection -board_interface "ddr4_dimm0_sma_clk" -ip_intf "$default_mem/sys_clk0" -diagram $design_name 
+		
+		} else {
+		
+			apply_board_connection -board_interface "ddr4_dimm1" -ip_intf "$default_mem/CH0_DDR4_0" -diagram $design_name 
+			apply_board_connection -board_interface "ddr4_dimm1_sma_clk" -ip_intf "$default_mem/sys_clk0" -diagram $design_name 
+		
+		}
+		
+		#set_property -dict [list CONFIG.NUM_SI {0} CONFIG.NUM_MI {0} CONFIG.NUM_NSI {1} CONFIG.NUM_CLKS {0} CONFIG.NUM_MCP {4} CONFIG.MC_CHAN_REGION1 {DDR_LOW1}] [get_bd_cells $default_mem]
+		
+		set_property -dict [list CONFIG.MC_CHAN_REGION1 {DDR_LOW1} CONFIG.NUM_MCP {4} CONFIG.NUM_MI {0} CONFIG.NUM_NSI {4} CONFIG.NUM_SI {0} ] [get_bd_cells $default_mem]
+		set_property -dict [list CONFIG.CONNECTIONS {MC_0 {read_bw {5} write_bw {5} read_avg_burst {4} write_avg_burst {4}}}] [get_bd_intf_pins /$default_mem/S00_INI]
+		set_property -dict [list CONFIG.CONNECTIONS {MC_1 {read_bw {5} write_bw {5} read_avg_burst {4} write_avg_burst {4}}}] [get_bd_intf_pins /$default_mem/S01_INI]
+		set_property -dict [list CONFIG.CONNECTIONS {MC_2 {read_bw {5} write_bw {5} read_avg_burst {4} write_avg_burst {4}}}] [get_bd_intf_pins /$default_mem/S02_INI]
+		set_property -dict [list CONFIG.CONNECTIONS {MC_3 {read_bw {5} write_bw {5} read_avg_burst {4} write_avg_burst {4}}}] [get_bd_intf_pins /$default_mem/S03_INI]
+		
+		
+		if { [regexp "noc_lpddr4" $default_mem] } {
+			set_property -dict [list \
+			CONFIG.MC_CHANNEL_INTERLEAVING {true} \
+			CONFIG.MC_CH_INTERLEAVING_SIZE {4K_Bytes} \
+			] [get_bd_cells $default_mem]
+		}
+		
+		#set_property -dict [list CONFIG.CONNECTIONS {MC_0 { read_bw {128} write_bw {128} read_avg_burst {4} write_avg_burst {4}} }] [get_bd_intf_pins /$default_mem/S00_INI]
+		
+		connect_bd_intf_net [get_bd_intf_pins cips_noc/M00_INI] [get_bd_intf_pins $default_mem/S00_INI]
+		connect_bd_intf_net [get_bd_intf_pins cips_noc/M01_INI] [get_bd_intf_pins $default_mem/S01_INI]
+		connect_bd_intf_net [get_bd_intf_pins cips_noc/M02_INI] [get_bd_intf_pins $default_mem/S02_INI]
+		connect_bd_intf_net [get_bd_intf_pins cips_noc/M03_INI] [get_bd_intf_pins $default_mem/S03_INI]
+ 
+		connect_bd_intf_net [get_bd_intf_pins CIPS_0/FPD_CCI_NOC_0] [get_bd_intf_pins cips_noc/S00_AXI]
+		connect_bd_intf_net [get_bd_intf_pins CIPS_0/FPD_CCI_NOC_1] [get_bd_intf_pins cips_noc/S01_AXI]
+		connect_bd_intf_net [get_bd_intf_pins CIPS_0/FPD_CCI_NOC_2] [get_bd_intf_pins cips_noc/S02_AXI]
+		connect_bd_intf_net [get_bd_intf_pins CIPS_0/FPD_CCI_NOC_3] [get_bd_intf_pins cips_noc/S03_AXI]
+		connect_bd_intf_net [get_bd_intf_pins CIPS_0/FPD_AXI_NOC_0] [get_bd_intf_pins cips_noc/S04_AXI]
+		connect_bd_intf_net [get_bd_intf_pins CIPS_0/FPD_AXI_NOC_1] [get_bd_intf_pins cips_noc/S05_AXI]
+		connect_bd_intf_net [get_bd_intf_pins CIPS_0/LPD_AXI_NOC_0] [get_bd_intf_pins cips_noc/S06_AXI]
+		connect_bd_intf_net [get_bd_intf_pins CIPS_0/PMC_NOC_AXI_0] [get_bd_intf_pins cips_noc/S07_AXI]
+		connect_bd_net [get_bd_pins CIPS_0/fpd_cci_noc_axi0_clk] [get_bd_pins cips_noc/aclk1]
+		connect_bd_net [get_bd_pins CIPS_0/fpd_cci_noc_axi1_clk] [get_bd_pins cips_noc/aclk2]
+		connect_bd_net [get_bd_pins CIPS_0/fpd_cci_noc_axi2_clk] [get_bd_pins cips_noc/aclk3]
+		connect_bd_net [get_bd_pins CIPS_0/fpd_cci_noc_axi3_clk] [get_bd_pins cips_noc/aclk4]
+		connect_bd_net [get_bd_pins CIPS_0/fpd_axi_noc_axi0_clk] [get_bd_pins cips_noc/aclk5]
+		connect_bd_net [get_bd_pins CIPS_0/fpd_axi_noc_axi1_clk] [get_bd_pins cips_noc/aclk6]
+		connect_bd_net [get_bd_pins CIPS_0/lpd_axi_noc_clk] [get_bd_pins cips_noc/aclk7]
+		connect_bd_net [get_bd_pins CIPS_0/pmc_axi_noc_axi0_clk] [get_bd_pins cips_noc/aclk8]
+
+		for {set i 0} {$i < $num_clks} {incr i} {
+			# Create instance: proc_sys_reset_N, and set properties
+			set proc_sys_reset_$i [ create_bd_cell -type ip -vlnv xilinx.com:ip:proc_sys_reset proc_sys_reset_$i ]
+		}
+
+		connect_bd_net -net CIPS_0_pl_clk0 [get_bd_pins CIPS_0/pl0_ref_clk] [get_bd_pins clk_wizard_0/clk_in1]
+		connect_bd_net -net CIPS_0_pl_resetn1 [get_bd_pins CIPS_0/pl0_resetn] [get_bd_pins clk_wizard_0/resetn]
+
+		for {set i 0} {$i < $num_clks} {incr i} {
+			connect_bd_net -net CIPS_0_pl_resetn1 [get_bd_pins proc_sys_reset_$i/ext_reset_in]
+		}
+		
+		# Create instance: icn_ctrl, and set properties
+		set icn_ctrl [ create_bd_cell -type ip -vlnv xilinx.com:ip:smartconnect icn_ctrl ]
+		  
+
+		set default_clock_net clk_wizard_0_$default_clk_port
+		connect_bd_net -net $default_clock_net [get_bd_pins CIPS_0/m_axi_fpd_aclk] [get_bd_pins cips_noc/aclk0] [get_bd_pins icn_ctrl/aclk] 
+		  
+		
+		# Create instance: icn_ctrl, and set properties
+		
+		if {!$no_irqs } {
+		
+			if { $use_intc_15 } {
+			
+				# Using only 1 smartconnect to accomodate 15 AXI_Masters 
+
+				set num_masters 1
+								
+				set_property -dict [ list CONFIG.NUM_CLKS {1} CONFIG.NUM_MI $num_masters CONFIG.NUM_SI {1} ] $icn_ctrl
+				
+
+			} else {
+			
+				# Adding multiple Smartconnects and dummy AXI_VIP to accomodate 32 or 63 AXI_Masters selected
+				# Create instance: icn_ctrl, and set properties
+				
+				set num_masters [ expr "$use_cascaded_irqs ? 6 : 3" ]
+				set num_kernal [ expr "$use_cascaded_irqs ? 4 : 2" ]
+				set m_incr [ expr "$use_cascaded_irqs ? 2 : 1" ]
+				
+				set_property -dict [ list CONFIG.NUM_CLKS {1} CONFIG.NUM_MI $num_masters CONFIG.NUM_SI {1} ] $icn_ctrl 
+			
+				for {set i 0} {$i < $num_kernal} {incr i} {
+					set dummy_slave_$i [ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_vip dummy_slave_$i ]
+					set_property -dict [ list CONFIG.INTERFACE_MODE {SLAVE} ] [get_bd_cells dummy_slave_$i]
+					set icn_ctrl_$i [ create_bd_cell -type ip -vlnv xilinx.com:ip:smartconnect icn_ctrl_$i ]
+					set_property -dict [ list CONFIG.NUM_CLKS {1} CONFIG.NUM_MI {1} CONFIG.NUM_SI {1} ] [get_bd_cells icn_ctrl_$i]
+					set m [expr $i+$m_incr]
+					connect_bd_intf_net [get_bd_intf_pins icn_ctrl/M0${m}_AXI] [get_bd_intf_pins icn_ctrl_$i/S00_AXI]
+					connect_bd_intf_net [get_bd_intf_pins dummy_slave_$i/S_AXI] [get_bd_intf_pins icn_ctrl_$i/M00_AXI]
+					connect_bd_net -net proc_sys_reset_${default_clk_num}_peripheral_aresetn [get_bd_pins dummy_slave_$i/aresetn]
+					connect_bd_net -net proc_sys_reset_${default_clk_num}_peripheral_aresetn [get_bd_pins icn_ctrl_$i/aresetn]
+					connect_bd_net -net $default_clock_net [get_bd_pins icn_ctrl_$i/aclk]
+					connect_bd_net -net $default_clock_net [get_bd_pins dummy_slave_$i/aclk]
+				} 
+			}
+		}
+		 
+		if {$no_irqs } {
+		
+			set_property -dict [list CONFIG.NUM_SI {1}] [get_bd_cells icn_ctrl]
+			set_property -dict [list CONFIG.PS_PMC_CONFIG { PS_IRQ_USAGE {{CH0 0} {CH1 0} {CH10 0} {CH11 0} {CH12 0} {CH13 0} {CH14 0} {CH15 0} {CH2 0} {CH3 0} {CH4 0} {CH5 0} {CH6 0} {CH7 0} {CH8 0} {CH9 0}}}] [get_bd_cells CIPS_0]
+			
+			set to_delete_kernel [ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_vip to_delete_kernel ]
+			set_property -dict [ list CONFIG.INTERFACE_MODE {SLAVE} ] $to_delete_kernel
+			connect_bd_intf_net [get_bd_intf_pins icn_ctrl/M00_AXI] [get_bd_intf_pins to_delete_kernel/S_AXI]
+			#apply_bd_automation -rule xilinx.com:bd_rule:clkrst -config { Clk {/clk_wizard_0/clk_out1 (200 MHz)} Freq {100} Ref_Clk0 {} Ref_Clk1 {} Ref_Clk2 {}}  [get_bd_pins to_delete_kernel/aclk]
+			connect_bd_net -net $default_clock_net [get_bd_pins to_delete_kernel/aclk] 
+			connect_bd_net -net proc_sys_reset_${default_clk_num}_peripheral_aresetn [get_bd_pins to_delete_kernel/aresetn] 
+		
+		}
+		
+		connect_bd_intf_net -intf_net CIPS_0_M_AXI_GP0 [get_bd_intf_pins CIPS_0/M_AXI_FPD] [get_bd_intf_pins icn_ctrl/S00_AXI]
+		
+		set u 0
+		set p_id 0
+		if { $mbufgce } {
+			foreach clk_u $clk_used {
+			
+				if {$clk_u == "true"} {
+				
+					set port [lindex $clk_ports $p_id]
+					#puts "$u before mbufg "
+					
+					if { $port == $default_mbuf_port} {
+					
+						set l 0
+						for {set k 1} {$k < 5} {incr k} {
+							#puts "***** ${mbuf_cklport}$k *****"
+							connect_bd_net -net clk_wizard_0_${mbuf_cklport}$k [get_bd_pins clk_wizard_0/${mbuf_cklport}$k] [get_bd_pins proc_sys_reset_[expr $u+$l]/slowest_sync_clk]
+							incr l
+							#puts "connect_bd_net -net clk_wizard_0_${mbuf_cklport}$k [get_bd_pins clk_wizard_0/${mbuf_cklport}$k] [get_bd_pins proc_sys_reset_[expr $u+$l]/slowest_sync_clk]"
+						}
+						
+						set u [expr $u+3]
+						#puts "$u after mbufg in "
+						
+					} else {
+						connect_bd_net -net clk_wizard_0_$port [get_bd_pins clk_wizard_0/$port] [get_bd_pins proc_sys_reset_$u/slowest_sync_clk]
+					}
+					
+					incr u
+					incr p_id
+				}
+			}
+		
+		} else {
+
+			for {set i 0} {$i < $num_clks} {incr i} {
+				set port [lindex $clk_ports $i]
+				connect_bd_net -net clk_wizard_0_$port [get_bd_pins clk_wizard_0/$port] [get_bd_pins proc_sys_reset_$i/slowest_sync_clk]
+			} 
+		}
+
+
+		connect_bd_net -net clk_wizard_0_locked [get_bd_pins clk_wizard_0/locked]
+
+		for {set i 0} {$i < $num_clks} {incr i} {
+			connect_bd_net -net clk_wizard_0_locked [get_bd_pins proc_sys_reset_$i/dcm_locked] 
+		}
+
+		connect_bd_net -net proc_sys_reset_${default_clk_num}_peripheral_aresetn [get_bd_pins proc_sys_reset_${default_clk_num}/peripheral_aresetn] [get_bd_pins icn_ctrl/aresetn] 
+		  
+		if { $use_intc_15 } {
+			set_property -dict [list CONFIG.NUM_MI {1}] [get_bd_cells icn_ctrl]
+			connect_bd_intf_net -intf_net icn_ctrl_M00_AXI [get_bd_intf_pins axi_intc_0/s_axi] [get_bd_intf_pins icn_ctrl/M00_AXI]
+			connect_bd_net -net axi_intc_0_irq [get_bd_pins CIPS_0/pl_ps_irq0] [get_bd_pins axi_intc_0/irq]
+			connect_bd_net -net $default_clock_net [get_bd_pins axi_intc_0/s_axi_aclk]
+			connect_bd_net -net proc_sys_reset_${default_clk_num}_peripheral_aresetn [get_bd_pins axi_intc_0/s_axi_aresetn]
+		}
+
+		if { $use_intc_32 } {
+			set_property -dict [list CONFIG.NUM_MI {3}] [get_bd_cells icn_ctrl]
+			connect_bd_intf_net -intf_net icn_ctrl_M00_AXI [get_bd_intf_pins axi_intc_0/s_axi] [get_bd_intf_pins icn_ctrl/M00_AXI]
+			connect_bd_net -net axi_intc_0_irq [get_bd_pins CIPS_0/pl_ps_irq0] [get_bd_pins axi_intc_0/irq]
+			connect_bd_net -net $default_clock_net [get_bd_pins axi_intc_0/s_axi_aclk]
+			connect_bd_net -net proc_sys_reset_${default_clk_num}_peripheral_aresetn [get_bd_pins axi_intc_0/s_axi_aresetn]
+		}
+		  
+		if { $use_cascaded_irqs } {
+			connect_bd_intf_net -intf_net icn_ctrl_M00_AXI [get_bd_intf_pins axi_intc_cascaded_1/s_axi] [get_bd_intf_pins icn_ctrl/M00_AXI]
+			connect_bd_intf_net -intf_net icn_ctrl_M01_AXI [get_bd_intf_pins axi_intc_parent/s_axi] [get_bd_intf_pins icn_ctrl/M01_AXI]
+			connect_bd_net [get_bd_pins axi_intc_cascaded_1/irq] [get_bd_pins xlconcat_0/In31]
+			connect_bd_net [get_bd_pins axi_intc_parent/intr] [get_bd_pins xlconcat_0/dout]
+			#connect_bd_net [get_bd_pins axi_intc_cascaded_1/intr] [get_bd_pins xlconcat_1/dout]
+			connect_bd_net -net axi_intc_0_irq [get_bd_pins CIPS_0/pl_ps_irq0] [get_bd_pins axi_intc_parent/irq]
+			connect_bd_net -net $default_clock_net [get_bd_pins axi_intc_cascaded_1/s_axi_aclk]
+			connect_bd_net -net $default_clock_net [get_bd_pins axi_intc_parent/s_axi_aclk]
+			connect_bd_net -net proc_sys_reset_${default_clk_num}_peripheral_aresetn [get_bd_pins axi_intc_cascaded_1/s_axi_aresetn]
+			connect_bd_net -net proc_sys_reset_${default_clk_num}_peripheral_aresetn [get_bd_pins axi_intc_parent/s_axi_aresetn]
+		}
+		
+		if { $use_aie } {
+		
+			# set_property -dict [list CONFIG.NUM_MI {1} CONFIG.NUM_CLKS {10}] [get_bd_cells cips_noc]
+			# set_property -dict [list CONFIG.CATEGORY {aie}] [get_bd_intf_pins /cips_noc/M00_AXI]
+			# set_property -dict [list CONFIG.CONNECTIONS {M00_AXI { read_bw {5} write_bw {5} read_avg_burst {4} write_avg_burst {4}} M00_INI { read_bw {128} write_bw {128}} }] [get_bd_intf_pins /cips_noc/S00_AXI]
+			# set_property -dict [list CONFIG.CONNECTIONS {M00_AXI { read_bw {5} write_bw {5} read_avg_burst {4} write_avg_burst {4}} M00_INI { read_bw {128} write_bw {128}} }] [get_bd_intf_pins /cips_noc/S01_AXI]
+			# set_property -dict [list CONFIG.CONNECTIONS {M00_AXI { read_bw {5} write_bw {5} read_avg_burst {4} write_avg_burst {4}} M00_INI { read_bw {128} write_bw {128}} }] [get_bd_intf_pins /cips_noc/S02_AXI]
+			# set_property -dict [list CONFIG.CONNECTIONS {M00_AXI { read_bw {5} write_bw {5} read_avg_burst {4} write_avg_burst {4}} M00_INI { read_bw {128} write_bw {128}} }] [get_bd_intf_pins /cips_noc/S03_AXI]
+			# set_property -dict [list CONFIG.CONNECTIONS {M00_INI { read_bw {128} write_bw {128}} }] [get_bd_intf_pins /cips_noc/S04_AXI]
+			# set_property -dict [list CONFIG.CONNECTIONS {M00_AXI { read_bw {5} write_bw {5} read_avg_burst {4} write_avg_burst {4}} M00_INI { read_bw {128} write_bw {128}} }] [get_bd_intf_pins /cips_noc/S07_AXI]
+			# set_property -dict [list CONFIG.ASSOCIATED_BUSIF {M00_AXI}] [get_bd_pins /cips_noc/aclk9]
+
+			set_property -dict [list CONFIG.MI_SIDEBAND_PINS {} CONFIG.NUM_CLKS {10} CONFIG.NUM_MI {1} ] [get_bd_cells cips_noc]
+			set_property -dict [list CONFIG.CATEGORY {aie}] [get_bd_intf_pins /cips_noc/M00_AXI]
+			set_property -dict [list CONFIG.CONNECTIONS {M00_AXI {read_bw {5} write_bw {5} read_avg_burst {4} write_avg_burst {4}} M00_INI {read_bw {128} write_bw {128}}}] [get_bd_intf_pins /cips_noc/S00_AXI]
+			set_property -dict [list CONFIG.CONNECTIONS {M01_INI {read_bw {128} write_bw {128}} M00_AXI {read_bw {5} write_bw {5} read_avg_burst {4} write_avg_burst {4}}}] [get_bd_intf_pins /cips_noc/S01_AXI]
+			set_property -dict [list CONFIG.CONNECTIONS {M02_INI {read_bw {128} write_bw {128}} M00_AXI {read_bw {5} write_bw {5} read_avg_burst {4} write_avg_burst {4}}}] [get_bd_intf_pins /cips_noc/S02_AXI]
+			set_property -dict [list CONFIG.CONNECTIONS {M03_INI {read_bw {128} write_bw {128}} M00_AXI {read_bw {5} write_bw {5} read_avg_burst {4} write_avg_burst {4}}}] [get_bd_intf_pins /cips_noc/S03_AXI]
+			set_property -dict [list CONFIG.CONNECTIONS {M00_INI {read_bw {5} write_bw {5}}}] [get_bd_intf_pins /cips_noc/S04_AXI]
+			set_property -dict [list CONFIG.CONNECTIONS {M00_INI {read_bw {5} write_bw {5}}}] [get_bd_intf_pins /cips_noc/S05_AXI]
+			set_property -dict [list CONFIG.CONNECTIONS {M00_INI {read_bw {5} write_bw {5}}}] [get_bd_intf_pins /cips_noc/S06_AXI]
+			set_property -dict [list CONFIG.CONNECTIONS {M00_AXI {read_bw {5} write_bw {5} read_avg_burst {4} write_avg_burst {4}} M00_INI {read_bw {5} write_bw {5}}}] [get_bd_intf_pins /cips_noc/S07_AXI]
+
+			# Create instance: ai_engine_0, and set properties
+			set ai_engine_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:ai_engine:* ai_engine_0 ]
+			set_property -dict [ list \
+			  CONFIG.CLK_NAMES {} \
+			  CONFIG.NAME_MI_AXI {} \
+			  CONFIG.NAME_MI_AXIS {} \
+			  CONFIG.NAME_SI_AXI {S00_AXI,} \
+			  CONFIG.NAME_SI_AXIS {} \
+			  CONFIG.NUM_CLKS {0} \
+			  CONFIG.NUM_MI_AXI {0} \
+			  CONFIG.NUM_MI_AXIS {0} \
+			  CONFIG.NUM_SI_AXI {1} \
+			  CONFIG.NUM_SI_AXIS {0} \
+			] $ai_engine_0
+		
+			set_property -dict [ list CONFIG.CATEGORY {NOC} ] [get_bd_intf_pins /ai_engine_0/S00_AXI]
+		  
+			connect_bd_intf_net [get_bd_intf_pins cips_noc/M00_AXI] [get_bd_intf_pins ai_engine_0/S00_AXI]
+			connect_bd_net [get_bd_pins ai_engine_0/s00_axi_aclk] [get_bd_pins cips_noc/aclk9] 
+
+		}
+
+		if { $use_lpddr } {
+		
+			puts "INFO: lpddr4 selected"
+			
+			if {$use_aie } {
+				# set_property -dict [list CONFIG.NUM_NMI {2}] [get_bd_cells cips_noc]
+				# set_property -dict [list CONFIG.CONNECTIONS {M01_INI { read_bw {128} write_bw {128}} M00_AXI { read_bw {5} write_bw {5} read_avg_burst {4} write_avg_burst {4}} M00_INI { read_bw {128} write_bw {128}} }] [get_bd_intf_pins /cips_noc/S00_AXI]
+				# set_property -dict [list CONFIG.CONNECTIONS {M01_INI { read_bw {128} write_bw {128}} M00_AXI { read_bw {5} write_bw {5} read_avg_burst {4} write_avg_burst {4}} M00_INI { read_bw {128} write_bw {128}} }] [get_bd_intf_pins /cips_noc/S01_AXI]
+				# set_property -dict [list CONFIG.CONNECTIONS {M01_INI { read_bw {128} write_bw {128}} M00_AXI { read_bw {5} write_bw {5} read_avg_burst {4} write_avg_burst {4}} M00_INI { read_bw {128} write_bw {128}} }] [get_bd_intf_pins /cips_noc/S02_AXI]
+				# set_property -dict [list CONFIG.CONNECTIONS {M01_INI { read_bw {128} write_bw {128}} M00_AXI { read_bw {5} write_bw {5} read_avg_burst {4} write_avg_burst {4}} M00_INI { read_bw {128} write_bw {128}} }] [get_bd_intf_pins /cips_noc/S03_AXI]
+				# set_property -dict [list CONFIG.CONNECTIONS {M01_INI { read_bw {128} write_bw {128}} M00_INI { read_bw {128} write_bw {128}} }] [get_bd_intf_pins /cips_noc/S04_AXI]
+				# set_property -dict [list CONFIG.CONNECTIONS {M01_INI { read_bw {128} write_bw {128}} M00_INI { read_bw {128} write_bw {128}} }] [get_bd_intf_pins /cips_noc/S05_AXI]
+				# set_property -dict [list CONFIG.CONNECTIONS {M01_INI { read_bw {128} write_bw {128}} M00_INI { read_bw {128} write_bw {128}} }] [get_bd_intf_pins /cips_noc/S06_AXI]
+				# set_property -dict [list CONFIG.CONNECTIONS {M01_INI { read_bw {128} write_bw {128}} M00_AXI { read_bw {5} write_bw {5} read_avg_burst {4} write_avg_burst {4}} M00_INI { read_bw {128} write_bw {128}} }] [get_bd_intf_pins /cips_noc/S07_AXI]
+				# set_property -dict [list CONFIG.ASSOCIATED_BUSIF {}] [get_bd_pins /cips_noc/aclk9]
+				
+				set_property CONFIG.NUM_NMI {8} [get_bd_cells cips_noc]
+				set_property -dict [list CONFIG.CONNECTIONS {M04_INI {read_bw {128} write_bw {128}} M00_AXI {read_bw {5} write_bw {5} read_avg_burst {4} write_avg_burst {4}} M00_INI {read_bw {128} write_bw {128}}}] [get_bd_intf_pins /cips_noc/S00_AXI]
+				set_property -dict [list CONFIG.CONNECTIONS {M01_INI {read_bw {128} write_bw {128}} M05_INI {read_bw {128} write_bw {128}} M00_AXI {read_bw {5} write_bw {5} read_avg_burst {4} write_avg_burst {4}}}] [get_bd_intf_pins /cips_noc/S01_AXI]
+				set_property -dict [list CONFIG.CONNECTIONS {M02_INI {read_bw {128} write_bw {128}} M06_INI {read_bw {128} write_bw {128}} M00_AXI {read_bw {5} write_bw {5} read_avg_burst {4} write_avg_burst {4}}}] [get_bd_intf_pins /cips_noc/S02_AXI]
+				set_property -dict [list CONFIG.CONNECTIONS {M07_INI {read_bw {128} write_bw {128}} M03_INI {read_bw {128} write_bw {128}} M00_AXI {read_bw {5} write_bw {5} read_avg_burst {4} write_avg_burst {4}}}] [get_bd_intf_pins /cips_noc/S03_AXI]
+				set_property -dict [list CONFIG.CONNECTIONS {M00_INI {read_bw {5} write_bw {5}}}] [get_bd_intf_pins /cips_noc/S04_AXI]
+				set_property -dict [list CONFIG.CONNECTIONS {M00_INI {read_bw {5} write_bw {5}}}] [get_bd_intf_pins /cips_noc/S05_AXI]
+				set_property -dict [list CONFIG.CONNECTIONS {M00_INI {read_bw {5} write_bw {5}}}] [get_bd_intf_pins /cips_noc/S06_AXI]
+				set_property -dict [list CONFIG.CONNECTIONS {M04_INI {read_bw {5} write_bw {5}} M00_AXI {read_bw {5} write_bw {5} read_avg_burst {4} write_avg_burst {4}} M00_INI {read_bw {5} write_bw {5}}}] [get_bd_intf_pins /cips_noc/S07_AXI]
+				
+			} else {
+				# set_property -dict [list CONFIG.NUM_NMI {2}] [get_bd_cells cips_noc]
+				# set_property -dict [list CONFIG.CONNECTIONS {M01_INI { read_bw {128} write_bw {128}} M00_INI { read_bw {128} write_bw {128}} }] [get_bd_intf_pins /cips_noc/S00_AXI]
+				# set_property -dict [list CONFIG.CONNECTIONS {M01_INI { read_bw {128} write_bw {128}} M00_INI { read_bw {128} write_bw {128}} }] [get_bd_intf_pins /cips_noc/S01_AXI]
+				# set_property -dict [list CONFIG.CONNECTIONS {M01_INI { read_bw {128} write_bw {128}} M00_INI { read_bw {128} write_bw {128}} }] [get_bd_intf_pins /cips_noc/S02_AXI]
+				# set_property -dict [list CONFIG.CONNECTIONS {M01_INI { read_bw {128} write_bw {128}} M00_INI { read_bw {128} write_bw {128}} }] [get_bd_intf_pins /cips_noc/S03_AXI]
+				# set_property -dict [list CONFIG.CONNECTIONS {M01_INI { read_bw {128} write_bw {128}} M00_INI { read_bw {128} write_bw {128}} }] [get_bd_intf_pins /cips_noc/S04_AXI]
+				# set_property -dict [list CONFIG.CONNECTIONS {M01_INI { read_bw {128} write_bw {128}} M00_INI { read_bw {128} write_bw {128}} }] [get_bd_intf_pins /cips_noc/S05_AXI]
+				# set_property -dict [list CONFIG.CONNECTIONS {M01_INI { read_bw {128} write_bw {128}} M00_INI { read_bw {128} write_bw {128}} }] [get_bd_intf_pins /cips_noc/S06_AXI]
+				# set_property -dict [list CONFIG.CONNECTIONS {M01_INI { read_bw {128} write_bw {128}} M00_INI { read_bw {128} write_bw {128}} }] [get_bd_intf_pins /cips_noc/S07_AXI]
+				
+				set_property CONFIG.NUM_NMI {8} [get_bd_cells cips_noc]
+				set_property -dict [list CONFIG.CONNECTIONS {M04_INI {read_bw {128} write_bw {128}} M00_INI {read_bw {128} write_bw {128}}}] [get_bd_intf_pins /cips_noc/S00_AXI]
+				set_property -dict [list CONFIG.CONNECTIONS {M01_INI {read_bw {128} write_bw {128}} M05_INI {read_bw {128} write_bw {128}}}] [get_bd_intf_pins /cips_noc/S01_AXI]
+				set_property -dict [list CONFIG.CONNECTIONS {M02_INI {read_bw {128} write_bw {128}} M06_INI {read_bw {128} write_bw {128}}}] [get_bd_intf_pins /cips_noc/S02_AXI]
+				set_property -dict [list CONFIG.CONNECTIONS {M07_INI {read_bw {128} write_bw {128}} M03_INI {read_bw {128} write_bw {128}}}] [get_bd_intf_pins /cips_noc/S03_AXI]
+				set_property -dict [list CONFIG.CONNECTIONS {M00_INI {read_bw {5} write_bw {5}}}] [get_bd_intf_pins /cips_noc/S04_AXI]
+				set_property -dict [list CONFIG.CONNECTIONS {M00_INI {read_bw {5} write_bw {5}}}] [get_bd_intf_pins /cips_noc/S05_AXI]
+				set_property -dict [list CONFIG.CONNECTIONS {M00_INI {read_bw {5} write_bw {5}}}] [get_bd_intf_pins /cips_noc/S06_AXI]
+				set_property -dict [list CONFIG.CONNECTIONS {M04_INI {read_bw {5} write_bw {5}} M00_INI {read_bw {5} write_bw {5}}}] [get_bd_intf_pins /cips_noc/S07_AXI]
+				
+			}
+
+		create_bd_cell -type ip -vlnv xilinx.com:ip:axi_noc:* $additional_mem
+
+		if {[regexp "vpk120" $board_name]||[regexp "vek280" $board_name]} {
+
+			apply_board_connection -board_interface "ch0_lpddr4_trip2" -ip_intf "$additional_mem/CH0_LPDDR4_0" -diagram $design_name 
+			apply_board_connection -board_interface "ch1_lpddr4_trip2" -ip_intf "$additional_mem/CH1_LPDDR4_0" -diagram $design_name 
+			apply_board_connection -board_interface "lpddr4_clk2" -ip_intf "$additional_mem/sys_clk0" -diagram $design_name 
+
+			apply_board_connection -board_interface "ch0_lpddr4_trip3" -ip_intf "/$additional_mem/CH0_LPDDR4_1" -diagram $design_name 
+			apply_board_connection -board_interface "ch1_lpddr4_trip3" -ip_intf "/$additional_mem/CH1_LPDDR4_1" -diagram $design_name 
+			apply_board_connection -board_interface "lpddr4_clk3" -ip_intf "/$additional_mem/sys_clk1" -diagram $design_name 
+			
+		} elseif {[regexp "vpk180" $board_name]} {
+		
+			apply_board_connection -board_interface "ch0_lpddr4_trip2" -ip_intf "$additional_mem/CH0_LPDDR4_0" -diagram $design_name 
+			apply_board_connection -board_interface "ch1_lpddr4_trip2" -ip_intf "$additional_mem/CH1_LPDDR4_0" -diagram $design_name 
+			apply_board_connection -board_interface "lpddr4_clk2" -ip_intf "$additional_mem/sys_clk0" -diagram $design_name 
+
+			apply_board_connection -board_interface "ch0_lpddr4_trip1" -ip_intf "/$additional_mem/CH0_LPDDR4_1" -diagram $design_name 
+			apply_board_connection -board_interface "ch1_lpddr4_trip1" -ip_intf "/$additional_mem/CH1_LPDDR4_1" -diagram $design_name 
+			apply_board_connection -board_interface "lpddr4_clk1" -ip_intf "/$additional_mem/sys_clk1" -diagram $design_name  
+
+		} elseif {[regexp "vhk158" $board_name]} {
+		
+			apply_board_connection -board_interface "ddr4_dimm1" -ip_intf "$additional_mem/CH0_DDR4_0" -diagram $design_name 
+			apply_board_connection -board_interface "ddr4_dimm1_sma_clk" -ip_intf "$additional_mem/sys_clk0" -diagram $design_name 
+		
+		} else {
+
+			apply_board_connection -board_interface "ch0_lpddr4_c0" -ip_intf "$additional_mem/CH0_LPDDR4_0" -diagram $design_name 
+			apply_board_connection -board_interface "ch1_lpddr4_c0" -ip_intf "$additional_mem/CH1_LPDDR4_0" -diagram $design_name 
+			apply_board_connection -board_interface "lpddr4_sma_clk1" -ip_intf "$additional_mem/sys_clk0" -diagram $design_name 
+
+			apply_board_connection -board_interface "ch0_lpddr4_c1" -ip_intf "/$additional_mem/CH0_LPDDR4_1" -diagram $design_name 
+			apply_board_connection -board_interface "ch1_lpddr4_c1" -ip_intf "/$additional_mem/CH1_LPDDR4_1" -diagram $design_name 
+			apply_board_connection -board_interface "lpddr4_sma_clk2" -ip_intf "/$additional_mem/sys_clk1" -diagram $design_name 
+		
+		} 
+
+		# set_property -dict [list CONFIG.NUM_SI {0} CONFIG.NUM_MI {0} CONFIG.NUM_NSI {1} CONFIG.NUM_CLKS {0} CONFIG.MC_CHAN_REGION0 {DDR_CH1}] [get_bd_cells $additional_mem]
+		# set_property -dict [list CONFIG.CONNECTIONS {MC_0 { read_bw {1720} write_bw {1720} read_avg_burst {4} write_avg_burst {4}} }] [get_bd_intf_pins /$additional_mem/S00_INI]
+		
+		set_property -dict [list CONFIG.MC_CHAN_REGION0 {DDR_CH1} CONFIG.NUM_MCP {4} CONFIG.NUM_MI {0} CONFIG.NUM_NSI {4} CONFIG.NUM_SI {0} ] [get_bd_cells $additional_mem]
+		set_property -dict [list CONFIG.CONNECTIONS {MC_0 {read_bw {128} write_bw {128} read_avg_burst {4} write_avg_burst {4}}}] [get_bd_intf_pins /$additional_mem/S00_INI]
+		set_property -dict [list CONFIG.CONNECTIONS {MC_1 {read_bw {5} write_bw {5} read_avg_burst {4} write_avg_burst {4}}}] [get_bd_intf_pins /$additional_mem/S01_INI]
+		set_property -dict [list CONFIG.CONNECTIONS {MC_2 {read_bw {5} write_bw {5} read_avg_burst {4} write_avg_burst {4}}}] [get_bd_intf_pins /$additional_mem/S02_INI]
+		set_property -dict [list CONFIG.CONNECTIONS {MC_3 {read_bw {5} write_bw {5} read_avg_burst {4} write_avg_burst {4}}}] [get_bd_intf_pins /$additional_mem/S03_INI]
+
+		connect_bd_intf_net [get_bd_intf_pins cips_noc/M04_INI] [get_bd_intf_pins $additional_mem/S00_INI] 
+		connect_bd_intf_net [get_bd_intf_pins cips_noc/M05_INI] [get_bd_intf_pins $additional_mem/S01_INI] 
+		connect_bd_intf_net [get_bd_intf_pins cips_noc/M06_INI] [get_bd_intf_pins $additional_mem/S02_INI] 
+		connect_bd_intf_net [get_bd_intf_pins cips_noc/M07_INI] [get_bd_intf_pins $additional_mem/S03_INI] 
+	
+		}
+		assign_bd_address
+		
+		set_param project.replaceDontTouchWithKeepHierarchySoft 0
+		
+		catch {
+			exclude_bd_addr_seg [get_bd_addr_segs to_delete_kernel/S_AXI/Reg] -target_address_space [get_bd_addr_spaces CIPS_0/M_AXI_FPD]
+			exclude_bd_addr_seg [get_bd_addr_segs dummy_slave_0/S_AXI/Reg] -target_address_space [get_bd_addr_spaces CIPS_0/M_AXI_FPD]
+			exclude_bd_addr_seg [get_bd_addr_segs dummy_slave_1/S_AXI/Reg] -target_address_space [get_bd_addr_spaces CIPS_0/M_AXI_FPD]
+			exclude_bd_addr_seg [get_bd_addr_segs dummy_slave_2/S_AXI/Reg] -target_address_space [get_bd_addr_spaces CIPS_0/M_AXI_FPD]
+			exclude_bd_addr_seg [get_bd_addr_segs dummy_slave_3/S_AXI/Reg] -target_address_space [get_bd_addr_spaces CIPS_0/M_AXI_FPD] 
+		}
+		
+		if { ! $use_intc_15 } {
+			group_bd_cells axi_smc_vip_hier [get_bd_cells dummy_slave_*] [get_bd_cells icn_ctrl] [get_bd_cells icn_ctrl_*]  
+		}
+	}
+
+	##################################################################
+	# MAIN FLOW
+	##################################################################
+	
+	# By default all available memory will be used. Here user choice is disabled
+
+	#puts "INFO: selected clk_options:: $clk_options"
+	set lpddr "Include_LPDDR.VALUE"
+	set use_lpddr 1
+	
+	# if { [dict exists $options $lpddr] } {
+		# set use_lpddr [dict get $options $lpddr ]
+	# }
+
+	#puts "INFO: selected use_lpddr:: $use_lpddr"
+
+	set aie "Include_AIE.VALUE"
+	set use_aie 0
+	
+	if { [dict exists $options $aie] } {
+		set use_aie [dict get $options $aie ]
+	}
+	
+	# 0 (no interrupts) / 15 (interrupt controller : default) / 32 (interrupt controller) / 63 (interrupt controller + cascade block)
+
+	set irqs_param "IRQS.VALUE"
+	set irqs 15
+	
+	if { [dict exists $options $irqs_param] } {
+		set irqs [dict get $options $irqs_param ]
+	}
+	
+	set bdc_param "Include_BDC.VALUE"
+	set bdc false
+	
+	if { [dict exists $options $bdc_param] } {
+		set bdc [dict get $options $bdc_param ] 
+	}
+	
+	# Fetching memory configurations availale on the selected board
+	set board_name [get_property BOARD_NAME [current_board]]
+	set board_part [get_property NAME [current_board_part]]
+	set fpga_part [get_property PART_NAME [current_board_part]]
+
+	set mem_config [board_memory_config [get_property BOARD_NAME [current_board]]]
+		
+	set default_mem [lindex $mem_config 0]
+	set additional_mem [lindex $mem_config 1]
+	set bdc_ddr0 [lindex $mem_config 2]
+	set bdc_ddr1 [lindex $mem_config 3]
+	
+	set use_intc_15 [set use_intc_32 [set use_cascaded_irqs [set no_irqs ""]]]
+
+	set use_intc_15 [ expr $irqs eq "15" ]
+	set use_intc_32 [ expr $irqs eq "32" ]
+	set use_cascaded_irqs [ expr $irqs eq "63" ]
+
+	set clk_options_param "Clock_Options.VALUE"
+	
+	if {[regexp "vck190" $board_name]||[regexp "vek280" $board_name]} {
+		set clk_options { clk_out1 625 0 true }
+	} else {
+		set clk_options { clk_out1 200 0 true } 
+	}
+	
+	if { [dict exists $options $clk_options_param] } {
+		set clk_options [ dict get $options $clk_options_param ]
+	}
+
+	puts "INFO: Using enhanced Versal extensible platform CED"	
+
+	puts "INFO: $board_name is selected"
+	puts "INFO: $board_part is selected"
+	puts "INFO: $fpga_part is selected"
+
+	puts "INFO: selected Interrupts		:: 	$irqs"
+	puts "INFO: selected design_name		:: 	$design_name"
+	puts "INFO: selected Include_LPDDR	:: 	$use_lpddr"
+	puts "INFO: selected Clock_Options	:: 	$clk_options"
+	puts "INFO: selected Include_AIE		:: 	$use_aie"
+	puts "INFO: Selected BDC flow			:: 	$bdc"
+
+	puts "INFO: Available memory types for $board_name board are :"
+	puts "\t -> Default memory type 	: 	$default_mem"
+	puts "\t -> Additional memory type 	: 	$additional_mem"
+		
+	
+	if { $bdc eq "true" } {
+
+		#creates BDC block design
+		source -notrace "$currentDir/bdc_bd.tcl"
+		#creates main block design
+		source -notrace "$currentDir/main_bd.tcl"
+	
+		set default_mem $bdc_ddr0
+		set additional_mem $bdc_ddr1
+		
+	} else {
+	
+		create_root_design $currentDir $design_name $use_lpddr $clk_options $irqs $use_aie 
+
+		set mem_config [board_memory_config [get_property BOARD_NAME [current_board]]]
+	
+		set default_mem [lindex $mem_config 0]
+		set additional_mem [lindex $mem_config 1] 
+	
+	}
+	
+	#QoR script for vck190 production CED platforms
+	
+	set board_part [get_property NAME [current_board_part]]
+	
+	# if [regexp "vck190" $board_part] {
+	
+		# #set bdDesignPath [file join [get_property directory [current_project]] [current_project].srcs sources_1 bd $design_name]
+		
+		# set script_dir [file join $currentDir qor_scripts prohibit_select_bli_bels_for_hold.tcl]
+		# #set tempTBFile [file join $bdDesignPath prohibit_select_bli_bels_for_hold.v] 
+
+		# import_files -fileset utils_1 -norecurse $script_dir
+		# set_property platform.run.steps.place_design.tcl.pre [get_files prohibit_select_bli_bels_for_hold.tcl] [current_project] 
+	
+	# }
+
+	if { $bdc eq "true" } {	
+		open_bd_design [get_bd_files ext_bdc]
+	} else {
+		open_bd_design [get_bd_files $design_name] 
+	}
+	
+	puts "INFO: Block design generation completed, yet to set PFM properties"
+	
+	#set board_name [get_property BOARD_NAME [current_board]]
+	
+	# Create PFM attributes
+	
+	puts "INFO: Creating extensible_platform for $board_name"
+	set pfmName "xilinx.com:${board_name}:versal_extensible_platform_base:1.0"
+	set_property PFM_NAME $pfmName [get_files [current_bd_design].bd]
+		
+	if { $irqs eq "15" } {
+		set_property PFM.IRQ {intr {id 0 range 15}}  [get_bd_cells /axi_intc_0]
+		
+		set_property PFM.AXI_PORT {M01_AXI {memport "M_AXI_GP" sptag "" memory ""} M02_AXI {memport "M_AXI_GP" sptag "" memory ""} M03_AXI {memport "M_AXI_GP" sptag "" memory ""} M04_AXI {memport "M_AXI_GP" sptag "" memory ""} M05_AXI {memport "M_AXI_GP" sptag "" memory ""} M06_AXI {memport "M_AXI_GP" sptag "" memory ""} M07_AXI {memport "M_AXI_GP" sptag "" memory ""} M08_AXI {memport "M_AXI_GP" sptag "" memory ""} M09_AXI {memport "M_AXI_GP" sptag "" memory ""} M10_AXI {memport "M_AXI_GP" sptag "" memory ""} M11_AXI {memport "M_AXI_GP" sptag "" memory ""} M12_AXI {memport "M_AXI_GP" sptag "" memory ""} M13_AXI {memport "M_AXI_GP" sptag "" memory ""} M14_AXI {memport "M_AXI_GP" sptag "" memory ""} M15_AXI {memport "M_AXI_GP" sptag "" memory ""}} [get_bd_cells /icn_ctrl]
+	}
+
+
+	if { $irqs eq "32" } {
+	
+		set_property PFM.IRQ {intr {id 0 range 31}}  [get_bd_cells /axi_intc_0]
+		
+		set_property PFM.AXI_PORT {M03_AXI {memport "M_AXI_GP" sptag "" memory ""} M04_AXI {memport "M_AXI_GP" sptag "" memory ""} } [get_bd_cells axi_smc_vip_hier/icn_ctrl]
+		set_property PFM.AXI_PORT {M01_AXI {memport "M_AXI_GP" sptag "" memory ""} M02_AXI {memport "M_AXI_GP" sptag "" memory ""} M03_AXI {memport "M_AXI_GP" sptag "" memory ""} M04_AXI {memport "M_AXI_GP" sptag "" memory ""} M05_AXI {memport "M_AXI_GP" sptag "" memory ""} M06_AXI {memport "M_AXI_GP" sptag "" memory ""} M07_AXI {memport "M_AXI_GP" sptag "" memory ""} M08_AXI {memport "M_AXI_GP" sptag "" memory ""} M09_AXI {memport "M_AXI_GP" sptag "" memory ""} M10_AXI {memport "M_AXI_GP" sptag "" memory ""} M11_AXI {memport "M_AXI_GP" sptag "" memory ""} M12_AXI {memport "M_AXI_GP" sptag "" memory ""} M13_AXI {memport "M_AXI_GP" sptag "" memory ""} M14_AXI {memport "M_AXI_GP" sptag "" memory ""} M15_AXI {memport "M_AXI_GP" sptag "" memory ""}} [get_bd_cells axi_smc_vip_hier/icn_ctrl_0]
+		set_property PFM.AXI_PORT {M01_AXI {memport "M_AXI_GP" sptag "" memory ""} M02_AXI {memport "M_AXI_GP" sptag "" memory ""} M03_AXI {memport "M_AXI_GP" sptag "" memory ""} M04_AXI {memport "M_AXI_GP" sptag "" memory ""} M05_AXI {memport "M_AXI_GP" sptag "" memory ""} M06_AXI {memport "M_AXI_GP" sptag "" memory ""} M07_AXI {memport "M_AXI_GP" sptag "" memory ""} M08_AXI {memport "M_AXI_GP" sptag "" memory ""} M09_AXI {memport "M_AXI_GP" sptag "" memory ""} M10_AXI {memport "M_AXI_GP" sptag "" memory ""} M11_AXI {memport "M_AXI_GP" sptag "" memory ""} M12_AXI {memport "M_AXI_GP" sptag "" memory ""} M13_AXI {memport "M_AXI_GP" sptag "" memory ""} M14_AXI {memport "M_AXI_GP" sptag "" memory ""} M15_AXI {memport "M_AXI_GP" sptag "" memory ""}} [get_bd_cells axi_smc_vip_hier/icn_ctrl_1]
+	}
+	
+	if { $irqs eq "63" } {
+	
+		set_property PFM.IRQ {intr {id 0 range 32}}  [get_bd_cells /axi_intc_cascaded_1]
+		
+		set_property PFM.IRQ {In0 {id 32} In1 {id 33} In2 {id 34} In3 {id 35} In4 {id 36} In5 {id 37} In6 {id 38} In7 {id 39} In8 {id 40} \
+		In9 {id 41} In10 {id 42} In11 {id 43} In12 {id 44} In13 {id 45} In14 {id 46} In15 {id 47} In16 {id 48} In17 {id 49} In18 {id 50} \
+		In19 {id 51} In20 {id 52} In21 {id 53} In22 {id 54} In23 {id 55} In24 {id 56} In25 {id 57} In26 {id 58} In27 {id 59} In28 {id 60} \
+		In29 {id 61} In30 {id 62} } [get_bd_cells /xlconcat_0]
+		
+		set_property PFM.AXI_PORT {M06_AXI {memport "M_AXI_GP" sptag "" memory ""} M07_AXI {memport "M_AXI_GP" sptag "" memory ""} M08_AXI {memport "M_AXI_GP" sptag "" memory ""}} [get_bd_cells axi_smc_vip_hier/icn_ctrl]
+		set_property PFM.AXI_PORT {M01_AXI {memport "M_AXI_GP" sptag "" memory ""} M02_AXI {memport "M_AXI_GP" sptag "" memory ""} M03_AXI {memport "M_AXI_GP" sptag "" memory ""} M04_AXI {memport "M_AXI_GP" sptag "" memory ""} M05_AXI {memport "M_AXI_GP" sptag "" memory ""} M06_AXI {memport "M_AXI_GP" sptag "" memory ""} M07_AXI {memport "M_AXI_GP" sptag "" memory ""} M08_AXI {memport "M_AXI_GP" sptag "" memory ""} M09_AXI {memport "M_AXI_GP" sptag "" memory ""} M10_AXI {memport "M_AXI_GP" sptag "" memory ""} M11_AXI {memport "M_AXI_GP" sptag "" memory ""} M12_AXI {memport "M_AXI_GP" sptag "" memory ""} M13_AXI {memport "M_AXI_GP" sptag "" memory ""} M14_AXI {memport "M_AXI_GP" sptag "" memory ""} M15_AXI {memport "M_AXI_GP" sptag "" memory ""}} [get_bd_cells axi_smc_vip_hier/icn_ctrl_0]
+		set_property PFM.AXI_PORT {M01_AXI {memport "M_AXI_GP" sptag "" memory ""} M02_AXI {memport "M_AXI_GP" sptag "" memory ""} M03_AXI {memport "M_AXI_GP" sptag "" memory ""} M04_AXI {memport "M_AXI_GP" sptag "" memory ""} M05_AXI {memport "M_AXI_GP" sptag "" memory ""} M06_AXI {memport "M_AXI_GP" sptag "" memory ""} M07_AXI {memport "M_AXI_GP" sptag "" memory ""} M08_AXI {memport "M_AXI_GP" sptag "" memory ""} M09_AXI {memport "M_AXI_GP" sptag "" memory ""} M10_AXI {memport "M_AXI_GP" sptag "" memory ""} M11_AXI {memport "M_AXI_GP" sptag "" memory ""} M12_AXI {memport "M_AXI_GP" sptag "" memory ""} M13_AXI {memport "M_AXI_GP" sptag "" memory ""} M14_AXI {memport "M_AXI_GP" sptag "" memory ""} M15_AXI {memport "M_AXI_GP" sptag "" memory ""}} [get_bd_cells axi_smc_vip_hier/icn_ctrl_1]
+		set_property PFM.AXI_PORT {M01_AXI {memport "M_AXI_GP" sptag "" memory ""} M02_AXI {memport "M_AXI_GP" sptag "" memory ""} M03_AXI {memport "M_AXI_GP" sptag "" memory ""} M04_AXI {memport "M_AXI_GP" sptag "" memory ""} M05_AXI {memport "M_AXI_GP" sptag "" memory ""} M06_AXI {memport "M_AXI_GP" sptag "" memory ""} M07_AXI {memport "M_AXI_GP" sptag "" memory ""} M08_AXI {memport "M_AXI_GP" sptag "" memory ""} M09_AXI {memport "M_AXI_GP" sptag "" memory ""} M10_AXI {memport "M_AXI_GP" sptag "" memory ""} M11_AXI {memport "M_AXI_GP" sptag "" memory ""} M12_AXI {memport "M_AXI_GP" sptag "" memory ""} M13_AXI {memport "M_AXI_GP" sptag "" memory ""} M14_AXI {memport "M_AXI_GP" sptag "" memory ""} M15_AXI {memport "M_AXI_GP" sptag "" memory ""}} [get_bd_cells axi_smc_vip_hier/icn_ctrl_2]
+		set_property PFM.AXI_PORT {M01_AXI {memport "M_AXI_GP" sptag "" memory ""} M02_AXI {memport "M_AXI_GP" sptag "" memory ""} M03_AXI {memport "M_AXI_GP" sptag "" memory ""} M04_AXI {memport "M_AXI_GP" sptag "" memory ""} M05_AXI {memport "M_AXI_GP" sptag "" memory ""} M06_AXI {memport "M_AXI_GP" sptag "" memory ""} M07_AXI {memport "M_AXI_GP" sptag "" memory ""} M08_AXI {memport "M_AXI_GP" sptag "" memory ""} M09_AXI {memport "M_AXI_GP" sptag "" memory ""} M10_AXI {memport "M_AXI_GP" sptag "" memory ""} M11_AXI {memport "M_AXI_GP" sptag "" memory ""} M12_AXI {memport "M_AXI_GP" sptag "" memory ""} M13_AXI {memport "M_AXI_GP" sptag "" memory ""} M14_AXI {memport "M_AXI_GP" sptag "" memory ""} M15_AXI {memport "M_AXI_GP" sptag "" memory ""}} [get_bd_cells axi_smc_vip_hier/icn_ctrl_3]
+	
+	}
+	
+	if { $bdc eq "true" } {
+	
+		if {[regexp "vpk120" $board_name]||[regexp "vek280" $board_name]||[regexp "vpk180" $board_name]} {
+		
+			set_property PFM.AXI_PORT {S00_AXI {memport "S_AXI_NOC" sptag "LPDDR1"} S01_AXI {memport "S_AXI_NOC" sptag "LPDDR1"} S02_AXI {memport "S_AXI_NOC" sptag "LPDDR1"} S03_AXI {memport "S_AXI_NOC" sptag "LPDDR1"} S04_AXI {memport "S_AXI_NOC" sptag "LPDDR1"} S05_AXI {memport "S_AXI_NOC" sptag "LPDDR1"} S06_AXI {memport "S_AXI_NOC" sptag "LPDDR1"} S07_AXI {memport "S_AXI_NOC" sptag "LPDDR1"} S08_AXI {memport "S_AXI_NOC" sptag "LPDDR1"} S09_AXI {memport "S_AXI_NOC" sptag "LPDDR1"} S10_AXI {memport "S_AXI_NOC" sptag "LPDDR1"} S11_AXI {memport "S_AXI_NOC" sptag "LPDDR1"} S12_AXI {memport "S_AXI_NOC" sptag "LPDDR1"} S13_AXI {memport "S_AXI_NOC" sptag "LPDDR1"} S14_AXI {memport "S_AXI_NOC" sptag "LPDDR1"} S15_AXI {memport "S_AXI_NOC" sptag "LPDDR1"} S16_AXI {memport "S_AXI_NOC" sptag "LPDDR1"} S17_AXI {memport "S_AXI_NOC" sptag "LPDDR1"} S18_AXI {memport "S_AXI_NOC" sptag "LPDDR1"} S19_AXI {memport "S_AXI_NOC" sptag "LPDDR1"} S20_AXI {memport "S_AXI_NOC" sptag "LPDDR1"} S21_AXI {memport "S_AXI_NOC" sptag "LPDDR1"} S22_AXI {memport "S_AXI_NOC" sptag "LPDDR1"} S23_AXI {memport "S_AXI_NOC" sptag "LPDDR1"}} [get_bd_cells /$bdc_ddr0]
+  
+			set_property PFM.AXI_PORT {S00_AXI {memport "S_AXI_NOC" sptag "LPDDR2"} S01_AXI {memport "S_AXI_NOC" sptag "LPDDR2"} S02_AXI {memport "S_AXI_NOC" sptag "LPDDR2"} S03_AXI {memport "S_AXI_NOC" sptag "LPDDR2"} S04_AXI {memport "S_AXI_NOC" sptag "LPDDR2"} S05_AXI {memport "S_AXI_NOC" sptag "LPDDR2"} S06_AXI {memport "S_AXI_NOC" sptag "LPDDR2"} S07_AXI {memport "S_AXI_NOC" sptag "LPDDR2"} S08_AXI {memport "S_AXI_NOC" sptag "LPDDR2"} S09_AXI {memport "S_AXI_NOC" sptag "LPDDR2"} S10_AXI {memport "S_AXI_NOC" sptag "LPDDR2"} S11_AXI {memport "S_AXI_NOC" sptag "LPDDR2"} S12_AXI {memport "S_AXI_NOC" sptag "LPDDR2"} S13_AXI {memport "S_AXI_NOC" sptag "LPDDR2"} S14_AXI {memport "S_AXI_NOC" sptag "LPDDR2"} S15_AXI {memport "S_AXI_NOC" sptag "LPDDR2"} S16_AXI {memport "S_AXI_NOC" sptag "LPDDR2"} S17_AXI {memport "S_AXI_NOC" sptag "LPDDR2"} S18_AXI {memport "S_AXI_NOC" sptag "LPDDR2"} S19_AXI {memport "S_AXI_NOC" sptag "LPDDR2"} S20_AXI {memport "S_AXI_NOC" sptag "LPDDR2"} S21_AXI {memport "S_AXI_NOC" sptag "LPDDR2"} S22_AXI {memport "S_AXI_NOC" sptag "LPDDR2"} S23_AXI {memport "S_AXI_NOC" sptag "LPDDR2"}} [get_bd_cells /$bdc_ddr1]
+			
+					
+		} elseif {[regexp "vhk158" $board_name]} {
+		
+			set_property PFM.AXI_PORT {S00_AXI {memport "S_AXI_NOC" sptag "DDR" memory "" is_range "true"} S01_AXI {memport "S_AXI_NOC" sptag "DDR" memory "" is_range "true"} S02_AXI {memport "S_AXI_NOC" sptag "DDR" memory "" is_range "true"} S03_AXI {memport "S_AXI_NOC" sptag "DDR" memory "" is_range "true"} S04_AXI {memport "S_AXI_NOC" sptag "DDR" memory "" is_range "true"} S05_AXI {memport "S_AXI_NOC" sptag "DDR" memory "" is_range "true"} S06_AXI {memport "S_AXI_NOC" sptag "DDR" memory "" is_range "true"} S07_AXI {memport "S_AXI_NOC" sptag "DDR" memory "" is_range "true"} S08_AXI {memport "S_AXI_NOC" sptag "DDR" memory "" is_range "true"} S09_AXI {memport "S_AXI_NOC" sptag "DDR" memory "" is_range "true"} S10_AXI {memport "S_AXI_NOC" sptag "DDR" memory "" is_range "true"} S11_AXI {memport "S_AXI_NOC" sptag "DDR" memory "" is_range "true"} S12_AXI {memport "S_AXI_NOC" sptag "DDR" memory "" is_range "true"} S13_AXI {memport "S_AXI_NOC" sptag "DDR" memory "" is_range "true"} S14_AXI {memport "S_AXI_NOC" sptag "DDR" memory "" is_range "true"} S15_AXI {memport "S_AXI_NOC" sptag "DDR" memory "" is_range "true"} S16_AXI {memport "S_AXI_NOC" sptag "DDR" memory "" is_range "true"} S17_AXI {memport "S_AXI_NOC" sptag "DDR" memory "" is_range "true"} S18_AXI {memport "S_AXI_NOC" sptag "DDR" memory "" is_range "true"} S19_AXI {memport "S_AXI_NOC" sptag "DDR" memory "" is_range "true"} S20_AXI {memport "S_AXI_NOC" sptag "DDR" memory "" is_range "true"}} [get_bd_cells /aggr_noc]
+					
+		} else {
+			
+			set_property PFM.AXI_PORT {S00_AXI {memport "S_AXI_NOC" sptag "DDR"} S01_AXI {memport "S_AXI_NOC" sptag "DDR"} S02_AXI {memport "S_AXI_NOC" sptag "DDR"} S03_AXI {memport "S_AXI_NOC" sptag "DDR"} S04_AXI {memport "S_AXI_NOC" sptag "DDR"} S05_AXI {memport "S_AXI_NOC" sptag "DDR"} S06_AXI {memport "S_AXI_NOC" sptag "DDR"} S07_AXI {memport "S_AXI_NOC" sptag "DDR"} S08_AXI {memport "S_AXI_NOC" sptag "DDR"} S09_AXI {memport "S_AXI_NOC" sptag "DDR"} S10_AXI {memport "S_AXI_NOC" sptag "DDR"} S11_AXI {memport "S_AXI_NOC" sptag "DDR"} S12_AXI {memport "S_AXI_NOC" sptag "DDR"} S13_AXI {memport "S_AXI_NOC" sptag "DDR"} S14_AXI {memport "S_AXI_NOC" sptag "DDR"} S15_AXI {memport "S_AXI_NOC" sptag "DDR"} S16_AXI {memport "S_AXI_NOC" sptag "DDR"} S17_AXI {memport "S_AXI_NOC" sptag "DDR"} S18_AXI {memport "S_AXI_NOC" sptag "DDR"} S19_AXI {memport "S_AXI_NOC" sptag "DDR"} S20_AXI {memport "S_AXI_NOC" sptag "DDR"} S21_AXI {memport "S_AXI_NOC" sptag "DDR"} S22_AXI {memport "S_AXI_NOC" sptag "DDR"} S23_AXI {memport "S_AXI_NOC" sptag "DDR"}} [get_bd_cells /$bdc_ddr0]
+  
+			set_property PFM.AXI_PORT {S00_AXI {memport "S_AXI_NOC" sptag "LPDDR"} S01_AXI {memport "S_AXI_NOC" sptag "LPDDR"} S02_AXI {memport "S_AXI_NOC" sptag "LPDDR"} S03_AXI {memport "S_AXI_NOC" sptag "LPDDR"} S04_AXI {memport "S_AXI_NOC" sptag "LPDDR"} S05_AXI {memport "S_AXI_NOC" sptag "LPDDR"} S06_AXI {memport "S_AXI_NOC" sptag "LPDDR"} S07_AXI {memport "S_AXI_NOC" sptag "LPDDR"} S08_AXI {memport "S_AXI_NOC" sptag "LPDDR"} S09_AXI {memport "S_AXI_NOC" sptag "LPDDR"} S10_AXI {memport "S_AXI_NOC" sptag "LPDDR"} S11_AXI {memport "S_AXI_NOC" sptag "LPDDR"} S12_AXI {memport "S_AXI_NOC" sptag "LPDDR"} S13_AXI {memport "S_AXI_NOC" sptag "LPDDR"} S14_AXI {memport "S_AXI_NOC" sptag "LPDDR"} S15_AXI {memport "S_AXI_NOC" sptag "LPDDR"} S16_AXI {memport "S_AXI_NOC" sptag "LPDDR"} S17_AXI {memport "S_AXI_NOC" sptag "LPDDR"} S18_AXI {memport "S_AXI_NOC" sptag "LPDDR"} S19_AXI {memport "S_AXI_NOC" sptag "LPDDR"} S20_AXI {memport "S_AXI_NOC" sptag "LPDDR"} S21_AXI {memport "S_AXI_NOC" sptag "LPDDR"} S22_AXI {memport "S_AXI_NOC" sptag "LPDDR"} S23_AXI {memport "S_AXI_NOC" sptag "LPDDR"}} [get_bd_cells /$bdc_ddr1]
+		}
+
+		if { $use_aie eq "true" } {
+			set_property PFM.AXI_PORT {S00_AXI {memport "S_AXI_NOC" sptag "S_AXI_AIE" auto "false" memory "ai_engine_0 AIE_ARRAY_0" is_range "true"} S01_AXI {memport "S_AXI_NOC" sptag "S_AXI_AIE" auto "false" memory "ai_engine_0 AIE_ARRAY_0" is_range "true"} S02_AXI {memport "S_AXI_NOC" sptag "S_AXI_AIE" auto "false" memory "ai_engine_0 AIE_ARRAY_0" is_range "true"} S03_AXI {memport "S_AXI_NOC" sptag "S_AXI_AIE" auto "false" memory "ai_engine_0 AIE_ARRAY_0" is_range "true"} S04_AXI {memport "S_AXI_NOC" sptag "S_AXI_AIE" auto "false" memory "ai_engine_0 AIE_ARRAY_0" is_range "true"} S05_AXI {memport "S_AXI_NOC" sptag "S_AXI_AIE" auto "false" memory "ai_engine_0 AIE_ARRAY_0" is_range "true"} S06_AXI {memport "S_AXI_NOC" sptag "S_AXI_AIE" auto "false" memory "ai_engine_0 AIE_ARRAY_0" is_range "true"} S07_AXI {memport "S_AXI_NOC" sptag "S_AXI_AIE" auto "false" memory "ai_engine_0 AIE_ARRAY_0" is_range "true"} S08_AXI {memport "S_AXI_NOC" sptag "S_AXI_AIE" auto "false" memory "ai_engine_0 AIE_ARRAY_0" is_range "true"} S09_AXI {memport "S_AXI_NOC" sptag "S_AXI_AIE" auto "false" memory "ai_engine_0 AIE_ARRAY_0" is_range "true"} S10_AXI {memport "S_AXI_NOC" sptag "S_AXI_AIE" auto "false" memory "ai_engine_0 AIE_ARRAY_0" is_range "true"} S11_AXI {memport "S_AXI_NOC" sptag "S_AXI_AIE" auto "false" memory "ai_engine_0 AIE_ARRAY_0" is_range "true"} S12_AXI {memport "S_AXI_NOC" sptag "S_AXI_AIE" auto "false" memory "ai_engine_0 AIE_ARRAY_0" is_range "true"} S13_AXI {memport "S_AXI_NOC" sptag "S_AXI_AIE" auto "false" memory "ai_engine_0 AIE_ARRAY_0" is_range "true"} S14_AXI {memport "S_AXI_NOC" sptag "S_AXI_AIE" auto "false" memory "ai_engine_0 AIE_ARRAY_0" is_range "true"} S15_AXI {memport "S_AXI_NOC" sptag "S_AXI_AIE" auto "false" memory "ai_engine_0 AIE_ARRAY_0" is_range "true"} S16_AXI {memport "S_AXI_NOC" sptag "S_AXI_AIE" auto "false" memory "ai_engine_0 AIE_ARRAY_0" is_range "true"} S17_AXI {memport "S_AXI_NOC" sptag "S_AXI_AIE" auto "false" memory "ai_engine_0 AIE_ARRAY_0" is_range "true"} S18_AXI {memport "S_AXI_NOC" sptag "S_AXI_AIE" auto "false" memory "ai_engine_0 AIE_ARRAY_0" is_range "true"} S19_AXI {memport "S_AXI_NOC" sptag "S_AXI_AIE" auto "false" memory "ai_engine_0 AIE_ARRAY_0" is_range "true"} S20_AXI {memport "S_AXI_NOC" sptag "S_AXI_AIE" auto "false" memory "ai_engine_0 AIE_ARRAY_0" is_range "true"}} [get_bd_cells /ConfigNoc] 
+		}
+	
+	} else {
+		if {[regexp "vpk120" $board_name]||[regexp "vek280" $board_name]||[regexp "vpk180" $board_name]} {
+		set_property PFM.AXI_PORT {S00_AXI {memport "S_AXI_NOC" sptag "LPDDR1"} S01_AXI {memport "S_AXI_NOC" sptag "LPDDR1"} S02_AXI {memport "S_AXI_NOC" sptag "LPDDR1"} S03_AXI {memport "S_AXI_NOC" sptag "LPDDR1"} S04_AXI {memport "S_AXI_NOC" sptag "LPDDR1"} S05_AXI {memport "S_AXI_NOC" sptag "LPDDR1"} S06_AXI {memport "S_AXI_NOC" sptag "LPDDR1"} S07_AXI {memport "S_AXI_NOC" sptag "LPDDR1"} S08_AXI {memport "S_AXI_NOC" sptag "LPDDR1"} S09_AXI {memport "S_AXI_NOC" sptag "LPDDR1"} S10_AXI {memport "S_AXI_NOC" sptag "LPDDR1"} S11_AXI {memport "S_AXI_NOC" sptag "LPDDR1"} S12_AXI {memport "S_AXI_NOC" sptag "LPDDR1"} S13_AXI {memport "S_AXI_NOC" sptag "LPDDR1"} S14_AXI {memport "S_AXI_NOC" sptag "LPDDR1"} S15_AXI {memport "S_AXI_NOC" sptag "LPDDR1"} S16_AXI {memport "S_AXI_NOC" sptag "LPDDR1"} S17_AXI {memport "S_AXI_NOC" sptag "LPDDR1"} S18_AXI {memport "S_AXI_NOC" sptag "LPDDR1"} S19_AXI {memport "S_AXI_NOC" sptag "LPDDR1"} S20_AXI {memport "S_AXI_NOC" sptag "LPDDR1"} S21_AXI {memport "S_AXI_NOC" sptag "LPDDR1"} S22_AXI {memport "S_AXI_NOC" sptag "LPDDR1"} S23_AXI {memport "S_AXI_NOC" sptag "LPDDR1"} S24_AXI {memport "S_AXI_NOC" sptag "LPDDR1"} S25_AXI {memport "S_AXI_NOC" sptag "LPDDR1"} S26_AXI {memport "S_AXI_NOC" sptag "LPDDR1"} S27_AXI {memport "S_AXI_NOC" sptag "LPDDR1"}} [get_bd_cells /$default_mem]
+		
+		catch { set lpddr [get_bd_cells /$additional_mem] }
+	
+		if { $use_lpddr } {
+			puts "INFO: lpddr4 selected"
+			set_property PFM.AXI_PORT {S00_AXI {memport "S_AXI_NOC" sptag "LPDDR2"} S01_AXI {memport "S_AXI_NOC" sptag "LPDDR2"} S02_AXI {memport "S_AXI_NOC" sptag "LPDDR2"} S03_AXI {memport "S_AXI_NOC" sptag "LPDDR2"} S04_AXI {memport "S_AXI_NOC" sptag "LPDDR2"} S05_AXI {memport "S_AXI_NOC" sptag "LPDDR2"} S06_AXI {memport "S_AXI_NOC" sptag "LPDDR2"} S07_AXI {memport "S_AXI_NOC" sptag "LPDDR2"} S08_AXI {memport "S_AXI_NOC" sptag "LPDDR2"} S09_AXI {memport "S_AXI_NOC" sptag "LPDDR2"} S10_AXI {memport "S_AXI_NOC" sptag "LPDDR2"} S11_AXI {memport "S_AXI_NOC" sptag "LPDDR2"} S12_AXI {memport "S_AXI_NOC" sptag "LPDDR2"} S13_AXI {memport "S_AXI_NOC" sptag "LPDDR2"} S14_AXI {memport "S_AXI_NOC" sptag "LPDDR2"} S15_AXI {memport "S_AXI_NOC" sptag "LPDDR2"} S16_AXI {memport "S_AXI_NOC" sptag "LPDDR2"} S17_AXI {memport "S_AXI_NOC" sptag "LPDDR2"} S18_AXI {memport "S_AXI_NOC" sptag "LPDDR2"} S19_AXI {memport "S_AXI_NOC" sptag "LPDDR2"} S20_AXI {memport "S_AXI_NOC" sptag "LPDDR2"} S21_AXI {memport "S_AXI_NOC" sptag "LPDDR2"} S22_AXI {memport "S_AXI_NOC" sptag "LPDDR2"} S23_AXI {memport "S_AXI_NOC" sptag "LPDDR2"} S24_AXI {memport "S_AXI_NOC" sptag "LPDDR2"} S25_AXI {memport "S_AXI_NOC" sptag "LPDDR2"} S26_AXI {memport "S_AXI_NOC" sptag "LPDDR2"} S27_AXI {memport "S_AXI_NOC" sptag "LPDDR2"}} [get_bd_cells /$additional_mem]
+			set_property SELECTED_SIM_MODEL tlm [get_bd_cells /$additional_mem]
+		}
+
+		} else {
+		
+		if {[regexp "vck190" $board_name] ||[regexp "vmk180" $board_name] } {
+		set_property PFM.AXI_PORT {S00_AXI {memport "S_AXI_NOC" sptag "DDR"} S01_AXI {memport "S_AXI_NOC" sptag "DDR"} S02_AXI {memport "S_AXI_NOC" sptag "DDR"} S03_AXI {memport "S_AXI_NOC" sptag "DDR"} S04_AXI {memport "S_AXI_NOC" sptag "DDR"} S05_AXI {memport "S_AXI_NOC" sptag "DDR"} S06_AXI {memport "S_AXI_NOC" sptag "DDR"} S07_AXI {memport "S_AXI_NOC" sptag "DDR"} S08_AXI {memport "S_AXI_NOC" sptag "DDR"} S09_AXI {memport "S_AXI_NOC" sptag "DDR"} S10_AXI {memport "S_AXI_NOC" sptag "DDR"} S11_AXI {memport "S_AXI_NOC" sptag "DDR"} S12_AXI {memport "S_AXI_NOC" sptag "DDR"} S13_AXI {memport "S_AXI_NOC" sptag "DDR"} S14_AXI {memport "S_AXI_NOC" sptag "DDR"} S15_AXI {memport "S_AXI_NOC" sptag "DDR"} S16_AXI {memport "S_AXI_NOC" sptag "DDR"} S17_AXI {memport "S_AXI_NOC" sptag "DDR"} S18_AXI {memport "S_AXI_NOC" sptag "DDR"} S19_AXI {memport "S_AXI_NOC" sptag "DDR"} S20_AXI {memport "S_AXI_NOC" sptag "DDR"} S21_AXI {memport "S_AXI_NOC" sptag "DDR"} S22_AXI {memport "S_AXI_NOC" sptag "DDR"} S23_AXI {memport "S_AXI_NOC" sptag "DDR"} S24_AXI {memport "S_AXI_NOC" sptag "DDR"} S25_AXI {memport "S_AXI_NOC" sptag "DDR"} S26_AXI {memport "S_AXI_NOC" sptag "DDR"} S27_AXI {memport "S_AXI_NOC" sptag "DDR"}} [get_bd_cells /$default_mem]
+		if { $use_lpddr } {
+		set_property PFM.AXI_PORT {S00_AXI {memport "S_AXI_NOC" sptag "LPDDR"} S01_AXI {memport "S_AXI_NOC" sptag "LPDDR"} S02_AXI {memport "S_AXI_NOC" sptag "LPDDR"} S03_AXI {memport "S_AXI_NOC" sptag "LPDDR"} S04_AXI {memport "S_AXI_NOC" sptag "LPDDR"} S05_AXI {memport "S_AXI_NOC" sptag "LPDDR"} S06_AXI {memport "S_AXI_NOC" sptag "LPDDR"} S07_AXI {memport "S_AXI_NOC" sptag "LPDDR"} S08_AXI {memport "S_AXI_NOC" sptag "LPDDR"} S09_AXI {memport "S_AXI_NOC" sptag "LPDDR"} S10_AXI {memport "S_AXI_NOC" sptag "LPDDR"} S11_AXI {memport "S_AXI_NOC" sptag "LPDDR"} S12_AXI {memport "S_AXI_NOC" sptag "LPDDR"} S13_AXI {memport "S_AXI_NOC" sptag "LPDDR"} S14_AXI {memport "S_AXI_NOC" sptag "LPDDR"} S15_AXI {memport "S_AXI_NOC" sptag "LPDDR"} S16_AXI {memport "S_AXI_NOC" sptag "LPDDR"} S17_AXI {memport "S_AXI_NOC" sptag "LPDDR"} S18_AXI {memport "S_AXI_NOC" sptag "LPDDR"} S19_AXI {memport "S_AXI_NOC" sptag "LPDDR"} S20_AXI {memport "S_AXI_NOC" sptag "LPDDR"} S21_AXI {memport "S_AXI_NOC" sptag "LPDDR"} S22_AXI {memport "S_AXI_NOC" sptag "LPDDR"} S23_AXI {memport "S_AXI_NOC" sptag "LPDDR"} S24_AXI {memport "S_AXI_NOC" sptag "LPDDR"} S25_AXI {memport "S_AXI_NOC" sptag "LPDDR"} S26_AXI {memport "S_AXI_NOC" sptag "LPDDR"} S27_AXI {memport "S_AXI_NOC" sptag "LPDDR"}} [get_bd_cells /$additional_mem]
+		set_property SELECTED_SIM_MODEL tlm [get_bd_cells /$additional_mem] }
+		
+		} else {
+	
+		set_property PFM.AXI_PORT {S00_AXI {memport "S_AXI_NOC" sptag "LPDDR1"} S01_AXI {memport "S_AXI_NOC" sptag "LPDDR1"} S02_AXI {memport "S_AXI_NOC" sptag "LPDDR1"} S03_AXI {memport "S_AXI_NOC" sptag "LPDDR1"} S04_AXI {memport "S_AXI_NOC" sptag "LPDDR1"} S05_AXI {memport "S_AXI_NOC" sptag "LPDDR1"} S06_AXI {memport "S_AXI_NOC" sptag "LPDDR1"} S07_AXI {memport "S_AXI_NOC" sptag "LPDDR1"} S08_AXI {memport "S_AXI_NOC" sptag "LPDDR1"} S09_AXI {memport "S_AXI_NOC" sptag "LPDDR1"} S10_AXI {memport "S_AXI_NOC" sptag "LPDDR1"} S11_AXI {memport "S_AXI_NOC" sptag "LPDDR1"} S12_AXI {memport "S_AXI_NOC" sptag "LPDDR1"} S13_AXI {memport "S_AXI_NOC" sptag "LPDDR1"} S14_AXI {memport "S_AXI_NOC" sptag "LPDDR1"} S15_AXI {memport "S_AXI_NOC" sptag "LPDDR1"} S16_AXI {memport "S_AXI_NOC" sptag "LPDDR1"} S17_AXI {memport "S_AXI_NOC" sptag "LPDDR1"} S18_AXI {memport "S_AXI_NOC" sptag "LPDDR1"} S19_AXI {memport "S_AXI_NOC" sptag "LPDDR1"} S20_AXI {memport "S_AXI_NOC" sptag "LPDDR1"} S21_AXI {memport "S_AXI_NOC" sptag "LPDDR1"} S22_AXI {memport "S_AXI_NOC" sptag "LPDDR1"} S23_AXI {memport "S_AXI_NOC" sptag "LPDDR1"} S24_AXI {memport "S_AXI_NOC" sptag "LPDDR1"} S25_AXI {memport "S_AXI_NOC" sptag "LPDDR1"} S26_AXI {memport "S_AXI_NOC" sptag "LPDDR1"} S27_AXI {memport "S_AXI_NOC" sptag "LPDDR1"}} [get_bd_cells /$default_mem]
+		if { $use_lpddr } {
+		set_property PFM.AXI_PORT {S00_AXI {memport "S_AXI_NOC" sptag "LPDDR2"} S01_AXI {memport "S_AXI_NOC" sptag "LPDDR2"} S02_AXI {memport "S_AXI_NOC" sptag "LPDDR2"} S03_AXI {memport "S_AXI_NOC" sptag "LPDDR2"} S04_AXI {memport "S_AXI_NOC" sptag "LPDDR2"} S05_AXI {memport "S_AXI_NOC" sptag "LPDDR2"} S06_AXI {memport "S_AXI_NOC" sptag "LPDDR2"} S07_AXI {memport "S_AXI_NOC" sptag "LPDDR2"} S08_AXI {memport "S_AXI_NOC" sptag "LPDDR2"} S09_AXI {memport "S_AXI_NOC" sptag "LPDDR2"} S10_AXI {memport "S_AXI_NOC" sptag "LPDDR2"} S11_AXI {memport "S_AXI_NOC" sptag "LPDDR2"} S12_AXI {memport "S_AXI_NOC" sptag "LPDDR2"} S13_AXI {memport "S_AXI_NOC" sptag "LPDDR2"} S14_AXI {memport "S_AXI_NOC" sptag "LPDDR2"} S15_AXI {memport "S_AXI_NOC" sptag "LPDDR2"} S16_AXI {memport "S_AXI_NOC" sptag "LPDDR2"} S17_AXI {memport "S_AXI_NOC" sptag "LPDDR2"} S18_AXI {memport "S_AXI_NOC" sptag "LPDDR2"} S19_AXI {memport "S_AXI_NOC" sptag "LPDDR2"} S20_AXI {memport "S_AXI_NOC" sptag "LPDDR2"} S21_AXI {memport "S_AXI_NOC" sptag "LPDDR2"} S22_AXI {memport "S_AXI_NOC" sptag "LPDDR2"} S23_AXI {memport "S_AXI_NOC" sptag "LPDDR2"} S24_AXI {memport "S_AXI_NOC" sptag "LPDDR2"} S25_AXI {memport "S_AXI_NOC" sptag "LPDDR2"} S26_AXI {memport "S_AXI_NOC" sptag "LPDDR2"} S27_AXI {memport "S_AXI_NOC" sptag "LPDDR2"}} [get_bd_cells /$additional_mem]
+		set_property SELECTED_SIM_MODEL tlm [get_bd_cells /$additional_mem]} 
+		
+		} }
+	}
+	
+	set clocks {}
+	set i [set k 0]
+
+	set portl [get_property CONFIG.CLKOUT_PORT [get_ips *clk_wizard*]]
+	set new_prtl [split [lindex $portl 0] ","]
+
+	set driver [get_property CONFIG.CLKOUT_DRIVES [get_ips *clk_wizard*]]
+	set new_d [split [lindex $driver 0] ","]
+
+	set clk_used [get_property CONFIG.CLKOUT_USED [get_ips *clk_wizard*]]
+	set clk_u [split [lindex $clk_used 0] ","]
+
+	set is_default false
+	set id_c [llength [lsearch -all $clk_u true]]
+
+	foreach { port freq id is_default } $clk_options {
+		set clk_enb [lindex $clk_u $k]
+			
+		if { $clk_enb == "true"} {
+			if {[regexp "MBUFGCE" $driver]} {
+				
+				if {($freq >= 625) && ($is_default == "true" ) } {
+					
+					set is_default false
+					set m_prt ${port}_o1
+					dict append clocks ${m_prt} "id \"$id\" is_default \"$is_default\" proc_sys_reset \"/proc_sys_reset_$i\" status \"fixed_non_ref\""
+				
+					incr i
+					for {set j 2} {$j < 5} {incr j} {
+						
+						set m_prt ${port}_o${j}
+						
+						if {$m_prt == "${port}_o2"} {
+							set is_default true 
+						}
+							
+						dict append clocks ${m_prt} "id \"$id_c\" is_default \"$is_default\" proc_sys_reset \"/proc_sys_reset_$i\" status \"fixed_non_ref\""
+						
+						set is_default false
+						incr id_c
+						incr i
+					}
+				
+				} else {
+					
+					dict append clocks ${port} "id \"$id\" is_default \"$is_default\" proc_sys_reset \"/proc_sys_reset_$i\" status \"fixed\""
+					incr i
+				}
+				
+			} else {
+				
+				dict append clocks $port "id \"$id\" is_default \"$is_default\" proc_sys_reset \"/proc_sys_reset_$i\" status \"fixed\""
+				incr i
+			} 
+			incr k 
+		} 
+	}
+
+	set_property PFM.CLOCK $clocks [get_bd_cells /clk_wizard_0]
+	#puts "clocks :: $clocks  PFM properties"
+	
+	#Platform Level Properties
+	set_property platform.default_output_type "sd_card" [current_project]
+	set_property platform.design_intent.embedded "true" [current_project]
+	set_property platform.num_compute_units $irqs [current_project]
+	set_property platform.design_intent.server_managed "false" [current_project]
+	set_property platform.design_intent.external_host "false" [current_project]
+	set_property platform.design_intent.datacenter "false" [current_project]
+	set_property platform.uses_pr  "false" [current_project]
+	set_property platform.extensible true [current_project]
+	
+	if { $bdc eq "false" } {
+		set_property platform.emu.dr_bd_inst_path /tb/DUT/${design_name}_wrapper_i/${design_name}_i [current_project] 
+	}
+	
+	#setting Platform level param to have PDI in hw xsa
+	set_param platform.forceEnablePreSynthPDI true
+	
+	puts "INFO: Platform creation completed!"
+
+	if { $bdc eq "true" } {
+		open_bd_design [get_bd_files $design_name] 
+	}
+	
+	set_property platform.extensible true [current_project]
+	
+	# Add USER_COMMENTS on $design_name
+	#set_property USER_COMMENTS.comment0 "An Example Versal Extensible Embedded Platform" [get_bd_designs $design_name]
+	
+	if { $irqs eq "15" } {
+	
+		if { $use_aie eq "true" } {
+			
+			set_property USER_COMMENTS.comment0 {\t \t ======================= >>>>>>>>> An Example Versal Extensible Embedded Platform <<<<<<<<< =======================
+			\t Note:
+			\t --> Board preset applied to CIPS and memory controller settings
+			\t --> AI Engine control path is connected to CIPS
+			\t --> V++ will connect AI Engine data path automatically
+			\t --> Execute TCL command : launch_simulation -scripts_only ,to establish the sim_1 source set hierarchy after successful design creation.
+			\t --> For Next steps, Refer to README.md : https://github.com/Xilinx/XilinxCEDStore/tree/2025.2/ced/Xilinx/IPI/Versal_Extensible_Embedded_Platform/README.md}  [current_bd_design]
+		} else {
+			
+			set_property USER_COMMENTS.comment0 {\t \t ======================= >>>>>>>>> An Example Versal Extensible Embedded Platform <<<<<<<<< =======================
+			\t Note:
+			\t --> Board preset applied to CIPS and memory controller settings
+			\t --> Execute TCL command : launch_simulation -scripts_only ,to establish the sim_1 source set hierarchy after successful design creation.
+			\t --> For Next steps, Refer to README.md : https://github.com/Xilinx/XilinxCEDStore/tree/2025.2/ced/Xilinx/IPI/Versal_Extensible_Embedded_Platform/README.md}  [current_bd_design] 
+		}
+	
+	} else {
+	
+		if { $use_aie eq "true" } {
+			
+			set_property USER_COMMENTS.comment0 {\t \t ======================= >>>>>>>>> An Example Versal Extensible Embedded Platform <<<<<<<<< =======================
+			\t Note:
+			\t --> Board preset applied to CIPS and memory controller settings
+			\t --> AI Engine control path is connected to CIPS
+			\t --> V++ will connect AI Engine data path automatically
+			\t --> BD has VIPs on the accelerator SmartConnect IPs because IPI platform can't handle export with no slaves on SmartConnect IP.
+			\t \t \t \t \t \t \t Hence VIPs are there to have at least one slave on a smart connect
+			\t --> Execute TCL command : launch_simulation -scripts_only ,to establish the sim_1 source set hierarchy after successful design creation.
+			\t --> For Next steps, Refer to README.md : https://github.com/Xilinx/XilinxCEDStore/tree/2025.2/ced/Xilinx/IPI/Versal_Extensible_Embedded_Platform/README.md}  [current_bd_design]
+		} else {
+			
+			set_property USER_COMMENTS.comment0 {\t \t ======================= >>>>>>>>> An Example Versal Extensible Embedded Platform <<<<<<<<< =======================
+			\t Note:
+			\t --> Board preset applied to CIPS and memory controller settings
+			\t --> BD has VIPs on the accelerator SmartConnect IPs because IPI platform can't handle export with no slaves on SmartConnect IP.
+			\t \t \t \t \t \t \t Hence VIPs are there to have at least one slave on a smart connect
+			\t --> Execute TCL command : launch_simulation -scripts_only ,to establish the sim_1 source set hierarchy after successful design creation.
+			\t --> For Next steps, Refer to README.md : https://github.com/Xilinx/XilinxCEDStore/tree/2025.2/ced/Xilinx/IPI/Versal_Extensible_Embedded_Platform/README.md}  [current_bd_design] 
+		}
+	}
+	
+	# Perform GUI Layout
+ 
+	if { $irqs eq "15" } {
+	
+		if { $use_aie == "true" } {
+		 
+		   regenerate_bd_layout -layout_string {
+			   "ActiveEmotionalView":"Default View",
+			   "comment_0":"\t \t ======================= >>>>>>>>> An Example Versal Extensible Embedded Platform <<<<<<<<< =======================
+				\t Note:
+				\t --> Board preset applied to CIPS and memory controller
+				\t --> AI Engine control path is connected to CIPS
+				\t --> V++ will connect AI Engine data path automatically
+				\t --> Execute TCL command : launch_simulation -scripts_only ,to establish the sim_1 source set hierarchy after successful design creation.
+				\t --> For Next steps, Refer to README.md : https://github.com/Xilinx/XilinxCEDStore/tree/2025.2/ced/Xilinx/IPI/Versal_Extensible_Embedded_Platform/README.md",
+			   "commentid":"comment_0|",
+			   "font_comment_0":"14",
+			   "guistr":"# # String gsaved with Nlview 7.0r4  2019-12-20 bk=1.5203 VDI=41 GEI=36 GUI=JA:10.0 TLS
+				#  -string -flagsOSRD
+				preplace cgraphic comment_0 place right -1750 -200 textcolor 4 linecolor 3
+				",
+			   "linktoobj_comment_0":"",
+			   "linktotype_comment_0":"bd_design" }
+		 
+		 } else {
+		  regenerate_bd_layout -layout_string {
+			   "ActiveEmotionalView":"Default View",
+			   "comment_0":"\t \t ======================= >>>>>>>>> An Example Versal Extensible Embedded Platform <<<<<<<<< =======================
+				\t Note:
+				\t --> Board preset applied to CIPS and memory controller
+				\t --> Execute TCL command : launch_simulation -scripts_only ,to establish the sim_1 source set hierarchy after successful design creation.
+				\t --> For Next steps, Refer to README.md : https://github.com/Xilinx/XilinxCEDStore/tree/2025.2/ced/Xilinx/IPI/Versal_Extensible_Embedded_Platform/README.md",
+			   "commentid":"comment_0|",
+			   "font_comment_0":"14",
+			   "guistr":"# # String gsaved with Nlview 7.0r4  2019-12-20 bk=1.5203 VDI=41 GEI=36 GUI=JA:10.0 TLS
+				#  -string -flagsOSRD
+				preplace cgraphic comment_0 place right -1750 -185 textcolor 4 linecolor 3
+				",
+			   "linktoobj_comment_0":"",
+			   "linktotype_comment_0":"bd_design" }
+		}
+		
+	} else {
+	
+		if { $use_aie == "true" } {
+	 	   regenerate_bd_layout -layout_string {
+			   "ActiveEmotionalView":"Default View",
+			   "comment_0":"\t \t ======================= >>>>>>>>> An Example Versal Extensible Embedded Platform <<<<<<<<< =======================
+				\t Note:
+				\t --> Board preset applied to CIPS and memory controller
+				\t --> AI Engine control path is connected to CIPS
+				\t --> V++ will connect AI Engine data path automatically
+				\t --> BD has VIPs on the accelerator SmartConnect IPs because IPI platform can't handle export with no slaves on SmartConnect IP.
+				\t \t \t \t \t \t \t Hence VIPs are there to have at least one slave on a smart connect
+				\t --> Execute TCL command : launch_simulation -scripts_only ,to establish the sim_1 source set hierarchy after successful design creation.
+				\t --> For Next steps, Refer to README.md : https://github.com/Xilinx/XilinxCEDStore/tree/2025.2/ced/Xilinx/IPI/Versal_Extensible_Embedded_Platform/README.md",
+			   "commentid":"comment_0|",
+			   "font_comment_0":"14",
+			   "guistr":"# # String gsaved with Nlview 7.0r4  2019-12-20 bk=1.5203 VDI=41 GEI=36 GUI=JA:10.0 TLS
+				#  -string -flagsOSRD
+				preplace cgraphic comment_0 place right -1750 -200 textcolor 4 linecolor 3
+				",
+			   "linktoobj_comment_0":"",
+			   "linktotype_comment_0":"bd_design" }
+		 
+		 } else {
+		  regenerate_bd_layout -layout_string {
+			   "ActiveEmotionalView":"Default View",
+			   "comment_0":"\t \t ======================= >>>>>>>>> An Example Versal Extensible Embedded Platform <<<<<<<<< =======================
+				\tNote:
+				\t --> Board preset applied to CIPS and memory controller.
+				\t --> BD has VIPs on the accelerator SmartConnect IPs because IPI platform can't handle export with no slaves on SmartConnect IP.
+				\t \t \t \t \t \t \t Hence VIPs are there to have at least one slave on a smart connect
+				\t --> Execute TCL command : launch_simulation -scripts_only ,to establish the sim_1 source set hierarchy after successful design creation.
+				\t --> For Next steps, Refer to README.md : https://github.com/Xilinx/XilinxCEDStore/tree/2025.2/ced/Xilinx/IPI/Versal_Extensible_Embedded_Platform/README.md",
+			   "commentid":"comment_0|",
+			   "font_comment_0":"14",
+			   "guistr":"# # String gsaved with Nlview 7.0r4  2019-12-20 bk=1.5203 VDI=41 GEI=36 GUI=JA:10.0 TLS
+				#  -string -flagsOSRD
+				preplace cgraphic comment_0 place right -1750 -185 textcolor 4 linecolor 3
+				",
+			   "linktoobj_comment_0":"",
+			   "linktotype_comment_0":"bd_design" }
+		}
+	}
+ 
+  
+	set_property SELECTED_SIM_MODEL tlm [get_bd_cells /CIPS_0]
+	set_property SELECTED_SIM_MODEL tlm [get_bd_cells /cips_noc]
+	#set_property SELECTED_SIM_MODEL tlm [get_bd_cells /$additional_mem]
+	
+	if { $bdc eq "true" } {
+		set mem_config [board_memory_config [get_property BOARD_NAME [current_board]]]
+		set default_mem [lindex $mem_config 0]
+		set additional_mem [lindex $mem_config 1] 
+	}
+	
+	set_property SELECTED_SIM_MODEL tlm [get_bd_cells /$default_mem]
+	set_property preferred_sim_model tlm [current_project]
+	
+	if { $bdc ne "true" } {
+		set_property -dict [list CONFIG.PRIM_SOURCE {No_buffer}] [get_bd_cells clk_wizard_0] 
+	}
+	
+	#validate_bd_design
+	open_bd_design [get_bd_files $design_name]
+	regenerate_bd_layout
+	make_wrapper -files [get_files $design_name.bd] -top -import -quiet
+	
+	if { $bdc eq "true" } {
+		set TB_file [file join $currentDir test_bench bdc_tb.v]
+		set tb bdc_tb.v
+	} else {
+		set tb tb.v
+		set TB_file [file join $currentDir test_bench tb.v] 
+	}
+	
+	set_property SOURCE_SET sources_1 [get_filesets sim_1]
+	import_files -fileset  sim_1 -norecurse -flat $TB_file
+	set_property top tb [get_filesets sim_1]
+	update_compile_order -fileset sim_1
+
+	# Modifying testbench file to include BD and default design clk name
+	set infile [open [file join [get_property directory [current_project]] [current_project].srcs sim_1 imports $tb]]
+	set contents [read $infile]
+	close $infile
+	
+	set contents [string map [list "ext_platform" "$design_name"] $contents]
+
+	if { $bdc eq "true" } {
+		set contents [string map [list "default_clock_net" "$default_clock_net"] $contents]
+	}
+	
+	set outfile  [open [file join [get_property directory [current_project]] [current_project].srcs sim_1 imports $tb] w]
+	puts -nonewline $outfile $contents
+	close $outfile
+	
+    update_compile_order -fileset sim_1
+	
+	if { $bdc eq "true" } {
+		upgrade_bd_cells [get_bd_cells ext_bdc] 
+	}
+	
+	update_compile_order -fileset sources_1
+	
+	validate_bd_design
+	regenerate_bd_layout
+	save_bd_design
+
+	puts "INFO: End of create_root_design"
+	
+}

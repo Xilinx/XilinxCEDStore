@@ -1,0 +1,27 @@
+######### Extensible Embedded Platform example design change log ##############
+
+2025.1 Changes
+Updated PS config.
+
+Converted all xlconcat, xlconstant and xlslice Xilinx IP instances to inline HDL references
+
+2024.2
+Added PS wizard parts support, and enabled the AIE config paths for SSIT devices.
+
+2024.1 
+Added BDC support
+
+2023.1
+CED enhancements with GUI options.
+Added 15-bit interrupt option.
+Added simple testbench for CIPS reset polling. 
+
+2022.2
+Default frequency values for input clock options are modified.
+Added user note to clock gui options 
+
+2021.2 changes 
+versal part_support
+
+2021.1 changes 
+Updated with CIPS 3.0

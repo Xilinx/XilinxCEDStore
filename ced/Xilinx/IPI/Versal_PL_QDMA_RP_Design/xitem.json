@@ -1,0 +1,33 @@
+{
+    "config": {
+      "items": [
+        {
+          "infra": {
+            "name": "pl_pcie_qdma_rp",
+            "display": "Versal PL QDMA EP Design",
+            "revision": "1.0",
+            "description": "This is Versal PL QDMA Root Port Design. It allows generating PL QDMA RP design for VCK190 and VPK120 respectively based on the board selected. The associated drivers can be downloaded from: https://github.com/Xilinx/dma_ip_drivers",
+            "company": "xilinx.com",
+            "company_display": "Xilinx",
+            "author": "Saimanoj",
+            "contributors": [
+              {
+                "group": "Xilinx",
+                "url": "www.xilinx.com"
+              }
+            ],
+            "category": "PCIe",
+            "website": "www.xilinx.com",
+            "is_active" : true, 
+            "search-keywords": [
+              "Versal PL QDMA RP Design",
+              "xilinx.com",
+              "example"             
+            ]
+          }
+        }
+      ]
+    },
+    "_major" : 1,
+    "_minor" : 0
+}

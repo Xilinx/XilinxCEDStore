@@ -1,0 +1,10 @@
+<ExampleDesign>
+<Vendor>xilinx.com</Vendor>
+<Library>design</Library>
+<Name>cpu_hdl</Name>
+<Version>1.0</Version> 
+<Design>init.tcl</Design>
+<DisplayName>CPU (HDL)</DisplayName>
+<Description>Large mixed-language RTL project</Description>
+<Image>CPU.png</Image>
+</ExampleDesign>

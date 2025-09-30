@@ -1,0 +1,8 @@
+######### Versal MMI DPDC example design change log ##############
+1.1
+Removed Video and Audio Feedback logic from DC Functional designs
+
+1.0
+Initial design for vek385 device
+
+

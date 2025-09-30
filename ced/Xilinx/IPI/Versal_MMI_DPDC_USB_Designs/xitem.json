@@ -1,0 +1,36 @@
+{
+    "config": {
+      "items": [
+        {
+          "infra": {
+            "name": "Versal_MMI_DPDC_USB_designs",
+            "display": "Versal MMI DPDC USB Designs",
+            "revision": "1.0",
+            "description": "A Versal example design for the MMI Display Controller and MMI USB Usecases",
+            "company": "xilinx.com",
+            "company_display": "Xilinx",
+            "author": "vkethu",
+            "contributors": [
+              {
+                "group": "Xilinx",
+                "url": "www.xilinx.com"
+              }
+            ],
+            "category": "Versal",
+            "website": "www.xilinx.com",
+            "is_active" : true, 
+            "search-keywords": [
+              "MMI",
+              "USB",
+              "DPDC",
+              "DC",
+              "xilinx.com",
+              "example"             
+            ]
+          }
+        }
+      ]
+    },
+    "_major" : 1,
+    "_minor" : 0
+}

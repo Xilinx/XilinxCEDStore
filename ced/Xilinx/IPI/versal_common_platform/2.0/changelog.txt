@@ -1,0 +1,5 @@
+######### Versal Embedded Common Platform example design change log ##############
+2.0 
+Initial design for vek385, vek280,vck190 and vrk160 boards.
+
+ 
