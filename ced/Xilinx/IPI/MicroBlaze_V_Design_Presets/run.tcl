@@ -730,7 +730,6 @@ if {[regexp "xcsu200p" $fpga_part]} {
             }
 
                     if { $lpddrmc_board_interface != "" } {
-                    puts "Debug2:: scu200_es board is selected -- DDRMC added"
                     create_bd_cell -type ip -vlnv xilinx.com:ip:lpddrmc lpddrmc_0
                                             
                     set_property -dict [list \
@@ -751,12 +750,6 @@ if {[regexp "xcsu200p" $fpga_part]} {
                     create_bd_cell -type ip -vlnv xilinx.com:ip:pmcbridge:* pmcbridge_0
                     apply_bd_automation -rule xilinx.com:bd_rule:axi4 -config { Clk_master {/ddr4_0/addn_ui_clkout1 (100 MHz)} Clk_slave {Auto} Clk_xbar {/ddr4_0/addn_ui_clkout1 (100 MHz)} Master {/microblaze_riscv_0 (Periph)} Slave {/pmcbridge_0/S_AXI} ddr_seg {Auto} intc_ip {/microblaze_riscv_0_axi_periph} master_apm {0}}  [get_bd_intf_pins pmcbridge_0/S_AXI]
 
-                    } else {
-                       puts "Debug:: scu200_es board is selected -- DDRMC is not Availale"
-                    }
-
-                     if {[regexp scu200_es $board_name]} {
-#                       puts "Debug :: scu200_es Board selected and Custom address added for LPDDR5 and DDR5"
                        delete_bd_objs [get_bd_addr_segs] [get_bd_addr_segs -excluded]
                         # Create address segments
                         assign_bd_address -offset 0x00000000 -range 0x00020000 -target_address_space [get_bd_addr_spaces microblaze_riscv_0/Data] [get_bd_addr_segs microblaze_riscv_0_local_memory/dlmb_bram_if_cntlr/SLMB/Mem] -force
@@ -769,14 +762,18 @@ if {[regexp "xcsu200p" $fpga_part]} {
                        assign_bd_address -target_address_space /microblaze_riscv_0/Instruction [get_bd_addr_segs ddr4_0/C0_DDR4_MEMORY_MAP/C0_DDR4_ADDRESS_BLOCK] -force
                        assign_bd_address -target_address_space /microblaze_riscv_0/Data [get_bd_addr_segs ddr4_0/C0_DDR4_MEMORY_MAP/C0_DDR4_ADDRESS_BLOCK] -force
                        assign_bd_address
-                     } else {
-#                        puts "Debug :: scu200_es Board Not selected and Custom address Not added for LPDDR5 and DDR5"
+					   
+                    } else {
+                        delete_bd_objs [get_bd_addr_segs] [get_bd_addr_segs -excluded]
                         # Create address segments
                         assign_bd_address -offset 0x00000000 -range 0x00020000 -target_address_space [get_bd_addr_spaces microblaze_riscv_0/Data] [get_bd_addr_segs microblaze_riscv_0_local_memory/dlmb_bram_if_cntlr/SLMB/Mem] -force
                         assign_bd_address -offset 0x41200000 -range 0x00010000 -target_address_space [get_bd_addr_spaces microblaze_riscv_0/Data] [get_bd_addr_segs microblaze_riscv_0_axi_intc/S_AXI/Reg] -force
                         assign_bd_address -offset 0x00000000 -range 0x00020000 -target_address_space [get_bd_addr_spaces microblaze_riscv_0/Instruction] [get_bd_addr_segs microblaze_riscv_0_local_memory/ilmb_bram_if_cntlr/SLMB/Mem] -force
                         ############################################################################
-                     }
+                        assign_bd_address
+                    }
+
+
                      
                 if { $qspi_flash_board_interface != "" } {
 
@@ -1020,7 +1017,6 @@ if {[regexp "xcsu200p" $fpga_part]} {
            }
 
                 if { $lpddrmc_board_interface != "" } {
-                # puts "INFO:: scu200_es board is selected -- DDRMC added"
                 create_bd_cell -type ip -vlnv xilinx.com:ip:lpddrmc lpddrmc_0
                                         
                 set_property -dict [list \
@@ -1037,9 +1033,6 @@ if {[regexp "xcsu200p" $fpga_part]} {
                 make_bd_intf_pins_external  [get_bd_intf_pins lpddrmc_0/LPDDR5]
                 endgroup
                 #set_property range 2G [get_bd_addr_segs {microblaze_riscv_0/Data/SEG_lpddrmc_0_LPDDRMC_ADDRESS_BLOCK}]
-                
-                } else {
-                puts "INFO:: DDRMC is not Availale on Board"
                 
                 }
 
