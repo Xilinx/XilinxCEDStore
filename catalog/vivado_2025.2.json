@@ -138,11 +138,11 @@
         "name": "ext_platform",
         "display": "Versal Extensible Embedded Platform",
         "latest_revision": "1.0",
-        "commit_id": "a0fe019a3dc1c3b10567f82832208809cbe6f0ba",
+        "commit_id": "5449aa8399edbc1dd2b2bf44f7e43ad4192fa349",
         "revisions": [
           {
             "revision": "1.0",
-            "commit_id": "a0fe019a3dc1c3b10567f82832208809cbe6f0ba",
+            "commit_id": "5449aa8399edbc1dd2b2bf44f7e43ad4192fa349",
             "date": "29-06-2022:18:15:46",
             "history": "Added board Versal Extensible Embedded Platform v1.0"
           }
@@ -157,11 +157,11 @@
         "name": "ext_platform_part",
         "display": "Versal Extensible Embedded Platform part_support",
         "latest_revision": "1.0",
-        "commit_id": "a0fe019a3dc1c3b10567f82832208809cbe6f0ba",
+        "commit_id": "5449aa8399edbc1dd2b2bf44f7e43ad4192fa349",
         "revisions": [
           {
             "revision": "1.0",
-            "commit_id": "a0fe019a3dc1c3b10567f82832208809cbe6f0ba",
+            "commit_id": "5449aa8399edbc1dd2b2bf44f7e43ad4192fa349",
             "date": "29-06-2022:18:15:46",
             "history": "Added board Versal Extensible Embedded Platform part_support v1.0"
           }
