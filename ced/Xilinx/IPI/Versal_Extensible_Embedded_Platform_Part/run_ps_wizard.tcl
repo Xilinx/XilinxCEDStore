@@ -543,7 +543,7 @@ proc create_root_design {currentDir design_name use_lpddr clk_options irqs use_a
 		
 		if {$use_aie } {
 		
-			if { ([regexp "xc2v" $fpga_part]) && (![regexp "xc2vp3602" $fpga_part])) } {
+			if { ([regexp "xc2v" $fpga_part]) && (![regexp "xc2vp3602" $fpga_part]) } {
 
 				#set_property CONFIG.NUM_NMI {2} [get_bd_cells ps_wiz_noc2]
 				# set_property -dict [list CONFIG.CONNECTIONS {M01_INI {read_bw {500} write_bw {500}} M00_AXI {read_bw {500} write_bw {500} read_avg_burst {4} write_avg_burst {4}} M00_INI {read_bw {500} write_bw {500}}}] [get_bd_intf_pins /ps_wiz_noc2/S00_AXI]
