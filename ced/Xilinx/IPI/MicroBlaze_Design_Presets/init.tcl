@@ -30,7 +30,8 @@ proc getSupportedParts {} {
 proc getSupportedBoards {} {
   #return [get_board_parts -filter {(BOARD_NAME =~"*vck190*" && VENDOR_NAME=="xilinx.com" ) || (BOARD_NAME =~"*vmk180*" && VENDOR_NAME=="xilinx.com" )}  -latest_file_version]
   # return [get_board_parts -filter {(PART_NAME!~"*xc7z*" && PART_NAME!~"*xcvc*" && PART_NAME!~"*xcvm*" && PART_NAME!~"*xcvp*" &&  PART_NAME!~"*xczu*" && VENDOR_NAME=="xilinx.com")} -latest_file_version]
-  return [get_board_parts -filter {(DISPLAY_NAME =~"*Kintex*" || DISPLAY_NAME =~"*Artix*" || DISPLAY_NAME =~"*Virtex*" || DISPLAY_NAME =~"*Spartan*" && VENDOR_NAME=="xilinx.com" )} -latest_file_version]
+#  return [get_board_parts -filter {(DISPLAY_NAME =~"*Kintex*" || DISPLAY_NAME =~"*Artix*" || DISPLAY_NAME =~"*Virtex*" || DISPLAY_NAME =~"*Spartan*" && VENDOR_NAME=="xilinx.com" )} -latest_file_version]
+  return [get_board_parts -filter {(DISPLAY_NAME =~"*Kintex*" || DISPLAY_NAME =~"*Artix*" || DISPLAY_NAME =~"*Virtex*" || DISPLAY_NAME =~ "*Spartan*" && VENDOR_NAME=="xilinx.com" && (NAME != "xilinx.com:scu200_es:part0:1.0"))} -latest_file_version]
 }
 
 # proc addOptions {DESIGNOBJ PROJECT_PARAM.BOARD_PART} {
