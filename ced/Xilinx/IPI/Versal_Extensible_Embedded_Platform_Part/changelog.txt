@@ -1,5 +1,10 @@
 ######### Extensible Embedded Platform example design change log ##############
 
+2025.2 Changes
+Updated criterion for setting PFM property
+Enabled latest part support
+
+
 2025.1 Changes
 Updated PS config.
 
