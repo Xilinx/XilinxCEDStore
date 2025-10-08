@@ -20,19 +20,21 @@ set currentDir [file dirname $currentFile]
 source -notrace "$currentDir/setup.tcl"
 
 proc getSupportedParts {} {
-	set mylist [get_parts -filter {C_FAMILY =~ versal}]
+	
+    set mylist [get_parts -filter {C_FAMILY =~ versal}]
 	set newitem ""
 	
 	foreach item $mylist {
 	   
         # Filtering unsupported parts
-        # DDRMC is disabled for xcvp1402-vsvd2197 as the device has only 1 XP bank : CR-1251283
+        # DDRMC is disabled for xcvp1402-vsvd2197 as the device has only 1 XP bank
 		if {![regexp "xcvp1402-vsvd2197" $item]} { 
 			lappend newitem $item 
 		}
 	}
 	return $newitem
 }
+
 
 proc getSupportedBoards {} {
   #return [get_board_parts -filter {(BOARD_NAME =~"*vck190*" && VENDOR_NAME=="xilinx.com" ) || (BOARD_NAME =~"*vmk180*" && VENDOR_NAME=="xilinx.com" )}  -latest_file_version]

@@ -452,8 +452,8 @@ if {( $ddrmc_flag == 0 ) || ($io_flag == 0) } {
 }
 
 
-#Force disable NOC2 lpddr5 instantiation as already noc2_ddr5 configured as lpddr5 in 2023.2.1
-#set use_lpddr 0
+# Force disable NOC2 lpddr5 instantiation as already noc2_ddr5 configured as lpddr5 in 2023.2.1
+# set use_lpddr 0
 
 set aie "Include_AIE.VALUE"
 set use_aie 0
@@ -477,148 +477,14 @@ open_bd_design [get_bd_files $design_name]
 
 puts "INFO: Block design generation completed, yet to set PFM properties"
 
-set fpga_part [get_property PART [current_project ]]
-set part1 [split $fpga_part "-"]
-set part [lindex $part1 0]
 
+# Set PFM properties
+set noc_ddr [get_bd_cells noc2_ddr5]
+set noc_lpddr [get_bd_cells noc2_lpddr5]
+set pfm_bd_name $design_name
+set bdc false
 
-puts "INFO: Creating extensible_platform for part:: $fpga_part"
-set pfmName "xilinx.com:${fpga_part}:extensible_platform_base:1.0"
-set_property PFM_NAME $pfmName [get_files ${design_name}.bd]
-
-
-#set_property PFM.AXI_PORT {M00_AXI {memport "NOC_MASTER"}} [get_bd_cells /psx_wiz_noc2]
-
-if { $irqs eq "15" } {
-	set_property PFM.IRQ {intr {id 0 range 15}} [get_bd_cells /axi_intc_0]
-	
-	set_property PFM.AXI_PORT {M01_AXI {memport "M_AXI_GP" sptag "" memory ""} M02_AXI {memport "M_AXI_GP" sptag "" memory ""} M03_AXI {memport "M_AXI_GP" sptag "" memory ""} M04_AXI {memport "M_AXI_GP" sptag "" memory ""} M05_AXI {memport "M_AXI_GP" sptag "" memory ""} M06_AXI {memport "M_AXI_GP" sptag "" memory ""} M07_AXI {memport "M_AXI_GP" sptag "" memory ""} M08_AXI {memport "M_AXI_GP" sptag "" memory ""} M09_AXI {memport "M_AXI_GP" sptag "" memory ""} M10_AXI {memport "M_AXI_GP" sptag "" memory ""} M11_AXI {memport "M_AXI_GP" sptag "" memory ""} M12_AXI {memport "M_AXI_GP" sptag "" memory ""} M13_AXI {memport "M_AXI_GP" sptag "" memory ""} M14_AXI {memport "M_AXI_GP" sptag "" memory ""} M15_AXI {memport "M_AXI_GP" sptag "" memory ""}} [get_bd_cells /icn_ctrl]
-}
-
-if { $irqs eq "32" } {
-	# set_property PFM.IRQ {intr {id 0 range 31}}[get_bd_cells /xlconcat_0]
-	set_property PFM.IRQ {intr {id 0 range 31}} [get_bd_cells /axi_intc_0]
-	# set_property PFM.IRQ {In0 {id 0} In1 {id 1} In2 {id 2} In3 {id 3} In4 {id 4} In5 {id 5} In6 {id 6} In7 {id 7} In8 {id 8} In9 {id 9} In10 {id 10} \
-	In11 {id 11} In12 {id 12} In13 {id 13} In14 {id 14} In15 {id 15} In16 {id 16} In17 {id 17} In18 {id 18} In19 {id 19} In20 {id 20} In21 {id 21} In22 {id 22} \
-	In23 {id 23} In24 {id 24} In25 {id 25} In26 {id 26} In27 {id 27} In28 {id 28} In29 {id 29} In30 {id 30} In31 {id 31}} [get_bd_cells /xlconcat_0]
-
-	set_property PFM.AXI_PORT {M03_AXI {memport "M_AXI_GP" sptag "" memory ""} M04_AXI {memport "M_AXI_GP" sptag "" memory ""} } [get_bd_cells axi_smc_vip_hier/icn_ctrl]
-	set_property PFM.AXI_PORT {M01_AXI {memport "M_AXI_GP" sptag "" memory ""} M02_AXI {memport "M_AXI_GP" sptag "" memory ""} M03_AXI {memport "M_AXI_GP" sptag "" memory ""} M04_AXI {memport "M_AXI_GP" sptag "" memory ""} M05_AXI {memport "M_AXI_GP" sptag "" memory ""} M06_AXI {memport "M_AXI_GP" sptag "" memory ""} M07_AXI {memport "M_AXI_GP" sptag "" memory ""} M08_AXI {memport "M_AXI_GP" sptag "" memory ""} M09_AXI {memport "M_AXI_GP" sptag "" memory ""} M10_AXI {memport "M_AXI_GP" sptag "" memory ""} M11_AXI {memport "M_AXI_GP" sptag "" memory ""} M12_AXI {memport "M_AXI_GP" sptag "" memory ""} M13_AXI {memport "M_AXI_GP" sptag "" memory ""} M14_AXI {memport "M_AXI_GP" sptag "" memory ""} M15_AXI {memport "M_AXI_GP" sptag "" memory ""}} [get_bd_cells axi_smc_vip_hier/icn_ctrl_0]
-	set_property PFM.AXI_PORT {M01_AXI {memport "M_AXI_GP" sptag "" memory ""} M02_AXI {memport "M_AXI_GP" sptag "" memory ""} M03_AXI {memport "M_AXI_GP" sptag "" memory ""} M04_AXI {memport "M_AXI_GP" sptag "" memory ""} M05_AXI {memport "M_AXI_GP" sptag "" memory ""} M06_AXI {memport "M_AXI_GP" sptag "" memory ""} M07_AXI {memport "M_AXI_GP" sptag "" memory ""} M08_AXI {memport "M_AXI_GP" sptag "" memory ""} M09_AXI {memport "M_AXI_GP" sptag "" memory ""} M10_AXI {memport "M_AXI_GP" sptag "" memory ""} M11_AXI {memport "M_AXI_GP" sptag "" memory ""} M12_AXI {memport "M_AXI_GP" sptag "" memory ""} M13_AXI {memport "M_AXI_GP" sptag "" memory ""} M14_AXI {memport "M_AXI_GP" sptag "" memory ""} M15_AXI {memport "M_AXI_GP" sptag "" memory ""}} [get_bd_cells axi_smc_vip_hier/icn_ctrl_1]
-}
-
-
-if { $irqs eq "63" } {
-
-	set_property PFM.IRQ {intr {id 0 range 32}} [get_bd_cells /axi_intc_cascaded_1]
-	#set_property PFM.IRQ {In0 {id 0} In1 {id 1} In2 {id 2} In3 {id 3} In4 {id 4} In5 {id 5} In6 {id 6} In7 {id 7} In8 {id 8} In9 {id 9} In10 {id 10} \
-	In11 {id 11} In12 {id 12} In13 {id 13} In14 {id 14} In15 {id 15} In16 {id 16} In17 {id 17} In18 {id 18} In19 {id 19} In20 {id 20} In21 {id 21} In22 {id 22} \
-	In23 {id 23} In24 {id 24} In25 {id 25} In26 {id 26} In27 {id 27} In28 {id 28} In29 {id 29} In30 {id 30} } [get_bd_cells /xlconcat_0]
-	
-	#set_property PFM.IRQ {intr {id 32 range 63}}[get_bd_cells /xlconcat_1]
-	set_property PFM.IRQ {In0 {id 32} In1 {id 33} In2 {id 34} In3 {id 35} In4 {id 36} In5 {id 37} In6 {id 38} In7 {id 39} In8 {id 40} \
-	In9 {id 41} In10 {id 42} In11 {id 43} In12 {id 44} In13 {id 45} In14 {id 46} In15 {id 47} In16 {id 48} In17 {id 49} In18 {id 50} \
-	In19 {id 51} In20 {id 52} In21 {id 53} In22 {id 54} In23 {id 55} In24 {id 56} In25 {id 57} In26 {id 58} In27 {id 59} In28 {id 60} \
-	In29 {id 61} In30 {id 62} } [get_bd_cells /xlconcat_0]
-	
-	set_property PFM.AXI_PORT {M06_AXI {memport "M_AXI_GP" sptag "" memory ""} M07_AXI {memport "M_AXI_GP" sptag "" memory ""} M08_AXI {memport "M_AXI_GP" sptag "" memory ""}} [get_bd_cells axi_smc_vip_hier/icn_ctrl]
-	set_property PFM.AXI_PORT {M01_AXI {memport "M_AXI_GP" sptag "" memory ""} M02_AXI {memport "M_AXI_GP" sptag "" memory ""} M03_AXI {memport "M_AXI_GP" sptag "" memory ""} M04_AXI {memport "M_AXI_GP" sptag "" memory ""} M05_AXI {memport "M_AXI_GP" sptag "" memory ""} M06_AXI {memport "M_AXI_GP" sptag "" memory ""} M07_AXI {memport "M_AXI_GP" sptag "" memory ""} M08_AXI {memport "M_AXI_GP" sptag "" memory ""} M09_AXI {memport "M_AXI_GP" sptag "" memory ""} M10_AXI {memport "M_AXI_GP" sptag "" memory ""} M11_AXI {memport "M_AXI_GP" sptag "" memory ""} M12_AXI {memport "M_AXI_GP" sptag "" memory ""} M13_AXI {memport "M_AXI_GP" sptag "" memory ""} M14_AXI {memport "M_AXI_GP" sptag "" memory ""} M15_AXI {memport "M_AXI_GP" sptag "" memory ""}} [get_bd_cells axi_smc_vip_hier/icn_ctrl_0]
-	set_property PFM.AXI_PORT {M01_AXI {memport "M_AXI_GP" sptag "" memory ""} M02_AXI {memport "M_AXI_GP" sptag "" memory ""} M03_AXI {memport "M_AXI_GP" sptag "" memory ""} M04_AXI {memport "M_AXI_GP" sptag "" memory ""} M05_AXI {memport "M_AXI_GP" sptag "" memory ""} M06_AXI {memport "M_AXI_GP" sptag "" memory ""} M07_AXI {memport "M_AXI_GP" sptag "" memory ""} M08_AXI {memport "M_AXI_GP" sptag "" memory ""} M09_AXI {memport "M_AXI_GP" sptag "" memory ""} M10_AXI {memport "M_AXI_GP" sptag "" memory ""} M11_AXI {memport "M_AXI_GP" sptag "" memory ""} M12_AXI {memport "M_AXI_GP" sptag "" memory ""} M13_AXI {memport "M_AXI_GP" sptag "" memory ""} M14_AXI {memport "M_AXI_GP" sptag "" memory ""} M15_AXI {memport "M_AXI_GP" sptag "" memory ""}} [get_bd_cells axi_smc_vip_hier/icn_ctrl_1]
-	set_property PFM.AXI_PORT {M01_AXI {memport "M_AXI_GP" sptag "" memory ""} M02_AXI {memport "M_AXI_GP" sptag "" memory ""} M03_AXI {memport "M_AXI_GP" sptag "" memory ""} M04_AXI {memport "M_AXI_GP" sptag "" memory ""} M05_AXI {memport "M_AXI_GP" sptag "" memory ""} M06_AXI {memport "M_AXI_GP" sptag "" memory ""} M07_AXI {memport "M_AXI_GP" sptag "" memory ""} M08_AXI {memport "M_AXI_GP" sptag "" memory ""} M09_AXI {memport "M_AXI_GP" sptag "" memory ""} M10_AXI {memport "M_AXI_GP" sptag "" memory ""} M11_AXI {memport "M_AXI_GP" sptag "" memory ""} M12_AXI {memport "M_AXI_GP" sptag "" memory ""} M13_AXI {memport "M_AXI_GP" sptag "" memory ""} M14_AXI {memport "M_AXI_GP" sptag "" memory ""} M15_AXI {memport "M_AXI_GP" sptag "" memory ""}} [get_bd_cells axi_smc_vip_hier/icn_ctrl_2]
-	set_property PFM.AXI_PORT {M01_AXI {memport "M_AXI_GP" sptag "" memory ""} M02_AXI {memport "M_AXI_GP" sptag "" memory ""} M03_AXI {memport "M_AXI_GP" sptag "" memory ""} M04_AXI {memport "M_AXI_GP" sptag "" memory ""} M05_AXI {memport "M_AXI_GP" sptag "" memory ""} M06_AXI {memport "M_AXI_GP" sptag "" memory ""} M07_AXI {memport "M_AXI_GP" sptag "" memory ""} M08_AXI {memport "M_AXI_GP" sptag "" memory ""} M09_AXI {memport "M_AXI_GP" sptag "" memory ""} M10_AXI {memport "M_AXI_GP" sptag "" memory ""} M11_AXI {memport "M_AXI_GP" sptag "" memory ""} M12_AXI {memport "M_AXI_GP" sptag "" memory ""} M13_AXI {memport "M_AXI_GP" sptag "" memory ""} M14_AXI {memport "M_AXI_GP" sptag "" memory ""} M15_AXI {memport "M_AXI_GP" sptag "" memory ""}} [get_bd_cells axi_smc_vip_hier/icn_ctrl_3]
-	
-}
-
-set_property PFM.AXI_PORT {S00_AXI {memport "S_AXI_NOC" sptag "DDR"} S01_AXI {memport "S_AXI_NOC" sptag "DDR"} S02_AXI {memport "S_AXI_NOC" sptag "DDR"} S03_AXI {memport "S_AXI_NOC" sptag "DDR"} S04_AXI {memport "S_AXI_NOC" sptag "DDR"} S05_AXI {memport "S_AXI_NOC" sptag "DDR"} S06_AXI {memport "S_AXI_NOC" sptag "DDR"} S07_AXI {memport "S_AXI_NOC" sptag "DDR"} S08_AXI {memport "S_AXI_NOC" sptag "DDR"} S09_AXI {memport "S_AXI_NOC" sptag "DDR"} S10_AXI {memport "S_AXI_NOC" sptag "DDR"} S11_AXI {memport "S_AXI_NOC" sptag "DDR"} S12_AXI {memport "S_AXI_NOC" sptag "DDR"} S13_AXI {memport "S_AXI_NOC" sptag "DDR"} S14_AXI {memport "S_AXI_NOC" sptag "DDR"} S15_AXI {memport "S_AXI_NOC" sptag "DDR"} S16_AXI {memport "S_AXI_NOC" sptag "DDR"} S17_AXI {memport "S_AXI_NOC" sptag "DDR"} S18_AXI {memport "S_AXI_NOC" sptag "DDR"} S19_AXI {memport "S_AXI_NOC" sptag "DDR"} S20_AXI {memport "S_AXI_NOC" sptag "DDR"} S21_AXI {memport "S_AXI_NOC" sptag "DDR"} S22_AXI {memport "S_AXI_NOC" sptag "DDR"} S23_AXI {memport "S_AXI_NOC" sptag "DDR"} S24_AXI {memport "S_AXI_NOC" sptag "DDR"} S25_AXI {memport "S_AXI_NOC" sptag "DDR"} S26_AXI {memport "S_AXI_NOC" sptag "DDR"} S27_AXI {memport "S_AXI_NOC" sptag "DDR"}} [get_bd_cells /noc2_ddr5]
-
-set clocks {}
-set i 0
-
-foreach { port freq id is_default } $clk_options {
-	dict append clocks $port "id \"$id\" is_default \"$is_default\" proc_sys_reset \"/proc_sys_reset_$i\" status \"fixed\""
-	incr i
-} 
-
-set_property PFM.CLOCK $clocks [get_bd_cells /clk_wizard_0]
-#puts "clocks :: $clocksPFM properties"
-
-if { $use_lpddr } {
-	puts "INFO: lpddr5 selected"
-	set_property PFM.AXI_PORT {S00_AXI {memport "S_AXI_NOC" sptag "LPDDR"} S01_AXI {memport "S_AXI_NOC" sptag "LPDDR"} S02_AXI {memport "S_AXI_NOC" sptag "LPDDR"} S03_AXI {memport "S_AXI_NOC" sptag "LPDDR"} S04_AXI {memport "S_AXI_NOC" sptag "LPDDR"} S05_AXI {memport "S_AXI_NOC" sptag "LPDDR"} S06_AXI {memport "S_AXI_NOC" sptag "LPDDR"} S07_AXI {memport "S_AXI_NOC" sptag "LPDDR"} S08_AXI {memport "S_AXI_NOC" sptag "LPDDR"} S09_AXI {memport "S_AXI_NOC" sptag "LPDDR"} S10_AXI {memport "S_AXI_NOC" sptag "LPDDR"} S11_AXI {memport "S_AXI_NOC" sptag "LPDDR"} S12_AXI {memport "S_AXI_NOC" sptag "LPDDR"} S13_AXI {memport "S_AXI_NOC" sptag "LPDDR"} S14_AXI {memport "S_AXI_NOC" sptag "LPDDR"} S15_AXI {memport "S_AXI_NOC" sptag "LPDDR"} S16_AXI {memport "S_AXI_NOC" sptag "LPDDR"} S17_AXI {memport "S_AXI_NOC" sptag "LPDDR"} S18_AXI {memport "S_AXI_NOC" sptag "LPDDR"} S19_AXI {memport "S_AXI_NOC" sptag "LPDDR"} S20_AXI {memport "S_AXI_NOC" sptag "LPDDR"} S21_AXI {memport "S_AXI_NOC" sptag "LPDDR"} S22_AXI {memport "S_AXI_NOC" sptag "LPDDR"} S23_AXI {memport "S_AXI_NOC" sptag "LPDDR"} S24_AXI {memport "S_AXI_NOC" sptag "LPDDR"} S25_AXI {memport "S_AXI_NOC" sptag "LPDDR"} S26_AXI {memport "S_AXI_NOC" sptag "LPDDR"} S27_AXI {memport "S_AXI_NOC" sptag "LPDDR"}} [get_bd_cells /noc2_lpddr5]
-	set_property SELECTED_SIM_MODEL tlm [get_bd_cells /noc2_lpddr5]
-}
-
-#Platform Level Properties
-set_property platform.default_output_type "sd_card" [current_project]
-set_property platform.design_intent.embedded "true" [current_project]
-set_property platform.num_compute_units $irqs [current_project]
-set_property platform.design_intent.server_managed "false" [current_project]
-set_property platform.design_intent.external_host "false" [current_project]
-set_property platform.design_intent.datacenter "false" [current_project]
-set_property platform.uses_pr "false" [current_project]
-set_property platform.extensible true [current_project]
-
-
-puts "INFO: Platform creation completed!"
-
-# Add USER_COMMENTS on $design_name
-#set_property USER_COMMENTS.comment0 "An Example Versal Extensible Embedded Platform" [get_bd_designs $design_name]
-
-if { $use_aie eq "true" } {
-	
-	set_property USER_COMMENTS.comment0 {\t \t \t =============== >>>> An Example Versal Extensible Embedded Platform <<<< ===============
-	\t Note: 
-	\t --> SD boot mode and UART are enabled in the PS Wizard
-	\t --> AI Engine control path is connected to PS Wizard
-	\t --> V++ will connect AI Engine data path automatically
-	\t --> Execute TCL command: launch_simulation -scripts_only ,to establish the sim_1 source set hierarchy after successful design creation} [current_bd_design]
-
-} else {
-	
-	set_property USER_COMMENTS.comment0 {\t \t \t =============== >>>> An Example Versal Extensible Embedded Platform <<<< ===============
-	\t Note: 
-	\t --> SD boot mode and UART are enabled in the PS Wizard
-	\t --> Execute TCL command: launch_simulation -scripts_only ,to establish the sim_1 source set hierarchy after successful design creation} [current_bd_design]
-}
-
-# Perform GUI Layout
-
-if { $use_aie == "true" } {
- 
-	regenerate_bd_layout -layout_string {
-		"ActiveEmotionalView":"Default View",
-		"comment_0":"\t \t \t =============== >>>> An Example Versal Extensible Embedded Platform <<<< ===============
-			\t Note: 
-			\t --> SD boot mode and UART are enabled in the PS Wizard
-			\t --> AI Engine control path is connected to PS Wizard
-			\t --> V++ will connect AI Engine data path automatically
-			\t --> Execute TCL command: launch_simulation -scripts_only ,to establish the sim_1 source set hierarchy after successful design creation.",
-		"commentid":"comment_0|",
-		"font_comment_0":"14",
-		"guistr":"# # String gsaved with Nlview 7.0r42019-12-20 bk=1.5203 VDI=41 GEI=36 GUI=JA:10.0 TLS
-			#-string -flagsOSRD
-			preplace cgraphic comment_0 place right -1500 -145 textcolor 4 linecolor 3
-			",
-		"linktoobj_comment_0":"",
-		"linktotype_comment_0":"bd_design" }
- 
- } else {
- 
-	regenerate_bd_layout -layout_string {
-		"ActiveEmotionalView":"Default View",
-		"comment_0":"\t \t \t =============== >>>> An Example Versal Extensible Embedded Platform <<<< ===============
-			\t Note: 
-			\t --> SD boot mode and UART are enabled in the PS Wizard
-			\t --> Execute TCL command: launch_simulation -scripts_only ,to establish the sim_1 source set hierarchy after successful design creation.",
-		"commentid":"comment_0|",
-		"font_comment_0":"14",
-		"guistr":"# # String gsaved with Nlview 7.0r42019-12-20 bk=1.5203 VDI=41 GEI=36 GUI=JA:10.0 TLS
-			#-string -flagsOSRD
-			preplace cgraphic comment_0 place right -1500 -130 textcolor 4 linecolor 3
-			",
-		"linktoobj_comment_0":"",
-		"linktotype_comment_0":"bd_design" }
-}
+source -notrace "$currentDir/pfm_properties.tcl"
 
 
 set_property SELECTED_SIM_MODEL tlm [get_bd_cells /psx_wizard_0]
@@ -637,7 +503,7 @@ regenerate_bd_layout
 
 make_wrapper -files [get_files $design_name.bd] -top -import
 
-set TB_file [file join $currentDir test_bench ps_wizard_tb.v] 
+set TB_file [file join $currentDir test_bench psx_wizard_tb.v] 
 
 set_property SOURCE_SET sources_1 [get_filesets sim_1]
 
