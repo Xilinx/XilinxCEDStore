@@ -822,11 +822,11 @@
         "name": "versal_gen2_platform",
         "display": "Versal AI Edge Series Gen 2 Embedded Common Platform",
         "latest_revision": "1.1",
-        "commit_id": "08758bf8a01b080fc65d816701adffb12d569106",
+        "commit_id": "914f3fa7b2e2f4d66a2f8c52d58d1891974545f2",
         "revisions": [
           {
             "revision": "1.1",
-            "commit_id": "08758bf8a01b080fc65d816701adffb12d569106",
+            "commit_id": "914f3fa7b2e2f4d66a2f8c52d58d1891974545f2",
             "date": "04-07-2025:05:11:26",
             "history": "Added board Versal AI Edge Series Gen 2 Embedded Common Platform v1.1"
           }
