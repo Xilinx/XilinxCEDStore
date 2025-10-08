@@ -6,35 +6,37 @@
 - [Hardware Platform Interfaces (Configuration)](#hardware-platform-interfaces-configuration)
 - [Board Interfaces](#board-interfaces)
 - [Usage Steps (How to Create a XSA)](#usage-steps-(how-to-generate-XSA))
-    - [Step 1: Create the Vivado Project](#step-1-create-the-vivado-project)
-    - [Step 2: Download Platform Example](#step-2-download-platform-example)
-    - [Step 3: Create the Example Project](#step-3-create-the-example-project)
-        - [Base Configuration (For SSW)](#base-configuration-for-ssw)
-        - [Extensible Configuration (For Vitis)](#extensible-configuration-for-vitis)
-    - [Step 4: Included Files (NCR and XDC)](#step-4-included-files-ncr-and-xdc)
-    - [Step 5: Review the Platform Setup](#step-5-review-the-platform-setup)
-    - [Step 6: Review Simulation Settings](#step-6-review-simulation-settings)
-    - [Step 7: Generate Block Design](#step-7-generate-block-design)
-    - [Step 8: Export Hardware XSA](#step-8-export-hardware-xsa)
--  [Validation](#validation)
+  - [Step 1: Create the Vivado Project](#step-1-create-the-vivado-project)
+  - [Step 2: Download Platform Example](#step-2-download-platform-example)
+  - [Step 3: Create the Example Project](#step-3-create-the-example-project)
+    - [Base Configuration (For SSW)](#base-configuration-for-ssw)
+    - [Extensible Configuration (For Vitis)](#extensible-configuration-for-vitis)
+  - [Step 4: Included Files (NCR and XDC)](#step-4-included-files-ncr-and-xdc)
+  - [Step 5: Review the Platform Setup](#step-5-review-the-platform-setup)
+  - [Step 6: Review Simulation Settings](#step-6-review-simulation-settings)
+  - [Step 7: Generate Block Design](#step-7-generate-block-design)
+  - [Step 8: Export Hardware XSA](#step-8-export-hardware-xsa)
+- [Validation](#validation)
 - [Notes](#notes)
 - [Known Issues](#known-issues)
 
 ## Introduction
 
-The embedded base platform is the foundation for embedded software flows including Vitis Software Acceleration, enablement of Linux and Real Time Operating Systems. It is also the starting point for application specific platforms and examples. This pltform privides CIPS / PS configuration including minimal PS IP, NOC and Memory configuration,Clocking
+The embedded base platform is the foundation for embedded software flows including Vitis Software Acceleration, enablement of Linux and Real Time Operating Systems. It is also the starting point for application specific platforms and examples. This platform provides CIPS / PS configuration including minimal PS IP,clocking, NOC and Memory configuration.
+
 This document describes the Base and user-customizable Extensible configurations for the AMD Versal™ Adaptive SoC Gen 2 AI Edge Series Embedded Common Platform targeting the VEK385 board (`xc2ve3858-ssva2112-2MP-e-S`), with pre-configured PS and NOC. The base platform enables System Software (SSW) development whereas Extensible platform targets Vitis development.
 
 ---
-## Hardware Platform Interfaces (Configuration)
-The table below lists different configurations supported for this Platform CED. Segmented configuration and AIE blocks are enabled by default for both base and extensible platforms. Whereas there are some additional clock and interrupts settings available only for extensible platform.
 
+## Hardware Platform Interfaces (Configuration)
+
+The table below lists different configurations supported for this Platform CED. Segmented configuration and AIE blocks are enabled by default for both base and extensible platforms. Whereas there are some additional clock and interrupts settings available only for extensible platform.
 
 | Category              | Feature           | Default Configuration | Details                                                                                                                                                                                                 | Additional Info                                                                                   |
 |-----------------------|-------------------|----------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------|
-|  | 
+|  |
 | Default Configuration (Common for both base and extensible) |    Segmented Configuration      |       Enabled               | Used to separate the system into logical partitions. | Improves modularity, supports partial reconfiguration, and reduces boot latency. Required for this platform.                                       |                                                                                                   |
-|              | AIE Block           |  Enabled                    | AIE block is instantiated in both flows by default. | However, **AIE-based applications** are not validated on this platform. Disable AIE if targeting Linux/RTOS/baremetal applications.                     |                                                                     
+|              | AIE Block           |  Enabled                    | AIE block is instantiated in both flows by default. | However, **AIE-based applications** are not validated on this platform. Disable AIE if targeting Linux/RTOS/baremetal applications.                     |
 | Extensible Parts    | Clock Settings | 625 MHz (clk_out1)   | Clocking Wizard uses AIE’s 1250 MHz reference to generate 625 MHz. Derived clocks: 312.5 MHz, 156.25 MHz, 78.125 MHz. | MBUFGCE enabled automatically. clk_out2 must be set. Frequencies are validated during design generation. Timing closure should be reviewed for higher frequencies. |
 | | Interrupts |  15      | Three selectable configurations:<br>**15** – Single INTC, recommended for small designs.<br>**32** – Single INTC for mid-sized PL use.<br>**63** – Dual cascaded INTCs for large systems. | Only available in extensible configuration. Select based on number of PL accelerators and required interrupt capacity.                                                                                                  |
 
@@ -47,18 +49,20 @@ To locate user guides relevant for this platform, search using the **product gui
 | Board Prefix                | User Manual / Guide | Description                                                        |
 |-----------------------------|---------------------|--------------------------------------------------------------------|
 | xc2ve3858-ssva2112-2MP-e-S  | PG432               | Versal AI Edge Series Gen 2 Image Signal Processor Product Guide   |
-Alternatively, Please follow https://docs.amd.com/r/en-US/pg432-versal-ai-edge-series-gen-2-isp to access all Board Interface information for Versal AI Edge Series Gen 2.
+Alternatively, Please follow <https://docs.amd.com/r/en-US/pg432-versal-ai-edge-series-gen-2-isp> to access all Board Interface information for Versal AI Edge Series Gen 2.
+
 ## Usage steps (how to generate XSA)
+
 ### Step 1: Create the Vivado Project
 
 1. Create a workspace folder and launch the AMD Vivado™ Design Suite by running the following commands in your terminal:
-
 
 ```sh
 mkdir WorkSpacexc2ve3858-ssva2112-2MP-e-S
 cd WorkSpace
 source <Vivado_Install_Directory>/settings64.sh
 ```
+
 Replace `<Vivado_Install_Directory>` with your Vivado installation path.
 
 ### Step 2: Download Platform Example
@@ -103,7 +107,7 @@ Replace `<Vivado_Install_Directory>` with your Vivado installation path.
     - Select target part: `xc2ve3858-ssva2112-2MP-e-S` (VEK385 board)
     - Click **Next**.
 
-    #### Base Configuration (For SSW)
+   #### Base Configuration (For SSW)
 
     Base Configuration consists of PS configurations including minimal PS IP, NOC and Memory Configuration, Clocking and minimum PL payload like GPIO, PL UART, DIP Switches and miscellaneous Board based IO’s etc.
 
@@ -138,8 +142,6 @@ Replace `<Vivado_Install_Directory>` with your Vivado installation path.
 #### Extensible Configuration (For Vitis)
 
 Extensible Configurations consist of PS configurations including minimal PS IP, NOC and Memory Configuration, Clocking, PL payloads along with Interrupt Controllers, proc system resets and fixed clocks based on which Vitis can derive other required clock and hook kernels to that clock.
-
-#### Step 3: Create the Example Project
 
 Follow points 1 to 4 outlined in Step 3 above to create a new project and continue on with the steps mentioned below:
 
@@ -201,29 +203,29 @@ Follow points 1 to 4 outlined in Step 3 above to create a new project and contin
 
 - **AXI Port Settings Based on Interrupt Configuration**
 
-    - **For 15 Interrupts:**
-        - `ctrl_smc`
-            - AXI interfaces: `M01_AXI` to `M15_AXI`
-            - Memport: `M_AXI_GP`
-            - SP Tag: (empty)
+  - **For 15 Interrupts:**
+    - `ctrl_smc`
+      - AXI interfaces: `M01_AXI` to `M15_AXI`
+      - Memport: `M_AXI_GP`
+      - SP Tag: (empty)
 
-    - **For 32 Interrupts:**
-        - `ctrl_smc`
-            - AXI interfaces: `M03_AXI` to `M04_AXI`
-        - `icn_ctrl_0`
-            - AXI interfaces: `M01_AXI` to `M15_AXI`
-        - `icn_ctrl_1`
-            - AXI interfaces: `M01_AXI` to `M15_AXI`
-        - Memport: `M_AXI_GP`
-        - SP Tag: (empty)
+  - **For 32 Interrupts:**
+    - `ctrl_smc`
+      - AXI interfaces: `M03_AXI` to `M04_AXI`
+    - `icn_ctrl_0`
+      - AXI interfaces: `M01_AXI` to `M15_AXI`
+    - `icn_ctrl_1`
+      - AXI interfaces: `M01_AXI` to `M15_AXI`
+    - Memport: `M_AXI_GP`
+    - SP Tag: (empty)
 
-    - **For 63 Interrupts:**
-        - `ctrl_smc`
-            - AXI interfaces: `M06_AXI` to `M08_AXI`
-        - `icn_ctrl_0` to `icn_ctrl_3`
-            - AXI interfaces: `M01_AXI` to `M15_AXI`
-        - Memport: `M_AXI_GP`
-        - SP Tag: (empty)
+  - **For 63 Interrupts:**
+    - `ctrl_smc`
+      - AXI interfaces: `M06_AXI` to `M08_AXI`
+    - `icn_ctrl_0` to `icn_ctrl_3`
+      - AXI interfaces: `M01_AXI` to `M15_AXI`
+    - Memport: `M_AXI_GP`
+    - SP Tag: (empty)
 
 ![AXI Port Settings](./images/fig6.png)
 
@@ -280,9 +282,11 @@ Follow points 1 to 4 outlined in Step 3 above to create a new project and contin
     The file `versal_gen2_platform_wrapper_hwemu.xsa` will be generated in the `vek385_extensible` directory.
 
 ---
+
 ## Validation
 
-Valdiation examples for the designs generated above can be found on https://github.com/Xilinx/Vitis-Tutorials. Users can utilize these tutorials for AI Engine development, Hardware Acceleration, Vitis Platform creation etc.
+Valdiation examples for the designs generated above can be found on <https://github.com/Xilinx/Vitis-Tutorials>. Users can utilize these tutorials for AI Engine development, Hardware Acceleration, Vitis Platform creation etc.
+
 ## Notes
 
 This common platform is a segmented configuration design which includes boot and PL PDI’s for respective configurations. Any modification made to these PDI’s is not guaranteed to work. Please refer to [Vivado-Design-Tutorials/Versal/Boot_and_Config/Segmented_Configuration at 2025.1 · Xilinx/Vivado-Design-Tutorials](https://github.com/Xilinx/Vivado-Design-Tutorials/tree/2025.1/Versal/Boot_and_Config/Segmented_Configuration#segmented-configuration-tool-flow-in-vivado) before making any changes in the platform design.
