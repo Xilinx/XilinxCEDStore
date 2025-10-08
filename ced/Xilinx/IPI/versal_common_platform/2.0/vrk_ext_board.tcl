@@ -25,7 +25,7 @@ set Lpddr5_Controller_C1_CH1_Bank_703_704_705 [ create_bd_intf_port -mode Master
 
 set Lpddr5_Controller_C2_Bank_706_707_int [ create_bd_intf_port -mode Master -vlnv xilinx.com:interface:lpddr5_rtl:1.0 Lpddr5_Controller_C2_Bank_706_707_int ]
 
-set Lpddr5_Controller_C3_Bank_709_7010_int [ create_bd_intf_port -mode Master -vlnv xilinx.com:interface:lpddr5_rtl:1.0 Lpddr5_Controller_C3_Bank_709_7010_int ]
+set Lpddr5_Controller_C3_Bank_709_710_int [ create_bd_intf_port -mode Master -vlnv xilinx.com:interface:lpddr5_rtl:1.0 Lpddr5_Controller_C3_Bank_709_710_int ]
 
 # Create instance: ps_wizard_0, and set properties
 create_bd_cell -type ip -vlnv xilinx.com:ip:ps_wizard:* ps_wizard_0
@@ -863,7 +863,7 @@ set NoC_C3 [ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_noc2 NoC_C3 ]
 ] [get_bd_cells NoC_C3]
 
 set_property -dict [list \
-  CONFIG.C0_CH0_LPDDR5_BOARD_INTERFACE {Lpddr5_Controller_C3_Bank_709_7010_int} \
+  CONFIG.C0_CH0_LPDDR5_BOARD_INTERFACE {Lpddr5_Controller_C3_Bank_709_710_int} \
   CONFIG.DDRMC5_CONFIG(DDRMC5_ADDRESS_MAP) {NA,NA,NA,NA,NA,NA,NA,NA,RA15,RA14,RA13,RA12,RA11,RA10,RA9,RA8,RA7,RA6,RA5,RA4,RA3,RA2,RA1,RA0,BA1,BA0,BG1,BG0,CA5,CA4,CA3,CA2,CA1,CA0,NC,NC,NC,NC,NA,NA} \
   CONFIG.DDRMC5_CONFIG(DDRMC5_AUTO_PRECHARGE) {true} \
   CONFIG.DDRMC5_CONFIG(DDRMC5_BACKGROUND_SCRUB) {false} \
@@ -1007,7 +1007,7 @@ connect_bd_intf_net [get_bd_intf_ports Lpddr5_Controller_C1_CH1_Bank_703_704_705
 #connect_bd_intf_net [get_bd_intf_ports C2_C3_LPDDR5X_sys_clk] [get_bd_intf_pins util_ds_buf_1/CLK_IN_D]
 
 connect_bd_intf_net [get_bd_intf_ports Lpddr5_Controller_C2_Bank_706_707_int] [get_bd_intf_pins NoC_C2/C0_CH0_LPDDR5]
-connect_bd_intf_net [get_bd_intf_ports Lpddr5_Controller_C3_Bank_709_7010_int] [get_bd_intf_pins NoC_C3/C0_CH0_LPDDR5]
+connect_bd_intf_net [get_bd_intf_ports Lpddr5_Controller_C3_Bank_709_710_int] [get_bd_intf_pins NoC_C3/C0_CH0_LPDDR5]
 
 connect_bd_intf_net [get_bd_intf_pins NoC_C1/S00_INI] [get_bd_intf_pins Master_NoC/M04_INI]
 connect_bd_intf_net [get_bd_intf_pins NoC_C2/S00_INI] [get_bd_intf_pins Master_NoC/M05_INI]
