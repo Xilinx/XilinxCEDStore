@@ -211,6 +211,8 @@ set_property -dict [list \
         CONFIG.PS_PMC_CONFIG(PS_USE_PMCPL_CLK0) {1} \
       ] $versal_cips_0
     connect_bd_intf_net -intf_net versal_cips_0_M_AXI_FPD [get_bd_intf_pins versal_cips_0/FPD_AXI_PL] [get_bd_intf_pins axi_dbg_hub_0/S_AXI]
+    connect_bd_intf_net -intf_net aurora_64b66b_0_USER_DATA_M_AXIS_RX [get_bd_intf_pins aurora_64b66b_0/USER_DATA_M_AXIS_RX] [get_bd_intf_pins versal_cips_0/S_AXIS_HSDP_INGRESS]
+    connect_bd_intf_net -intf_net versal_cips_0_S_AXIS_HSDP_EGRESS [get_bd_intf_pins versal_cips_0/S_AXIS_HSDP_EGRESS] [get_bd_intf_pins aurora_64b66b_0/USER_DATA_S_AXIS_TX]
     connect_bd_net -net clk_wizard_0_clk_out1  [get_bd_pins util_ds_buf_0/BUFG_O] \
     [get_bd_pins aurora_64b66b_0/init_clk] \
     [get_bd_pins axi_dbg_hub_0/aclk] \
@@ -225,16 +227,18 @@ set_property -dict [list \
         CONFIG.PS11_CONFIG(PS_HSDP_INGRESS_TRAFFIC) {PL} \
         CONFIG.PS11_CONFIG(PS_NUM_FABRIC_RESETS) {1} \
         CONFIG.PS11_CONFIG(PS_SLR_ID) {0} \
-        CONFIG.PS11_CONFIG(PS_USE_FPD_AXI_PL) {1} \
+        CONFIG.PS11_CONFIG(PS_USE_LPD_AXI_PL) {1} \
         CONFIG.PS11_CONFIG(PS_USE_PMCPL_CLK0) {1} \
       ] $versal_cips_0
-    connect_bd_intf_net -intf_net versal_cips_0_M_AXI_FPD [get_bd_intf_pins versal_cips_0/FPD_AXI_PL] [get_bd_intf_pins axi_dbg_hub_0/S_AXI]  
+    connect_bd_intf_net -intf_net versal_cips_0_M_AXI_FPD [get_bd_intf_pins versal_cips_0/LPD_AXI_PL] [get_bd_intf_pins axi_dbg_hub_0/S_AXI]  
+    connect_bd_intf_net -intf_net aurora_64b66b_0_USER_DATA_M_AXIS_RX [get_bd_intf_pins aurora_64b66b_0/USER_DATA_M_AXIS_RX] [get_bd_intf_pins versal_cips_0/HSDP_INGRESS_AXIS]
+    connect_bd_intf_net -intf_net versal_cips_0_S_AXIS_HSDP_EGRESS [get_bd_intf_pins versal_cips_0/HSDP_EGRESS_AXIS] [get_bd_intf_pins aurora_64b66b_0/USER_DATA_S_AXIS_TX]    
     connect_bd_net -net clk_wizard_0_clk_out1  [get_bd_pins util_ds_buf_0/BUFG_O] \
     [get_bd_pins aurora_64b66b_0/init_clk] \
     [get_bd_pins axi_dbg_hub_0/aclk] \
     [get_bd_pins axis_vio_0/clk] \
     [get_bd_pins proc_sys_reset_0/slowest_sync_clk] \
-    [get_bd_pins versal_cips_0/fpd_axi_pl_aclk] \
+    [get_bd_pins versal_cips_0/lpd_axi_pl_aclk] \
     [get_bd_pins gtwiz_versal_0/gtwiz_freerun_clk]
   } elseif {$device eq "xcvn3716"} {
     set versal_cips_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:psx_wizard versal_cips_0 ]
@@ -247,6 +251,8 @@ set_property -dict [list \
         CONFIG.PS11_CONFIG(PSX_USE_PMCPL_CLK0) {1} \
       ] $versal_cips_0
     connect_bd_intf_net -intf_net versal_cips_0_M_AXI_FPD [get_bd_intf_pins versal_cips_0/FPD_AXI_PL] [get_bd_intf_pins axi_dbg_hub_0/S_AXI]
+    connect_bd_intf_net -intf_net aurora_64b66b_0_USER_DATA_M_AXIS_RX [get_bd_intf_pins aurora_64b66b_0/USER_DATA_M_AXIS_RX] [get_bd_intf_pins versal_cips_0/HSDP_INGRESS_AXIS]
+    connect_bd_intf_net -intf_net versal_cips_0_S_AXIS_HSDP_EGRESS [get_bd_intf_pins versal_cips_0/HSDP_EGRESS_AXIS] [get_bd_intf_pins aurora_64b66b_0/USER_DATA_S_AXIS_TX]    
     connect_bd_net -net clk_wizard_0_clk_out1  [get_bd_pins util_ds_buf_0/BUFG_O] \
     [get_bd_pins aurora_64b66b_0/init_clk] \
     [get_bd_pins axi_dbg_hub_0/aclk] \
@@ -277,6 +283,8 @@ set_property -dict [list \
        ] $versal_cips_0
 
       connect_bd_intf_net -intf_net versal_cips_0_M_AXI_FPD [get_bd_intf_pins versal_cips_0/M_AXI_FPD] [get_bd_intf_pins axi_dbg_hub_0/S_AXI]
+      connect_bd_intf_net -intf_net aurora_64b66b_0_USER_DATA_M_AXIS_RX [get_bd_intf_pins aurora_64b66b_0/USER_DATA_M_AXIS_RX] [get_bd_intf_pins versal_cips_0/S_AXIS_HSDP_INGRESS]
+      connect_bd_intf_net -intf_net versal_cips_0_S_AXIS_HSDP_EGRESS [get_bd_intf_pins versal_cips_0/S_AXIS_HSDP_EGRESS] [get_bd_intf_pins aurora_64b66b_0/USER_DATA_S_AXIS_TX]      
       connect_bd_net -net clk_wizard_0_clk_out1  [get_bd_pins util_ds_buf_0/BUFG_O] \
       [get_bd_pins aurora_64b66b_0/init_clk] \
       [get_bd_pins axi_dbg_hub_0/aclk] \
@@ -289,15 +297,12 @@ set_property -dict [list \
   # Create interface connections
   connect_bd_intf_net -intf_net aurora_64b66b_0_RX_LANE0 [get_bd_intf_pins aurora_64b66b_0/RX_LANE0] [get_bd_intf_pins gtwiz_versal_0/INTF0_RX0_GT_IP_Interface]
   connect_bd_intf_net -intf_net aurora_64b66b_0_TX_LANE0 [get_bd_intf_pins aurora_64b66b_0/TX_LANE0] [get_bd_intf_pins gtwiz_versal_0/INTF0_TX0_GT_IP_Interface]
-  connect_bd_intf_net -intf_net aurora_64b66b_0_USER_DATA_M_AXIS_RX [get_bd_intf_pins aurora_64b66b_0/USER_DATA_M_AXIS_RX] [get_bd_intf_pins versal_cips_0/S_AXIS_HSDP_INGRESS]
   if {$gttype eq "GTM"} {
   connect_bd_intf_net -intf_net aurora_64b66b_0_diff_gt_ref_clock_1 [get_bd_intf_ports aurora_64b66b_0_diff_gt_ref_clock] [get_bd_intf_pins util_ds_buf/CLK_IN_D1]
   } else {
   connect_bd_intf_net -intf_net aurora_64b66b_0_diff_gt_ref_clock_1 [get_bd_intf_ports aurora_64b66b_0_diff_gt_ref_clock] [get_bd_intf_pins util_ds_buf/CLK_IN_D]
   }
   connect_bd_intf_net -intf_net gtwiz_versal_0_Quad0_GT_Serial [get_bd_intf_ports Quad0_GT_Serial_0] [get_bd_intf_pins gtwiz_versal_0/Quad0_GT_Serial]
-  #connect_bd_intf_net -intf_net versal_cips_0_M_AXI_FPD [get_bd_intf_pins versal_cips_0/M_AXI_FPD] [get_bd_intf_pins axi_dbg_hub_0/S_AXI]
-  connect_bd_intf_net -intf_net versal_cips_0_S_AXIS_HSDP_EGRESS [get_bd_intf_pins versal_cips_0/S_AXIS_HSDP_EGRESS] [get_bd_intf_pins aurora_64b66b_0/USER_DATA_S_AXIS_TX]
 
   # Create port connections
   connect_bd_net -net aurora_64b66b_0_link_reset_out  [get_bd_pins aurora_64b66b_0/link_reset_out] \
@@ -366,7 +371,8 @@ set_property -dict [list \
   [get_bd_pins proc_sys_reset_0/ext_reset_in]
 
   # Create address segments
-  assign_bd_address -offset 0xA4000000 -range 0x00200000 -target_address_space [get_bd_addr_spaces versal_cips_0/M_AXI_FPD] [get_bd_addr_segs axi_dbg_hub_0/S_AXI_DBG_HUB/Mem0] -force
+  #assign_bd_address -offset 0xA4000000 -range 0x00200000 -target_address_space [get_bd_addr_spaces versal_cips_0/M_AXI_FPD] [get_bd_addr_segs axi_dbg_hub_0/S_AXI_DBG_HUB/Mem0] -force
+  assign_bd_address
 
 
     puts $f "done!"
@@ -467,4 +473,3 @@ set_property -dict [list \
   close $f
   
 }
-
