@@ -1,0 +1,33 @@
+{
+    "config": {
+      "items": [
+        {
+          "infra": {
+            "name": "zynqmp_axidma",
+            "display": "Zynq UltraScale+ MPSoC AXI DMA Design",
+            "revision": "1.0",
+            "description": "A Zynq UltraScale+ MPSoC AXI DMA based example design ",
+            "company": "xilinx.com",
+            "company_display": "Xilinx",
+            "author": "abommera",
+            "contributors": [
+              {
+                "group": "Xilinx",
+                "url": "www.xilinx.com"
+              }
+            ],
+            "category": "Zynq",
+            "website": "www.xilinx.com",
+            "is_active" : true, 
+            "search-keywords": [
+              "Zynq Ultracale+ MPSoC Design AXIDMA",
+              "xilinx.com",
+              "example"        
+            ]
+          }
+        }
+      ]
+    },
+    "_major" : 1,
+    "_minor" : 0
+}
