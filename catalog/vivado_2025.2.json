@@ -366,11 +366,11 @@
         "name": "hsdp_ced",
         "display": "Versal HSDP with Soft Aurora",
         "latest_revision": "1.0",
-        "commit_id": "a0fe019a3dc1c3b10567f82832208809cbe6f0ba",
+        "commit_id": "eb9f4e9f9edce6b0b3aaed8a5f0ad1fbff314a31",
         "revisions": [
           {
             "revision": "1.0",
-            "commit_id": "a0fe019a3dc1c3b10567f82832208809cbe6f0ba",
+            "commit_id": "eb9f4e9f9edce6b0b3aaed8a5f0ad1fbff314a31",
             "date": "10-04-2023:17:54:50",
             "history": "Added board Versal HSDP with Soft Aurora v1.0"
           }
