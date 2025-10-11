@@ -400,7 +400,7 @@ proc createDesign {design_name options} {
   set board_name [get_property BOARD_NAME [current_board]]
 
   # Create PFM attributes
-  set_property PFM_NAME "xilinx.com:xd:${board_name}:1.0" [get_files [current_bd_design].bd]
+  set_property PFM_NAME "xilinx.com:${board_name}:${board_name}_base:1.0" [get_files [current_bd_design].bd]
 
   if {$irqs == "32"} {
     set_property PFM.IRQ {intr {id 0 range 32}} [get_bd_cells /axi_intc_0]
