@@ -5,7 +5,7 @@
           "infra": {
             "name": "Versal_MMI_DPDC_USB_designs",
             "display": "Versal MMI DPDC USB Designs",
-            "revision": "1.0",
+            "revision": "2.0",
             "description": "A Versal example design for the MMI Display Controller and MMI USB Usecases",
             "company": "xilinx.com",
             "company_display": "Xilinx",
@@ -34,4 +34,3 @@
     "_major" : 1,
     "_minor" : 0
 }
-

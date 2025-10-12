@@ -3,10 +3,11 @@ variable currentDir [file dirname $currentFile]
 source -notrace "$currentDir/run.tcl"
 
 proc getSupportedParts {} {
-  return [get_parts -filter {NAME =~ xc2ve3858-* || NAME =~ xc2ve3558-* || NAME =~ xc2vm3858-* || NAME =~ xc2vm3558-* || NAME =~ xc2ve3804-* || NAME =~ xc2ve3504-* || NAME =~ xc10T21-*}]
 }
 
 proc getSupportedBoards {} {
+        set V_board_unique [get_board_parts -filter {(BOARD_NAME =~"*vek385*" && VENDOR_NAME=="xilinx.com")} -latest_file_version]
+        return $V_board_unique
 }
 
 proc addOptions {DESIGNOBJ PROJECT_PARAM.BOARD_PART} {

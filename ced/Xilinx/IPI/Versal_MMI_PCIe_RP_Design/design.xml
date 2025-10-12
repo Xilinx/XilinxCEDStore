@@ -7,7 +7,7 @@
 <Description>
 This is MMI PCIe Rootport Gen5x2 Example Design.
 </Description>
-<Version>1.0</Version>
+<Version>2.0</Version>
 <Design>init.tcl</Design>
 <DesignType>IPI</DesignType>
 <Image>mmi_pcie_rp.png</Image>

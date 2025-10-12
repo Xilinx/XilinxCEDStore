@@ -5,7 +5,7 @@
           "infra": {
             "name": "Versal_MMI_PCIe_RP_Design",
             "display": "Versal MMI PCIe RP Design",
-            "revision": "1.0",
+            "revision": "2.0",
             "description": "This is MMI PCIe Rootport Bridge design.",
             "company": "xilinx.com",
             "company_display": "Xilinx",
@@ -21,9 +21,9 @@
             "is_active" : true, 
             "search-keywords": [
               "MMI",
-	      "PCIe",
-	      "RP",
-	      "rootport",
+              "PCIe",
+              "RP",
+              "rootport",
               "xilinx.com",
               "example"             
             ]
@@ -34,4 +34,3 @@
     "_major" : 1,
     "_minor" : 0
 }
-
