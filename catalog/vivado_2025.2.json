@@ -708,11 +708,11 @@
         "name": "Versal_MMI_PCIe_EP_Design",
         "display": "Versal MMI PCIe EP Design",
         "latest_revision": "1.0",
-        "commit_id": "a0fe019a3dc1c3b10567f82832208809cbe6f0ba",
+        "commit_id": "c319a1e478d361b569fbfecba2e007fcfe590a1e",
         "revisions": [
           {
             "revision": "1.0",
-            "commit_id": "a0fe019a3dc1c3b10567f82832208809cbe6f0ba",
+            "commit_id": "c319a1e478d361b569fbfecba2e007fcfe590a1e",
             "date": "18-02-2025:06:49:48",
             "history": "Added board Versal MMI PCIe EP Design v1.0"
           }
@@ -726,14 +726,20 @@
       {
         "name": "Versal_MMI_PCIe_RP_Design",
         "display": "Versal MMI PCIe RP Design",
-        "latest_revision": "1.0",
-        "commit_id": "a0fe019a3dc1c3b10567f82832208809cbe6f0ba",
+        "latest_revision": "2.0",
+        "commit_id": "c319a1e478d361b569fbfecba2e007fcfe590a1e",
         "revisions": [
           {
             "revision": "1.0",
             "commit_id": "a0fe019a3dc1c3b10567f82832208809cbe6f0ba",
             "date": "18-02-2025:06:49:48",
             "history": "Added board Versal MMI PCIe RP Design v1.0"
+          },
+          {
+            "revision": "2.0",
+            "commit_id": "c319a1e478d361b569fbfecba2e007fcfe590a1e",
+            "date": "13-10-2025:05:25:25",
+            "history": "Added board Versal MMI PCIe RP Design v2.0"
           }
         ],
         "config": {
@@ -745,14 +751,20 @@
       {
         "name": "Versal_MMI_DPDC_USB_designs",
         "display": "Versal MMI DPDC USB Designs",
-        "latest_revision": "1.0",
-        "commit_id": "a0fe019a3dc1c3b10567f82832208809cbe6f0ba",
+        "latest_revision": "2.0",
+        "commit_id": "c319a1e478d361b569fbfecba2e007fcfe590a1e",
         "revisions": [
           {
             "revision": "1.0",
             "commit_id": "a0fe019a3dc1c3b10567f82832208809cbe6f0ba",
             "date": "24-02-2025:06:34:54",
             "history": "Added board Versal MMI DPDC USB Designs v1.0"
+          },
+          {
+            "revision": "2.0",
+            "commit_id": "c319a1e478d361b569fbfecba2e007fcfe590a1e",
+            "date": "13-10-2025:05:25:25",
+            "history": "Added board Versal MMI DPDC USB Designs v2.0"
           }
         ],
         "config": {
