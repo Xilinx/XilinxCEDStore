@@ -103,7 +103,7 @@ proc create_hier_cell_rst_module { parentCell nameHier } {
   # Create instance: ctrl_smc, and set properties
   set_property -dict [list \
     CONFIG.NUM_CLKS {2} \
-    CONFIG.NUM_MI {15} \
+    CONFIG.NUM_MI {10} \
     CONFIG.NUM_SI {1} \
   ] [get_bd_cells ctrl_smc]
 
@@ -248,10 +248,10 @@ proc create_hier_cell_rst_module { parentCell nameHier } {
 
   # Create interface connections
   connect_bd_intf_net -intf_net ctrl_smc_M05_AXI [get_bd_intf_pins ctrl_smc/M05_AXI] [get_bd_intf_pins clkx5_wiz_0/s_axi_lite]
-  connect_bd_intf_net -intf_net ctrl_smc_M11_AXI [get_bd_intf_pins ctrl_smc/M11_AXI] [get_bd_intf_pins clkx5_wiz_1/s_axi_lite]
-  connect_bd_intf_net -intf_net ctrl_smc_M12_AXI [get_bd_intf_pins ctrl_smc/M12_AXI] [get_bd_intf_pins clk_wizard_enable/S_AXI]
-  connect_bd_intf_net -intf_net ctrl_smc_M13_AXI [get_bd_intf_pins ctrl_smc/M13_AXI] [get_bd_intf_pins Live_input_gpio/S_AXI]
-  connect_bd_intf_net -intf_net ctrl_smc_M14_AXI [get_bd_intf_pins ctrl_smc/M14_AXI] [get_bd_intf_pins rd_clk_wiz_status_gpio/S_AXI]
+  connect_bd_intf_net -intf_net ctrl_smc_M06_AXI [get_bd_intf_pins ctrl_smc/M06_AXI] [get_bd_intf_pins clkx5_wiz_1/s_axi_lite]
+  connect_bd_intf_net -intf_net ctrl_smc_M07_AXI [get_bd_intf_pins ctrl_smc/M07_AXI] [get_bd_intf_pins clk_wizard_enable/S_AXI]
+  connect_bd_intf_net -intf_net ctrl_smc_M08_AXI [get_bd_intf_pins ctrl_smc/M08_AXI] [get_bd_intf_pins Live_input_gpio/S_AXI]
+  connect_bd_intf_net -intf_net ctrl_smc_M09_AXI [get_bd_intf_pins ctrl_smc/M09_AXI] [get_bd_intf_pins rd_clk_wiz_status_gpio/S_AXI]
 
   # Create port connections
   connect_bd_net -net axi_gpio_3_gpio2_io_o  [get_bd_pins Live_input_gpio/gpio_io_o] \
