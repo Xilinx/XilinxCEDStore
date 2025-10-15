@@ -334,7 +334,7 @@ proc createDesign {design_name options} {
         puts $f "set_property -dict \[list CONFIG.PS_PMC_CONFIG(PMC_CRP_PL0_REF_CTRL_FREQMHZ) {125} \\"
         puts $f "  CONFIG.PS_PMC_CONFIG(PS_NUM_FABRIC_RESETS) {0} CONFIG.PS_PMC_CONFIG(PS_USE_PMCPL_CLK0) {1} \] \[get_bd_cells versal_cips_0\]"
       }
-    } elseif {$device eq "xc2ve3504" || $device eq "xc2ve3558" || $device eq "xc2ve3804" || $device eq "xc2ve3858" || $device eq "xc2vm3558" || $device eq "xc2vm3858" } {
+    } elseif {$device eq "xc2ve3504" || $device eq "xc2ve3558" || $device eq "xc2ve3804" || $device eq "xc2ve3858" || $device eq "xc2vm3558" || $device eq "xc2vm3858" || $device eq "xc2vm3358" || $device eq "xc2ve3304" } {
       create_bd_cell -type ip -vlnv xilinx.com:ip:ps_wizard:1.0 versal_cips_0
       set_property -dict [list \
         CONFIG.PS11_CONFIG(PMC_CRP_PL0_REF_CTRL_FREQMHZ) {125} \
