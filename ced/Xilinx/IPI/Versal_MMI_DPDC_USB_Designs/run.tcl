@@ -30,6 +30,9 @@ puts "INFO: Importing the golden_noc $file_name to the design!"
 import_files -fileset utils_1 $noc_ncr 
 set ncr_path [file join [get_property directory [current_project]] [current_project].srcs utils_1 imports golden_ncr]
 set_property NOC_SOLUTION_FILE $ncr_path/$file_name [get_runs impl_1]
+assign_bd_address
+validate_bd_design
+save_bd_design
 }
 if { ([lsearch $options "USB*"] != -1) } {
 source "$currentDir/USB/mmi_usb.tcl"
@@ -57,6 +60,8 @@ source "$currentDir/Mixed/mmi_dpdc_mixed.tcl"
 source "$currentDir/Non_Live/mmi_dpdc_nonlive.tcl"
 }
 }
+validate_bd_design
+save_bd_design
 set_property generate_synth_checkpoint true [get_files -norecurse *.bd]
 set_property synth_checkpoint_mode Hierarchical [get_files ${proj_dir}/${proj_name}.srcs/sources_1/bd/${design_name}/${design_name}.bd]
 generate_target all [get_files ${proj_dir}/${proj_name}.srcs/sources_1/bd/${design_name}/${design_name}.bd]
@@ -65,5 +70,4 @@ make_wrapper -files [get_files ${proj_dir}/${proj_name}.srcs/sources_1/bd/${desi
 add_files -norecurse ${proj_dir}/${proj_name}.srcs/sources_1/bd/${design_name}/hdl/${design_name}_wrapper.v
 update_compile_order -fileset sources_1
 update_compile_order -fileset sim_1
-save_bd_design
 }

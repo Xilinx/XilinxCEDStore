@@ -935,7 +935,7 @@ proc create_hier_cell_rst_module { parentCell nameHier } {
   set smartconnect_gp0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:smartconnect smartconnect_gp0 ]
   set_property -dict [list \
     CONFIG.NUM_CLKS {3} \
-    CONFIG.NUM_MI {5} \
+    CONFIG.NUM_MI {12} \
     CONFIG.NUM_SI {1} \
   ] $smartconnect_gp0
 
@@ -943,8 +943,8 @@ proc create_hier_cell_rst_module { parentCell nameHier } {
   # Create instance: ctrl_smc, and set properties
   set_property -dict [list \
     CONFIG.NUM_CLKS {2} \
-    CONFIG.NUM_MI {18} \
-    CONFIG.NUM_SI {2} \
+    CONFIG.NUM_MI {11} \
+    CONFIG.NUM_SI {1} \
   ] [get_bd_cells ctrl_smc]
 
 
@@ -1028,23 +1028,32 @@ proc create_hier_cell_rst_module { parentCell nameHier } {
   create_hier_cell_avtpg_s3 [current_bd_instance .] avtpg_s3
 
   # Create interface connections
-  connect_bd_intf_net -intf_net ctrl_smc_M06_AXI [get_bd_intf_pins ctrl_smc/M06_AXI] [get_bd_intf_pins avtpg_s0/av_axi]
-  connect_bd_intf_net -intf_net ctrl_smc_M07_AXI [get_bd_intf_pins ctrl_smc/M07_AXI] [get_bd_intf_pins avtpg_s0/ctrl]
-  connect_bd_intf_net -intf_net ctrl_smc_M08_AXI [get_bd_intf_pins ctrl_smc/M08_AXI] [get_bd_intf_pins avtpg_s0/s_axi_ctrl]
-  connect_bd_intf_net -intf_net ctrl_smc_M09_AXI1 [get_bd_intf_pins ctrl_smc/M09_AXI] [get_bd_intf_pins avtpg_s3/av_axi]
-  connect_bd_intf_net -intf_net ctrl_smc_M10_AXI [get_bd_intf_pins ctrl_smc/M10_AXI] [get_bd_intf_pins avtpg_s1/av_axi]
-  connect_bd_intf_net -intf_net ctrl_smc_M11_AXI [get_bd_intf_pins ctrl_smc/M11_AXI] [get_bd_intf_pins avtpg_s1/ctrl]
-  connect_bd_intf_net -intf_net ctrl_smc_M12_AXI [get_bd_intf_pins ctrl_smc/M12_AXI] [get_bd_intf_pins avtpg_s1/s_axi_ctrl]
-  connect_bd_intf_net -intf_net ctrl_smc_M13_AXI1 [get_bd_intf_pins ctrl_smc/M13_AXI] [get_bd_intf_pins avtpg_s3/ctrl]
-  connect_bd_intf_net -intf_net ctrl_smc_M14_AXI [get_bd_intf_pins ctrl_smc/M14_AXI] [get_bd_intf_pins avtpg_s2/av_axi]
-  connect_bd_intf_net -intf_net ctrl_smc_M15_AXI [get_bd_intf_pins ctrl_smc/M15_AXI] [get_bd_intf_pins avtpg_s2/ctrl]
-  connect_bd_intf_net -intf_net ctrl_smc_M16_AXI [get_bd_intf_pins ctrl_smc/M16_AXI] [get_bd_intf_pins avtpg_s2/s_axi_ctrl]
-  connect_bd_intf_net -intf_net ctrl_smc_M17_AXI1 [get_bd_intf_pins ctrl_smc/M17_AXI] [get_bd_intf_pins avtpg_s3/s_axi_ctrl]
-  connect_bd_intf_net -intf_net smartconnect_gp0_M00_AXI [get_bd_intf_pins smartconnect_gp0/M00_AXI] [get_bd_intf_pins ctrl_smc/S01_AXI]
-  connect_bd_intf_net -intf_net smartconnect_gp0_M01_AXI [get_bd_intf_pins smartconnect_gp0/M01_AXI] [get_bd_intf_pins clkx5_wiz_1/s_axi_lite]
-  connect_bd_intf_net -intf_net smartconnect_gp0_M02_AXI [get_bd_intf_pins smartconnect_gp0/M02_AXI] [get_bd_intf_pins Live_input_gpio/S_AXI]
-  connect_bd_intf_net -intf_net smartconnect_gp0_M03_AXI [get_bd_intf_pins smartconnect_gp0/M03_AXI] [get_bd_intf_pins rd_clk_wiz_status_gpio/S_AXI]
-  connect_bd_intf_net -intf_net smartconnect_gp0_M04_AXI [get_bd_intf_pins smartconnect_gp0/M04_AXI] [get_bd_intf_pins clk_wizard_enable/S_AXI]
+
+  connect_bd_intf_net -intf_net avtpg_s0_sdp01 [get_bd_intf_pins ps_wizard_0/sdp_sdp0] [get_bd_intf_pins avtpg_s0/sdp01]
+  connect_bd_intf_net -intf_net avtpg_s0_vid_intf [get_bd_intf_pins ps_wizard_0/video_s0] [get_bd_intf_pins avtpg_s0/vid_intf]
+  connect_bd_intf_net -intf_net avtpg_s1_sdp01 [get_bd_intf_pins ps_wizard_0/sdp_sdp1] [get_bd_intf_pins avtpg_s1/sdp01]
+  connect_bd_intf_net -intf_net avtpg_s1_vid_intf [get_bd_intf_pins ps_wizard_0/video_s1] [get_bd_intf_pins avtpg_s1/vid_intf]
+  connect_bd_intf_net -intf_net avtpg_s2_sdp01 [get_bd_intf_pins ps_wizard_0/sdp_sdp2] [get_bd_intf_pins avtpg_s2/sdp01]
+  connect_bd_intf_net -intf_net avtpg_s2_vid_intf [get_bd_intf_pins ps_wizard_0/video_s2] [get_bd_intf_pins avtpg_s2/vid_intf]
+  connect_bd_intf_net -intf_net avtpg_s3_sdp01 [get_bd_intf_pins ps_wizard_0/sdp_sdp3] [get_bd_intf_pins avtpg_s3/sdp01]
+  connect_bd_intf_net -intf_net avtpg_s3_vid_intf [get_bd_intf_pins ps_wizard_0/video_s3] [get_bd_intf_pins avtpg_s3/vid_intf]
+  connect_bd_intf_net -intf_net ctrl_smc_M06_AXI [get_bd_intf_pins ctrl_smc/M06_AXI] [get_bd_intf_pins clkx5_wiz_1/s_axi_lite]
+  connect_bd_intf_net -intf_net ctrl_smc_M07_AXI [get_bd_intf_pins ctrl_smc/M07_AXI] [get_bd_intf_pins Live_input_gpio/S_AXI]
+  connect_bd_intf_net -intf_net ctrl_smc_M08_AXI [get_bd_intf_pins ctrl_smc/M08_AXI] [get_bd_intf_pins rd_clk_wiz_status_gpio/S_AXI]
+  connect_bd_intf_net -intf_net ctrl_smc_M09_AXI [get_bd_intf_pins ctrl_smc/M09_AXI] [get_bd_intf_pins clk_wizard_enable/S_AXI]
+  connect_bd_intf_net -intf_net ctrl_smc_M10_AXI [get_bd_intf_pins ctrl_smc/M10_AXI] [get_bd_intf_pins smartconnect_gp0/S00_AXI]
+  connect_bd_intf_net -intf_net smartconnect_gp0_M00_AXI [get_bd_intf_pins smartconnect_gp0/M00_AXI] [get_bd_intf_pins avtpg_s0/av_axi]
+  connect_bd_intf_net -intf_net smartconnect_gp0_M01_AXI [get_bd_intf_pins smartconnect_gp0/M01_AXI] [get_bd_intf_pins avtpg_s0/ctrl]
+  connect_bd_intf_net -intf_net smartconnect_gp0_M02_AXI [get_bd_intf_pins smartconnect_gp0/M02_AXI] [get_bd_intf_pins avtpg_s0/s_axi_ctrl]
+  connect_bd_intf_net -intf_net smartconnect_gp0_M03_AXI [get_bd_intf_pins smartconnect_gp0/M03_AXI] [get_bd_intf_pins avtpg_s3/av_axi]
+  connect_bd_intf_net -intf_net smartconnect_gp0_M04_AXI [get_bd_intf_pins smartconnect_gp0/M04_AXI] [get_bd_intf_pins avtpg_s1/av_axi]
+  connect_bd_intf_net -intf_net smartconnect_gp0_M05_AXI [get_bd_intf_pins smartconnect_gp0/M05_AXI] [get_bd_intf_pins avtpg_s1/ctrl]
+  connect_bd_intf_net -intf_net smartconnect_gp0_M06_AXI [get_bd_intf_pins smartconnect_gp0/M06_AXI] [get_bd_intf_pins avtpg_s1/s_axi_ctrl]
+  connect_bd_intf_net -intf_net smartconnect_gp0_M07_AXI [get_bd_intf_pins smartconnect_gp0/M07_AXI] [get_bd_intf_pins avtpg_s3/ctrl]
+  connect_bd_intf_net -intf_net smartconnect_gp0_M08_AXI [get_bd_intf_pins smartconnect_gp0/M08_AXI] [get_bd_intf_pins avtpg_s2/av_axi]
+  connect_bd_intf_net -intf_net smartconnect_gp0_M09_AXI [get_bd_intf_pins smartconnect_gp0/M09_AXI] [get_bd_intf_pins avtpg_s2/ctrl]
+  connect_bd_intf_net -intf_net smartconnect_gp0_M10_AXI [get_bd_intf_pins smartconnect_gp0/M10_AXI] [get_bd_intf_pins avtpg_s2/s_axi_ctrl]
+  connect_bd_intf_net -intf_net smartconnect_gp0_M11_AXI [get_bd_intf_pins smartconnect_gp0/M11_AXI] [get_bd_intf_pins avtpg_s3/s_axi_ctrl]
 
   # Create port connections
   connect_bd_net -net TPG_GEN_EN_1  [get_bd_pins Live_input_gpio/gpio_io_o] \
@@ -1116,7 +1125,7 @@ proc create_hier_cell_rst_module { parentCell nameHier } {
   [get_bd_pins ilslice_8/Din]
   connect_bd_net -net ps_wizard_0_pl0_ref_clk  [get_bd_pins ps_wizard_0/pl0_ref_clk] \
   [get_bd_pins clk_wizard_0/clk_in1]
-  connect_bd_net [get_bd_pins clk_wizard_0/clk_out1][get_bd_pins clkx5_wiz_0/clk_in1] \
+  connect_bd_net [get_bd_pins clk_wizard_0/clk_out1] [get_bd_pins clkx5_wiz_0/clk_in1] \
   [get_bd_pins clkx5_wiz_1/clk_in1] \
   [get_bd_pins clkx5_wiz_1/ref_clk] \
   [get_bd_pins clkx5_wiz_1/s_axi_aclk] \
@@ -1163,10 +1172,8 @@ proc create_hier_cell_rst_module { parentCell nameHier } {
   [get_bd_pins avtpg_s0/vid_clk] \
   [get_bd_pins rd_clk_wiz_status_gpio/s_axi_aclk] \
   [get_bd_pins avtpg_s2/vid_clk] \
-  [get_bd_pins ps_wizard_0/fpd_axi_pl_aclk] \
   [get_bd_pins rst_module/slowest_sync_clk3] \
   [get_bd_pins smartconnect_gp0/aclk] \
-  [get_bd_pins ctrl_smc/aclk] \
   [get_bd_pins avtpg_s1/av_axi_aclk] \
   [get_bd_pins avtpg_s3/av_axi_aclk] \
   [get_bd_pins avtpg_s0/av_axi_aclk] \
@@ -1211,6 +1218,7 @@ proc create_hier_cell_rst_module { parentCell nameHier } {
   [get_bd_pins axi_gpio_0/s_axi_aresetn] \
   [get_bd_pins axi_bram_ctrl_0/s_axi_aresetn] \
   [get_bd_pins ctrl_smc/aresetn] \
+  [get_bd_pins smartconnect_gp0/aresetn]
   connect_bd_net [get_bd_pins rst_module/peripheral_aresetn1] [get_bd_pins avtpg_s1/s_axis_aud_aresetn] \
   [get_bd_pins avtpg_s3/s_axis_aud_aresetn] \
   [get_bd_pins avtpg_s0/s_axis_aud_aresetn] \
@@ -1631,4 +1639,4 @@ proc create_hier_cell_rst_module { parentCell nameHier } {
   assign_bd_address -offset 0xB0480000 -range 0x00010000 -with_name SEG_v_tc_0_Reg_3 -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_ppu_0] [get_bd_addr_segs avtpg_s2/v_tc_0/ctrl/Reg] -force
 
   # Exclude Address Segments
-  exclude_bd_addr_seg
+  exclude_bd_addr_seg 
