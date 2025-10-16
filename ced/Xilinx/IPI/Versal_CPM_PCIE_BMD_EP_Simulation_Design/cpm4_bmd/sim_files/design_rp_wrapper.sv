@@ -57,7 +57,7 @@
 `timescale 1ps / 1ps
 
 module design_rp_wrapper # (
-  parameter PCIE_CTRL_MODE                      = 1,        // 0 - PCIE0(x16), 1 - PCIE0+2(x8x8) -- Add more when other configuration is supported
+ 
   parameter C_DATA_WIDTH                        = 512,     //512, // RX/TX interface data width
 
   parameter        PL_LINK_CAP_MAX_LINK_SPEED   = 16,//4,   // 1- GEN1, 2 - GEN2, 4 - GEN3, 8 - GEN4. 16 - GEN5
@@ -103,50 +103,49 @@ module design_rp_wrapper # (
   wire user_reset_n;
   wire user_reset = !user_reset_n;
 
-  // NOTE: All wire declarations are now expanded with an array of [3:0]
-  //       to support up to 4 controllers.
-  wire user_lnk_up[3:0];
+  
+  wire user_lnk_up;
   //----------------------------------------------------//
   // 3. AXI Interface                                   //
   //----------------------------------------------------//
-  wire                           s_axis_rq_tlast[3:0];
-  wire     [C_DATA_WIDTH-1:0]    s_axis_rq_tdata[3:0];
-  wire [AXI4_RQ_TUSER_WIDTH-1:0] s_axis_rq_tuser[3:0];
-  wire       [KEEP_WIDTH-1:0]    s_axis_rq_tkeep[3:0];
-  wire                           s_axis_rq_tready[3:0];
-  wire                           s_axis_rq_tvalid[3:0];
+  wire                           s_axis_rq_tlast;
+  wire     [C_DATA_WIDTH-1:0]    s_axis_rq_tdata;
+  wire [AXI4_RQ_TUSER_WIDTH-1:0] s_axis_rq_tuser;
+  wire       [KEEP_WIDTH-1:0]    s_axis_rq_tkeep;
+  wire                           s_axis_rq_tready;
+  wire                           s_axis_rq_tvalid;
 
-  wire     [C_DATA_WIDTH-1:0]    m_axis_rc_tdata[3:0];
-  wire [AXI4_RC_TUSER_WIDTH-1:0] m_axis_rc_tuser[3:0];
-  wire                           m_axis_rc_tlast[3:0];
-  wire       [KEEP_WIDTH-1:0]    m_axis_rc_tkeep[3:0];
-  wire                           m_axis_rc_tvalid[3:0];
-  wire                           m_axis_rc_tready[3:0];
+  wire     [C_DATA_WIDTH-1:0]    m_axis_rc_tdata;
+  wire [AXI4_RC_TUSER_WIDTH-1:0] m_axis_rc_tuser;
+  wire                           m_axis_rc_tlast;
+  wire       [KEEP_WIDTH-1:0]    m_axis_rc_tkeep;
+  wire                           m_axis_rc_tvalid;
+  wire                           m_axis_rc_tready;
 
-  wire     [C_DATA_WIDTH-1:0]    m_axis_cq_tdata[3:0];
-  wire [AXI4_CQ_TUSER_WIDTH-1:0] m_axis_cq_tuser[3:0];
-  wire                           m_axis_cq_tlast[3:0];
-  wire       [KEEP_WIDTH-1:0]    m_axis_cq_tkeep[3:0];
-  wire                           m_axis_cq_tvalid[3:0];
-  wire                           m_axis_cq_tready[3:0];
+  wire     [C_DATA_WIDTH-1:0]    m_axis_cq_tdata;
+  wire [AXI4_CQ_TUSER_WIDTH-1:0] m_axis_cq_tuser;
+  wire                           m_axis_cq_tlast;
+  wire       [KEEP_WIDTH-1:0]    m_axis_cq_tkeep;
+  wire                           m_axis_cq_tvalid;
+  wire                           m_axis_cq_tready;
 
-  wire     [C_DATA_WIDTH-1:0]    s_axis_cc_tdata[3:0];
-  wire [AXI4_CC_TUSER_WIDTH-1:0] s_axis_cc_tuser[3:0];
-  wire                           s_axis_cc_tlast[3:0];
-  wire       [KEEP_WIDTH-1:0]    s_axis_cc_tkeep[3:0];
-  wire                           s_axis_cc_tvalid[3:0];
-  wire                           s_axis_cc_tready[3:0];
+  wire     [C_DATA_WIDTH-1:0]    s_axis_cc_tdata;
+  wire [AXI4_CC_TUSER_WIDTH-1:0] s_axis_cc_tuser;
+  wire                           s_axis_cc_tlast;
+  wire       [KEEP_WIDTH-1:0]    s_axis_cc_tkeep;
+  wire                           s_axis_cc_tvalid;
+  wire                           s_axis_cc_tready;
 
-  wire [3:0] pcie_tfc_nph_av[3:0];
-  wire [3:0] pcie_tfc_npd_av[3:0];
-  wire [3:0] pcie_rq_seq_num[3:0];
-  wire       pcie_rq_seq_num_vld[3:0];
-  wire [5:0] pcie_rq_tag[3:0];
-  wire       pcie_rq_tag_vld[3:0];
-  wire [1:0] pcie_rq_tag_av[3:0];
+  wire [3:0] pcie_tfc_nph_av;
+  wire [3:0] pcie_tfc_npd_av;
+  wire [3:0] pcie_rq_seq_num;
+  wire       pcie_rq_seq_num_vld;
+  wire [5:0] pcie_rq_tag;
+  wire       pcie_rq_tag_vld;
+  wire [1:0] pcie_rq_tag_av;
 
-  wire       pcie_cq_np_req[3:0];
-  wire [5:0] pcie_cq_np_req_count[3:0];
+  wire       pcie_cq_np_req;
+  wire [5:0] pcie_cq_np_req_count;
 
   //---------------------------------------------------//
   // 4. Configuration (CFG) Interface                  //
@@ -156,90 +155,90 @@ module design_rp_wrapper # (
   // EP and RP                                         //
   //---------------------------------------------------//
 
-  wire         cfg_phy_link_down[3:0];
-  wire  [1:0]  cfg_phy_link_status[3:0];
-  wire  [2:0]  cfg_negotiated_width[3:0];
-  wire  [1:0]  cfg_current_speed[3:0];
-  wire  [1:0]  cfg_max_payload[3:0];
-  wire  [2:0]  cfg_max_read_req[3:0];
-  wire [15:0]  cfg_function_status[3:0];
-  wire [11:0]  cfg_function_power_state[3:0];
-  wire [503:0] cfg_vf_status[3:0];
-  wire [755:0] cfg_vf_power_state[3:0];
-  wire  [1:0]  cfg_link_power_state[3:0];
+  wire         cfg_phy_link_down;
+  wire  [1:0]  cfg_phy_link_status;
+  wire  [2:0]  cfg_negotiated_width;
+  wire  [1:0]  cfg_current_speed;
+  wire  [1:0]  cfg_max_payload;
+  wire  [2:0]  cfg_max_read_req;
+  wire [15:0]  cfg_function_status;
+  wire [11:0]  cfg_function_power_state;
+  wire [503:0] cfg_vf_status;
+  wire [755:0] cfg_vf_power_state;
+  wire  [1:0]  cfg_link_power_state;
 
   // Management Interface
-  wire  [9:0] cfg_mgmt_addr[3:0];
-  wire        cfg_mgmt_write[3:0];
-  wire [31:0] cfg_mgmt_write_data[3:0];
-  wire  [3:0] cfg_mgmt_byte_enable[3:0];
-  wire        cfg_mgmt_read[3:0];
-  wire [31:0] cfg_mgmt_read_data[3:0];
-  wire        cfg_mgmt_read_write_done[3:0];
-  wire        cfg_mgmt_type1_cfg_reg_access[3:0];
+  wire  [9:0] cfg_mgmt_addr;
+  wire        cfg_mgmt_write;
+  wire [31:0] cfg_mgmt_write_data;
+  wire  [3:0] cfg_mgmt_byte_enable;
+  wire        cfg_mgmt_read;
+  wire [31:0] cfg_mgmt_read_data;
+  wire        cfg_mgmt_read_write_done;
+  wire        cfg_mgmt_type1_cfg_reg_access;
 
   // Error Reporting Interface
-  wire cfg_err_cor_out[3:0];
-  wire cfg_err_nonfatal_out[3:0];
-  wire cfg_err_fatal_out[3:0];
-  wire cfg_local_error[3:0];
+  wire cfg_err_cor_out;
+  wire cfg_err_nonfatal_out;
+  wire cfg_err_fatal_out;
+  wire cfg_local_error;
 
-  wire [5:0] cfg_ltssm_state[3:0];
-  wire [3:0] cfg_rcb_status[3:0];
-  wire [3:0] cfg_dpa_substate_change[3:0];
-  wire [1:0] cfg_obff_enable[3:0];
-  wire       cfg_pl_status_change[3:0];
+  wire [5:0] cfg_ltssm_state;
+  wire [3:0] cfg_rcb_status;
+  wire [3:0] cfg_dpa_substate_change;
+  wire [1:0] cfg_obff_enable;
+  wire       cfg_pl_status_change;
 
-  wire  [3:0]   cfg_tph_requester_enable[3:0];
-  wire [11:0]   cfg_tph_st_mode[3:0];
-  wire [251:0]  cfg_vf_tph_requester_enable[3:0];
-  wire [755:0]  cfg_vf_tph_st_mode[3:0];
+  wire  [3:0]   cfg_tph_requester_enable;
+  wire [11:0]   cfg_tph_st_mode;
+  wire [251:0]  cfg_vf_tph_requester_enable;
+  wire [755:0]  cfg_vf_tph_st_mode;
 
-  wire         cfg_msg_received[3:0];
-  wire  [7:0]  cfg_msg_received_data[3:0];
-  wire  [4:0]  cfg_msg_received_type[3:0];
+  wire         cfg_msg_received;
+  wire  [7:0]  cfg_msg_received_data;
+  wire  [4:0]  cfg_msg_received_type;
 
-  wire         cfg_msg_transmit[3:0];
-  wire  [2:0]  cfg_msg_transmit_type[3:0];
-  wire [31:0]  cfg_msg_transmit_data[3:0];
-  wire         cfg_msg_transmit_done[3:0];
+  wire         cfg_msg_transmit;
+  wire  [2:0]  cfg_msg_transmit_type;
+  wire [31:0]  cfg_msg_transmit_data;
+  wire         cfg_msg_transmit_done;
 
-  wire  [7:0]  cfg_fc_ph[3:0];
-  wire [11:0]  cfg_fc_pd[3:0];
-  wire  [7:0]  cfg_fc_nph[3:0];
-  wire [11:0]  cfg_fc_npd[3:0];
-  wire  [7:0]  cfg_fc_cplh[3:0];
-  wire [11:0]  cfg_fc_cpld[3:0];
-  wire  [2:0]  cfg_fc_sel[3:0];
+  wire  [7:0]  cfg_fc_ph;
+  wire [11:0]  cfg_fc_pd;
+  wire  [7:0]  cfg_fc_nph;
+  wire [11:0]  cfg_fc_npd;
+  wire  [7:0]  cfg_fc_cplh;
+  wire [11:0]  cfg_fc_cpld;
+  wire  [2:0]  cfg_fc_sel;
 
-  wire  [2:0]  cfg_per_func_status_control[3:0];
-  wire [15:0]  cfg_per_func_status_data[3:0];
-  wire  [2:0]  cfg_per_function_number[3:0];
-  wire         cfg_per_function_output_request[3:0];
-  wire         cfg_per_function_update_done[3:0];
+  wire  [2:0]  cfg_per_func_status_control;
+  wire [15:0]  cfg_per_func_status_data;
+  wire  [2:0]  cfg_per_function_number;
+  wire         cfg_per_function_output_request;
+  wire         cfg_per_function_update_done;
 
-  wire [63:0]  cfg_dsn[3:0];
-  wire cfg_power_state_change_ack[3:0];
-  wire cfg_power_state_change_interrupt[3:0];
-  wire cfg_err_cor_in[3:0];
-  wire cfg_err_uncor_in[3:0];
+  wire [63:0]  cfg_dsn;
+  wire cfg_power_state_change_ack;
+  wire cfg_power_state_change_interrupt;
+  wire cfg_err_cor_in;
+  wire cfg_err_uncor_in;
 
-  wire  [3:0]    cfg_flr_in_process[3:0];
-  wire  [1:0]    cfg_flr_done[3:0];
-  wire  [251:0]  cfg_vf_flr_in_process[3:0];
-  wire           cfg_vf_flr_done[3:0];
+  wire  [3:0]    cfg_flr_in_process;
+  wire  [1:0]    cfg_flr_done;
+  wire  [251:0]  cfg_vf_flr_in_process;
+  wire           cfg_vf_flr_done;
 
-  wire        cfg_link_training_enable[3:0];
-  wire  [7:0] cfg_ds_port_number[3:0];
+  wire        cfg_link_training_enable;
+  wire  [7:0] cfg_ds_port_number;
 
-  wire        cfg_ext_read_received[3:0];
-  wire        cfg_ext_write_received[3:0];
-  wire  [9:0] cfg_ext_register_number[3:0];
-  wire  [7:0] cfg_ext_function_number[3:0];
-  wire [31:0] cfg_ext_write_data[3:0];
-  wire  [3:0] cfg_ext_write_byte_enable[3:0];
-  wire [31:0] cfg_ext_read_data[3:0];
-  wire        cfg_ext_read_data_valid[3:0];
+  wire        cfg_ext_read_received;
+  wire        cfg_ext_write_received;
+  wire  [9:0] cfg_ext_register_number;
+  wire  [7:0] cfg_ext_function_number;
+  wire [31:0] cfg_ext_write_data;
+  wire  [3:0] cfg_ext_write_byte_enable;
+  wire [31:0] cfg_ext_read_data;
+  wire        cfg_ext_read_data_valid;
 
 
   //-----------------------------------------//
@@ -247,86 +246,74 @@ module design_rp_wrapper # (
   //-----------------------------------------//
 
   // Interrupt Interface Signals
-  wire  [3:0] cfg_interrupt_int[3:0];
-  wire  [1:0] cfg_interrupt_pending[3:0];
-  wire        cfg_interrupt_sent[3:0];
+  wire  [3:0] cfg_interrupt_int;
+  wire  [1:0] cfg_interrupt_pending;
+  wire        cfg_interrupt_sent;
 
-  wire  [3:0] cfg_interrupt_msi_enable[3:0];
-  wire  [7:0] cfg_interrupt_msi_vf_enable[3:0];
-  wire [11:0] cfg_interrupt_msi_mmenable[3:0];
-  wire        cfg_interrupt_msi_mask_update[3:0];
-  wire [31:0] cfg_interrupt_msi_data[3:0];
-  wire  [3:0] cfg_interrupt_msi_select[3:0];
-  wire [31:0] cfg_interrupt_msi_int[3:0];
-  wire [63:0] cfg_interrupt_msi_pending_status[3:0];
-  wire        cfg_interrupt_msi_sent[3:0];
-  wire        cfg_interrupt_msi_fail[3:0];
-  wire  [2:0] cfg_interrupt_msi_attr[3:0];
-  wire        cfg_interrupt_msi_tph_present[3:0];
-  wire  [1:0] cfg_interrupt_msi_tph_type[3:0];
-  wire  [7:0] cfg_interrupt_msi_tph_st_tag[3:0];
-  wire  [2:0] cfg_interrupt_msi_function_number[3:0];
-  wire        cfg_interrupt_msi_pending_status_data_enable[3:0];
-  wire  [3:0] cfg_interrupt_msi_pending_status_function_num[3:0];
+  wire  [3:0] cfg_interrupt_msi_enable;
+  wire  [7:0] cfg_interrupt_msi_vf_enable;
+  wire [11:0] cfg_interrupt_msi_mmenable;
+  wire        cfg_interrupt_msi_mask_update;
+  wire [31:0] cfg_interrupt_msi_data;
+  wire  [3:0] cfg_interrupt_msi_select;
+  wire [31:0] cfg_interrupt_msi_int;
+  wire [63:0] cfg_interrupt_msi_pending_status;
+  wire        cfg_interrupt_msi_sent;
+  wire        cfg_interrupt_msi_fail;
+  wire  [2:0] cfg_interrupt_msi_attr;
+  wire        cfg_interrupt_msi_tph_present;
+  wire  [1:0] cfg_interrupt_msi_tph_type;
+  wire  [7:0] cfg_interrupt_msi_tph_st_tag;
+  wire  [2:0] cfg_interrupt_msi_function_number;
+  wire        cfg_interrupt_msi_pending_status_data_enable;
+  wire  [3:0] cfg_interrupt_msi_pending_status_function_num;
 
 
 // EP only
-  wire cfg_hot_reset_out[3:0];
-  wire cfg_config_space_enable[3:0];
-  wire cfg_req_pm_transition_l23_ready[3:0];
+  wire cfg_hot_reset_out;
+  wire cfg_config_space_enable;
+  wire cfg_req_pm_transition_l23_ready;
 
 // RP only
-  wire cfg_hot_reset_in[3:0];
+  wire cfg_hot_reset_in;
 
-  wire [7:0]    cfg_ds_bus_number[3:0];
-  wire [4:0]    cfg_ds_device_number[3:0];
+  wire [7:0]    cfg_ds_bus_number;
+  wire [4:0]    cfg_ds_device_number;
 
-  wire [15:0]  cfg_vend_id[3:0];
+  wire [15:0]  cfg_vend_id;
 
-  wire [15:0]  cfg_dev_id[3:0];
-  wire [15:0]  cfg_subsys_id[3:0];
-  wire [7:0]   cfg_rev_id[3:0];
-  wire [15:0]  cfg_subsys_vend_id[3:0];
+  wire [15:0]  cfg_dev_id;
+  wire [15:0]  cfg_subsys_id;
+  wire [7:0]   cfg_rev_id;
+  wire [15:0]  cfg_subsys_vend_id;
   
-// NOTE: Assign all controllers to same IDs.
-//       Edit this section if they're required to be different.
-genvar ids;
-generate
-for (ids = 0; ids < 4; ids++) begin: ctrl_pcie_ids
-  assign cfg_vend_id[ids]        = 16'h10EE; //16'h10EE;
 
-  assign cfg_dev_id[ids]         = 16'hB03F; //16'h903F;
-  assign cfg_subsys_id[ids]      = 16'h0007; //16'h0007;
-  assign cfg_rev_id[ids]         = 8'h00;    //8'h00;
-  assign cfg_subsys_vend_id[ids] = 16'h10EE; //16'h10EE;
-end
-endgenerate
+  assign cfg_vend_id        = 16'h10EE; //16'h10EE;
 
-// NOTE: Generate Tie-Off on Unused Signals
-//       Edit this section if they're required to be different.
-generate
-for (ids = 0; ids < 4; ids++) begin: ctrl_tie_offs
-  assign cfg_interrupt_msi_int[ids] = 32'b0;
-  assign cfg_interrupt_msi_attr[ids] = 3'b0;
-  assign cfg_interrupt_msi_select[ids] = 4'b0;
-  assign cfg_interrupt_msi_tph_type[ids] = 2'b0;
-  assign cfg_interrupt_msi_tph_present[ids] = 1'b0;
-  assign cfg_interrupt_msi_tph_st_tag[ids] = 8'h00;
-  assign cfg_interrupt_msi_pending_status[ids] = 64'b0;
-  assign cfg_interrupt_msi_function_number[ids] = 3'b0;
+  assign cfg_dev_id        = 16'hB03F; //16'h903F;
+  assign cfg_subsys_id      = 16'h0007; //16'h0007;
+  assign cfg_rev_id         = 8'h00;    //8'h00;
+  assign cfg_subsys_vend_id = 16'h10EE; //16'h10EE;
 
-  assign cfg_ext_read_data[ids] = 'h0;
-  assign cfg_ext_read_data_valid[ids] = 'h0;
+  assign cfg_interrupt_msi_int = 32'b0;
+  assign cfg_interrupt_msi_attr = 3'b0;
+  assign cfg_interrupt_msi_select = 4'b0;
+  assign cfg_interrupt_msi_tph_type = 2'b0;
+  assign cfg_interrupt_msi_tph_present = 1'b0;
+  assign cfg_interrupt_msi_tph_st_tag = 8'h00;
+  assign cfg_interrupt_msi_pending_status = 64'b0;
+  assign cfg_interrupt_msi_function_number = 3'b0;
 
-  assign user_lnk_up[ids] = (cfg_phy_link_status[ids] == 'h3) ? 1'b1 : 1'b0;
-end
-endgenerate
+  assign cfg_ext_read_data = 'h0;
+  assign cfg_ext_read_data_valid = 'h0;
+
+  assign user_lnk_up = (cfg_phy_link_status == 'h3) ? 1'b1 : 1'b0;
+
 
   //--------------------------------------------------------------------------------------------------------------------//
   // Instantiate Root Port wrapper
-  //--------------------------------------------------------------------------------------------------------------------//
-generate
-if (PCIE_CTRL_MODE == 0) begin : Single_CTRL // CTRL 0 x16
+//  //--------------------------------------------------------------------------------------------------------------------//
+
   // Core Top Level Wrapper
   design_rp design_rp_i (
 
@@ -350,370 +337,117 @@ if (PCIE_CTRL_MODE == 0) begin : Single_CTRL // CTRL 0 x16
     //------------------------------------------//
     //  AXI Interface                           //
     //------------------------------------------//
-    .pcie0_s_axis_rq_0_tlast (s_axis_rq_tlast[0]),
-    .pcie0_s_axis_rq_0_tdata (s_axis_rq_tdata[0]),
-    .pcie0_s_axis_rq_0_tuser (s_axis_rq_tuser[0]),
-    .pcie0_s_axis_rq_0_tkeep (s_axis_rq_tkeep[0]),
-    .pcie0_s_axis_rq_0_tready(s_axis_rq_tready[0]),
-    .pcie0_s_axis_rq_0_tvalid(s_axis_rq_tvalid[0]),
+    .pcie0_s_axis_rq_0_tlast (s_axis_rq_tlast),
+    .pcie0_s_axis_rq_0_tdata (s_axis_rq_tdata),
+    .pcie0_s_axis_rq_0_tuser (s_axis_rq_tuser),
+    .pcie0_s_axis_rq_0_tkeep (s_axis_rq_tkeep),
+    .pcie0_s_axis_rq_0_tready(s_axis_rq_tready),
+    .pcie0_s_axis_rq_0_tvalid(s_axis_rq_tvalid),
 
-    .pcie0_m_axis_rc_0_tdata (m_axis_rc_tdata[0]),
-    .pcie0_m_axis_rc_0_tuser (m_axis_rc_tuser[0]),
-    .pcie0_m_axis_rc_0_tlast (m_axis_rc_tlast[0]),
-    .pcie0_m_axis_rc_0_tkeep (m_axis_rc_tkeep[0]),
-    .pcie0_m_axis_rc_0_tvalid(m_axis_rc_tvalid[0]),
-    .pcie0_m_axis_rc_0_tready(m_axis_rc_tready[0]),
+    .pcie0_m_axis_rc_0_tdata (m_axis_rc_tdata),
+    .pcie0_m_axis_rc_0_tuser (m_axis_rc_tuser),
+    .pcie0_m_axis_rc_0_tlast (m_axis_rc_tlast),
+    .pcie0_m_axis_rc_0_tkeep (m_axis_rc_tkeep),
+    .pcie0_m_axis_rc_0_tvalid(m_axis_rc_tvalid),
+    .pcie0_m_axis_rc_0_tready(m_axis_rc_tready),
 
 
-    .pcie0_m_axis_cq_0_tdata (m_axis_cq_tdata[0]),
-    .pcie0_m_axis_cq_0_tuser (m_axis_cq_tuser[0]),
-    .pcie0_m_axis_cq_0_tlast (m_axis_cq_tlast[0]),
-    .pcie0_m_axis_cq_0_tkeep (m_axis_cq_tkeep[0]),
-    .pcie0_m_axis_cq_0_tvalid(m_axis_cq_tvalid[0]),
-    .pcie0_m_axis_cq_0_tready(m_axis_cq_tready[0]),
+    .pcie0_m_axis_cq_0_tdata (m_axis_cq_tdata),
+    .pcie0_m_axis_cq_0_tuser (m_axis_cq_tuser),
+    .pcie0_m_axis_cq_0_tlast (m_axis_cq_tlast),
+    .pcie0_m_axis_cq_0_tkeep (m_axis_cq_tkeep),
+    .pcie0_m_axis_cq_0_tvalid(m_axis_cq_tvalid),
+    .pcie0_m_axis_cq_0_tready(m_axis_cq_tready),
 
-    .pcie0_s_axis_cc_0_tdata (s_axis_cc_tdata[0]),
-    .pcie0_s_axis_cc_0_tuser (s_axis_cc_tuser[0]),
-    .pcie0_s_axis_cc_0_tlast (s_axis_cc_tlast[0]),
-    .pcie0_s_axis_cc_0_tkeep (s_axis_cc_tkeep[0]),
-    .pcie0_s_axis_cc_0_tvalid(s_axis_cc_tvalid[0]),
-    .pcie0_s_axis_cc_0_tready(s_axis_cc_tready[0]),
-
-    //----------------------------------------//
-    //  Configuration (CFG) Interface         //
-    //----------------------------------------//
-
-    .pcie0_cfg_status_0_cq_np_req       ({1'b0,pcie_cq_np_req[0]}),
-    .pcie0_cfg_status_0_cq_np_req_count (pcie_cq_np_req_count[0]),
-    .pcie0_cfg_status_0_phy_link_down   (cfg_phy_link_down[0]),
-    .pcie0_cfg_status_0_phy_link_status (cfg_phy_link_status[0]),
-    .pcie0_cfg_status_0_negotiated_width(cfg_negotiated_width[0]),
-    .pcie0_cfg_status_0_current_speed   (cfg_current_speed[0]),
-    .pcie0_cfg_status_0_max_payload     (cfg_max_payload[0]),
-    .pcie0_cfg_status_0_max_read_req    (cfg_max_read_req[0]),
-    .pcie0_cfg_status_0_function_status (cfg_function_status[0]),
-    .pcie0_cfg_status_0_function_power_state(cfg_function_power_state[0]),
-    .pcie0_cfg_status_0_link_power_state(cfg_link_power_state[0]),
-
-    // Error Reporting Interface
-    .pcie0_cfg_status_0_err_cor_out     (cfg_err_cor_out[0]),
-    .pcie0_cfg_status_0_err_nonfatal_out(cfg_err_nonfatal_out[0]),
-    .pcie0_cfg_status_0_err_fatal_out   (cfg_err_fatal_out[0]),
-    .pcie0_cfg_status_0_local_error_out (),
-
-    .pcie0_cfg_status_0_ltssm_state(cfg_ltssm_state[0]),
-    .pcie0_cfg_status_0_rcb_status (cfg_rcb_status[0]),
-    .pcie0_cfg_status_0_pl_status_change(cfg_pl_status_change[0]),
-
-    // Management Interface
-    .pcie0_cfg_mgmt_0_addr      (cfg_mgmt_addr[0]),
-    .pcie0_cfg_mgmt_0_write_en  (cfg_mgmt_write[0]),
-    .pcie0_cfg_mgmt_0_write_data(cfg_mgmt_write_data[0]),
-    .pcie0_cfg_mgmt_0_byte_en   (cfg_mgmt_byte_enable[0]),
-    .pcie0_cfg_mgmt_0_read_en   (cfg_mgmt_read[0]),
-    .pcie0_cfg_mgmt_0_read_data (cfg_mgmt_read_data[0]),
-    .pcie0_cfg_mgmt_0_read_write_done(cfg_mgmt_read_write_done[0]),
-    .pcie0_cfg_mgmt_0_debug_access(1'b0),
-    .pcie0_cfg_mgmt_0_function_number(8'b0),
-
-    .pcie0_transmit_fc_0_nph_av(pcie_tfc_nph_av[0]),
-    .pcie0_transmit_fc_0_npd_av(pcie_tfc_npd_av[0]),
-
-    .pcie0_cfg_msg_recd_0_recd     (cfg_msg_received[0]),
-    .pcie0_cfg_msg_recd_0_recd_data(cfg_msg_received_data[0]),
-    .pcie0_cfg_msg_recd_0_recd_type(cfg_msg_received_type[0]),
-
-    .pcie0_cfg_msg_tx_0_transmit     (cfg_msg_transmit[0]),
-    .pcie0_cfg_msg_tx_0_transmit_type(cfg_msg_transmit_type[0]),
-    .pcie0_cfg_msg_tx_0_transmit_data(cfg_msg_transmit_data[0]),
-    .pcie0_cfg_msg_tx_0_transmit_done(cfg_msg_transmit_done[0]),
-
-    .pcie0_cfg_fc_0_ph  (cfg_fc_ph[0]),
-    .pcie0_cfg_fc_0_pd  (cfg_fc_pd[0]),
-    .pcie0_cfg_fc_0_nph (cfg_fc_nph[0]),
-    .pcie0_cfg_fc_0_npd (cfg_fc_npd[0]),
-    .pcie0_cfg_fc_0_cplh(cfg_fc_cplh[0]),
-    .pcie0_cfg_fc_0_cpld(cfg_fc_cpld[0]),
-    .pcie0_cfg_fc_0_sel (cfg_fc_sel[0]),
-
-    //-------------------------------------------------------------------------------//
-    // EP and RP                                                                     //
-    //-------------------------------------------------------------------------------//
-
-    .pcie0_cfg_control_0_power_state_change_ack(cfg_power_state_change_ack[0]),
-    .pcie0_cfg_control_0_power_state_change_interrupt(cfg_power_state_change_interrupt[0]),
-    .pcie0_cfg_control_0_err_cor_in  (cfg_err_cor_in[0]),
-    .pcie0_cfg_control_0_err_uncor_in(cfg_err_uncor_in[0]),
-
-//  .pcie0_cfg_control_0_flr_in_process(cfg_flr_in_process[0]),
-    .pcie0_cfg_control_0_flr_done({2'b0,cfg_flr_done[0]}),
-
-    .pcie0_cfg_control_0_hot_reset_out(cfg_hot_reset_out[0]), // EP only
-    .pcie0_cfg_control_0_hot_reset_in(cfg_hot_reset_in[0]), // RP only
-
-    .pcie0_cfg_ext_0_read_received  (cfg_ext_read_received[0]),
-    .pcie0_cfg_ext_0_write_received (cfg_ext_write_received[0]),
-    .pcie0_cfg_ext_0_register_number(cfg_ext_register_number[0]),
-    .pcie0_cfg_ext_0_function_number(cfg_ext_function_number[0]),
-    .pcie0_cfg_ext_0_write_data     (cfg_ext_write_data[0]),
-    .pcie0_cfg_ext_0_write_byte_enable(cfg_ext_write_byte_enable[0]),
-    .pcie0_cfg_ext_0_read_data      (cfg_ext_read_data[0]),
-    .pcie0_cfg_ext_0_read_data_valid(cfg_ext_read_data_valid[0])
-   );
-end
-else if (PCIE_CTRL_MODE == 1) begin : Dual_Ctrl // CTRL 0+2 x8x8
-  // Core Top Level Wrapper
-  design_rp design_rp_i (
-
-    //-----------------------------------//
-    //  System(SYS) Interface            //
-    //-----------------------------------//
-    .gt_refclk0_0_clk_n(sys_clk_n),
-    .gt_refclk0_0_clk_p(sys_clk_p),
-    
-    .gt_refclk2_0_clk_n(sys_clk_n),
-    .gt_refclk2_0_clk_p(sys_clk_p),
-
-    .cpm_user_clk(user_clk),
-    .cpm_user_rstn(user_reset_n),
-
-    //---------------------------------------//
-    //  PCI Express (pci_exp) Interface      //
-    //---------------------------------------//
-    .PCIE0_GT_0_gtx_n(pci_exp_txn[7:0]),
-    .PCIE0_GT_0_gtx_p(pci_exp_txp[7:0]),
-    .PCIE0_GT_0_grx_n(pci_exp_rxn[7:0]),
-    .PCIE0_GT_0_grx_p(pci_exp_rxp[7:0]),
-    
-    .PCIE2_GT_0_gtx_n(pci_exp_txn[15:8]),
-    .PCIE2_GT_0_gtx_p(pci_exp_txp[15:8]),
-    .PCIE2_GT_0_grx_n(pci_exp_rxn[15:8]),
-    .PCIE2_GT_0_grx_p(pci_exp_rxp[15:8]),
-
-    //------------------------------------------//
-    //  AXI Interface                           //
-    //------------------------------------------//
-    .pcie0_s_axis_rq_0_tlast (s_axis_rq_tlast[0]),
-    .pcie0_s_axis_rq_0_tdata (s_axis_rq_tdata[0]),
-    .pcie0_s_axis_rq_0_tuser (s_axis_rq_tuser[0]),
-    .pcie0_s_axis_rq_0_tkeep (s_axis_rq_tkeep[0]),
-    .pcie0_s_axis_rq_0_tready(s_axis_rq_tready[0]),
-    .pcie0_s_axis_rq_0_tvalid(s_axis_rq_tvalid[0]),
-
-    .pcie0_m_axis_rc_0_tdata (m_axis_rc_tdata[0]),
-    .pcie0_m_axis_rc_0_tuser (m_axis_rc_tuser[0]),
-    .pcie0_m_axis_rc_0_tlast (m_axis_rc_tlast[0]),
-    .pcie0_m_axis_rc_0_tkeep (m_axis_rc_tkeep[0]),
-    .pcie0_m_axis_rc_0_tvalid(m_axis_rc_tvalid[0]),
-    .pcie0_m_axis_rc_0_tready(m_axis_rc_tready[0]),
-
-    .pcie0_m_axis_cq_0_tdata (m_axis_cq_tdata[0]),
-    .pcie0_m_axis_cq_0_tuser (m_axis_cq_tuser[0]),
-    .pcie0_m_axis_cq_0_tlast (m_axis_cq_tlast[0]),
-    .pcie0_m_axis_cq_0_tkeep (m_axis_cq_tkeep[0]),
-    .pcie0_m_axis_cq_0_tvalid(m_axis_cq_tvalid[0]),
-    .pcie0_m_axis_cq_0_tready(m_axis_cq_tready[0]),
-
-    .pcie0_s_axis_cc_0_tdata (s_axis_cc_tdata[0]),
-    .pcie0_s_axis_cc_0_tuser (s_axis_cc_tuser[0]),
-    .pcie0_s_axis_cc_0_tlast (s_axis_cc_tlast[0]),
-    .pcie0_s_axis_cc_0_tkeep (s_axis_cc_tkeep[0]),
-    .pcie0_s_axis_cc_0_tvalid(s_axis_cc_tvalid[0]),
-    .pcie0_s_axis_cc_0_tready(s_axis_cc_tready[0]),
-    
-    .pcie2_s_axis_rq_0_tlast (s_axis_rq_tlast[2]),
-    .pcie2_s_axis_rq_0_tdata (s_axis_rq_tdata[2]),
-    .pcie2_s_axis_rq_0_tuser (s_axis_rq_tuser[2]),
-    .pcie2_s_axis_rq_0_tkeep (s_axis_rq_tkeep[2]),
-    .pcie2_s_axis_rq_0_tready(s_axis_rq_tready[2]),
-    .pcie2_s_axis_rq_0_tvalid(s_axis_rq_tvalid[2]),
-
-    .pcie2_m_axis_rc_0_tdata (m_axis_rc_tdata[2]),
-    .pcie2_m_axis_rc_0_tuser (m_axis_rc_tuser[2]),
-    .pcie2_m_axis_rc_0_tlast (m_axis_rc_tlast[2]),
-    .pcie2_m_axis_rc_0_tkeep (m_axis_rc_tkeep[2]),
-    .pcie2_m_axis_rc_0_tvalid(m_axis_rc_tvalid[2]),
-    .pcie2_m_axis_rc_0_tready(m_axis_rc_tready[2]),
-
-    .pcie2_m_axis_cq_0_tdata (m_axis_cq_tdata[2]),
-    .pcie2_m_axis_cq_0_tuser (m_axis_cq_tuser[2]),
-    .pcie2_m_axis_cq_0_tlast (m_axis_cq_tlast[2]),
-    .pcie2_m_axis_cq_0_tkeep (m_axis_cq_tkeep[2]),
-    .pcie2_m_axis_cq_0_tvalid(m_axis_cq_tvalid[2]),
-    .pcie2_m_axis_cq_0_tready(m_axis_cq_tready[2]),
-
-    .pcie2_s_axis_cc_0_tdata (s_axis_cc_tdata[2]),
-    .pcie2_s_axis_cc_0_tuser (s_axis_cc_tuser[2]),
-    .pcie2_s_axis_cc_0_tlast (s_axis_cc_tlast[2]),
-    .pcie2_s_axis_cc_0_tkeep (s_axis_cc_tkeep[2]),
-    .pcie2_s_axis_cc_0_tvalid(s_axis_cc_tvalid[2]),
-    .pcie2_s_axis_cc_0_tready(s_axis_cc_tready[2]),
+    .pcie0_s_axis_cc_0_tdata (s_axis_cc_tdata),
+    .pcie0_s_axis_cc_0_tuser (s_axis_cc_tuser),
+    .pcie0_s_axis_cc_0_tlast (s_axis_cc_tlast),
+    .pcie0_s_axis_cc_0_tkeep (s_axis_cc_tkeep),
+    .pcie0_s_axis_cc_0_tvalid(s_axis_cc_tvalid),
+    .pcie0_s_axis_cc_0_tready(s_axis_cc_tready),
 
     //----------------------------------------//
     //  Configuration (CFG) Interface         //
     //----------------------------------------//
 
-    .pcie0_cfg_status_0_cq_np_req       ({1'b0,pcie_cq_np_req[0]}),
-    .pcie0_cfg_status_0_cq_np_req_count (pcie_cq_np_req_count[0]),
-    .pcie0_cfg_status_0_phy_link_down   (cfg_phy_link_down[0]),
-    .pcie0_cfg_status_0_phy_link_status (cfg_phy_link_status[0]),
-    .pcie0_cfg_status_0_negotiated_width(cfg_negotiated_width[0]),
-    .pcie0_cfg_status_0_current_speed   (cfg_current_speed[0]),
-    .pcie0_cfg_status_0_max_payload     (cfg_max_payload[0]),
-    .pcie0_cfg_status_0_max_read_req    (cfg_max_read_req[0]),
-    .pcie0_cfg_status_0_function_status (cfg_function_status[0]),
-    .pcie0_cfg_status_0_function_power_state(cfg_function_power_state[0]),
-    .pcie0_cfg_status_0_link_power_state(cfg_link_power_state[0]),
-    
-    .pcie2_cfg_status_0_cq_np_req       ({1'b0,pcie_cq_np_req[2]}),
-    .pcie2_cfg_status_0_cq_np_req_count (pcie_cq_np_req_count[2]),
-    .pcie2_cfg_status_0_phy_link_down   (cfg_phy_link_down[2]),
-    .pcie2_cfg_status_0_phy_link_status (cfg_phy_link_status[2]),
-    .pcie2_cfg_status_0_negotiated_width(cfg_negotiated_width[2]),
-    .pcie2_cfg_status_0_current_speed   (cfg_current_speed[2]),
-    .pcie2_cfg_status_0_max_payload     (cfg_max_payload[2]),
-    .pcie2_cfg_status_0_max_read_req    (cfg_max_read_req[2]),
-    .pcie2_cfg_status_0_function_status (cfg_function_status[2]),
-    .pcie2_cfg_status_0_function_power_state(cfg_function_power_state[2]),
-    .pcie2_cfg_status_0_link_power_state(cfg_link_power_state[2]),
+    .pcie0_cfg_status_0_cq_np_req       ({1'b0,pcie_cq_np_req}),
+    .pcie0_cfg_status_0_cq_np_req_count (pcie_cq_np_req_count),
+    .pcie0_cfg_status_0_phy_link_down   (cfg_phy_link_down),
+    .pcie0_cfg_status_0_phy_link_status (cfg_phy_link_status),
+    .pcie0_cfg_status_0_negotiated_width(cfg_negotiated_width),
+    .pcie0_cfg_status_0_current_speed   (cfg_current_speed),
+    .pcie0_cfg_status_0_max_payload     (cfg_max_payload),
+    .pcie0_cfg_status_0_max_read_req    (cfg_max_read_req),
+    .pcie0_cfg_status_0_function_status (cfg_function_status),
+    .pcie0_cfg_status_0_function_power_state(cfg_function_power_state),
+    .pcie0_cfg_status_0_link_power_state(cfg_link_power_state),
 
     // Error Reporting Interface
-    .pcie0_cfg_status_0_err_cor_out     (cfg_err_cor_out[0]),
-    .pcie0_cfg_status_0_err_nonfatal_out(cfg_err_nonfatal_out[0]),
-    .pcie0_cfg_status_0_err_fatal_out   (cfg_err_fatal_out[0]),
+    .pcie0_cfg_status_0_err_cor_out     (cfg_err_cor_out),
+    .pcie0_cfg_status_0_err_nonfatal_out(cfg_err_nonfatal_out),
+    .pcie0_cfg_status_0_err_fatal_out   (cfg_err_fatal_out),
     .pcie0_cfg_status_0_local_error_out (),
 
-    .pcie0_cfg_status_0_ltssm_state(cfg_ltssm_state[0]),
-    .pcie0_cfg_status_0_rcb_status (cfg_rcb_status[0]),
-    .pcie0_cfg_status_0_pl_status_change(cfg_pl_status_change[0]),
-    
-    .pcie2_cfg_status_0_err_cor_out     (cfg_err_cor_out[2]),
-    .pcie2_cfg_status_0_err_nonfatal_out(cfg_err_nonfatal_out[2]),
-    .pcie2_cfg_status_0_err_fatal_out   (cfg_err_fatal_out[2]),
-    .pcie2_cfg_status_0_local_error_out (),
-
-    .pcie2_cfg_status_0_ltssm_state(cfg_ltssm_state[2]),
-    .pcie2_cfg_status_0_rcb_status (cfg_rcb_status[2]),
-    .pcie2_cfg_status_0_pl_status_change(cfg_pl_status_change[2]),
+    .pcie0_cfg_status_0_ltssm_state(cfg_ltssm_state),
+    .pcie0_cfg_status_0_rcb_status (cfg_rcb_status),
+    .pcie0_cfg_status_0_pl_status_change(cfg_pl_status_change),
 
     // Management Interface
-    .pcie0_cfg_mgmt_0_addr      (cfg_mgmt_addr[0]),
-    .pcie0_cfg_mgmt_0_write_en  (cfg_mgmt_write[0]),
-    .pcie0_cfg_mgmt_0_write_data(cfg_mgmt_write_data[0]),
-    .pcie0_cfg_mgmt_0_byte_en   (cfg_mgmt_byte_enable[0]),
-    .pcie0_cfg_mgmt_0_read_en   (cfg_mgmt_read[0]),
-    .pcie0_cfg_mgmt_0_read_data (cfg_mgmt_read_data[0]),
-    .pcie0_cfg_mgmt_0_read_write_done(cfg_mgmt_read_write_done[0]),
+    .pcie0_cfg_mgmt_0_addr      (cfg_mgmt_addr),
+    .pcie0_cfg_mgmt_0_write_en  (cfg_mgmt_write),
+    .pcie0_cfg_mgmt_0_write_data(cfg_mgmt_write_data),
+    .pcie0_cfg_mgmt_0_byte_en   (cfg_mgmt_byte_enable),
+    .pcie0_cfg_mgmt_0_read_en   (cfg_mgmt_read),
+    .pcie0_cfg_mgmt_0_read_data (cfg_mgmt_read_data),
+    .pcie0_cfg_mgmt_0_read_write_done(cfg_mgmt_read_write_done),
     .pcie0_cfg_mgmt_0_debug_access(1'b0),
     .pcie0_cfg_mgmt_0_function_number(8'b0),
 
-    .pcie0_transmit_fc_0_nph_av(pcie_tfc_nph_av[0]),
-    .pcie0_transmit_fc_0_npd_av(pcie_tfc_npd_av[0]),
+    .pcie0_transmit_fc_0_nph_av(pcie_tfc_nph_av),
+    .pcie0_transmit_fc_0_npd_av(pcie_tfc_npd_av),
 
-    .pcie0_cfg_msg_recd_0_recd     (cfg_msg_received[0]),
-    .pcie0_cfg_msg_recd_0_recd_data(cfg_msg_received_data[0]),
-    .pcie0_cfg_msg_recd_0_recd_type(cfg_msg_received_type[0]),
+    .pcie0_cfg_msg_recd_0_recd     (cfg_msg_received),
+    .pcie0_cfg_msg_recd_0_recd_data(cfg_msg_received_data),
+    .pcie0_cfg_msg_recd_0_recd_type(cfg_msg_received_type),
 
-    .pcie0_cfg_msg_tx_0_transmit     (cfg_msg_transmit[0]),
-    .pcie0_cfg_msg_tx_0_transmit_type(cfg_msg_transmit_type[0]),
-    .pcie0_cfg_msg_tx_0_transmit_data(cfg_msg_transmit_data[0]),
-    .pcie0_cfg_msg_tx_0_transmit_done(cfg_msg_transmit_done[0]),
+    .pcie0_cfg_msg_tx_0_transmit     (cfg_msg_transmit),
+    .pcie0_cfg_msg_tx_0_transmit_type(cfg_msg_transmit_type),
+    .pcie0_cfg_msg_tx_0_transmit_data(cfg_msg_transmit_data),
+    .pcie0_cfg_msg_tx_0_transmit_done(cfg_msg_transmit_done),
 
-    .pcie0_cfg_fc_0_ph  (cfg_fc_ph[0]),
-    .pcie0_cfg_fc_0_pd  (cfg_fc_pd[0]),
-    .pcie0_cfg_fc_0_nph (cfg_fc_nph[0]),
-    .pcie0_cfg_fc_0_npd (cfg_fc_npd[0]),
-    .pcie0_cfg_fc_0_cplh(cfg_fc_cplh[0]),
-    .pcie0_cfg_fc_0_cpld(cfg_fc_cpld[0]),
-    .pcie0_cfg_fc_0_sel (cfg_fc_sel[0]),
-    
-    .pcie2_cfg_mgmt_0_addr      (cfg_mgmt_addr[2]),
-    .pcie2_cfg_mgmt_0_write_en  (cfg_mgmt_write[2]),
-    .pcie2_cfg_mgmt_0_write_data(cfg_mgmt_write_data[2]),
-    .pcie2_cfg_mgmt_0_byte_en   (cfg_mgmt_byte_enable[2]),
-    .pcie2_cfg_mgmt_0_read_en   (cfg_mgmt_read[2]),
-    .pcie2_cfg_mgmt_0_read_data (cfg_mgmt_read_data[2]),
-    .pcie2_cfg_mgmt_0_read_write_done(cfg_mgmt_read_write_done[2]),
-    .pcie2_cfg_mgmt_0_debug_access(1'b0),
-    .pcie2_cfg_mgmt_0_function_number(8'b0),
-
-    .pcie2_transmit_fc_0_nph_av(pcie_tfc_nph_av[2]),
-    .pcie2_transmit_fc_0_npd_av(pcie_tfc_npd_av[2]),
-
-    .pcie2_cfg_msg_recd_0_recd     (cfg_msg_received[2]),
-    .pcie2_cfg_msg_recd_0_recd_data(cfg_msg_received_data[2]),
-    .pcie2_cfg_msg_recd_0_recd_type(cfg_msg_received_type[2]),
-
-    .pcie2_cfg_msg_tx_0_transmit     (cfg_msg_transmit[2]),
-    .pcie2_cfg_msg_tx_0_transmit_type(cfg_msg_transmit_type[2]),
-    .pcie2_cfg_msg_tx_0_transmit_data(cfg_msg_transmit_data[2]),
-    .pcie2_cfg_msg_tx_0_transmit_done(cfg_msg_transmit_done[2]),
-
-    .pcie2_cfg_fc_0_ph  (cfg_fc_ph[2]),
-    .pcie2_cfg_fc_0_pd  (cfg_fc_pd[2]),
-    .pcie2_cfg_fc_0_nph (cfg_fc_nph[2]),
-    .pcie2_cfg_fc_0_npd (cfg_fc_npd[2]),
-    .pcie2_cfg_fc_0_cplh(cfg_fc_cplh[2]),
-    .pcie2_cfg_fc_0_cpld(cfg_fc_cpld[2]),
-    .pcie2_cfg_fc_0_sel (cfg_fc_sel[2]),
+    .pcie0_cfg_fc_0_ph  (cfg_fc_ph),
+    .pcie0_cfg_fc_0_pd  (cfg_fc_pd),
+    .pcie0_cfg_fc_0_nph (cfg_fc_nph),
+    .pcie0_cfg_fc_0_npd (cfg_fc_npd),
+    .pcie0_cfg_fc_0_cplh(cfg_fc_cplh),
+    .pcie0_cfg_fc_0_cpld(cfg_fc_cpld),
+    .pcie0_cfg_fc_0_sel (cfg_fc_sel),
 
     //-------------------------------------------------------------------------------//
     // EP and RP                                                                     //
     //-------------------------------------------------------------------------------//
 
-
-    .pcie0_cfg_control_0_power_state_change_ack(cfg_power_state_change_ack[0]),
-    .pcie0_cfg_control_0_power_state_change_interrupt(cfg_power_state_change_interrupt[0]),
-    .pcie0_cfg_control_0_err_cor_in  (cfg_err_cor_in[0]),
-    .pcie0_cfg_control_0_err_uncor_in(cfg_err_uncor_in[0]),
+    .pcie0_cfg_control_0_power_state_change_ack(cfg_power_state_change_ack),
+    .pcie0_cfg_control_0_power_state_change_interrupt(cfg_power_state_change_interrupt),
+    .pcie0_cfg_control_0_err_cor_in  (cfg_err_cor_in),
+    .pcie0_cfg_control_0_err_uncor_in(cfg_err_uncor_in),
 
 //  .pcie0_cfg_control_0_flr_in_process(cfg_flr_in_process[0]),
-    .pcie0_cfg_control_0_flr_done({2'b0,cfg_flr_done[0]}),
+    .pcie0_cfg_control_0_flr_done({2'b0,cfg_flr_done}),
 
-    .pcie0_cfg_control_0_hot_reset_out(cfg_hot_reset_out[0]), // EP only
-    .pcie0_cfg_control_0_hot_reset_in(cfg_hot_reset_in[0]), // RP only
+    .pcie0_cfg_control_0_hot_reset_out(cfg_hot_reset_out), // EP only
+    .pcie0_cfg_control_0_hot_reset_in(cfg_hot_reset_in), // RP only
 
-    .pcie0_cfg_ext_0_read_received  (cfg_ext_read_received[0]),
-    .pcie0_cfg_ext_0_write_received (cfg_ext_write_received[0]),
-    .pcie0_cfg_ext_0_register_number(cfg_ext_register_number[0]),
-    .pcie0_cfg_ext_0_function_number(cfg_ext_function_number[0]),
-    .pcie0_cfg_ext_0_write_data     (cfg_ext_write_data[0]),
-    .pcie0_cfg_ext_0_write_byte_enable(cfg_ext_write_byte_enable[0]),
-    .pcie0_cfg_ext_0_read_data      (cfg_ext_read_data[0]),
-    .pcie0_cfg_ext_0_read_data_valid(cfg_ext_read_data_valid[0]),
-    
-    .pcie2_cfg_status_0_bus_number(),
-    .pcie2_cfg_control_0_power_state_change_ack(cfg_power_state_change_ack[2]),
-    .pcie2_cfg_control_0_power_state_change_interrupt(cfg_power_state_change_interrupt[2]),
-    .pcie2_cfg_control_0_err_cor_in  (cfg_err_cor_in[2]),
-    .pcie2_cfg_control_0_err_uncor_in(cfg_err_uncor_in[2]),
-
-//  .pcie2_cfg_control_0_flr_in_process(cfg_flr_in_process[2]),
-    .pcie2_cfg_control_0_flr_done({2'b0,cfg_flr_done[2]}),
-
-    .pcie2_cfg_control_0_hot_reset_out(cfg_hot_reset_out[2]), // EP only
-    .pcie2_cfg_control_0_hot_reset_in(cfg_hot_reset_in[2]), // RP only
-
-    .pcie2_cfg_ext_0_read_received  (cfg_ext_read_received[2]),
-    .pcie2_cfg_ext_0_write_received (cfg_ext_write_received[2]),
-    .pcie2_cfg_ext_0_register_number(cfg_ext_register_number[2]),
-    .pcie2_cfg_ext_0_function_number(cfg_ext_function_number[2]),
-    .pcie2_cfg_ext_0_write_data     (cfg_ext_write_data[2]),
-    .pcie2_cfg_ext_0_write_byte_enable(cfg_ext_write_byte_enable[2]),
-    .pcie2_cfg_ext_0_read_data      (cfg_ext_read_data[2]),
-    .pcie2_cfg_ext_0_read_data_valid(cfg_ext_read_data_valid[2])
+    .pcie0_cfg_ext_0_read_received  (cfg_ext_read_received),
+    .pcie0_cfg_ext_0_write_received (cfg_ext_write_received),
+    .pcie0_cfg_ext_0_register_number(cfg_ext_register_number),
+    .pcie0_cfg_ext_0_function_number(cfg_ext_function_number),
+    .pcie0_cfg_ext_0_write_data     (cfg_ext_write_data),
+    .pcie0_cfg_ext_0_write_byte_enable(cfg_ext_write_byte_enable),
+    .pcie0_cfg_ext_0_read_data      (cfg_ext_read_data),
+    .pcie0_cfg_ext_0_read_data_valid(cfg_ext_read_data_valid)
    );
-  
-end
 
-// NOTE: Generate RP Testbench for each CTRL
-for (ids = 0; ids < 4; ids++) begin: RP_testbench
-  // CTRL 0 x16 ||
-  // CTRL 0+2 x8x8 ||
-  // NOTE: Add more configuration as needed here
-  if ( ((PCIE_CTRL_MODE == 0) && (ids == 0)) ||
-       ((PCIE_CTRL_MODE == 1) && ((ids == 0) || (ids == 2))) ||
-       ((PCIE_CTRL_MODE != 0) || (PCIE_CTRL_MODE != 1)) ) begin
 
    //  Testbench App
    pci_exp_usrapp_top #(
@@ -743,49 +477,49 @@ for (ids = 0; ids < 4; ids++) begin: RP_testbench
    ) pci_exp_usrapp_top_i (
      .user_clk             ( user_clk ),
      .user_reset           ( user_reset ),
-     .user_lnk_up          ( user_lnk_up[ids] ),
+     .user_lnk_up          ( user_lnk_up ),
   
      //----------------------------------------------------//
      // 3. AXI Interface                                   //
      //----------------------------------------------------//
-     .s_axis_rq_tlast      ( s_axis_rq_tlast[ids] ),
-     .s_axis_rq_tdata      ( s_axis_rq_tdata[ids] ),
-     .s_axis_rq_tuser      ( s_axis_rq_tuser[ids] ),
-     .s_axis_rq_tkeep      ( s_axis_rq_tkeep[ids] ),
-     .s_axis_rq_tready     ( s_axis_rq_tready[ids] ),
-     .s_axis_rq_tvalid     ( s_axis_rq_tvalid[ids] ),
+     .s_axis_rq_tlast      ( s_axis_rq_tlast ),
+     .s_axis_rq_tdata      ( s_axis_rq_tdata ),
+     .s_axis_rq_tuser      ( s_axis_rq_tuser ),
+     .s_axis_rq_tkeep      ( s_axis_rq_tkeep ),
+     .s_axis_rq_tready     ( s_axis_rq_tready ),
+     .s_axis_rq_tvalid     ( s_axis_rq_tvalid ),
 
-     .m_axis_rc_tdata      ( m_axis_rc_tdata[ids] ),
-     .m_axis_rc_tuser      ( m_axis_rc_tuser[ids] ),
-     .m_axis_rc_tlast      ( m_axis_rc_tlast[ids] ),
-     .m_axis_rc_tkeep      ( m_axis_rc_tkeep[ids] ),
-     .m_axis_rc_tvalid     ( m_axis_rc_tvalid[ids] ),
-     .m_axis_rc_tready     ( m_axis_rc_tready[ids] ),
+     .m_axis_rc_tdata      ( m_axis_rc_tdata ),
+     .m_axis_rc_tuser      ( m_axis_rc_tuser ),
+     .m_axis_rc_tlast      ( m_axis_rc_tlast ),
+     .m_axis_rc_tkeep      ( m_axis_rc_tkeep ),
+     .m_axis_rc_tvalid     ( m_axis_rc_tvalid ),
+     .m_axis_rc_tready     ( m_axis_rc_tready ),
 
-     .m_axis_cq_tdata      ( m_axis_cq_tdata[ids] ),
-     .m_axis_cq_tuser      ( m_axis_cq_tuser[ids] ),
-     .m_axis_cq_tlast      ( m_axis_cq_tlast[ids] ),
-     .m_axis_cq_tkeep      ( m_axis_cq_tkeep[ids] ),
-     .m_axis_cq_tvalid     ( m_axis_cq_tvalid[ids] ),
-     .m_axis_cq_tready     ( m_axis_cq_tready[ids] ),
+     .m_axis_cq_tdata      ( m_axis_cq_tdata ),
+     .m_axis_cq_tuser      ( m_axis_cq_tuser ),
+     .m_axis_cq_tlast      ( m_axis_cq_tlast ),
+     .m_axis_cq_tkeep      ( m_axis_cq_tkeep ),
+     .m_axis_cq_tvalid     ( m_axis_cq_tvalid ),
+     .m_axis_cq_tready     ( m_axis_cq_tready ),
 
-     .s_axis_cc_tdata      ( s_axis_cc_tdata[ids] ),
-     .s_axis_cc_tuser      ( s_axis_cc_tuser[ids] ),
-     .s_axis_cc_tlast      ( s_axis_cc_tlast[ids] ),
-     .s_axis_cc_tkeep      ( s_axis_cc_tkeep[ids] ),
-     .s_axis_cc_tvalid     ( s_axis_cc_tvalid[ids] ),
-     .s_axis_cc_tready     ( s_axis_cc_tready[ids] ),
+     .s_axis_cc_tdata      ( s_axis_cc_tdata ),
+     .s_axis_cc_tuser      ( s_axis_cc_tuser ),
+     .s_axis_cc_tlast      ( s_axis_cc_tlast ),
+     .s_axis_cc_tkeep      ( s_axis_cc_tkeep ),
+     .s_axis_cc_tvalid     ( s_axis_cc_tvalid ),
+     .s_axis_cc_tready     ( s_axis_cc_tready ),
   
-     .pcie_tfc_nph_av      ( pcie_tfc_nph_av[ids] ),
-     .pcie_tfc_npd_av      ( pcie_tfc_npd_av[ids] ),
-     .pcie_rq_seq_num      ( pcie_rq_seq_num[ids] ),
-     .pcie_rq_seq_num_vld  ( pcie_rq_seq_num_vld[ids] ),
-     .pcie_rq_tag          ( pcie_rq_tag[ids] ),
-     .pcie_rq_tag_vld      ( pcie_rq_tag_vld[ids] ),
-     .pcie_rq_tag_av       ( pcie_rq_tag_av[ids] ),
+     .pcie_tfc_nph_av      ( pcie_tfc_nph_av ),
+     .pcie_tfc_npd_av      ( pcie_tfc_npd_av ),
+     .pcie_rq_seq_num      ( pcie_rq_seq_num ),
+     .pcie_rq_seq_num_vld  ( pcie_rq_seq_num_vld ),
+     .pcie_rq_tag          ( pcie_rq_tag ),
+     .pcie_rq_tag_vld      ( pcie_rq_tag_vld ),
+     .pcie_rq_tag_av       ( pcie_rq_tag_av ),
 
-     .pcie_cq_np_req       ( pcie_cq_np_req[ids] ),
-     .pcie_cq_np_req_count ( pcie_cq_np_req_count[ids] ),
+     .pcie_cq_np_req       ( pcie_cq_np_req ),
+     .pcie_cq_np_req_count ( pcie_cq_np_req_count ),
   
      //---------------------------------------------------//
      // 4. Configuration (CFG) Interface                  //
@@ -794,139 +528,135 @@ for (ids = 0; ids < 4; ids++) begin: RP_testbench
      //---------------------------------------------------//
      // EP and RP                                         //
      //---------------------------------------------------//
-     .cfg_phy_link_down        ( cfg_phy_link_down[ids] ),
-     .cfg_phy_link_status      ( cfg_phy_link_status[ids] ),
-     .cfg_negotiated_width     ( cfg_negotiated_width[ids] ),
-     .cfg_current_speed        ( cfg_current_speed[ids] ),
-     .cfg_max_payload          ( cfg_max_payload[ids] ),
-     .cfg_max_read_req         ( cfg_max_read_req[ids] ),
-     .cfg_function_status      ( cfg_function_status[ids] ),
-     .cfg_function_power_state ( cfg_function_power_state[ids] ),
-     .cfg_vf_status            ( cfg_vf_status[ids] ),
-     .cfg_vf_power_state       ( cfg_vf_power_state[ids] ),
-     .cfg_link_power_state     ( cfg_link_power_state[ids] ),
+     .cfg_phy_link_down        ( cfg_phy_link_down ),
+     .cfg_phy_link_status      ( cfg_phy_link_status ),
+     .cfg_negotiated_width     ( cfg_negotiated_width ),
+     .cfg_current_speed        ( cfg_current_speed ),
+     .cfg_max_payload          ( cfg_max_payload ),
+     .cfg_max_read_req         ( cfg_max_read_req ),
+     .cfg_function_status      ( cfg_function_status ),
+     .cfg_function_power_state ( cfg_function_power_state ),
+     .cfg_vf_status            ( cfg_vf_status ),
+     .cfg_vf_power_state       ( cfg_vf_power_state ),
+     .cfg_link_power_state     ( cfg_link_power_state ),
 
      // Management Interface
-     .cfg_mgmt_addr            ( cfg_mgmt_addr[ids] ),
-     .cfg_mgmt_write           ( cfg_mgmt_write[ids] ),
-     .cfg_mgmt_write_data      ( cfg_mgmt_write_data[ids] ),
-     .cfg_mgmt_byte_enable     ( cfg_mgmt_byte_enable[ids] ),
-     .cfg_mgmt_read            ( cfg_mgmt_read[ids] ),
-     .cfg_mgmt_read_data       ( cfg_mgmt_read_data[ids] ),
-     .cfg_mgmt_read_write_done ( cfg_mgmt_read_write_done[ids] ),
-     .cfg_mgmt_type1_cfg_reg_access ( cfg_mgmt_type1_cfg_reg_access[ids] ),
+     .cfg_mgmt_addr            ( cfg_mgmt_addr ),
+     .cfg_mgmt_write           ( cfg_mgmt_write ),
+     .cfg_mgmt_write_data      ( cfg_mgmt_write_data ),
+     .cfg_mgmt_byte_enable     ( cfg_mgmt_byte_enable ),
+     .cfg_mgmt_read            ( cfg_mgmt_read ),
+     .cfg_mgmt_read_data       ( cfg_mgmt_read_data ),
+     .cfg_mgmt_read_write_done ( cfg_mgmt_read_write_done ),
+     .cfg_mgmt_type1_cfg_reg_access ( cfg_mgmt_type1_cfg_reg_access ),
 
      // Error Reporting Interface
-     .cfg_err_cor_out          ( cfg_err_cor_out[ids] ),
-     .cfg_err_nonfatal_out     ( cfg_err_nonfatal_out[ids] ),
-     .cfg_err_fatal_out        ( cfg_err_fatal_out[ids] ),
-     .cfg_local_error          ( cfg_local_error[ids] ),
+     .cfg_err_cor_out          ( cfg_err_cor_out ),
+     .cfg_err_nonfatal_out     ( cfg_err_nonfatal_out ),
+     .cfg_err_fatal_out        ( cfg_err_fatal_out ),
+     .cfg_local_error          ( cfg_local_error ),
 
-     .cfg_ltssm_state          ( cfg_ltssm_state[ids] ),
-     .cfg_rcb_status           ( cfg_rcb_status[ids] ),
-     .cfg_dpa_substate_change  ( cfg_dpa_substate_change[ids] ),
-     .cfg_obff_enable          ( cfg_obff_enable[ids] ),
-     .cfg_pl_status_change     ( cfg_pl_status_change[ids] ),
+     .cfg_ltssm_state          ( cfg_ltssm_state ),
+     .cfg_rcb_status           ( cfg_rcb_status ),
+     .cfg_dpa_substate_change  ( cfg_dpa_substate_change ),
+     .cfg_obff_enable          ( cfg_obff_enable ),
+     .cfg_pl_status_change     ( cfg_pl_status_change ),
 
-     .cfg_tph_requester_enable ( cfg_tph_requester_enable[ids] ),
-     .cfg_tph_st_mode          ( cfg_tph_st_mode[ids] ),
-     .cfg_vf_tph_requester_enable ( cfg_vf_tph_requester_enable[ids] ),
-     .cfg_vf_tph_st_mode       ( cfg_vf_tph_st_mode[ids] ),
+     .cfg_tph_requester_enable ( cfg_tph_requester_enable ),
+     .cfg_tph_st_mode          ( cfg_tph_st_mode ),
+     .cfg_vf_tph_requester_enable ( cfg_vf_tph_requester_enable ),
+     .cfg_vf_tph_st_mode       ( cfg_vf_tph_st_mode ),
 
-     .cfg_msg_received         ( cfg_msg_received[ids] ),
-     .cfg_msg_received_data    ( cfg_msg_received_data[ids] ),
-     .cfg_msg_received_type    ( cfg_msg_received_type[ids] ),
+     .cfg_msg_received         ( cfg_msg_received ),
+     .cfg_msg_received_data    ( cfg_msg_received_data ),
+     .cfg_msg_received_type    ( cfg_msg_received_type ),
 
-     .cfg_msg_transmit         ( cfg_msg_transmit[ids] ),
-     .cfg_msg_transmit_type    ( cfg_msg_transmit_type[ids] ),
-     .cfg_msg_transmit_data    ( cfg_msg_transmit_data[ids] ),
-     .cfg_msg_transmit_done    ( cfg_msg_transmit_done[ids] ),
+     .cfg_msg_transmit         ( cfg_msg_transmit ),
+     .cfg_msg_transmit_type    ( cfg_msg_transmit_type ),
+     .cfg_msg_transmit_data    ( cfg_msg_transmit_data ),
+     .cfg_msg_transmit_done    ( cfg_msg_transmit_done ),
 
-     .cfg_fc_ph                ( cfg_fc_ph[ids] ),
-     .cfg_fc_pd                ( cfg_fc_pd[ids] ),
-     .cfg_fc_nph               ( cfg_fc_nph[ids] ),
-     .cfg_fc_npd               ( cfg_fc_npd[ids] ),
-     .cfg_fc_cplh              ( cfg_fc_cplh[ids] ),
-     .cfg_fc_cpld              ( cfg_fc_cpld[ids] ),
-     .cfg_fc_sel               ( cfg_fc_sel[ids] ),
+     .cfg_fc_ph                ( cfg_fc_ph ),
+     .cfg_fc_pd                ( cfg_fc_pd ),
+     .cfg_fc_nph               ( cfg_fc_nph ),
+     .cfg_fc_npd               ( cfg_fc_npd ),
+     .cfg_fc_cplh              ( cfg_fc_cplh ),
+     .cfg_fc_cpld              ( cfg_fc_cpld ),
+     .cfg_fc_sel               ( cfg_fc_sel ),
 
-     .cfg_per_func_status_control      ( cfg_per_func_status_control[ids] ),
-     .cfg_per_func_status_data         ( cfg_per_func_status_data[ids] ),
-     .cfg_per_function_number          ( cfg_per_function_number[ids] ),
-     .cfg_per_function_output_request  ( cfg_per_function_output_request[ids] ),
-     .cfg_per_function_update_done     ( cfg_per_function_update_done[ids] ),
+     .cfg_per_func_status_control      ( cfg_per_func_status_control ),
+     .cfg_per_func_status_data         ( cfg_per_func_status_data ),
+     .cfg_per_function_number          ( cfg_per_function_number ),
+     .cfg_per_function_output_request  ( cfg_per_function_output_request ),
+     .cfg_per_function_update_done     ( cfg_per_function_update_done ),
 
-     .cfg_dsn                          ( cfg_dsn[ids] ),
-     .cfg_power_state_change_ack       ( cfg_power_state_change_ack[ids] ),
-     .cfg_power_state_change_interrupt ( cfg_power_state_change_interrupt[ids] ),
-     .cfg_err_cor_in                   ( cfg_err_cor_in[ids] ),
-     .cfg_err_uncor_in                 ( cfg_err_uncor_in[ids] ),
+     .cfg_dsn                          ( cfg_dsn ),
+     .cfg_power_state_change_ack       ( cfg_power_state_change_ack ),
+     .cfg_power_state_change_interrupt ( cfg_power_state_change_interrupt ),
+     .cfg_err_cor_in                   ( cfg_err_cor_in ),
+     .cfg_err_uncor_in                 ( cfg_err_uncor_in ),
 
-     .cfg_flr_in_process               ( cfg_flr_in_process[ids] ),
-     .cfg_flr_done                     ( cfg_flr_done[ids] ),
-     .cfg_vf_flr_in_process            ( cfg_vf_flr_in_process[ids] ),
-     .cfg_vf_flr_done                  ( cfg_vf_flr_done[ids] ),
+     .cfg_flr_in_process               ( cfg_flr_in_process ),
+     .cfg_flr_done                     ( cfg_flr_done ),
+     .cfg_vf_flr_in_process            ( cfg_vf_flr_in_process ),
+     .cfg_vf_flr_done                  ( cfg_vf_flr_done ),
 
-     .cfg_link_training_enable         ( cfg_link_training_enable[ids] ),
-     .cfg_ds_port_number               ( cfg_ds_port_number[ids] ),
+     .cfg_link_training_enable         ( cfg_link_training_enable ),
+     .cfg_ds_port_number               ( cfg_ds_port_number ),
 
-     .cfg_ext_read_received            ( cfg_ext_read_received[ids] ),
-     .cfg_ext_write_received           ( cfg_ext_write_received[ids] ),
-     .cfg_ext_register_number          ( cfg_ext_register_number[ids] ),
-     .cfg_ext_function_number          ( cfg_ext_function_number[ids] ),
-     .cfg_ext_write_data               ( cfg_ext_write_data[ids] ),
-     .cfg_ext_write_byte_enable        ( cfg_ext_write_byte_enable[ids] ),
-     .cfg_ext_read_data                ( cfg_ext_read_data[ids] ),
-     .cfg_ext_read_data_valid          ( cfg_ext_read_data_valid[ids] ),
+     .cfg_ext_read_received            ( cfg_ext_read_received ),
+     .cfg_ext_write_received           ( cfg_ext_write_received ),
+     .cfg_ext_register_number          ( cfg_ext_register_number ),
+     .cfg_ext_function_number          ( cfg_ext_function_number ),
+     .cfg_ext_write_data               ( cfg_ext_write_data ),
+     .cfg_ext_write_byte_enable        ( cfg_ext_write_byte_enable ),
+     .cfg_ext_read_data                ( cfg_ext_read_data ),
+     .cfg_ext_read_data_valid          ( cfg_ext_read_data_valid ),
 
      //-----------------------------------------//
      // EP Only                                 //
      //-----------------------------------------//
 
      // Interrupt Interface Signals
-     .cfg_interrupt_int                ( cfg_interrupt_int[ids] ),
-     .cfg_interrupt_pending            ( cfg_interrupt_pending[ids] ),
-     .cfg_interrupt_sent               ( cfg_interrupt_sent[ids] ),
+     .cfg_interrupt_pending            ( cfg_interrupt_pending  ),
+     .cfg_interrupt_sent               ( cfg_interrupt_sent  ),
 
-     .cfg_interrupt_msi_enable         ( cfg_interrupt_msi_enable[ids] ),
-     .cfg_interrupt_msi_vf_enable      ( cfg_interrupt_msi_vf_enable[ids] ),
-     .cfg_interrupt_msi_mmenable       ( cfg_interrupt_msi_mmenable[ids] ),
-     .cfg_interrupt_msi_mask_update    ( cfg_interrupt_msi_mask_update[ids] ),
-     .cfg_interrupt_msi_data           ( cfg_interrupt_msi_data[ids] ),
-     .cfg_interrupt_msi_select         ( cfg_interrupt_msi_select[ids] ),
-     .cfg_interrupt_msi_int            ( cfg_interrupt_msi_int[ids] ),
-     .cfg_interrupt_msi_pending_status ( cfg_interrupt_msi_pending_status[ids] ),
-     .cfg_interrupt_msi_sent           ( cfg_interrupt_msi_sent[ids] ),
-     .cfg_interrupt_msi_fail           ( cfg_interrupt_msi_fail[ids] ),
-     .cfg_interrupt_msi_attr           ( cfg_interrupt_msi_attr[ids] ),
-     .cfg_interrupt_msi_tph_present    ( cfg_interrupt_msi_tph_present[ids] ),
-     .cfg_interrupt_msi_tph_type       ( cfg_interrupt_msi_tph_type[ids] ),
-     .cfg_interrupt_msi_tph_st_tag     ( cfg_interrupt_msi_tph_st_tag[ids] ),
-     .cfg_interrupt_msi_function_number ( cfg_interrupt_msi_function_number[ids] ),
-     .cfg_interrupt_msi_pending_status_data_enable ( cfg_interrupt_msi_pending_status_data_enable[ids] ),
-     .cfg_interrupt_msi_pending_status_function_num ( cfg_interrupt_msi_pending_status_function_num[ids] ),
+     .cfg_interrupt_msi_enable         ( cfg_interrupt_msi_enable  ),
+     .cfg_interrupt_msi_vf_enable      ( cfg_interrupt_msi_vf_enable  ),
+     .cfg_interrupt_msi_mmenable       ( cfg_interrupt_msi_mmenable  ),
+     .cfg_interrupt_msi_mask_update    ( cfg_interrupt_msi_mask_update  ),
+     .cfg_interrupt_msi_data           ( cfg_interrupt_msi_data  ),
+     .cfg_interrupt_msi_select         ( cfg_interrupt_msi_select  ),
+     .cfg_interrupt_msi_int            ( cfg_interrupt_msi_int  ),
+     .cfg_interrupt_msi_pending_status ( cfg_interrupt_msi_pending_status  ),
+     .cfg_interrupt_msi_sent           ( cfg_interrupt_msi_sent  ),
+     .cfg_interrupt_msi_fail           ( cfg_interrupt_msi_fail  ),
+     .cfg_interrupt_msi_attr           ( cfg_interrupt_msi_attr  ),
+     .cfg_interrupt_msi_tph_present    ( cfg_interrupt_msi_tph_present  ),
+     .cfg_interrupt_msi_tph_type       ( cfg_interrupt_msi_tph_type  ),
+     .cfg_interrupt_msi_tph_st_tag     ( cfg_interrupt_msi_tph_st_tag  ),
+     .cfg_interrupt_msi_function_number ( cfg_interrupt_msi_function_number  ),
+     .cfg_interrupt_msi_pending_status_data_enable ( cfg_interrupt_msi_pending_status_data_enable  ),
+     .cfg_interrupt_msi_pending_status_function_num ( cfg_interrupt_msi_pending_status_function_num  ),
 
      // EP only
-     .cfg_hot_reset_out                ( cfg_hot_reset_out[ids] ),
-     .cfg_config_space_enable          ( cfg_config_space_enable[ids] ),
-     .cfg_req_pm_transition_l23_ready  ( cfg_req_pm_transition_l23_ready[ids] ),
+     .cfg_hot_reset_out                ( cfg_hot_reset_out  ),
+     .cfg_config_space_enable          ( cfg_config_space_enable  ),
+     .cfg_req_pm_transition_l23_ready  ( cfg_req_pm_transition_l23_ready  ),
 
      // RP only
-     .cfg_hot_reset_in                 ( cfg_hot_reset_in[ids] ),
+     .cfg_hot_reset_in                 ( cfg_hot_reset_in  ),
 
-     .cfg_ds_bus_number                ( cfg_ds_bus_number[ids] ),
-     .cfg_ds_device_number             ( cfg_ds_device_number[ids] ),
+     .cfg_ds_bus_number                ( cfg_ds_bus_number  ),
+     .cfg_ds_device_number             ( cfg_ds_device_number  ),
 
-     .cfg_vend_id                      ( cfg_vend_id[ids] ),
+     .cfg_vend_id                      ( cfg_vend_id  ),
 
-     .cfg_dev_id                       ( cfg_dev_id[ids] ),
-     .cfg_subsys_id                    ( cfg_subsys_id[ids] ),
-     .cfg_rev_id                       ( cfg_rev_id[ids] ),
-     .cfg_subsys_vend_id               ( cfg_subsys_vend_id[ids] )
+     .cfg_dev_id                       ( cfg_dev_id ),
+     .cfg_subsys_id                    ( cfg_subsys_id ),
+     .cfg_rev_id                       ( cfg_rev_id ),
+     .cfg_subsys_vend_id               ( cfg_subsys_vend_id )
    );
-  end // if
-end // for
 
-endgenerate
 
 endmodule
