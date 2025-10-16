@@ -21,8 +21,10 @@ create_bd_cell -type ip -vlnv xilinx.com:ip:ps_wizard ps_wizard_0
 apply_bd_automation -rule xilinx.com:bd_rule:ps_wizard -config { board_preset {Yes} boot_config {Custom} configure_noc {Add new AXI NoC} debug_config {JTAG} mc_type {None} num_mc_ddr {None} num_mc_lpddr {None} pl_clocks {None} pl_resets {None}}  [get_bd_cells ps_wizard_0]
 
 set_property -dict [list \
+  CONFIG.MMI_CONFIG(UDH_GT) {DP_X4} \
   CONFIG.MMI_CONFIG(DPDC_PRESENTATION_MODE) {Non_Live} \
   CONFIG.MMI_CONFIG(MMI_DP_ENABLE_BEFORE_PL) {1} \
+  CONFIG.PS11_CONFIG(UDH_GT) {DP_X4} \
   CONFIG.PS11_CONFIG(PL_FPD_IRQ_USAGE) {CH0 1 CH1 1 CH2 1 CH3 1 CH4 0 CH5 0 CH6 0 CH7 0} \
   CONFIG.PS11_CONFIG(PL_LPD_IRQ_USAGE) {CH0 1 CH1 1 CH2 1 CH3 1 CH4 0 CH5 0 CH6 0 CH7 0 CH8 0 CH9 0 CH10 0 CH11 0 CH12 0 CH13 0 CH14 0 CH15 0 CH16 0 CH17 0 CH18 0 CH19 0 CH20 0 CH21 0 CH22 0 CH23 0} \
   CONFIG.PS11_CONFIG(PMC_CRP_PL0_REF_CTRL_FREQMHZ) {100} \
