@@ -492,10 +492,8 @@ proc create_hier_cell_rst_module { parentCell nameHier } {
     CONFIG.MMI_CONFIG(DPDC_PRESENTATION_MODE) {Mixed} \
     CONFIG.MMI_CONFIG(MMI_DP_HPD) {PMC_MIO_48} \
     CONFIG.MMI_CONFIG(PL_MMI_INTERRUPTS_EN) {1} \
-    CONFIG.MMI_CONFIG(UDH_GT) {DP_X4} \
     CONFIG.PS11_CONFIG(MMI_DP_HPD) {PMC_MIO_48} \
     CONFIG.PS11_CONFIG(PL_MMI_INTERRUPTS_EN) {1} \
-    CONFIG.PS11_CONFIG(UDH_GT) {DP_X4} \
   ] [get_bd_cells ps_wizard_0]
 
 
