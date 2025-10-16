@@ -89,44 +89,16 @@
 `define  SYNC_RQ_RDY                 0
 `define  SYNC_CC_RDY                 1
 
-// One and only one can be set. Define if it's Single controller PCIE0(x16) or Dual controller design PCIE0+1(x8x8)
-`define SINGLE_CTRL
-//`define DUAL_CTRL
-
-`ifdef EP_NOC_SIM
-`ifndef EP_WRAPPER
-`define EP_WRAPPER board.EP.design_1_wrapper_i
-`endif
-`else
-`ifndef EP_WRAPPER
 `define EP_WRAPPER board.EP
-`endif
-`endif
 
-`ifdef RP_NOC_SIM
-`ifndef RP_WRAPPER
-`define RP_WRAPPER board.RP.design_rp_wrapper_i
-`endif
-`else
-`ifndef RP_WRAPPER
 `define RP_WRAPPER board.RP
-`endif
-`endif
 
 // IP path. Please update IP_PATH to match your design hierarchy
-`ifndef EP_IP_PATH
-`define EP_IP_PATH `EP_WRAPPER.design_1_i.versal_cips_0              // Path to the IP for Endpoint (DUT)
-`endif
 
-`ifdef SINGLE_CTRL
-`ifndef RP_IP_PATH
-`define RP_IP_PATH `RP_WRAPPER.Single_CTRL.design_rp_i.versal_cips_0 // Path to the IP for RP (Sim Testbench)
-`endif
-`elsif DUAL_CTRL
-`ifndef RP_IP_PATH
-`define RP_IP_PATH `RP_WRAPPER.Dual_Ctrl.design_rp_i.versal_cips_0   // Path to the IP for RP (Sim Testbench)
-`endif
-`endif
+`define EP_IP_PATH `EP_WRAPPER.design_1_i.versal_cips_0              // Path to the IP for Endpoint (DUT)
+
+`define RP_IP_PATH `RP_WRAPPER.design_rp_i.versal_cips_0 // Path to the IP for RP (Sim Testbench)
+
 
 // Static path within the IP
 `define EP_PMC_PATH  `EP_IP_PATH.inst.pspmc_0

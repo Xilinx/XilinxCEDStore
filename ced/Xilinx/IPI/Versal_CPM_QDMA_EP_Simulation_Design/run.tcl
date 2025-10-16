@@ -420,12 +420,12 @@ open_bd_design [get_bd_files $design_name]
 
     set_property USER_COMMENTS.comment_0 {} [current_bd_design]
     set_property USER_COMMENTS.comment0 {Next Steps:
-    1. Refer to https://github.com/Xilinx/XilinxCEDStore/tree/2025.1/ced/Xilinx/IPI/Versal_CPM_QDMA_EP_Simulation_Design/readme.txt} [current_bd_design]
+    1. Refer to https://github.com/Xilinx/XilinxCEDStore/tree/2025.2/ced/Xilinx/IPI/Versal_CPM_QDMA_EP_Simulation_Design/readme.txt} [current_bd_design]
 
     regenerate_bd_layout -layout_string {
    "ActiveEmotionalView":"Default View",
    "comment_0":"Next Steps:
-    1. Refer to https://github.com/Xilinx/XilinxCEDStore/tree/2025.1/ced/Xilinx/IPI/Versal_CPM_QDMA_EP_Simulation_Design/readme.txt",
+    1. Refer to https://github.com/Xilinx/XilinxCEDStore/tree/2025.2/ced/Xilinx/IPI/Versal_CPM_QDMA_EP_Simulation_Design/readme.txt",
    "commentid":"comment_0|",
    "font_comment_0":"18",
    "guistr":"# # String gsaved with Nlview 7.0r4  2019-12-20 bk=1.5203 VDI=41 GEI=36 GUI=JA:10.0 TLS

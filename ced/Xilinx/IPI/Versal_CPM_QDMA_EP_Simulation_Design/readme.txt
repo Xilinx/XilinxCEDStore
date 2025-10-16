@@ -5,9 +5,9 @@ This package contains the CPM - QDMA Example Design along with the
 Testbench to exercise the same. Please use below version of tools to run the
 simulation
 
-Vivado Version  - 2025.1
-VCS Version     - W-2024.09-SP1
-Questa Version  - 2024.3
+Vivado Version  - 2025.2
+VCS Version     - V-2023.12-SP1
+Questa Version  - 2025.2
 
 - For launching the simulation, under Project Manager -> Settings -> Simulation
 	- Update Target Simulator as VCS/Questa
