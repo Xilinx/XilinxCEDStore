@@ -135,8 +135,8 @@ proc createDesign {design_name options} {
                 apply_bd_automation -rule xilinx.com:bd_rule:axi4 -config { Clk_master {/clk_wiz_1/clk_out1 (100 MHz)} Clk_slave {Auto} Clk_xbar {/clk_wiz_1/clk_out1 (100 MHz)} Master {/microblaze_0 (Periph)} Slave {/axi_timer_0/S_AXI} ddr_seg {Auto} intc_ip {/microblaze_0_axi_periph} master_apm {0}}  [get_bd_intf_pins axi_timer_0/S_AXI]  
 
 
-                delete_bd_objs [get_bd_nets reset_0_1] [get_bd_ports reset_0]
-                connect_bd_net [get_bd_ports reset] [get_bd_pins rst_clk_wiz_1_100M/ext_reset_in]
+                # delete_bd_objs [get_bd_nets reset_0_1] [get_bd_ports reset_0]
+                # connect_bd_net [get_bd_ports reset] [get_bd_pins rst_clk_wiz_1_100M/ext_reset_in]
 
                 create_bd_cell -type ip -vlnv xilinx.com:ip:pmcbridge:* pmcbridge_0
                 apply_bd_automation -rule xilinx.com:bd_rule:axi4 -config { Clk_master {/clk_wiz_1/clk_out1 (100 MHz)} Clk_slave {Auto} Clk_xbar {/clk_wiz_1/clk_out1 (100 MHz)} Master {/microblaze_0 (Periph)} Slave {/pmcbridge_0/S_AXI} ddr_seg {Auto} intc_ip {/microblaze_0_axi_periph} master_apm {0}}  [get_bd_intf_pins pmcbridge_0/S_AXI]
