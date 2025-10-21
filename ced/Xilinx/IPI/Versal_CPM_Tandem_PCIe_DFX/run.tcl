@@ -157,8 +157,8 @@ proc create_root_design { parentCell design_name temp_options} {
    CONFIG.R_TRAFFIC_CLASS {BEST_EFFORT} \
    CONFIG.W_TRAFFIC_CLASS {BEST_EFFORT} \
    CONFIG.CONNECTIONS {M03_AXI { read_bw {1000} write_bw {1000} read_avg_burst {4} write_avg_burst {4}} M01_AXI { read_bw {1000} write_bw {1000} read_avg_burst {4} write_avg_burst {4}} M02_AXI { read_bw {500} write_bw {500} read_avg_burst {4} write_avg_burst {4}} M00_AXI { read_bw {1000} write_bw {1000}}} \
-   CONFIG.DEST_IDS {M03_AXI:0x140:M01_AXI:0x40:M02_AXI:0x0:M00_AXI:0x80} \
-   CONFIG.REMAPS { M00_AXI {{0x0 0x201_C000_0000 64K}}} \
+   CONFIG.DEST_IDS {M03_AXI:0x140:M01_AXI:0x40:M02_AXI:0x80:M00_AXI:0x0} \
+   CONFIG.REMAPS {M00_AXI {{0x0 0x201_C000_0000 64K}} M02_AXI {{0x1_0000 0x201_8000_0000 64K}} M03_AXI {{0x2_0000 0x1_0122_0000 64K} {0x3_0000 0x1_0210_0000 64K}}} \
    CONFIG.CATEGORY {ps_pcie} \
   ] [get_bd_intf_pins /axi_noc_0/S00_AXI]
 
@@ -167,16 +167,16 @@ proc create_root_design { parentCell design_name temp_options} {
    CONFIG.R_TRAFFIC_CLASS {BEST_EFFORT} \
    CONFIG.W_TRAFFIC_CLASS {BEST_EFFORT} \
    CONFIG.CONNECTIONS {M03_AXI { read_bw {1000} write_bw {1000} read_avg_burst {4} write_avg_burst {4}} M01_AXI { read_bw {1000} write_bw {1000} read_avg_burst {4} write_avg_burst {4}} M02_AXI { read_bw {500} write_bw {500} read_avg_burst {4} write_avg_burst {4}} M00_AXI { read_bw {1000} write_bw {1000} read_avg_burst {4} write_avg_burst {4}}} \
-   CONFIG.DEST_IDS {M03_AXI:0x140:M01_AXI:0x40:M02_AXI:0x0:M00_AXI:0x80} \
-   CONFIG.REMAPS { M00_AXI {{0x0 0x201_C000_0000 64K}}} \
+   CONFIG.DEST_IDS {M03_AXI:0x140:M01_AXI:0x40:M02_AXI:0x80:M00_AXI:0x00} \
+   CONFIG.REMAPS {M00_AXI {{0x0 0x201_C000_0000 64K}} M02_AXI {{0x1_0000 0x201_8000_0000 64K}} M03_AXI {{0x2_0000 0x1_0122_0000 64K} {0x3_0000 0x1_0210_0000 64K}}} \
    CONFIG.CATEGORY {ps_pcie} \
   ] [get_bd_intf_pins /axi_noc_0/S01_AXI]
 
   set_property -dict [ list \
    CONFIG.DATA_WIDTH {128} \
-   CONFIG.CONNECTIONS {M01_AXI { read_bw {1500} write_bw {1500} read_avg_burst {4} write_avg_burst {4}} M02_AXI { read_bw {500} write_bw {500} read_avg_burst {4} write_avg_burst {4}} M00_AXI { read_bw {1000} write_bw {1000} read_avg_burst {4} write_avg_burst {4}} } \
-   CONFIG.DEST_IDS {M01_AXI:0x40:M02_AXI:0x0:M00_AXI:0x80} \
-   CONFIG.REMAPS { M00_AXI {{0x0 0x201_C000_0000 64K}}} \
+   CONFIG.CONNECTIONS {M03_AXI {read_bw {500} write_bw {500} read_avg_burst {4} write_avg_burst {4} initial_boot {true}} M01_AXI {read_bw {1500} write_bw {1500} read_avg_burst {4} write_avg_burst {4}} M02_AXI {read_bw {500} write_bw {500} read_avg_burst {4} write_avg_burst {4}} M00_AXI {read_bw {1000} write_bw {1000} read_avg_burst {4} write_avg_burst {4}}} \
+   CONFIG.DEST_IDS {M01_AXI:0x40:M02_AXI:0x80:M00_AXI:0x0} \
+   CONFIG.REMAPS {} \
    CONFIG.CATEGORY {ps_pmc} \
   ] [get_bd_intf_pins /axi_noc_0/S02_AXI]
 
@@ -248,16 +248,17 @@ proc create_root_design { parentCell design_name temp_options} {
           CPM_PCIE0_PF0_BAR2_QDMA_AXCACHE {0} \
           CPM_PCIE0_PF0_BAR2_QDMA_ENABLED {1} \
           CPM_PCIE0_PF0_BAR2_QDMA_PREFETCHABLE {1} \
-          CPM_PCIE0_PF0_BAR2_QDMA_SIZE {64} \
+          CPM_PCIE0_PF0_BAR2_QDMA_SCALE {Megabytes} \
+          CPM_PCIE0_PF0_BAR2_QDMA_SIZE {2} \
           CPM_PCIE0_PF0_BAR3_QDMA_AXCACHE {0} \
           CPM_PCIE0_PF0_BAR4_QDMA_64BIT {1} \
           CPM_PCIE0_PF0_BAR4_QDMA_AXCACHE {0} \
           CPM_PCIE0_PF0_BAR4_QDMA_ENABLED {1} \
           CPM_PCIE0_PF0_BAR4_QDMA_PREFETCHABLE {1} \
-          CPM_PCIE0_PF0_BAR4_QDMA_SIZE {64} \
+          CPM_PCIE0_PF0_BAR4_QDMA_SIZE {256} \
           CPM_PCIE0_PF0_BAR5_QDMA_AXCACHE {0} \
           CPM_PCIE0_PF0_DEV_CAP_FUNCTION_LEVEL_RESET_CAPABLE {1} \
-          CPM_PCIE0_PF0_PCIEBAR2AXIBAR_QDMA_2 {0x020180000000} \
+          CPM_PCIE0_PF0_PCIEBAR2AXIBAR_QDMA_2 {0x20240000000} \
           CPM_PCIE0_PF0_USE_CLASS_CODE_LOOKUP_ASSISTANT {1} \
           CPM_PCIE0_TANDEM {Tandem_PCIe} \
         } \
@@ -305,16 +306,17 @@ proc create_root_design { parentCell design_name temp_options} {
           CPM_PCIE0_PF0_BAR2_QDMA_AXCACHE {0} \
           CPM_PCIE0_PF0_BAR2_QDMA_ENABLED {1} \
           CPM_PCIE0_PF0_BAR2_QDMA_PREFETCHABLE {1} \
-          CPM_PCIE0_PF0_BAR2_QDMA_SIZE {64} \
+          CPM_PCIE0_PF0_BAR2_QDMA_SCALE {Megabytes} \
+          CPM_PCIE0_PF0_BAR2_QDMA_SIZE {2} \
           CPM_PCIE0_PF0_BAR3_QDMA_AXCACHE {0} \
           CPM_PCIE0_PF0_BAR4_QDMA_64BIT {1} \
           CPM_PCIE0_PF0_BAR4_QDMA_AXCACHE {0} \
           CPM_PCIE0_PF0_BAR4_QDMA_ENABLED {1} \
           CPM_PCIE0_PF0_BAR4_QDMA_PREFETCHABLE {1} \
-          CPM_PCIE0_PF0_BAR4_QDMA_SIZE {64} \
+          CPM_PCIE0_PF0_BAR4_QDMA_SIZE {256} \
           CPM_PCIE0_PF0_BAR5_QDMA_AXCACHE {0} \
           CPM_PCIE0_PF0_DEV_CAP_FUNCTION_LEVEL_RESET_CAPABLE {1} \
-          CPM_PCIE0_PF0_PCIEBAR2AXIBAR_QDMA_2 {0x020180000000} \
+          CPM_PCIE0_PF0_PCIEBAR2AXIBAR_QDMA_2 {0x20240000000} \
           CPM_PCIE0_PF0_USE_CLASS_CODE_LOOKUP_ASSISTANT {1} \
           CPM_PCIE0_TANDEM {Tandem_PCIe} \
         } \
@@ -362,10 +364,11 @@ proc create_root_design { parentCell design_name temp_options} {
         CPM_PCIE0_PF0_BAR2_QDMA_64BIT {1} \
         CPM_PCIE0_PF0_BAR2_QDMA_ENABLED {1} \
         CPM_PCIE0_PF0_BAR2_QDMA_PREFETCHABLE {1} \
-        CPM_PCIE0_PF0_BAR2_QDMA_SIZE {64} \
+        CPM_PCIE0_PF0_BAR2_QDMA_SCALE {Megabytes} \
+        CPM_PCIE0_PF0_BAR2_QDMA_SIZE {2} \
         CPM_PCIE0_PF0_BAR4_QDMA_ENABLED {1} \
-        CPM_PCIE0_PF0_BAR4_QDMA_SIZE {64} \
-        CPM_PCIE0_PF0_PCIEBAR2AXIBAR_QDMA_2 {0x20180000000} \
+        CPM_PCIE0_PF0_BAR4_QDMA_SIZE {256} \
+        CPM_PCIE0_PF0_PCIEBAR2AXIBAR_QDMA_2 {0x20240000000} \
         CPM_PCIE0_PF0_USE_CLASS_CODE_LOOKUP_ASSISTANT {1} \
         CPM_PCIE0_PL_LINK_CAP_MAX_LINK_WIDTH {X8} \
         CPM_PCIE0_TANDEM {Tandem_PCIe} \
@@ -526,19 +529,23 @@ proc create_root_design { parentCell design_name temp_options} {
   ########################################################
 
   # Create address segments
-  assign_bd_address -offset 0x020180000000 -range 0x00010000 -target_address_space [get_bd_addr_spaces cips_noc_subsystem/versal_cips_0/CPM_PCIE_NOC_0] [get_bd_addr_segs M_AXIL/Reg] -force
+  assign_bd_address -offset 0x00010000 -range 0x00010000 -target_address_space [get_bd_addr_spaces cips_noc_subsystem/versal_cips_0/CPM_PCIE_NOC_0] [get_bd_addr_segs M_AXIL/Reg] -force
   assign_bd_address -offset 0x00000000 -range 0x00010000 -target_address_space [get_bd_addr_spaces cips_noc_subsystem/versal_cips_0/CPM_PCIE_NOC_0] [get_bd_addr_segs pl_bram_inst/axi_bram_ctrl_0/S_AXI/Mem0] -force
-  assign_bd_address -offset 0x000101220000 -range 0x00010000 -target_address_space [get_bd_addr_spaces cips_noc_subsystem/versal_cips_0/CPM_PCIE_NOC_0] [get_bd_addr_segs cips_noc_subsystem/versal_cips_0/NOC_PMC_AXI_0/pspmc_0_psv_pmc_slave_boot] -force
-  assign_bd_address -offset 0x000102100000 -range 0x00010000 -target_address_space [get_bd_addr_spaces cips_noc_subsystem/versal_cips_0/CPM_PCIE_NOC_0] [get_bd_addr_segs cips_noc_subsystem/versal_cips_0/NOC_PMC_AXI_0/pspmc_0_psv_pmc_slave_boot_stream] -force
-  assign_bd_address -offset 0x020180000000 -range 0x00010000 -target_address_space [get_bd_addr_spaces cips_noc_subsystem/versal_cips_0/CPM_PCIE_NOC_1] [get_bd_addr_segs M_AXIL/Reg] -force
+  assign_bd_address -offset 0x020240000000 -range 0x00200000 -target_address_space [get_bd_addr_spaces cips_noc_subsystem/versal_cips_0/CPM_PCIE_NOC_0] [get_bd_addr_segs debug_inst/axi_dbg_hub_0/S_AXI_DBG_HUB/Mem0] -force
+  assign_bd_address -offset 0x00020000 -range 0x00010000 -target_address_space [get_bd_addr_spaces cips_noc_subsystem/versal_cips_0/CPM_PCIE_NOC_0] [get_bd_addr_segs cips_noc_subsystem/versal_cips_0/NOC_PMC_AXI_0/pspmc_0_psv_pmc_slave_boot] -force
+  assign_bd_address -offset 0x00030000 -range 0x00010000 -target_address_space [get_bd_addr_spaces cips_noc_subsystem/versal_cips_0/CPM_PCIE_NOC_0] [get_bd_addr_segs cips_noc_subsystem/versal_cips_0/NOC_PMC_AXI_0/pspmc_0_psv_pmc_slave_boot_stream] -force
+  assign_bd_address -offset 0x00010000 -range 0x00010000 -target_address_space [get_bd_addr_spaces cips_noc_subsystem/versal_cips_0/CPM_PCIE_NOC_1] [get_bd_addr_segs M_AXIL/Reg] -force
   assign_bd_address -offset 0x00000000 -range 0x00010000 -target_address_space [get_bd_addr_spaces cips_noc_subsystem/versal_cips_0/CPM_PCIE_NOC_1] [get_bd_addr_segs pl_bram_inst/axi_bram_ctrl_0/S_AXI/Mem0] -force
-  assign_bd_address -offset 0x000101220000 -range 0x00010000 -target_address_space [get_bd_addr_spaces cips_noc_subsystem/versal_cips_0/CPM_PCIE_NOC_1] [get_bd_addr_segs cips_noc_subsystem/versal_cips_0/NOC_PMC_AXI_0/pspmc_0_psv_pmc_slave_boot] -force
-  assign_bd_address -offset 0x000102100000 -range 0x00010000 -target_address_space [get_bd_addr_spaces cips_noc_subsystem/versal_cips_0/CPM_PCIE_NOC_1] [get_bd_addr_segs cips_noc_subsystem/versal_cips_0/NOC_PMC_AXI_0/pspmc_0_psv_pmc_slave_boot_stream] -force
-  assign_bd_address -offset 0x00000000 -range 0x00010000 -target_address_space [get_bd_addr_spaces cips_noc_subsystem/versal_cips_0/PMC_NOC_AXI_0] [get_bd_addr_segs pl_bram_inst/axi_bram_ctrl_0/S_AXI/Mem0] -force
+  assign_bd_address -offset 0x020240000000 -range 0x00200000 -target_address_space [get_bd_addr_spaces cips_noc_subsystem/versal_cips_0/CPM_PCIE_NOC_1] [get_bd_addr_segs debug_inst/axi_dbg_hub_0/S_AXI_DBG_HUB/Mem0] -force
+  assign_bd_address -offset 0x00020000 -range 0x00010000 -target_address_space [get_bd_addr_spaces cips_noc_subsystem/versal_cips_0/CPM_PCIE_NOC_1] [get_bd_addr_segs cips_noc_subsystem/versal_cips_0/NOC_PMC_AXI_0/pspmc_0_psv_pmc_slave_boot] -force
+  assign_bd_address -offset 0x00030000 -range 0x00010000 -target_address_space [get_bd_addr_spaces cips_noc_subsystem/versal_cips_0/CPM_PCIE_NOC_1] [get_bd_addr_segs cips_noc_subsystem/versal_cips_0/NOC_PMC_AXI_0/pspmc_0_psv_pmc_slave_boot_stream] -force
+  assign_bd_address -offset 0x020180000000 -range 0x00010000 -target_address_space [get_bd_addr_spaces cips_noc_subsystem/versal_cips_0/PMC_NOC_AXI_0] [get_bd_addr_segs M_AXIL/Reg] -force
+  assign_bd_address -offset 0x0201C0000000 -range 0x00010000 -target_address_space [get_bd_addr_spaces cips_noc_subsystem/versal_cips_0/PMC_NOC_AXI_0] [get_bd_addr_segs pl_bram_inst/axi_bram_ctrl_0/S_AXI/Mem0] -force
   assign_bd_address -offset 0x020240000000 -range 0x00200000 -target_address_space [get_bd_addr_spaces cips_noc_subsystem/versal_cips_0/PMC_NOC_AXI_0] [get_bd_addr_segs debug_inst/axi_dbg_hub_0/S_AXI_DBG_HUB/Mem0] -force
+  assign_bd_address -offset 0x000101220000 -range 0x00010000 -target_address_space [get_bd_addr_spaces cips_noc_subsystem/versal_cips_0/PMC_NOC_AXI_0] [get_bd_addr_segs cips_noc_subsystem/versal_cips_0/NOC_PMC_AXI_0/pspmc_0_psv_pmc_slave_boot] -force
+  assign_bd_address -offset 0x000102100000 -range 0x00010000 -target_address_space [get_bd_addr_spaces cips_noc_subsystem/versal_cips_0/PMC_NOC_AXI_0] [get_bd_addr_segs cips_noc_subsystem/versal_cips_0/NOC_PMC_AXI_0/pspmc_0_psv_pmc_slave_boot_stream] -force
 
   # Exclude Address Segments
-  exclude_bd_addr_seg -offset 0x020240000000 -range 0x00200000 -target_address_space [get_bd_addr_spaces cips_noc_subsystem/versal_cips_0/CPM_PCIE_NOC_0] [get_bd_addr_segs debug_inst/axi_dbg_hub_0/S_AXI_DBG_HUB/Mem0]
   exclude_bd_addr_seg -offset 0xFFA80000 -range 0x00010000 -target_address_space [get_bd_addr_spaces cips_noc_subsystem/versal_cips_0/CPM_PCIE_NOC_0] [get_bd_addr_segs cips_noc_subsystem/versal_cips_0/NOC_PMC_AXI_0/pspmc_0_psv_adma_0]
   exclude_bd_addr_seg -offset 0xFFA90000 -range 0x00010000 -target_address_space [get_bd_addr_spaces cips_noc_subsystem/versal_cips_0/CPM_PCIE_NOC_0] [get_bd_addr_segs cips_noc_subsystem/versal_cips_0/NOC_PMC_AXI_0/pspmc_0_psv_adma_1]
   exclude_bd_addr_seg -offset 0xFFAA0000 -range 0x00010000 -target_address_space [get_bd_addr_spaces cips_noc_subsystem/versal_cips_0/CPM_PCIE_NOC_0] [get_bd_addr_segs cips_noc_subsystem/versal_cips_0/NOC_PMC_AXI_0/pspmc_0_psv_adma_2]
@@ -549,6 +556,27 @@ proc create_root_design { parentCell design_name temp_options} {
   exclude_bd_addr_seg -offset 0xFFAF0000 -range 0x00010000 -target_address_space [get_bd_addr_spaces cips_noc_subsystem/versal_cips_0/CPM_PCIE_NOC_0] [get_bd_addr_segs cips_noc_subsystem/versal_cips_0/NOC_PMC_AXI_0/pspmc_0_psv_adma_7]
   exclude_bd_addr_seg -offset 0xFD5C0000 -range 0x00010000 -target_address_space [get_bd_addr_spaces cips_noc_subsystem/versal_cips_0/CPM_PCIE_NOC_0] [get_bd_addr_segs cips_noc_subsystem/versal_cips_0/NOC_PMC_AXI_0/pspmc_0_psv_apu_0]
   exclude_bd_addr_seg -offset 0x000100800000 -range 0x00010000 -target_address_space [get_bd_addr_spaces cips_noc_subsystem/versal_cips_0/CPM_PCIE_NOC_0] [get_bd_addr_segs cips_noc_subsystem/versal_cips_0/NOC_PMC_AXI_0/pspmc_0_psv_coresight_0]
+  exclude_bd_addr_seg -target_address_space [get_bd_addr_spaces cips_noc_subsystem/versal_cips_0/CPM_PCIE_NOC_0] [get_bd_addr_segs cips_noc_subsystem/versal_cips_0/NOC_PMC_AXI_0/pspmc_0_psv_coresight_a720_cti]
+  exclude_bd_addr_seg -target_address_space [get_bd_addr_spaces cips_noc_subsystem/versal_cips_0/CPM_PCIE_NOC_0] [get_bd_addr_segs cips_noc_subsystem/versal_cips_0/NOC_PMC_AXI_0/pspmc_0_psv_coresight_a720_dbg]
+  exclude_bd_addr_seg -target_address_space [get_bd_addr_spaces cips_noc_subsystem/versal_cips_0/CPM_PCIE_NOC_0] [get_bd_addr_segs cips_noc_subsystem/versal_cips_0/NOC_PMC_AXI_0/pspmc_0_psv_coresight_a720_etm]
+  exclude_bd_addr_seg -target_address_space [get_bd_addr_spaces cips_noc_subsystem/versal_cips_0/CPM_PCIE_NOC_0] [get_bd_addr_segs cips_noc_subsystem/versal_cips_0/NOC_PMC_AXI_0/pspmc_0_psv_coresight_a720_pmu]
+  exclude_bd_addr_seg -target_address_space [get_bd_addr_spaces cips_noc_subsystem/versal_cips_0/CPM_PCIE_NOC_0] [get_bd_addr_segs cips_noc_subsystem/versal_cips_0/NOC_PMC_AXI_0/pspmc_0_psv_coresight_a721_cti]
+  exclude_bd_addr_seg -target_address_space [get_bd_addr_spaces cips_noc_subsystem/versal_cips_0/CPM_PCIE_NOC_0] [get_bd_addr_segs cips_noc_subsystem/versal_cips_0/NOC_PMC_AXI_0/pspmc_0_psv_coresight_a721_dbg]
+  exclude_bd_addr_seg -target_address_space [get_bd_addr_spaces cips_noc_subsystem/versal_cips_0/CPM_PCIE_NOC_0] [get_bd_addr_segs cips_noc_subsystem/versal_cips_0/NOC_PMC_AXI_0/pspmc_0_psv_coresight_a721_etm]
+  exclude_bd_addr_seg -target_address_space [get_bd_addr_spaces cips_noc_subsystem/versal_cips_0/CPM_PCIE_NOC_0] [get_bd_addr_segs cips_noc_subsystem/versal_cips_0/NOC_PMC_AXI_0/pspmc_0_psv_coresight_a721_pmu]
+  exclude_bd_addr_seg -target_address_space [get_bd_addr_spaces cips_noc_subsystem/versal_cips_0/CPM_PCIE_NOC_0] [get_bd_addr_segs cips_noc_subsystem/versal_cips_0/NOC_PMC_AXI_0/pspmc_0_psv_coresight_apu_cti]
+  exclude_bd_addr_seg -target_address_space [get_bd_addr_spaces cips_noc_subsystem/versal_cips_0/CPM_PCIE_NOC_0] [get_bd_addr_segs cips_noc_subsystem/versal_cips_0/NOC_PMC_AXI_0/pspmc_0_psv_coresight_apu_ela]
+  exclude_bd_addr_seg -target_address_space [get_bd_addr_spaces cips_noc_subsystem/versal_cips_0/CPM_PCIE_NOC_0] [get_bd_addr_segs cips_noc_subsystem/versal_cips_0/NOC_PMC_AXI_0/pspmc_0_psv_coresight_apu_etf]
+  exclude_bd_addr_seg -target_address_space [get_bd_addr_spaces cips_noc_subsystem/versal_cips_0/CPM_PCIE_NOC_0] [get_bd_addr_segs cips_noc_subsystem/versal_cips_0/NOC_PMC_AXI_0/pspmc_0_psv_coresight_apu_fun]
+  exclude_bd_addr_seg -target_address_space [get_bd_addr_spaces cips_noc_subsystem/versal_cips_0/CPM_PCIE_NOC_0] [get_bd_addr_segs cips_noc_subsystem/versal_cips_0/NOC_PMC_AXI_0/pspmc_0_psv_coresight_cpm_atm]
+  exclude_bd_addr_seg -target_address_space [get_bd_addr_spaces cips_noc_subsystem/versal_cips_0/CPM_PCIE_NOC_0] [get_bd_addr_segs cips_noc_subsystem/versal_cips_0/NOC_PMC_AXI_0/pspmc_0_psv_coresight_cpm_cti2a]
+  exclude_bd_addr_seg -target_address_space [get_bd_addr_spaces cips_noc_subsystem/versal_cips_0/CPM_PCIE_NOC_0] [get_bd_addr_segs cips_noc_subsystem/versal_cips_0/NOC_PMC_AXI_0/pspmc_0_psv_coresight_cpm_cti2d]
+  exclude_bd_addr_seg -target_address_space [get_bd_addr_spaces cips_noc_subsystem/versal_cips_0/CPM_PCIE_NOC_0] [get_bd_addr_segs cips_noc_subsystem/versal_cips_0/NOC_PMC_AXI_0/pspmc_0_psv_coresight_cpm_ela2a]
+  exclude_bd_addr_seg -target_address_space [get_bd_addr_spaces cips_noc_subsystem/versal_cips_0/CPM_PCIE_NOC_0] [get_bd_addr_segs cips_noc_subsystem/versal_cips_0/NOC_PMC_AXI_0/pspmc_0_psv_coresight_cpm_ela2b]
+  exclude_bd_addr_seg -target_address_space [get_bd_addr_spaces cips_noc_subsystem/versal_cips_0/CPM_PCIE_NOC_0] [get_bd_addr_segs cips_noc_subsystem/versal_cips_0/NOC_PMC_AXI_0/pspmc_0_psv_coresight_cpm_ela2c]
+  exclude_bd_addr_seg -target_address_space [get_bd_addr_spaces cips_noc_subsystem/versal_cips_0/CPM_PCIE_NOC_0] [get_bd_addr_segs cips_noc_subsystem/versal_cips_0/NOC_PMC_AXI_0/pspmc_0_psv_coresight_cpm_ela2d]
+  exclude_bd_addr_seg -target_address_space [get_bd_addr_spaces cips_noc_subsystem/versal_cips_0/CPM_PCIE_NOC_0] [get_bd_addr_segs cips_noc_subsystem/versal_cips_0/NOC_PMC_AXI_0/pspmc_0_psv_coresight_cpm_fun]
+  exclude_bd_addr_seg -target_address_space [get_bd_addr_spaces cips_noc_subsystem/versal_cips_0/CPM_PCIE_NOC_0] [get_bd_addr_segs cips_noc_subsystem/versal_cips_0/NOC_PMC_AXI_0/pspmc_0_psv_coresight_cpm_rom]
   exclude_bd_addr_seg -offset 0x000100B80000 -range 0x00010000 -target_address_space [get_bd_addr_spaces cips_noc_subsystem/versal_cips_0/CPM_PCIE_NOC_0] [get_bd_addr_segs cips_noc_subsystem/versal_cips_0/NOC_PMC_AXI_0/pspmc_0_psv_coresight_fpd_atm]
   exclude_bd_addr_seg -offset 0x000100B70000 -range 0x00010000 -target_address_space [get_bd_addr_spaces cips_noc_subsystem/versal_cips_0/CPM_PCIE_NOC_0] [get_bd_addr_segs cips_noc_subsystem/versal_cips_0/NOC_PMC_AXI_0/pspmc_0_psv_coresight_fpd_stm]
   exclude_bd_addr_seg -offset 0x000100980000 -range 0x00010000 -target_address_space [get_bd_addr_spaces cips_noc_subsystem/versal_cips_0/CPM_PCIE_NOC_0] [get_bd_addr_segs cips_noc_subsystem/versal_cips_0/NOC_PMC_AXI_0/pspmc_0_psv_coresight_lpd_atm]
@@ -590,6 +618,7 @@ proc create_root_design { parentCell design_name temp_options} {
   exclude_bd_addr_seg -offset 0x000100280000 -range 0x00001000 -target_address_space [get_bd_addr_spaces cips_noc_subsystem/versal_cips_0/CPM_PCIE_NOC_0] [get_bd_addr_segs cips_noc_subsystem/versal_cips_0/NOC_PMC_AXI_0/pspmc_0_psv_pmc_iomodule_0]
   exclude_bd_addr_seg -offset 0x000100310000 -range 0x00008000 -target_address_space [get_bd_addr_spaces cips_noc_subsystem/versal_cips_0/CPM_PCIE_NOC_0] [get_bd_addr_segs cips_noc_subsystem/versal_cips_0/NOC_PMC_AXI_0/pspmc_0_psv_pmc_ppu1_mdm_0]
   exclude_bd_addr_seg -offset 0x000101030000 -range 0x00010000 -target_address_space [get_bd_addr_spaces cips_noc_subsystem/versal_cips_0/CPM_PCIE_NOC_0] [get_bd_addr_segs cips_noc_subsystem/versal_cips_0/NOC_PMC_AXI_0/pspmc_0_psv_pmc_qspi_0]
+  exclude_bd_addr_seg -target_address_space [get_bd_addr_spaces cips_noc_subsystem/versal_cips_0/CPM_PCIE_NOC_0] [get_bd_addr_segs cips_noc_subsystem/versal_cips_0/NOC_PMC_AXI_0/pspmc_0_psv_pmc_qspi_ospi_flash_0]
   exclude_bd_addr_seg -offset 0x000102000000 -range 0x00020000 -target_address_space [get_bd_addr_spaces cips_noc_subsystem/versal_cips_0/CPM_PCIE_NOC_0] [get_bd_addr_segs cips_noc_subsystem/versal_cips_0/NOC_PMC_AXI_0/pspmc_0_psv_pmc_ram]
   exclude_bd_addr_seg -offset 0x000100240000 -range 0x00020000 -target_address_space [get_bd_addr_spaces cips_noc_subsystem/versal_cips_0/CPM_PCIE_NOC_0] [get_bd_addr_segs cips_noc_subsystem/versal_cips_0/NOC_PMC_AXI_0/pspmc_0_psv_pmc_ram_data_cntlr]
   exclude_bd_addr_seg -offset 0x000100200000 -range 0x00040000 -target_address_space [get_bd_addr_spaces cips_noc_subsystem/versal_cips_0/CPM_PCIE_NOC_0] [get_bd_addr_segs cips_noc_subsystem/versal_cips_0/NOC_PMC_AXI_0/pspmc_0_psv_pmc_ram_instr_cntlr]
@@ -611,30 +640,6 @@ proc create_root_design { parentCell design_name temp_options} {
   exclude_bd_addr_seg -offset 0xFF9A0000 -range 0x00010000 -target_address_space [get_bd_addr_spaces cips_noc_subsystem/versal_cips_0/CPM_PCIE_NOC_0] [get_bd_addr_segs cips_noc_subsystem/versal_cips_0/NOC_PMC_AXI_0/pspmc_0_psv_rpu_0]
   exclude_bd_addr_seg -offset 0xFF130000 -range 0x00010000 -target_address_space [get_bd_addr_spaces cips_noc_subsystem/versal_cips_0/CPM_PCIE_NOC_0] [get_bd_addr_segs cips_noc_subsystem/versal_cips_0/NOC_PMC_AXI_0/pspmc_0_psv_scntr_0]
   exclude_bd_addr_seg -offset 0xFF140000 -range 0x00010000 -target_address_space [get_bd_addr_spaces cips_noc_subsystem/versal_cips_0/CPM_PCIE_NOC_0] [get_bd_addr_segs cips_noc_subsystem/versal_cips_0/NOC_PMC_AXI_0/pspmc_0_psv_scntrs_0]
-  exclude_bd_addr_seg [get_bd_addr_segs cips_noc_subsystem/versal_cips_0/NOC_PMC_AXI_0/pspmc_0_psv_pmc_qspi_ospi_flash_0] -target_address_space [get_bd_addr_spaces cips_noc_subsystem/versal_cips_0/CPM_PCIE_NOC_0]
-  exclude_bd_addr_seg [get_bd_addr_segs cips_noc_subsystem/versal_cips_0/NOC_PMC_AXI_0/pspmc_0_psv_coresight_apu_fun] -target_address_space [get_bd_addr_spaces cips_noc_subsystem/versal_cips_0/CPM_PCIE_NOC_0]
-  exclude_bd_addr_seg [get_bd_addr_segs cips_noc_subsystem/versal_cips_0/NOC_PMC_AXI_0/pspmc_0_psv_coresight_apu_etf] -target_address_space [get_bd_addr_spaces cips_noc_subsystem/versal_cips_0/CPM_PCIE_NOC_0]
-  exclude_bd_addr_seg [get_bd_addr_segs cips_noc_subsystem/versal_cips_0/NOC_PMC_AXI_0/pspmc_0_psv_coresight_apu_ela] -target_address_space [get_bd_addr_spaces cips_noc_subsystem/versal_cips_0/CPM_PCIE_NOC_0]
-  exclude_bd_addr_seg [get_bd_addr_segs cips_noc_subsystem/versal_cips_0/NOC_PMC_AXI_0/pspmc_0_psv_coresight_apu_cti] -target_address_space [get_bd_addr_spaces cips_noc_subsystem/versal_cips_0/CPM_PCIE_NOC_0]
-  exclude_bd_addr_seg [get_bd_addr_segs cips_noc_subsystem/versal_cips_0/NOC_PMC_AXI_0/pspmc_0_psv_coresight_a720_dbg] -target_address_space [get_bd_addr_spaces cips_noc_subsystem/versal_cips_0/CPM_PCIE_NOC_0]
-  exclude_bd_addr_seg [get_bd_addr_segs cips_noc_subsystem/versal_cips_0/NOC_PMC_AXI_0/pspmc_0_psv_coresight_a720_cti] -target_address_space [get_bd_addr_spaces cips_noc_subsystem/versal_cips_0/CPM_PCIE_NOC_0]
-  exclude_bd_addr_seg [get_bd_addr_segs cips_noc_subsystem/versal_cips_0/NOC_PMC_AXI_0/pspmc_0_psv_coresight_a720_pmu] -target_address_space [get_bd_addr_spaces cips_noc_subsystem/versal_cips_0/CPM_PCIE_NOC_0]
-  exclude_bd_addr_seg [get_bd_addr_segs cips_noc_subsystem/versal_cips_0/NOC_PMC_AXI_0/pspmc_0_psv_coresight_a720_etm] -target_address_space [get_bd_addr_spaces cips_noc_subsystem/versal_cips_0/CPM_PCIE_NOC_0]
-  exclude_bd_addr_seg [get_bd_addr_segs cips_noc_subsystem/versal_cips_0/NOC_PMC_AXI_0/pspmc_0_psv_coresight_a721_dbg] -target_address_space [get_bd_addr_spaces cips_noc_subsystem/versal_cips_0/CPM_PCIE_NOC_0]
-  exclude_bd_addr_seg [get_bd_addr_segs cips_noc_subsystem/versal_cips_0/NOC_PMC_AXI_0/pspmc_0_psv_coresight_a721_cti] -target_address_space [get_bd_addr_spaces cips_noc_subsystem/versal_cips_0/CPM_PCIE_NOC_0]
-  exclude_bd_addr_seg [get_bd_addr_segs cips_noc_subsystem/versal_cips_0/NOC_PMC_AXI_0/pspmc_0_psv_coresight_a721_pmu] -target_address_space [get_bd_addr_spaces cips_noc_subsystem/versal_cips_0/CPM_PCIE_NOC_0]
-  exclude_bd_addr_seg [get_bd_addr_segs cips_noc_subsystem/versal_cips_0/NOC_PMC_AXI_0/pspmc_0_psv_coresight_a721_etm] -target_address_space [get_bd_addr_spaces cips_noc_subsystem/versal_cips_0/CPM_PCIE_NOC_0]
-  exclude_bd_addr_seg [get_bd_addr_segs cips_noc_subsystem/versal_cips_0/NOC_PMC_AXI_0/pspmc_0_psv_coresight_cpm_rom] -target_address_space [get_bd_addr_spaces cips_noc_subsystem/versal_cips_0/CPM_PCIE_NOC_0]
-  exclude_bd_addr_seg [get_bd_addr_segs cips_noc_subsystem/versal_cips_0/NOC_PMC_AXI_0/pspmc_0_psv_coresight_cpm_fun] -target_address_space [get_bd_addr_spaces cips_noc_subsystem/versal_cips_0/CPM_PCIE_NOC_0]
-  exclude_bd_addr_seg [get_bd_addr_segs cips_noc_subsystem/versal_cips_0/NOC_PMC_AXI_0/pspmc_0_psv_coresight_cpm_ela2a] -target_address_space [get_bd_addr_spaces cips_noc_subsystem/versal_cips_0/CPM_PCIE_NOC_0]
-  exclude_bd_addr_seg [get_bd_addr_segs cips_noc_subsystem/versal_cips_0/NOC_PMC_AXI_0/pspmc_0_psv_coresight_cpm_ela2b] -target_address_space [get_bd_addr_spaces cips_noc_subsystem/versal_cips_0/CPM_PCIE_NOC_0]
-  exclude_bd_addr_seg [get_bd_addr_segs cips_noc_subsystem/versal_cips_0/NOC_PMC_AXI_0/pspmc_0_psv_coresight_cpm_ela2c] -target_address_space [get_bd_addr_spaces cips_noc_subsystem/versal_cips_0/CPM_PCIE_NOC_0]
-  exclude_bd_addr_seg [get_bd_addr_segs cips_noc_subsystem/versal_cips_0/NOC_PMC_AXI_0/pspmc_0_psv_coresight_cpm_ela2d] -target_address_space [get_bd_addr_spaces cips_noc_subsystem/versal_cips_0/CPM_PCIE_NOC_0]
-  exclude_bd_addr_seg [get_bd_addr_segs cips_noc_subsystem/versal_cips_0/NOC_PMC_AXI_0/pspmc_0_psv_coresight_cpm_atm] -target_address_space [get_bd_addr_spaces cips_noc_subsystem/versal_cips_0/CPM_PCIE_NOC_0]
-  exclude_bd_addr_seg [get_bd_addr_segs cips_noc_subsystem/versal_cips_0/NOC_PMC_AXI_0/pspmc_0_psv_coresight_cpm_cti2a] -target_address_space [get_bd_addr_spaces cips_noc_subsystem/versal_cips_0/CPM_PCIE_NOC_0]
-  exclude_bd_addr_seg [get_bd_addr_segs cips_noc_subsystem/versal_cips_0/NOC_PMC_AXI_0/pspmc_0_psv_coresight_cpm_cti2d] -target_address_space [get_bd_addr_spaces cips_noc_subsystem/versal_cips_0/CPM_PCIE_NOC_0]
-
-  exclude_bd_addr_seg -offset 0x020240000000 -range 0x00200000 -target_address_space [get_bd_addr_spaces cips_noc_subsystem/versal_cips_0/CPM_PCIE_NOC_1] [get_bd_addr_segs debug_inst/axi_dbg_hub_0/S_AXI_DBG_HUB/Mem0]
   exclude_bd_addr_seg -offset 0xFFA80000 -range 0x00010000 -target_address_space [get_bd_addr_spaces cips_noc_subsystem/versal_cips_0/CPM_PCIE_NOC_1] [get_bd_addr_segs cips_noc_subsystem/versal_cips_0/NOC_PMC_AXI_0/pspmc_0_psv_adma_0]
   exclude_bd_addr_seg -offset 0xFFA90000 -range 0x00010000 -target_address_space [get_bd_addr_spaces cips_noc_subsystem/versal_cips_0/CPM_PCIE_NOC_1] [get_bd_addr_segs cips_noc_subsystem/versal_cips_0/NOC_PMC_AXI_0/pspmc_0_psv_adma_1]
   exclude_bd_addr_seg -offset 0xFFAA0000 -range 0x00010000 -target_address_space [get_bd_addr_spaces cips_noc_subsystem/versal_cips_0/CPM_PCIE_NOC_1] [get_bd_addr_segs cips_noc_subsystem/versal_cips_0/NOC_PMC_AXI_0/pspmc_0_psv_adma_2]
@@ -645,6 +650,27 @@ proc create_root_design { parentCell design_name temp_options} {
   exclude_bd_addr_seg -offset 0xFFAF0000 -range 0x00010000 -target_address_space [get_bd_addr_spaces cips_noc_subsystem/versal_cips_0/CPM_PCIE_NOC_1] [get_bd_addr_segs cips_noc_subsystem/versal_cips_0/NOC_PMC_AXI_0/pspmc_0_psv_adma_7]
   exclude_bd_addr_seg -offset 0xFD5C0000 -range 0x00010000 -target_address_space [get_bd_addr_spaces cips_noc_subsystem/versal_cips_0/CPM_PCIE_NOC_1] [get_bd_addr_segs cips_noc_subsystem/versal_cips_0/NOC_PMC_AXI_0/pspmc_0_psv_apu_0]
   exclude_bd_addr_seg -offset 0x000100800000 -range 0x00010000 -target_address_space [get_bd_addr_spaces cips_noc_subsystem/versal_cips_0/CPM_PCIE_NOC_1] [get_bd_addr_segs cips_noc_subsystem/versal_cips_0/NOC_PMC_AXI_0/pspmc_0_psv_coresight_0]
+  exclude_bd_addr_seg -target_address_space [get_bd_addr_spaces cips_noc_subsystem/versal_cips_0/CPM_PCIE_NOC_1] [get_bd_addr_segs cips_noc_subsystem/versal_cips_0/NOC_PMC_AXI_0/pspmc_0_psv_coresight_a720_cti]
+  exclude_bd_addr_seg -target_address_space [get_bd_addr_spaces cips_noc_subsystem/versal_cips_0/CPM_PCIE_NOC_1] [get_bd_addr_segs cips_noc_subsystem/versal_cips_0/NOC_PMC_AXI_0/pspmc_0_psv_coresight_a720_dbg]
+  exclude_bd_addr_seg -target_address_space [get_bd_addr_spaces cips_noc_subsystem/versal_cips_0/CPM_PCIE_NOC_1] [get_bd_addr_segs cips_noc_subsystem/versal_cips_0/NOC_PMC_AXI_0/pspmc_0_psv_coresight_a720_etm]
+  exclude_bd_addr_seg -target_address_space [get_bd_addr_spaces cips_noc_subsystem/versal_cips_0/CPM_PCIE_NOC_1] [get_bd_addr_segs cips_noc_subsystem/versal_cips_0/NOC_PMC_AXI_0/pspmc_0_psv_coresight_a720_pmu]
+  exclude_bd_addr_seg -target_address_space [get_bd_addr_spaces cips_noc_subsystem/versal_cips_0/CPM_PCIE_NOC_1] [get_bd_addr_segs cips_noc_subsystem/versal_cips_0/NOC_PMC_AXI_0/pspmc_0_psv_coresight_a721_cti]
+  exclude_bd_addr_seg -target_address_space [get_bd_addr_spaces cips_noc_subsystem/versal_cips_0/CPM_PCIE_NOC_1] [get_bd_addr_segs cips_noc_subsystem/versal_cips_0/NOC_PMC_AXI_0/pspmc_0_psv_coresight_a721_dbg]
+  exclude_bd_addr_seg -target_address_space [get_bd_addr_spaces cips_noc_subsystem/versal_cips_0/CPM_PCIE_NOC_1] [get_bd_addr_segs cips_noc_subsystem/versal_cips_0/NOC_PMC_AXI_0/pspmc_0_psv_coresight_a721_etm]
+  exclude_bd_addr_seg -target_address_space [get_bd_addr_spaces cips_noc_subsystem/versal_cips_0/CPM_PCIE_NOC_1] [get_bd_addr_segs cips_noc_subsystem/versal_cips_0/NOC_PMC_AXI_0/pspmc_0_psv_coresight_a721_pmu]
+  exclude_bd_addr_seg -target_address_space [get_bd_addr_spaces cips_noc_subsystem/versal_cips_0/CPM_PCIE_NOC_1] [get_bd_addr_segs cips_noc_subsystem/versal_cips_0/NOC_PMC_AXI_0/pspmc_0_psv_coresight_apu_cti]
+  exclude_bd_addr_seg -target_address_space [get_bd_addr_spaces cips_noc_subsystem/versal_cips_0/CPM_PCIE_NOC_1] [get_bd_addr_segs cips_noc_subsystem/versal_cips_0/NOC_PMC_AXI_0/pspmc_0_psv_coresight_apu_ela]
+  exclude_bd_addr_seg -target_address_space [get_bd_addr_spaces cips_noc_subsystem/versal_cips_0/CPM_PCIE_NOC_1] [get_bd_addr_segs cips_noc_subsystem/versal_cips_0/NOC_PMC_AXI_0/pspmc_0_psv_coresight_apu_etf]
+  exclude_bd_addr_seg -target_address_space [get_bd_addr_spaces cips_noc_subsystem/versal_cips_0/CPM_PCIE_NOC_1] [get_bd_addr_segs cips_noc_subsystem/versal_cips_0/NOC_PMC_AXI_0/pspmc_0_psv_coresight_apu_fun]
+  exclude_bd_addr_seg -target_address_space [get_bd_addr_spaces cips_noc_subsystem/versal_cips_0/CPM_PCIE_NOC_1] [get_bd_addr_segs cips_noc_subsystem/versal_cips_0/NOC_PMC_AXI_0/pspmc_0_psv_coresight_cpm_atm]
+  exclude_bd_addr_seg -target_address_space [get_bd_addr_spaces cips_noc_subsystem/versal_cips_0/CPM_PCIE_NOC_1] [get_bd_addr_segs cips_noc_subsystem/versal_cips_0/NOC_PMC_AXI_0/pspmc_0_psv_coresight_cpm_cti2a]
+  exclude_bd_addr_seg -target_address_space [get_bd_addr_spaces cips_noc_subsystem/versal_cips_0/CPM_PCIE_NOC_1] [get_bd_addr_segs cips_noc_subsystem/versal_cips_0/NOC_PMC_AXI_0/pspmc_0_psv_coresight_cpm_cti2d]
+  exclude_bd_addr_seg -target_address_space [get_bd_addr_spaces cips_noc_subsystem/versal_cips_0/CPM_PCIE_NOC_1] [get_bd_addr_segs cips_noc_subsystem/versal_cips_0/NOC_PMC_AXI_0/pspmc_0_psv_coresight_cpm_ela2a]
+  exclude_bd_addr_seg -target_address_space [get_bd_addr_spaces cips_noc_subsystem/versal_cips_0/CPM_PCIE_NOC_1] [get_bd_addr_segs cips_noc_subsystem/versal_cips_0/NOC_PMC_AXI_0/pspmc_0_psv_coresight_cpm_ela2b]
+  exclude_bd_addr_seg -target_address_space [get_bd_addr_spaces cips_noc_subsystem/versal_cips_0/CPM_PCIE_NOC_1] [get_bd_addr_segs cips_noc_subsystem/versal_cips_0/NOC_PMC_AXI_0/pspmc_0_psv_coresight_cpm_ela2c]
+  exclude_bd_addr_seg -target_address_space [get_bd_addr_spaces cips_noc_subsystem/versal_cips_0/CPM_PCIE_NOC_1] [get_bd_addr_segs cips_noc_subsystem/versal_cips_0/NOC_PMC_AXI_0/pspmc_0_psv_coresight_cpm_ela2d]
+  exclude_bd_addr_seg -target_address_space [get_bd_addr_spaces cips_noc_subsystem/versal_cips_0/CPM_PCIE_NOC_1] [get_bd_addr_segs cips_noc_subsystem/versal_cips_0/NOC_PMC_AXI_0/pspmc_0_psv_coresight_cpm_fun]
+  exclude_bd_addr_seg -target_address_space [get_bd_addr_spaces cips_noc_subsystem/versal_cips_0/CPM_PCIE_NOC_1] [get_bd_addr_segs cips_noc_subsystem/versal_cips_0/NOC_PMC_AXI_0/pspmc_0_psv_coresight_cpm_rom]
   exclude_bd_addr_seg -offset 0x000100B80000 -range 0x00010000 -target_address_space [get_bd_addr_spaces cips_noc_subsystem/versal_cips_0/CPM_PCIE_NOC_1] [get_bd_addr_segs cips_noc_subsystem/versal_cips_0/NOC_PMC_AXI_0/pspmc_0_psv_coresight_fpd_atm]
   exclude_bd_addr_seg -offset 0x000100B70000 -range 0x00010000 -target_address_space [get_bd_addr_spaces cips_noc_subsystem/versal_cips_0/CPM_PCIE_NOC_1] [get_bd_addr_segs cips_noc_subsystem/versal_cips_0/NOC_PMC_AXI_0/pspmc_0_psv_coresight_fpd_stm]
   exclude_bd_addr_seg -offset 0x000100980000 -range 0x00010000 -target_address_space [get_bd_addr_spaces cips_noc_subsystem/versal_cips_0/CPM_PCIE_NOC_1] [get_bd_addr_segs cips_noc_subsystem/versal_cips_0/NOC_PMC_AXI_0/pspmc_0_psv_coresight_lpd_atm]
@@ -686,6 +712,7 @@ proc create_root_design { parentCell design_name temp_options} {
   exclude_bd_addr_seg -offset 0x000100280000 -range 0x00001000 -target_address_space [get_bd_addr_spaces cips_noc_subsystem/versal_cips_0/CPM_PCIE_NOC_1] [get_bd_addr_segs cips_noc_subsystem/versal_cips_0/NOC_PMC_AXI_0/pspmc_0_psv_pmc_iomodule_0]
   exclude_bd_addr_seg -offset 0x000100310000 -range 0x00008000 -target_address_space [get_bd_addr_spaces cips_noc_subsystem/versal_cips_0/CPM_PCIE_NOC_1] [get_bd_addr_segs cips_noc_subsystem/versal_cips_0/NOC_PMC_AXI_0/pspmc_0_psv_pmc_ppu1_mdm_0]
   exclude_bd_addr_seg -offset 0x000101030000 -range 0x00010000 -target_address_space [get_bd_addr_spaces cips_noc_subsystem/versal_cips_0/CPM_PCIE_NOC_1] [get_bd_addr_segs cips_noc_subsystem/versal_cips_0/NOC_PMC_AXI_0/pspmc_0_psv_pmc_qspi_0]
+  exclude_bd_addr_seg -target_address_space [get_bd_addr_spaces cips_noc_subsystem/versal_cips_0/CPM_PCIE_NOC_1] [get_bd_addr_segs cips_noc_subsystem/versal_cips_0/NOC_PMC_AXI_0/pspmc_0_psv_pmc_qspi_ospi_flash_0]
   exclude_bd_addr_seg -offset 0x000102000000 -range 0x00020000 -target_address_space [get_bd_addr_spaces cips_noc_subsystem/versal_cips_0/CPM_PCIE_NOC_1] [get_bd_addr_segs cips_noc_subsystem/versal_cips_0/NOC_PMC_AXI_0/pspmc_0_psv_pmc_ram]
   exclude_bd_addr_seg -offset 0x000100240000 -range 0x00020000 -target_address_space [get_bd_addr_spaces cips_noc_subsystem/versal_cips_0/CPM_PCIE_NOC_1] [get_bd_addr_segs cips_noc_subsystem/versal_cips_0/NOC_PMC_AXI_0/pspmc_0_psv_pmc_ram_data_cntlr]
   exclude_bd_addr_seg -offset 0x000100200000 -range 0x00040000 -target_address_space [get_bd_addr_spaces cips_noc_subsystem/versal_cips_0/CPM_PCIE_NOC_1] [get_bd_addr_segs cips_noc_subsystem/versal_cips_0/NOC_PMC_AXI_0/pspmc_0_psv_pmc_ram_instr_cntlr]
@@ -707,30 +734,6 @@ proc create_root_design { parentCell design_name temp_options} {
   exclude_bd_addr_seg -offset 0xFF9A0000 -range 0x00010000 -target_address_space [get_bd_addr_spaces cips_noc_subsystem/versal_cips_0/CPM_PCIE_NOC_1] [get_bd_addr_segs cips_noc_subsystem/versal_cips_0/NOC_PMC_AXI_0/pspmc_0_psv_rpu_0]
   exclude_bd_addr_seg -offset 0xFF130000 -range 0x00010000 -target_address_space [get_bd_addr_spaces cips_noc_subsystem/versal_cips_0/CPM_PCIE_NOC_1] [get_bd_addr_segs cips_noc_subsystem/versal_cips_0/NOC_PMC_AXI_0/pspmc_0_psv_scntr_0]
   exclude_bd_addr_seg -offset 0xFF140000 -range 0x00010000 -target_address_space [get_bd_addr_spaces cips_noc_subsystem/versal_cips_0/CPM_PCIE_NOC_1] [get_bd_addr_segs cips_noc_subsystem/versal_cips_0/NOC_PMC_AXI_0/pspmc_0_psv_scntrs_0]
-  exclude_bd_addr_seg [get_bd_addr_segs cips_noc_subsystem/versal_cips_0/NOC_PMC_AXI_0/pspmc_0_psv_pmc_qspi_ospi_flash_0] -target_address_space [get_bd_addr_spaces cips_noc_subsystem/versal_cips_0/CPM_PCIE_NOC_1]
-  exclude_bd_addr_seg [get_bd_addr_segs cips_noc_subsystem/versal_cips_0/NOC_PMC_AXI_0/pspmc_0_psv_coresight_apu_fun] -target_address_space [get_bd_addr_spaces cips_noc_subsystem/versal_cips_0/CPM_PCIE_NOC_1]
-  exclude_bd_addr_seg [get_bd_addr_segs cips_noc_subsystem/versal_cips_0/NOC_PMC_AXI_0/pspmc_0_psv_coresight_apu_etf] -target_address_space [get_bd_addr_spaces cips_noc_subsystem/versal_cips_0/CPM_PCIE_NOC_1]
-  exclude_bd_addr_seg [get_bd_addr_segs cips_noc_subsystem/versal_cips_0/NOC_PMC_AXI_0/pspmc_0_psv_coresight_apu_ela] -target_address_space [get_bd_addr_spaces cips_noc_subsystem/versal_cips_0/CPM_PCIE_NOC_1]
-  exclude_bd_addr_seg [get_bd_addr_segs cips_noc_subsystem/versal_cips_0/NOC_PMC_AXI_0/pspmc_0_psv_coresight_apu_cti] -target_address_space [get_bd_addr_spaces cips_noc_subsystem/versal_cips_0/CPM_PCIE_NOC_1]
-  exclude_bd_addr_seg [get_bd_addr_segs cips_noc_subsystem/versal_cips_0/NOC_PMC_AXI_0/pspmc_0_psv_coresight_a720_dbg] -target_address_space [get_bd_addr_spaces cips_noc_subsystem/versal_cips_0/CPM_PCIE_NOC_1]
-  exclude_bd_addr_seg [get_bd_addr_segs cips_noc_subsystem/versal_cips_0/NOC_PMC_AXI_0/pspmc_0_psv_coresight_a720_cti] -target_address_space [get_bd_addr_spaces cips_noc_subsystem/versal_cips_0/CPM_PCIE_NOC_1]
-  exclude_bd_addr_seg [get_bd_addr_segs cips_noc_subsystem/versal_cips_0/NOC_PMC_AXI_0/pspmc_0_psv_coresight_a720_pmu] -target_address_space [get_bd_addr_spaces cips_noc_subsystem/versal_cips_0/CPM_PCIE_NOC_1]
-  exclude_bd_addr_seg [get_bd_addr_segs cips_noc_subsystem/versal_cips_0/NOC_PMC_AXI_0/pspmc_0_psv_coresight_a720_etm] -target_address_space [get_bd_addr_spaces cips_noc_subsystem/versal_cips_0/CPM_PCIE_NOC_1]
-  exclude_bd_addr_seg [get_bd_addr_segs cips_noc_subsystem/versal_cips_0/NOC_PMC_AXI_0/pspmc_0_psv_coresight_a721_dbg] -target_address_space [get_bd_addr_spaces cips_noc_subsystem/versal_cips_0/CPM_PCIE_NOC_1]
-  exclude_bd_addr_seg [get_bd_addr_segs cips_noc_subsystem/versal_cips_0/NOC_PMC_AXI_0/pspmc_0_psv_coresight_a721_cti] -target_address_space [get_bd_addr_spaces cips_noc_subsystem/versal_cips_0/CPM_PCIE_NOC_1]
-  exclude_bd_addr_seg [get_bd_addr_segs cips_noc_subsystem/versal_cips_0/NOC_PMC_AXI_0/pspmc_0_psv_coresight_a721_pmu] -target_address_space [get_bd_addr_spaces cips_noc_subsystem/versal_cips_0/CPM_PCIE_NOC_1]
-  exclude_bd_addr_seg [get_bd_addr_segs cips_noc_subsystem/versal_cips_0/NOC_PMC_AXI_0/pspmc_0_psv_coresight_a721_etm] -target_address_space [get_bd_addr_spaces cips_noc_subsystem/versal_cips_0/CPM_PCIE_NOC_1]
-  exclude_bd_addr_seg [get_bd_addr_segs cips_noc_subsystem/versal_cips_0/NOC_PMC_AXI_0/pspmc_0_psv_coresight_cpm_rom] -target_address_space [get_bd_addr_spaces cips_noc_subsystem/versal_cips_0/CPM_PCIE_NOC_1]
-  exclude_bd_addr_seg [get_bd_addr_segs cips_noc_subsystem/versal_cips_0/NOC_PMC_AXI_0/pspmc_0_psv_coresight_cpm_fun] -target_address_space [get_bd_addr_spaces cips_noc_subsystem/versal_cips_0/CPM_PCIE_NOC_1]
-  exclude_bd_addr_seg [get_bd_addr_segs cips_noc_subsystem/versal_cips_0/NOC_PMC_AXI_0/pspmc_0_psv_coresight_cpm_ela2a] -target_address_space [get_bd_addr_spaces cips_noc_subsystem/versal_cips_0/CPM_PCIE_NOC_1]
-  exclude_bd_addr_seg [get_bd_addr_segs cips_noc_subsystem/versal_cips_0/NOC_PMC_AXI_0/pspmc_0_psv_coresight_cpm_ela2b] -target_address_space [get_bd_addr_spaces cips_noc_subsystem/versal_cips_0/CPM_PCIE_NOC_1]
-  exclude_bd_addr_seg [get_bd_addr_segs cips_noc_subsystem/versal_cips_0/NOC_PMC_AXI_0/pspmc_0_psv_coresight_cpm_ela2c] -target_address_space [get_bd_addr_spaces cips_noc_subsystem/versal_cips_0/CPM_PCIE_NOC_1]
-  exclude_bd_addr_seg [get_bd_addr_segs cips_noc_subsystem/versal_cips_0/NOC_PMC_AXI_0/pspmc_0_psv_coresight_cpm_ela2d] -target_address_space [get_bd_addr_spaces cips_noc_subsystem/versal_cips_0/CPM_PCIE_NOC_1]
-  exclude_bd_addr_seg [get_bd_addr_segs cips_noc_subsystem/versal_cips_0/NOC_PMC_AXI_0/pspmc_0_psv_coresight_cpm_atm] -target_address_space [get_bd_addr_spaces cips_noc_subsystem/versal_cips_0/CPM_PCIE_NOC_1]
-  exclude_bd_addr_seg [get_bd_addr_segs cips_noc_subsystem/versal_cips_0/NOC_PMC_AXI_0/pspmc_0_psv_coresight_cpm_cti2a] -target_address_space [get_bd_addr_spaces cips_noc_subsystem/versal_cips_0/CPM_PCIE_NOC_1]
-  exclude_bd_addr_seg [get_bd_addr_segs cips_noc_subsystem/versal_cips_0/NOC_PMC_AXI_0/pspmc_0_psv_coresight_cpm_cti2d] -target_address_space [get_bd_addr_spaces cips_noc_subsystem/versal_cips_0/CPM_PCIE_NOC_1]
-
-  exclude_bd_addr_seg -offset 0x020180000000 -range 0x00010000 -target_address_space [get_bd_addr_spaces cips_noc_subsystem/versal_cips_0/PMC_NOC_AXI_0] [get_bd_addr_segs M_AXIL/Reg]
 
 
   ########################################################
