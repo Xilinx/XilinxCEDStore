@@ -347,11 +347,11 @@
         "name": "versal_ibert_ced",
         "display": "Versal IBERT",
         "latest_revision": "1.0",
-        "commit_id": "73297c8051930b028703ae6dafac424de25052b4",
+        "commit_id": "12dcb2d925c0584e9472ee15c1f9e60e861f5af1",
         "revisions": [
           {
             "revision": "1.0",
-            "commit_id": "73297c8051930b028703ae6dafac424de25052b4",
+            "commit_id": "12dcb2d925c0584e9472ee15c1f9e60e861f5af1",
             "date": "14-09-2022:18:19:45",
             "history": "Added board Versal IBERT v1.0"
           }
@@ -366,11 +366,11 @@
         "name": "hsdp_ced",
         "display": "Versal HSDP with Soft Aurora",
         "latest_revision": "1.0",
-        "commit_id": "73297c8051930b028703ae6dafac424de25052b4",
+        "commit_id": "12dcb2d925c0584e9472ee15c1f9e60e861f5af1",
         "revisions": [
           {
             "revision": "1.0",
-            "commit_id": "73297c8051930b028703ae6dafac424de25052b4",
+            "commit_id": "12dcb2d925c0584e9472ee15c1f9e60e861f5af1",
             "date": "10-04-2023:17:54:50",
             "history": "Added board Versal HSDP with Soft Aurora v1.0"
           }
