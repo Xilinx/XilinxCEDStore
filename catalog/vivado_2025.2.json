@@ -727,7 +727,7 @@
         "name": "Versal_MMI_PCIe_RP_Design",
         "display": "Versal MMI PCIe RP Design",
         "latest_revision": "2.0",
-        "commit_id": "c319a1e478d361b569fbfecba2e007fcfe590a1e",
+        "commit_id": "d857c310cf4a34b1730050908a5555ed9fd2cdb7",
         "revisions": [
           {
             "revision": "1.0",
@@ -737,7 +737,7 @@
           },
           {
             "revision": "2.0",
-            "commit_id": "c319a1e478d361b569fbfecba2e007fcfe590a1e",
+            "commit_id": "d857c310cf4a34b1730050908a5555ed9fd2cdb7",
             "date": "13-10-2025:05:25:25",
             "history": "Added board Versal MMI PCIe RP Design v2.0"
           }
