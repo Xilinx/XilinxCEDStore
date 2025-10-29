@@ -220,7 +220,7 @@ set_property -dict [list \
     [get_bd_pins proc_sys_reset_0/slowest_sync_clk] \
     [get_bd_pins versal_cips_0/fpd_axi_pl_aclk] \
     [get_bd_pins gtwiz_versal_0/gtwiz_freerun_clk]
-  } elseif {$device eq "xc2ve3504" || $device eq "xc2ve3558" || $device eq "xc2ve3804" || $device eq "xc2ve3858" || $device eq "xc2vm3558" || $device eq "xc2vm3858" || $device eq "xc2vm3358" || $device eq "xc2ve3304" } {
+  } elseif {$device eq "xc2ve3504" || $device eq "xc2ve3558" || $device eq "xc2ve3804" || $device eq "xc2ve3858" || $device eq "xc2vm3558" || $device eq "xc2vm3858" || $device eq "xc2vm3358" || $device eq "xc2ve3304" || $device eq "xc2ve3358" } {
     set versal_cips_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:ps_wizard versal_cips_0 ]
       set_property -dict [list \
         CONFIG.PS11_CONFIG(PMC_CRP_PL0_REF_CTRL_FREQMHZ) {150} \

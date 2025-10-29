@@ -28,7 +28,7 @@ proc getSupportedParts {} {
   set mylist [get_parts -quiet -filter {C_FAMILY =~ versal}]
   set newlist [list]
   foreach item $mylist {
-    if {[string range $item 0 7] != "xave2002" && [string range $item 0 7] != "xave2102" && [string range $item 0 7] != "xave2202" && [string range $item 0 8] != "xc2ve3358"} {
+    if {[string range $item 0 7] != "xave2002" && [string range $item 0 7] != "xave2102" && [string range $item 0 7] != "xave2202"} {
       set newitem versal{$item}
       lappend newlist $newitem
     }

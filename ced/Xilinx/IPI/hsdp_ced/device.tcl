@@ -740,7 +740,6 @@ proc xc2ve3558 {} {
 
   proc get_gtloc {q} {
     set gt_dict {
-      GTYP_QUAD_105 GTYP_QUAD_X0Y0
       GTYP_QUAD_205 GTYP_QUAD_X1Y0
       GTYP_QUAD_106 GTYP_QUAD_X0Y1
       GTYP_QUAD_206 GTYP_QUAD_X1Y1
@@ -750,7 +749,6 @@ proc xc2ve3558 {} {
 
   proc get_reflocs {q} {
     set refclk_dict {
-      GTYP_QUAD_105 { GTYP_REFCLK_X0Y0 GTYP_REFCLK_X0Y1 }
       GTYP_QUAD_205 { GTYP_REFCLK_X1Y0 GTYP_REFCLK_X1Y1 }
       GTYP_QUAD_106 { GTYP_REFCLK_X0Y2 GTYP_REFCLK_X0Y3 }
       GTYP_QUAD_206 { GTYP_REFCLK_X1Y2 GTYP_REFCLK_X1Y3 }
@@ -761,13 +759,13 @@ proc xc2ve3558 {} {
   proc get_left {pkg} {
     switch $pkg {
       sbva1440 {
-        return [list GTYP_QUAD_105]
+        return [list ]
       }
       sfva1440 {
-        return [list GTYP_QUAD_105]
+        return [list ]
       }
       ssva2112 {
-        return [list GTYP_QUAD_105 GTYP_QUAD_106]
+        return [list GTYP_QUAD_106]
       }
     }
   }
@@ -789,20 +787,17 @@ proc xc2ve3558 {} {
     switch $pkg {
       sbva1440 {
         switch $quad {
-          GTYP_QUAD_105 { return [list ] }
           GTYP_QUAD_205 { return [list ] }
         }
       }
       sfva1440 {
         switch $quad {
-          GTYP_QUAD_105 { return [list ] }
           GTYP_QUAD_205 { return [list ] }
         }
       }
       ssva2112 {
         switch $quad {
-          GTYP_QUAD_105 { return [list GTYP_QUAD_106] }
-          GTYP_QUAD_106 { return [list GTYP_QUAD_105] }
+          GTYP_QUAD_106 { return [list ] }
           GTYP_QUAD_205 { return [list GTYP_QUAD_206] }
           GTYP_QUAD_206 { return [list GTYP_QUAD_205] }
         }
@@ -823,7 +818,6 @@ proc xc2ve3804 {} {
 
   proc get_gtloc {q} {
     set gt_dict {
-      GTYP_QUAD_105 GTYP_QUAD_X0Y0
       GTYP_QUAD_106 GTYP_QUAD_X0Y1
       GTYP_QUAD_107 GTYP_QUAD_X0Y2
       GTYP_QUAD_205 GTYP_QUAD_X1Y0
@@ -835,7 +829,6 @@ proc xc2ve3804 {} {
 
   proc get_reflocs {q} {
     set refclk_dict {
-      GTYP_QUAD_105 { GTYP_REFCLK_X0Y0 GTYP_REFCLK_X0Y1 }
       GTYP_QUAD_106 { GTYP_REFCLK_X0Y2 GTYP_REFCLK_X0Y3 }
       GTYP_QUAD_107 { GTYP_REFCLK_X0Y4 GTYP_REFCLK_X0Y5 }
       GTYP_QUAD_205 { GTYP_REFCLK_X1Y0 GTYP_REFCLK_X1Y1 }
@@ -848,7 +841,7 @@ proc xc2ve3804 {} {
   proc get_left {pkg} {
     switch $pkg {
       ssva2112 {
-        return [list GTYP_QUAD_105 GTYP_QUAD_106 GTYP_QUAD_107]
+        return [list GTYP_QUAD_106 GTYP_QUAD_107]
       }
     }
   }
@@ -864,9 +857,8 @@ proc xc2ve3804 {} {
     switch $pkg {
       ssva2112 {
         switch $quad {
-          GTYP_QUAD_105 { return [list GTYP_QUAD_106 GTYP_QUAD_107] }
-          GTYP_QUAD_106 { return [list GTYP_QUAD_105 GTYP_QUAD_107] }
-          GTYP_QUAD_107 { return [list GTYP_QUAD_105 GTYP_QUAD_106] }
+          GTYP_QUAD_106 { return [list GTYP_QUAD_107] }
+          GTYP_QUAD_107 { return [list GTYP_QUAD_106] }
           GTYP_QUAD_205 { return [list GTYP_QUAD_206 GTYP_QUAD_207] }
           GTYP_QUAD_206 { return [list GTYP_QUAD_205 GTYP_QUAD_207] }
           GTYP_QUAD_207 { return [list GTYP_QUAD_205 GTYP_QUAD_206] }
@@ -1083,7 +1075,6 @@ proc xc2vm3858 {} {
 
   proc get_gtloc {q} {
     set gt_dict {
-      GTYP_QUAD_105 GTYP_QUAD_X0Y0
       GTYP_QUAD_106 GTYP_QUAD_X0Y1
       GTYP_QUAD_107 GTYP_QUAD_X0Y2
       GTYP_QUAD_205 GTYP_QUAD_X1Y0
@@ -1095,7 +1086,6 @@ proc xc2vm3858 {} {
 
   proc get_reflocs {q} {
     set refclk_dict {
-      GTYP_QUAD_105 { GTYP_REFCLK_X0Y0 GTYP_REFCLK_X0Y1 }
       GTYP_QUAD_106 { GTYP_REFCLK_X0Y2 GTYP_REFCLK_X0Y3 }
       GTYP_QUAD_107 { GTYP_REFCLK_X0Y4 GTYP_REFCLK_X0Y5 }
       GTYP_QUAD_205 { GTYP_REFCLK_X1Y0 GTYP_REFCLK_X1Y1 }
@@ -1108,7 +1098,7 @@ proc xc2vm3858 {} {
   proc get_left {pkg} {
     switch $pkg {
       ssva2112 {
-        return [list GTYP_QUAD_105 GTYP_QUAD_106 GTYP_QUAD_107]
+        return [list GTYP_QUAD_106 GTYP_QUAD_107]
       }
     }
   }
@@ -1124,9 +1114,8 @@ proc xc2vm3858 {} {
     switch $pkg {
       ssva2112 {
         switch $quad {
-          GTYP_QUAD_105 { return [list GTYP_QUAD_106 GTYP_QUAD_107] }
-          GTYP_QUAD_106 { return [list GTYP_QUAD_105 GTYP_QUAD_107] }
-          GTYP_QUAD_107 { return [list GTYP_QUAD_105 GTYP_QUAD_106] }
+          GTYP_QUAD_106 { return [list GTYP_QUAD_107] }
+          GTYP_QUAD_107 { return [list GTYP_QUAD_106] }
           GTYP_QUAD_205 { return [list GTYP_QUAD_206 GTYP_QUAD_207] }
           GTYP_QUAD_206 { return [list GTYP_QUAD_205 GTYP_QUAD_207] }
           GTYP_QUAD_207 { return [list GTYP_QUAD_205 GTYP_QUAD_206] }
@@ -8959,7 +8948,6 @@ proc xc2vm3358 {} {
 
   proc get_gtloc {q} {
     set gt_dict {
-      GTYP_QUAD_105 GTYP_QUAD_X0Y1
       GTYP_QUAD_203 GTYP_QUAD_X1Y0
     }
     return [dict get $gt_dict $q]
@@ -8967,7 +8955,6 @@ proc xc2vm3358 {} {
 
   proc get_reflocs {q} {
     set refclk_dict {
-      GTYP_QUAD_105 { GTYP_REFCLK_X0Y2 GTYP_REFCLK_X0Y3 }
       GTYP_QUAD_203 { GTYP_REFCLK_X1Y0 GTYP_REFCLK_X1Y1 }
     }
     return [dict get $refclk_dict $q]
@@ -8976,10 +8963,10 @@ proc xc2vm3358 {} {
   proc get_left {pkg} {
     switch $pkg {
       sfva1089 {
-        return [list GTYP_QUAD_105]
+        return [list ]
       }
       ssva1440 {
-        return [list GTYP_QUAD_105]
+        return [list ]
       }
     }
   }
@@ -8998,13 +8985,11 @@ proc xc2vm3358 {} {
     switch $pkg {
       sfva1089 {
         switch $quad {
-          GTYP_QUAD_105 { return [list ] }
           GTYP_QUAD_203 { return [list ] }
         }
       }
       ssva1440 {
         switch $quad {
-          GTYP_QUAD_105 { return [list ] }
           GTYP_QUAD_203 { return [list ] }
         }
       }
@@ -9024,7 +9009,6 @@ proc xc2ve3304 {} {
 
   proc get_gtloc {q} {
     set gt_dict {
-      GTYP_QUAD_105 GTYP_QUAD_X0Y1
       GTYP_QUAD_203 GTYP_QUAD_X1Y0
     }
     return [dict get $gt_dict $q]
@@ -9032,7 +9016,6 @@ proc xc2ve3304 {} {
 
   proc get_reflocs {q} {
     set refclk_dict {
-      GTYP_QUAD_105 { GTYP_REFCLK_X0Y2 GTYP_REFCLK_X0Y3 }
       GTYP_QUAD_203 { GTYP_REFCLK_X1Y0 GTYP_REFCLK_X1Y1 }
     }
     return [dict get $refclk_dict $q]
@@ -9041,10 +9024,10 @@ proc xc2ve3304 {} {
   proc get_left {pkg} {
     switch $pkg {
       sfva1089 {
-        return [list GTYP_QUAD_105]
+        return [list ]
       }
       ssva1440 {
-        return [list GTYP_QUAD_105]
+        return [list ]
       }
     }
   }
@@ -9063,13 +9046,11 @@ proc xc2ve3304 {} {
     switch $pkg {
       sfva1089 {
         switch $quad {
-          GTYP_QUAD_105 { return [list ] }
           GTYP_QUAD_203 { return [list ] }
         }
       }
       ssva1440 {
         switch $quad {
-          GTYP_QUAD_105 { return [list ] }
           GTYP_QUAD_203 { return [list ] }
         }
       }
@@ -9089,7 +9070,6 @@ proc xc2ve3358 {} {
 
   proc get_gtloc {q} {
     set gt_dict {
-      GTYP_QUAD_105 GTYP_QUAD_X0Y1
       GTYP_QUAD_203 GTYP_QUAD_X1Y0
     }
     return [dict get $gt_dict $q]
@@ -9097,7 +9077,6 @@ proc xc2ve3358 {} {
 
   proc get_reflocs {q} {
     set refclk_dict {
-      GTYP_QUAD_105 { GTYP_REFCLK_X0Y2 GTYP_REFCLK_X0Y3 }
       GTYP_QUAD_203 { GTYP_REFCLK_X1Y0 GTYP_REFCLK_X1Y1 }
     }
     return [dict get $refclk_dict $q]
@@ -9106,13 +9085,13 @@ proc xc2ve3358 {} {
   proc get_left {pkg} {
     switch $pkg {
       sfva1089 {
-        return [list GTYP_QUAD_105]
+        return [list ]
       }
       sfva1440 {
-        return [list GTYP_QUAD_105]
+        return [list ]
       }
       ssva1440 {
-        return [list GTYP_QUAD_105]
+        return [list ]
       }
     }
   }
@@ -9134,19 +9113,16 @@ proc xc2ve3358 {} {
     switch $pkg {
       sfva1089 {
         switch $quad {
-          GTYP_QUAD_105 { return [list ] }
           GTYP_QUAD_203 { return [list ] }
         }
       }
       sfva1440 {
         switch $quad {
-          GTYP_QUAD_105 { return [list ] }
           GTYP_QUAD_203 { return [list ] }
         }
       }
       ssva1440 {
         switch $quad {
-          GTYP_QUAD_105 { return [list ] }
           GTYP_QUAD_203 { return [list ] }
         }
       }
