@@ -328,11 +328,11 @@
         "name": "chipscopy",
         "display": "ChipScoPy Example Design",
         "latest_revision": "1.0",
-        "commit_id": "a0fe019a3dc1c3b10567f82832208809cbe6f0ba",
+        "commit_id": "c178609e58972262481db53c3de117a161413022",
         "revisions": [
           {
             "revision": "1.0",
-            "commit_id": "a0fe019a3dc1c3b10567f82832208809cbe6f0ba",
+            "commit_id": "c178609e58972262481db53c3de117a161413022",
             "date": "14-09-2022:18:19:45",
             "history": "Added board ChipScoPy Example Design v1.0"
           }
