@@ -1369,10 +1369,10 @@ proc create_root_design_vek385 { parentCell } {
   # Create interface ports
   set ch0_lpddr5 [ create_bd_intf_port -mode Master -vlnv xilinx.com:interface:lpddr5_rtl:1.0 ch0_lpddr5 ]
 
-    set lpddr5_clk0_1 [ create_bd_intf_port -mode Slave -vlnv xilinx.com:interface:diff_clock_rtl:1.0 lpddr5_clk0_1 ]
-  set_property -dict [ list \
-   CONFIG.FREQ_HZ {320000000} \
-   ] $lpddr5_clk0_1
+  #  set lpddr5_clk0_1 [ create_bd_intf_port -mode Slave -vlnv xilinx.com:interface:diff_clock_rtl:1.0 lpddr5_clk0_1 ]
+  #set_property -dict [ list \
+  # CONFIG.FREQ_HZ {320000000} \
+  # ] $lpddr5_clk0_1
 
 
   # Create ports
