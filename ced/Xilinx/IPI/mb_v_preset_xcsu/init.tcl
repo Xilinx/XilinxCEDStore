@@ -34,13 +34,16 @@ proc getSupportedBoards {} {
 }
 
 
-proc addOptions {DESIGNOBJ PROJECT_PARAM.BOARD_PART} {
+proc addOptions {DESIGNOBJ PROJECT_PARAM.PART} {
+	if {[regexp "xcsu10p" ${PROJECT_PARAM.PART}]} {
+	lappend x [dict create name "Preset" type "string" value "Microcontroller" value_list {"Microcontroller Microcontroller___Suitable_for_running_baremetal_code"} enabled true]
+	} else {
 	lappend x [dict create name "Preset" type "string" value "Microcontroller" value_list {"Microcontroller Microcontroller___Suitable_for_running_baremetal_code" "Real-time_Processor Real-time____________Deterministic_real-time_processing_on_RTOS"} enabled true]
-	#lappend x [dict create name "Preset" type "string" value "Microcontroller" value_list {"Microcontroller Microcontroller___Suitable_for_running_baremetal_code"} enabled true]
 	return $x
+	}
 }
 
-proc addGUILayout {DESIGNOBJ PROJECT_PARAM.BOARD_PART} {
+proc addGUILayout {DESIGNOBJ PROJECT_PARAM.PART} {
 	set designObj $DESIGNOBJ
 	#place to define GUI layout for options
 	set page [ced::add_page -name "Page1" -display_name "Configuration" -designObject $designObj -layout vertical]	
@@ -49,11 +52,11 @@ proc addGUILayout {DESIGNOBJ PROJECT_PARAM.BOARD_PART} {
 }
 
 
- updater {PROJECT_PARAM.BOARD_PART Preset.VALUE} {Image.IMAGE_PATH Preset.ENABLEMENT Preset.DISPLAYNAME} {
+ updater {PROJECT_PARAM.PART Preset.VALUE} {Image.IMAGE_PATH Preset.ENABLEMENT Preset.DISPLAYNAME} {
   set Preset.DISPLAYNAME "Microblaze Preset Configurations"
   if { ${Preset.VALUE} == "Application_Processor"} {
      set Preset.ENABLEMENT true
-     set Image.IMAGE_PATH "microblaze-application-processor.png"
+     set Image.IMAGE_PATH "microblaze-application-processor.jpg"
   } elseif { ${Preset.VALUE} == "Microcontroller"} {
 	 set Preset.ENABLEMENT true
 	 set Image.IMAGE_PATH "microblaze-microcontroller.jpg"
