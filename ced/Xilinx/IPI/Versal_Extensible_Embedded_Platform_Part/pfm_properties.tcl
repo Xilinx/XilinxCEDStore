@@ -65,15 +65,21 @@ if { ([regexp "xcvp1902" $fpga_part]) || ([regexp "xcvp2802" $fpga_part]) || ([r
 	set num_pl_nmu 97
 }
 
-# Dynamically set PFM.AXI_PORT for /noc2_ddr5 based on num_pl_nmu
-set ddr_axi_ports {}
 
-for {set i 0} {$i < $num_pl_nmu} {incr i} {
-	append ddr_axi_ports "S[format "%02d" $i]_AXI {memport \"S_AXI_NOC\" sptag \"DDR\"} "
+# Dynamically set PFM.AXI_PORT for /noc2_ddr5 (if available) based on num_pl_nmu 
+	
+if { $noc_ddr != 0 } {
+	
+	set ddr_axi_ports {}
+
+	for {set i 0} {$i < $num_pl_nmu} {incr i} {
+		append ddr_axi_ports "S[format "%02d" $i]_AXI {memport \"S_AXI_NOC\" sptag \"DDR\"} "
+	}
+
+	set_property PFM.AXI_PORT $ddr_axi_ports [get_bd_cells $noc_ddr]
+	set_property SELECTED_SIM_MODEL tlm [get_bd_cells $noc_ddr]
+	
 }
-
-set_property PFM.AXI_PORT $ddr_axi_ports [get_bd_cells $noc_ddr]
-set_property SELECTED_SIM_MODEL tlm [get_bd_cells $noc_ddr]
 
 if { $use_lpddr } {
 	
@@ -97,10 +103,10 @@ set_property PFM_NAME $pfmName [get_files ${pfm_bd_name}.bd]
 set clocks {}
 
 set i 0
-
+#Updated PFM property to fixed ref clock
 if {[regexp "xc2v" $fpga_part]} {
 	foreach { port freq id is_default } $clk_options {
-		dict append clocks $port "id \"$id\" is_default \"$is_default\" proc_sys_reset \"/proc_sys_reset_$i\" status \"fixed_non_ref\""
+		dict append clocks $port "id \"$id\" is_default \"$is_default\" proc_sys_reset \"/proc_sys_reset_$i\" status \"fixed\""
 		incr i
 	} 
 } else {

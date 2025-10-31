@@ -41,7 +41,7 @@ proc create_root_design {currentDir design_name use_lpddr clk_options irqs use_a
 	set ps_wizard_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:ps_wizard ps_wizard_0]
 	set ps_wiz_noc2 [ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_noc2 ps_wiz_noc2]
 	
-	if { ([regexp "xc2v" $fpga_part]) && (![regexp "xc2vp3602" $fpga_part]) } {
+	if { ([regexp "xc2v" $fpga_part]) && (![regexp "xc2vp" $fpga_part]) } {
 		
 		puts "Applying Versal * Gen 2 config" 
 
@@ -332,10 +332,15 @@ proc create_root_design {currentDir design_name use_lpddr clk_options irqs use_a
 	] $clk_wizard_0
 
 	# Create instance: noc2_ddr5, and set properties
-	set noc2_ddr5 [ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_noc2 noc2_ddr5 ]
+	set noc2_ddr5_flag 0
 	
-	if { [regexp "xc2vm3558" $fpga_part] || [regexp "xc2ve3558" $fpga_part] || [regexp "xc2ve3504" $fpga_part] || [regexp "xc2ve3304" $fpga_part] || [regexp "xc2ve3358" $fpga_part] || [regexp "xc2vp3602" $fpga_part] } {
+	if { [regexp "xc2vm3558" $fpga_part] || [regexp "xc2ve3558" $fpga_part] || [regexp "xc2ve3504" $fpga_part] || [regexp "xc2ve3304" $fpga_part] || [regexp "xc2ve3358" $fpga_part] } {
 	
+		puts "NOC2_DDR5_INFO :: Applying Versal DDR5 configuration - 1"
+		set noc2_ddr5_flag 1
+
+		set noc2_ddr5 [ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_noc2 noc2_ddr5 ]
+		
 		set_property -dict [list \
 			CONFIG.DDR5_DEVICE_TYPE {Components} \
 			CONFIG.DDRMC5_CONFIG {DDRMC5_CONTROLLERTYPE DDR5_SDRAM DDRMC5_SPEED_GRADE DDR5-6400AN(46-46-46) DDRMC5_DEVICE_TYPE Components DDRMC5_F0_LP5_BANK_ARCH NA DDRMC5_F1_LP5_BANK_ARCH NA DDRMC5_DRAM_WIDTH x16 DDRMC5_DATA_WIDTH 16 DDRMC5_ROW_ADDR_WIDTH 16 DDRMC5_COL_ADDR_WIDTH 10 DDRMC5_BA_ADDR_WIDTH 2 DDRMC5_BG_WIDTH 2 DDRMC5_BURST_ADDR_WIDTH 0 DDRMC5_NUM_RANKS 1 DDRMC5_LATENCY_MODE NA DDRMC5_NUM_SLOTS 1 DDRMC5_NUM_CK 1 DDRMC5_NUM_CH 1 DDRMC5_STACK_HEIGHT 1 DDRMC5_DRAM_SIZE 16Gb DDRMC5_MEMORY_DENSITY 2GB DDRMC5_DM_EN true DDRMC5_DQS_OSCI_EN DISABLE DDRMC5_SIDE_BAND_ECC false DDRMC5_INLINE_ECC false DDRMC5_DDR5_2T DISABLE DDRMC5_DDR5_RDIMM_ADDR_MODE DDR DDRMC5_REFRESH_MODE NORMAL DDRMC5_REFRESH_TYPE ALL_BANK DDRMC5_FREQ_SWITCHING false DDRMC5_BACKGROUND_SCRUB false DDRMC5_OTF_SCRUB false DDRMC5_SCRUB_SIZE 1 DDRMC5_MEM_FILL false DDRMC5_PERIODIC_READ ENABLE DDRMC5_USER_REFRESH false DDRMC5_WL_SET A DDRMC5_WR_DBI true DDRMC5_RD_DBI true DDRMC5_AUTO_PRECHARGE false DDRMC5_CRYPTO false DDRMC5_ON_DIE_ECC false DDRMC5_DDR5_PAR_RCD_EN false DDRMC5_OP_TEMPERATURE LOW DDRMC5_F0_TCK 313 DDRMC5_INPUTCLK0_PERIOD 9703 DDRMC5_F0_TFAW 12520 DDRMC5_F0_DDR5_TRP 14375 DDRMC5_F0_TRTP 24 DDRMC5_F0_TRTP_RU 24 DDRMC5_F1_TRTP_RU 24 DDRMC5_F0_TRCD 14375 DDRMC5_TREFI 3900000 DDRMC5_DDR5_TRFC1 295000 DDRMC5_DDR5_TRFC2 160000 DDRMC5_DDR5_TRFCSB 130000 DDRMC5_F0_TRAS 32000 DDRMC5_F0_TZQLAT 30000 DDRMC5_F0_DDR5_TCCD_L_WR 64 DDRMC5_F0_DDR5_TCCD_L_WR_RU 64 DDRMC5_F0_TXP 7500 DDRMC5_F0_DDR5_TPD 7500 DDRMC5_DDR5_TREFSBRD 30000 DDRMC5_DDR5_TRFC1_DLR 0 DDRMC5_DDR5_TRFC1_DPR 0 DDRMC5_DDR5_TRFC2_DLR 0 DDRMC5_DDR5_TRFC2_DPR 0 DDRMC5_DDR5_TRFCSB_DLR 0 DDRMC5_DDR5_TREFSBRD_SLR 0 DDRMC5_DDR5_TREFSBRD_DLR 0 DDRMC5_F0_CL 46 DDRMC5_F0_CWL 44 DDRMC5_F0_DDR5_TRRD_L 16 DDRMC5_F0_TCCD_L 16 DDRMC5_F0_DDR5_TCCD_L_WR2 32 DDRMC5_F0_DDR5_TCCD_L_WR2_RU 32 DDRMC5_DDR5_TFAW_DLR 0 DDRMC5_F1_TCK 313 DDRMC5_F1_TFAW 12520 DDRMC5_F1_DDR5_TRP 14375 DDRMC5_F1_TRTP 24 DDRMC5_F1_TRCD 14375 DDRMC5_F1_TRAS 32000 DDRMC5_F1_TZQLAT 30000 DDRMC5_F1_DDR5_TCCD_L_WR 64 DDRMC5_F1_DDR5_TCCD_L_WR_RU 64 DDRMC5_F1_TXP 7500 DDRMC5_F1_DDR5_TPD 7500 DDRMC5_F1_CL 46 DDRMC5_F1_CWL 44 DDRMC5_F1_DDR5_TRRD_L 16 DDRMC5_F1_TCCD_L 16 DDRMC5_F1_DDR5_TCCD_L_WR2 32 DDRMC5_F1_DDR5_TCCD_L_WR2_RU 32 DDRMC5_LP5_TRFCAB 0 DDRMC5_LP5_TRFCPB 0 DDRMC5_LP5_TPBR2PBR 0 DDRMC5_F0_LP5_TRPAB 0 DDRMC5_F0_LP5_TRPPB 0 DDRMC5_F0_LP5_TRRD 0 DDRMC5_LP5_TPBR2ACT 0 DDRMC5_F0_LP5_TCSPD 0 DDRMC5_F0_RL 0 DDRMC5_F0_WL 0 DDRMC5_F1_LP5_TRPAB 0 DDRMC5_F1_LP5_TRPPB 0 DDRMC5_F1_LP5_TRRD 0 DDRMC5_F1_LP5_TCSPD 0 DDRMC5_F1_RL 0 DDRMC5_F1_WL 0 DDRMC5_LP5_TRFMAB 0 DDRMC5_LP5_TRFMPB 0 DDRMC5_SYSTEM_CLOCK Differential DDRMC5_UBLAZE_BLI_INTF false DDRMC5_REF_AND_PER_CAL_INTF false DDRMC5_PRE_DEF_ADDR_MAP_SEL ROW_BANK_COLUMN DDRMC5_USER_DEFINED_ADDRESS_MAP None DDRMC5_ADDRESS_MAP NA,NA,NA,NA,NA,NA,NA,NA,NA,RA15,RA14,RA13,RA12,RA11,RA10,RA9,RA8,RA7,RA6,RA5,RA4,RA3,RA2,RA1,RA0,BA1,BA0,BG1,BG0,CA9,CA8,CA7,CA6,CA5,CA4,NC,NC,NC,NC,NA DDRMC5_MC0_CONFIG_SEL config2 DDRMC5_MC1_CONFIG_SEL config2 DDRMC5_MC2_CONFIG_SEL config2 DDRMC5_MC3_CONFIG_SEL config2 DDRMC5_MC4_CONFIG_SEL config2 DDRMC5_MC5_CONFIG_SEL config2 DDRMC5_MC6_CONFIG_SEL config2 DDRMC5_MC7_CONFIG_SEL config2 DDRMC5_LOW_TRFC_DPR false DDRMC5_NUM_MC 1 DDRMC5_NUM_MCP 1 DDRMC5_MAIN_DEVICE_TYPE Components DDRMC5_INTERLEAVE_SIZE 0 DDRMC5_SILICON_REVISION NA DDRMC5_FPGA_DEVICE_TYPE NON_KSB DDRMC5_SELF_REFRESH DISABLE DDRMC5_LBDQ_SWAP false DDRMC5_CAL_MASK_POLL ENABLE DDRMC5_BOARD_INTRF_EN false} \
@@ -347,8 +352,30 @@ proc create_root_design {currentDir design_name use_lpddr clk_options irqs use_a
 		
 		set_property CONFIG.MC_CHAN_REGION1 {DDR_CH0_MED} [get_bd_cells noc2_ddr5]
 
-	} else {
+	} elseif { [regexp "xc2vm3358" $fpga_part] || [regexp "xc2vp3602" $fpga_part] } {
+		
+		puts "NOC2_DDR5_INFO :: Applying Versal DDR5 configuration - 2"
+		set noc2_ddr5_flag 1
+
+		set noc2_ddr5 [ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_noc2 noc2_ddr5 ]
+
+		set_property -dict [list \
+			CONFIG.DDR5_DEVICE_TYPE {Components} \
+			CONFIG.DDRMC5_CONFIG {DDRMC5_CONTROLLERTYPE DDR5_SDRAM DDRMC5_SPEED_GRADE DDR5-6400AN(46-46-46) DDRMC5_DEVICE_TYPE Components DDRMC5_F0_LP5_BANK_ARCH NA DDRMC5_F1_LP5_BANK_ARCH NA DDRMC5_DRAM_WIDTH x4 DDRMC5_DATA_WIDTH 16 DDRMC5_ROW_ADDR_WIDTH 16 DDRMC5_COL_ADDR_WIDTH 11 DDRMC5_BA_ADDR_WIDTH 2 DDRMC5_BG_WIDTH 3 DDRMC5_BURST_ADDR_WIDTH 0 DDRMC5_NUM_RANKS 1 DDRMC5_LATENCY_MODE NA DDRMC5_NUM_SLOTS 1 DDRMC5_NUM_CK 1 DDRMC5_NUM_CH 1 DDRMC5_STACK_HEIGHT 1 DDRMC5_DRAM_SIZE 16Gb DDRMC5_MEMORY_DENSITY 8GB DDRMC5_DM_EN false DDRMC5_DQS_OSCI_EN DISABLE DDRMC5_SIDE_BAND_ECC false DDRMC5_INLINE_ECC false DDRMC5_DDR5_2T DISABLE DDRMC5_DDR5_RDIMM_ADDR_MODE DDR DDRMC5_REFRESH_MODE NORMAL DDRMC5_REFRESH_TYPE ALL_BANK DDRMC5_FREQ_SWITCHING false DDRMC5_BACKGROUND_SCRUB false DDRMC5_OTF_SCRUB false DDRMC5_SCRUB_SIZE 1 DDRMC5_MEM_FILL false DDRMC5_PERIODIC_READ ENABLE DDRMC5_USER_REFRESH false DDRMC5_WL_SET A DDRMC5_WR_DBI true DDRMC5_RD_DBI true DDRMC5_AUTO_PRECHARGE false DDRMC5_CRYPTO false DDRMC5_ON_DIE_ECC false DDRMC5_DDR5_PAR_RCD_EN false DDRMC5_OP_TEMPERATURE LOW DDRMC5_F0_TCK 313 DDRMC5_INPUTCLK0_PERIOD 9703 DDRMC5_F0_TFAW 10016 DDRMC5_F0_DDR5_TRP 14375 DDRMC5_F0_TRTP 24 DDRMC5_F0_TRTP_RU 24 DDRMC5_F1_TRTP_RU 24 DDRMC5_F0_TRCD 14375 DDRMC5_TREFI 3900000 DDRMC5_DDR5_TRFC1 295000 DDRMC5_DDR5_TRFC2 160000 DDRMC5_DDR5_TRFCSB 130000 DDRMC5_F0_TRAS 32000 DDRMC5_F0_TZQLAT 30000 DDRMC5_F0_DDR5_TCCD_L_WR 64 DDRMC5_F0_DDR5_TCCD_L_WR_RU 64 DDRMC5_F0_TXP 7500 DDRMC5_F0_DDR5_TPD 7500 DDRMC5_DDR5_TREFSBRD 30000 DDRMC5_DDR5_TRFC1_DLR 0 DDRMC5_DDR5_TRFC1_DPR 0 DDRMC5_DDR5_TRFC2_DLR 0 DDRMC5_DDR5_TRFC2_DPR 0 DDRMC5_DDR5_TRFCSB_DLR 0 DDRMC5_DDR5_TREFSBRD_SLR 0 DDRMC5_DDR5_TREFSBRD_DLR 0 DDRMC5_F0_CL 46 DDRMC5_F0_CWL 44 DDRMC5_F0_DDR5_TRRD_L 16 DDRMC5_F0_TCCD_L 16 DDRMC5_F0_DDR5_TCCD_L_WR2 32 DDRMC5_F0_DDR5_TCCD_L_WR2_RU 32 DDRMC5_DDR5_TFAW_DLR 0 DDRMC5_F1_TCK 313 DDRMC5_F1_TFAW 11016 DDRMC5_F1_DDR5_TRP 14375 DDRMC5_F1_TRTP 24 DDRMC5_F1_TRCD 14375 DDRMC5_F1_TRAS 32000 DDRMC5_F1_TZQLAT 30000 DDRMC5_F1_DDR5_TCCD_L_WR 64 DDRMC5_F1_DDR5_TCCD_L_WR_RU 64 DDRMC5_F1_TXP 7500 DDRMC5_F1_DDR5_TPD 7500 DDRMC5_F1_CL 46 DDRMC5_F1_CWL 44 DDRMC5_F1_DDR5_TRRD_L 16 DDRMC5_F1_TCCD_L 16 DDRMC5_F1_DDR5_TCCD_L_WR2 32 DDRMC5_F1_DDR5_TCCD_L_WR2_RU 32 DDRMC5_LP5_TRFCAB 0 DDRMC5_LP5_TRFCPB 0 DDRMC5_LP5_TPBR2PBR 0 DDRMC5_F0_LP5_TRPAB 0 DDRMC5_F0_LP5_TRPPB 0 DDRMC5_F0_LP5_TRRD 0 DDRMC5_LP5_TPBR2ACT 0 DDRMC5_F0_LP5_TCSPD 0 DDRMC5_F0_RL 0 DDRMC5_F0_WL 0 DDRMC5_F1_LP5_TRPAB 0 DDRMC5_F1_LP5_TRPPB 0 DDRMC5_F1_LP5_TRRD 0 DDRMC5_F1_LP5_TCSPD 0 DDRMC5_F1_RL 0 DDRMC5_F1_WL 0 DDRMC5_LP5_TRFMAB 0 DDRMC5_LP5_TRFMPB 0 DDRMC5_SYSTEM_CLOCK Differential DDRMC5_UBLAZE_BLI_INTF false DDRMC5_REF_AND_PER_CAL_INTF false DDRMC5_PRE_DEF_ADDR_MAP_SEL ROW_BANK_COLUMN DDRMC5_USER_DEFINED_ADDRESS_MAP None DDRMC5_ADDRESS_MAP NA,NA,NA,NA,NA,NA,NA,RA15,RA14,RA13,RA12,RA11,RA10,RA9,RA8,RA7,RA6,RA5,RA4,RA3,RA2,RA1,RA0,BA1,BA0,BG2,BG1,BG0,CA10,CA9,CA8,CA7,CA6,CA5,CA4,NC,NC,NC,NC,NA DDRMC5_MC0_CONFIG_SEL config1 DDRMC5_MC1_CONFIG_SEL config1 DDRMC5_MC2_CONFIG_SEL config1 DDRMC5_MC3_CONFIG_SEL config1 DDRMC5_MC4_CONFIG_SEL config1 DDRMC5_MC5_CONFIG_SEL config1 DDRMC5_MC6_CONFIG_SEL config1 DDRMC5_MC7_CONFIG_SEL config1 DDRMC5_LOW_TRFC_DPR false DDRMC5_NUM_MC 1 DDRMC5_NUM_MCP 1 DDRMC5_MAIN_DEVICE_TYPE Components DDRMC5_INTERLEAVE_SIZE 0 DDRMC5_SILICON_REVISION NA DDRMC5_FPGA_DEVICE_TYPE NON_KSB DDRMC5_SELF_REFRESH DISABLE DDRMC5_LBDQ_SWAP false DDRMC5_CAL_MASK_POLL ENABLE DDRMC5_BOARD_INTRF_EN false} \
+			CONFIG.DDRMC5_NUM_CH {1} \
+			CONFIG.NUM_MI {0} \
+			CONFIG.NUM_NSI {1} \
+			CONFIG.NUM_SI {0} \
+		] [get_bd_cells noc2_ddr5]
+
+
+	} elseif { (![regexp "xc2vp3402" $fpga_part]) && (![regexp "xc2vp3502" $fpga_part]) } {
 	
+		puts "NOC2_DDR5_INFO :: Applying Versal DDR5 configuration - 3"
+		set noc2_ddr5_flag 1
+
+		set noc2_ddr5 [ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_noc2 noc2_ddr5 ]
+
 		set_property -dict [list \
 			CONFIG.DDR5_DEVICE_TYPE {DIMMs} \
 			CONFIG.NUM_MI {0} \
@@ -359,11 +386,14 @@ proc create_root_design {currentDir design_name use_lpddr clk_options irqs use_a
 		set_property CONFIG.MC_CHAN_REGION1 {DDR_CH0_MED} [get_bd_cells noc2_ddr5]
 	}
 	
-	set_property -dict [list CONFIG.CONNECTIONS {MC_0 {read_bw {500} write_bw {500} read_avg_burst {4} write_avg_burst {4}}}] [get_bd_intf_pins /noc2_ddr5/S00_INI]
-    
-	make_bd_intf_pins_external  [get_bd_intf_pins noc2_ddr5/sys_clk0] [get_bd_intf_pins noc2_ddr5/C0_DDR5]
-
-	connect_bd_intf_net [get_bd_intf_pins ps_wiz_noc2/M00_INI] [get_bd_intf_pins noc2_ddr5/S00_INI]
+	if { $noc2_ddr5_flag } {
+		set_property -dict [list CONFIG.CONNECTIONS {MC_0 {read_bw {500} write_bw {500} read_avg_burst {4} write_avg_burst {4}}}] [get_bd_intf_pins /noc2_ddr5/S00_INI]
+		make_bd_intf_pins_external  [get_bd_intf_pins noc2_ddr5/sys_clk0] [get_bd_intf_pins noc2_ddr5/C0_DDR5]
+		connect_bd_intf_net [get_bd_intf_pins ps_wiz_noc2/M00_INI] [get_bd_intf_pins noc2_ddr5/S00_INI]
+	} elseif { $noc2_ddr5_flag == 0 } {
+		puts "NOC2_DDR5_INFO :: NOC2_DDR5 instance NOT created due limited IO constraints - $fpga_part"
+	}
+	
 	
 	# Create instance: proc_sys_reset_N, and set properties
 	for {set i 0} {$i < $num_clks} {incr i} {
@@ -453,7 +483,7 @@ proc create_root_design {currentDir design_name use_lpddr clk_options irqs use_a
 		set_property -dict [list CONFIG.NUM_MI {1}] [get_bd_cells icn_ctrl]
 		connect_bd_intf_net -intf_net icn_ctrl_M00_AXI [get_bd_intf_pins axi_intc_0/s_axi] [get_bd_intf_pins icn_ctrl/M00_AXI]
 		
-		if { ([regexp "xc2v" $fpga_part]) && (![regexp "xc2vp3602" $fpga_part]) } {
+		if { ([regexp "xc2v" $fpga_part]) && (![regexp "xc2vp" $fpga_part]) } {
 			connect_bd_net [get_bd_pins axi_intc_0/irq] [get_bd_pins ps_wizard_0/pl_fpd_irq0]
 		} else {
 			connect_bd_net -net axi_intc_0_irq [get_bd_pins ps_wizard_0/pl_ps_irq0] [get_bd_pins axi_intc_0/irq]
@@ -468,7 +498,7 @@ proc create_root_design {currentDir design_name use_lpddr clk_options irqs use_a
 		set_property -dict [list CONFIG.NUM_MI {3}] [get_bd_cells icn_ctrl]
 		connect_bd_intf_net -intf_net icn_ctrl_M00_AXI [get_bd_intf_pins axi_intc_0/s_axi] [get_bd_intf_pins icn_ctrl/M00_AXI]
 
-		if { ([regexp "xc2v" $fpga_part]) && (![regexp "xc2vp3602" $fpga_part]) } {
+		if { ([regexp "xc2v" $fpga_part]) && (![regexp "xc2vp" $fpga_part]) } {
 			connect_bd_net [get_bd_pins axi_intc_0/irq] [get_bd_pins ps_wizard_0/pl_fpd_irq0]
 		} else {
 			connect_bd_net -net axi_intc_0_irq [get_bd_pins ps_wizard_0/pl_ps_irq0] [get_bd_pins axi_intc_0/irq] 
@@ -484,7 +514,7 @@ proc create_root_design {currentDir design_name use_lpddr clk_options irqs use_a
 		connect_bd_net [get_bd_pins axi_intc_cascaded_1/irq] [get_bd_pins xlconcat_0/In31]
 		connect_bd_net [get_bd_pins axi_intc_parent/intr] [get_bd_pins xlconcat_0/dout]
 		
-		if { ([regexp "xc2v" $fpga_part]) && (![regexp "xc2vp3602" $fpga_part]) } {
+		if { ([regexp "xc2v" $fpga_part]) && (![regexp "xc2vp" $fpga_part]) } {
 			connect_bd_net [get_bd_pins ps_wizard_0/pl_fpd_irq0] [get_bd_pins axi_intc_parent/irq]
 		} else {
 			connect_bd_net -net axi_intc_0_irq [get_bd_pins ps_wizard_0/pl_ps_irq0] [get_bd_pins axi_intc_parent/irq] }
@@ -548,7 +578,7 @@ proc create_root_design {currentDir design_name use_lpddr clk_options irqs use_a
 		
 		if {$use_aie } {
 		
-			if { ([regexp "xc2v" $fpga_part]) && (![regexp "xc2vp3602" $fpga_part]) } {
+			if { ([regexp "xc2v" $fpga_part]) && (![regexp "xc2vp" $fpga_part]) } {
 
 				#set_property CONFIG.NUM_NMI {2} [get_bd_cells ps_wiz_noc2]
 				# set_property -dict [list CONFIG.CONNECTIONS {M01_INI {read_bw {500} write_bw {500}} M00_AXI {read_bw {500} write_bw {500} read_avg_burst {4} write_avg_burst {4}} M00_INI {read_bw {500} write_bw {500}}}] [get_bd_intf_pins /ps_wiz_noc2/S00_AXI]
@@ -590,7 +620,7 @@ proc create_root_design {currentDir design_name use_lpddr clk_options irqs use_a
 
 		} else {
 
-			if { ([regexp "xc2v" $fpga_part]) && (![regexp "xc2vp3602" $fpga_part]) } {
+			if { ([regexp "xc2v" $fpga_part]) && (![regexp "xc2vp" $fpga_part]) } {
 
 				#set_property CONFIG.NUM_NMI {2} [get_bd_cells ps_wiz_noc2]
 				set_property -dict [list CONFIG.CONNECTIONS {M01_INI {read_bw {500} write_bw {500}} M00_INI {read_bw {500} write_bw {500}}}] [get_bd_intf_pins /ps_wiz_noc2/S00_AXI]
@@ -714,9 +744,9 @@ if {( $ddrmc_flag == 0 ) || ($io_flag == 0) } {
 }
 
 
-# if { ([regexp "xc2vp3602" $fpga_part]) } {
-# 	set use_lpddr 0
-# }
+if { ([regexp "xc2vp" $fpga_part]) } {
+	set use_lpddr 1
+}
 
 #Force disable NOC2 lpddr5 instantiation as already noc2_ddr5 configured as lpddr5 in 2023.2.1
 #set use_lpddr 0
@@ -745,8 +775,14 @@ puts "INFO: Block design generation completed, yet to set PFM properties"
 
 
 # Set PFM properties
-set noc_ddr [get_bd_cells noc2_ddr5]
-set noc_lpddr [get_bd_cells noc2_lpddr5]
+
+
+if { [get_bd_cells noc2_ddr5 -quiet] == "" } {
+	set noc_ddr 0
+} else {
+	set noc_ddr [get_bd_cells noc2_ddr5]
+}
+set noc_lpddr [get_bd_cells noc2_lpddr5 -quiet]
 set pfm_bd_name $design_name
 set bdc false
 
@@ -755,7 +791,9 @@ source -notrace "$currentDir/pfm_properties.tcl"
 
 set_property SELECTED_SIM_MODEL tlm [get_bd_cells /ps_wizard_0]
 set_property SELECTED_SIM_MODEL tlm [get_bd_cells /ps_wiz_noc2]
-set_property SELECTED_SIM_MODEL tlm [get_bd_cells /noc2_ddr5]
+if { [get_bd_cells noc2_ddr5 -quiet] != "" } {
+	set_property SELECTED_SIM_MODEL tlm [get_bd_cells /noc2_ddr5]
+}
 
 set_property preferred_sim_model tlm [current_project]
 
