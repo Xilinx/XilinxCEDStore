@@ -1325,32 +1325,34 @@ connect_bd_net [get_bd_pins axi_gpio_2/ip2intc_irpt] [get_bd_pins ps_wizard_0/pl
 # add_files -fileset constrs_1 -norecurse $xdc
 # import_files -fileset constrs_1 $xdc
 
-set board_name [get_property BOARD_NAME [current_board]]
-if {$board_name == "vek385"} {
-set_property -dict [list CONFIG.REMAPS {M04_INI {{0xA_0000_0000 0x500_0000_0000 4G}}}] [get_bd_intf_pins /Master_NoC/S00_AXI]
-set_property -dict [list CONFIG.REMAPS {M04_INI {{0xA_0000_0000 0x500_0000_0000 4G}}}] [get_bd_intf_pins /Master_NoC/S01_AXI]
-set_property -dict [list CONFIG.REMAPS {M04_INI {{0xA_0000_0000 0x500_0000_0000 4G}}}] [get_bd_intf_pins /Master_NoC/S02_AXI]
-set_property -dict [list CONFIG.REMAPS {M04_INI {{0xA_0000_0000 0x500_0000_0000 4G}}}] [get_bd_intf_pins /Master_NoC/S03_AXI]
-set_property -dict [list CONFIG.REMAPS {M04_INI {{0xA_0000_0000 0x500_0000_0000 4G}}}] [get_bd_intf_pins /Master_NoC/S04_AXI]
-set_property -dict [list CONFIG.REMAPS {M04_INI {{0xA_0000_0000 0x500_0000_0000 4G}}}] [get_bd_intf_pins /Master_NoC/S05_AXI]
-set_property -dict [list CONFIG.REMAPS {M04_INI {{0xA_0000_0000 0x500_0000_0000 4G}}}] [get_bd_intf_pins /Master_NoC/S06_AXI]
-set_property -dict [list CONFIG.REMAPS {M04_INI {{0xA_0000_0000 0x500_0000_0000 4G}}}] [get_bd_intf_pins /Master_NoC/S07_AXI]
-set_property -dict [list CONFIG.REMAPS {M04_INI {{0xA_0000_0000 0x500_0000_0000 4G}}}] [get_bd_intf_pins /Master_NoC/S08_AXI]
-set_property -dict [list CONFIG.REMAPS {M04_INI {{0xA_0000_0000 0x500_0000_0000 4G}}}] [get_bd_intf_pins /Master_NoC/S09_AXI]
-set_property -dict [list CONFIG.REMAPS {M04_INI {{0xA_0000_0000 0x500_0000_0000 4G}}}] [get_bd_intf_pins /Master_NoC/S10_AXI]
-} else {
-set_property -dict [list CONFIG.REMAPS {M04_INI {{0xA_0000_0000 0x500_0000_0000 8G}}}] [get_bd_intf_pins /Master_NoC/S00_AXI]
-set_property -dict [list CONFIG.REMAPS {M04_INI {{0xA_0000_0000 0x500_0000_0000 8G}}}] [get_bd_intf_pins /Master_NoC/S01_AXI]
-set_property -dict [list CONFIG.REMAPS {M04_INI {{0xA_0000_0000 0x500_0000_0000 8G}}}] [get_bd_intf_pins /Master_NoC/S02_AXI]
-set_property -dict [list CONFIG.REMAPS {M04_INI {{0xA_0000_0000 0x500_0000_0000 8G}}}] [get_bd_intf_pins /Master_NoC/S03_AXI]
-set_property -dict [list CONFIG.REMAPS {M04_INI {{0xA_0000_0000 0x500_0000_0000 8G}}}] [get_bd_intf_pins /Master_NoC/S04_AXI]
-set_property -dict [list CONFIG.REMAPS {M04_INI {{0xA_0000_0000 0x500_0000_0000 8G}}}] [get_bd_intf_pins /Master_NoC/S05_AXI]
-set_property -dict [list CONFIG.REMAPS {M04_INI {{0xA_0000_0000 0x500_0000_0000 8G}}}] [get_bd_intf_pins /Master_NoC/S06_AXI]
-set_property -dict [list CONFIG.REMAPS {M04_INI {{0xA_0000_0000 0x500_0000_0000 8G}}}] [get_bd_intf_pins /Master_NoC/S07_AXI]
-set_property -dict [list CONFIG.REMAPS {M04_INI {{0xA_0000_0000 0x500_0000_0000 8G}}}] [get_bd_intf_pins /Master_NoC/S08_AXI]
-set_property -dict [list CONFIG.REMAPS {M04_INI {{0xA_0000_0000 0x500_0000_0000 8G}}}] [get_bd_intf_pins /Master_NoC/S09_AXI]
-set_property -dict [list CONFIG.REMAPS {M04_INI {{0xA_0000_0000 0x500_0000_0000 8G}}}] [get_bd_intf_pins /Master_NoC/S10_AXI]
-}
+puts "INFO: Removed NoC_C2_C3 Address Remap!"
+
+# set board_name [get_property BOARD_NAME [current_board]]
+# if {$board_name == "vek385"} {
+# set_property -dict [list CONFIG.REMAPS {M04_INI {{0xA_0000_0000 0x500_0000_0000 4G}}}] [get_bd_intf_pins /Master_NoC/S00_AXI]
+# set_property -dict [list CONFIG.REMAPS {M04_INI {{0xA_0000_0000 0x500_0000_0000 4G}}}] [get_bd_intf_pins /Master_NoC/S01_AXI]
+# set_property -dict [list CONFIG.REMAPS {M04_INI {{0xA_0000_0000 0x500_0000_0000 4G}}}] [get_bd_intf_pins /Master_NoC/S02_AXI]
+# set_property -dict [list CONFIG.REMAPS {M04_INI {{0xA_0000_0000 0x500_0000_0000 4G}}}] [get_bd_intf_pins /Master_NoC/S03_AXI]
+# set_property -dict [list CONFIG.REMAPS {M04_INI {{0xA_0000_0000 0x500_0000_0000 4G}}}] [get_bd_intf_pins /Master_NoC/S04_AXI]
+# set_property -dict [list CONFIG.REMAPS {M04_INI {{0xA_0000_0000 0x500_0000_0000 4G}}}] [get_bd_intf_pins /Master_NoC/S05_AXI]
+# set_property -dict [list CONFIG.REMAPS {M04_INI {{0xA_0000_0000 0x500_0000_0000 4G}}}] [get_bd_intf_pins /Master_NoC/S06_AXI]
+# set_property -dict [list CONFIG.REMAPS {M04_INI {{0xA_0000_0000 0x500_0000_0000 4G}}}] [get_bd_intf_pins /Master_NoC/S07_AXI]
+# set_property -dict [list CONFIG.REMAPS {M04_INI {{0xA_0000_0000 0x500_0000_0000 4G}}}] [get_bd_intf_pins /Master_NoC/S08_AXI]
+# set_property -dict [list CONFIG.REMAPS {M04_INI {{0xA_0000_0000 0x500_0000_0000 4G}}}] [get_bd_intf_pins /Master_NoC/S09_AXI]
+# set_property -dict [list CONFIG.REMAPS {M04_INI {{0xA_0000_0000 0x500_0000_0000 4G}}}] [get_bd_intf_pins /Master_NoC/S10_AXI]
+# } else {
+# set_property -dict [list CONFIG.REMAPS {M04_INI {{0xA_0000_0000 0x500_0000_0000 8G}}}] [get_bd_intf_pins /Master_NoC/S00_AXI]
+# set_property -dict [list CONFIG.REMAPS {M04_INI {{0xA_0000_0000 0x500_0000_0000 8G}}}] [get_bd_intf_pins /Master_NoC/S01_AXI]
+# set_property -dict [list CONFIG.REMAPS {M04_INI {{0xA_0000_0000 0x500_0000_0000 8G}}}] [get_bd_intf_pins /Master_NoC/S02_AXI]
+# set_property -dict [list CONFIG.REMAPS {M04_INI {{0xA_0000_0000 0x500_0000_0000 8G}}}] [get_bd_intf_pins /Master_NoC/S03_AXI]
+# set_property -dict [list CONFIG.REMAPS {M04_INI {{0xA_0000_0000 0x500_0000_0000 8G}}}] [get_bd_intf_pins /Master_NoC/S04_AXI]
+# set_property -dict [list CONFIG.REMAPS {M04_INI {{0xA_0000_0000 0x500_0000_0000 8G}}}] [get_bd_intf_pins /Master_NoC/S05_AXI]
+# set_property -dict [list CONFIG.REMAPS {M04_INI {{0xA_0000_0000 0x500_0000_0000 8G}}}] [get_bd_intf_pins /Master_NoC/S06_AXI]
+# set_property -dict [list CONFIG.REMAPS {M04_INI {{0xA_0000_0000 0x500_0000_0000 8G}}}] [get_bd_intf_pins /Master_NoC/S07_AXI]
+# set_property -dict [list CONFIG.REMAPS {M04_INI {{0xA_0000_0000 0x500_0000_0000 8G}}}] [get_bd_intf_pins /Master_NoC/S08_AXI]
+# set_property -dict [list CONFIG.REMAPS {M04_INI {{0xA_0000_0000 0x500_0000_0000 8G}}}] [get_bd_intf_pins /Master_NoC/S09_AXI]
+# set_property -dict [list CONFIG.REMAPS {M04_INI {{0xA_0000_0000 0x500_0000_0000 8G}}}] [get_bd_intf_pins /Master_NoC/S10_AXI]
+# }
 
 if {$use_aie} {
 # Add USER_COMMENTS on $design_name

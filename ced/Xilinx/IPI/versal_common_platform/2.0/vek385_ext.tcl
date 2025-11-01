@@ -1223,32 +1223,33 @@ connect_bd_net [get_bd_pins ps_wizard_0/pl0_resetn] [get_bd_pins clk_wizard_0/re
 
 set_param project.replaceDontTouchWithKeepHierarchySoft 0
 
-set board_name [get_property BOARD_NAME [current_board]]
-if {$board_name == "vek385"} {
-set_property -dict [list CONFIG.REMAPS {M04_INI {{0xA_0000_0000 0x500_0000_0000 4G}}}] [get_bd_intf_pins /Master_NoC/S00_AXI]
-set_property -dict [list CONFIG.REMAPS {M04_INI {{0xA_0000_0000 0x500_0000_0000 4G}}}] [get_bd_intf_pins /Master_NoC/S01_AXI]
-set_property -dict [list CONFIG.REMAPS {M04_INI {{0xA_0000_0000 0x500_0000_0000 4G}}}] [get_bd_intf_pins /Master_NoC/S02_AXI]
-set_property -dict [list CONFIG.REMAPS {M04_INI {{0xA_0000_0000 0x500_0000_0000 4G}}}] [get_bd_intf_pins /Master_NoC/S03_AXI]
-set_property -dict [list CONFIG.REMAPS {M04_INI {{0xA_0000_0000 0x500_0000_0000 4G}}}] [get_bd_intf_pins /Master_NoC/S04_AXI]
-set_property -dict [list CONFIG.REMAPS {M04_INI {{0xA_0000_0000 0x500_0000_0000 4G}}}] [get_bd_intf_pins /Master_NoC/S05_AXI]
-set_property -dict [list CONFIG.REMAPS {M04_INI {{0xA_0000_0000 0x500_0000_0000 4G}}}] [get_bd_intf_pins /Master_NoC/S06_AXI]
-set_property -dict [list CONFIG.REMAPS {M04_INI {{0xA_0000_0000 0x500_0000_0000 4G}}}] [get_bd_intf_pins /Master_NoC/S07_AXI]
-set_property -dict [list CONFIG.REMAPS {M04_INI {{0xA_0000_0000 0x500_0000_0000 4G}}}] [get_bd_intf_pins /Master_NoC/S08_AXI]
-set_property -dict [list CONFIG.REMAPS {M04_INI {{0xA_0000_0000 0x500_0000_0000 4G}}}] [get_bd_intf_pins /Master_NoC/S09_AXI]
-set_property -dict [list CONFIG.REMAPS {M04_INI {{0xA_0000_0000 0x500_0000_0000 4G}}}] [get_bd_intf_pins /Master_NoC/S10_AXI]
-} else {
-set_property -dict [list CONFIG.REMAPS {M04_INI {{0xA_0000_0000 0x500_0000_0000 8G}}}] [get_bd_intf_pins /Master_NoC/S00_AXI]
-set_property -dict [list CONFIG.REMAPS {M04_INI {{0xA_0000_0000 0x500_0000_0000 8G}}}] [get_bd_intf_pins /Master_NoC/S01_AXI]
-set_property -dict [list CONFIG.REMAPS {M04_INI {{0xA_0000_0000 0x500_0000_0000 8G}}}] [get_bd_intf_pins /Master_NoC/S02_AXI]
-set_property -dict [list CONFIG.REMAPS {M04_INI {{0xA_0000_0000 0x500_0000_0000 8G}}}] [get_bd_intf_pins /Master_NoC/S03_AXI]
-set_property -dict [list CONFIG.REMAPS {M04_INI {{0xA_0000_0000 0x500_0000_0000 8G}}}] [get_bd_intf_pins /Master_NoC/S04_AXI]
-set_property -dict [list CONFIG.REMAPS {M04_INI {{0xA_0000_0000 0x500_0000_0000 8G}}}] [get_bd_intf_pins /Master_NoC/S05_AXI]
-set_property -dict [list CONFIG.REMAPS {M04_INI {{0xA_0000_0000 0x500_0000_0000 8G}}}] [get_bd_intf_pins /Master_NoC/S06_AXI]
-set_property -dict [list CONFIG.REMAPS {M04_INI {{0xA_0000_0000 0x500_0000_0000 8G}}}] [get_bd_intf_pins /Master_NoC/S07_AXI]
-set_property -dict [list CONFIG.REMAPS {M04_INI {{0xA_0000_0000 0x500_0000_0000 8G}}}] [get_bd_intf_pins /Master_NoC/S08_AXI]
-set_property -dict [list CONFIG.REMAPS {M04_INI {{0xA_0000_0000 0x500_0000_0000 8G}}}] [get_bd_intf_pins /Master_NoC/S09_AXI]
-set_property -dict [list CONFIG.REMAPS {M04_INI {{0xA_0000_0000 0x500_0000_0000 8G}}}] [get_bd_intf_pins /Master_NoC/S10_AXI]
-}
+puts "INFO: Removed NoC_C2_C3 Address Remap!"
+# set board_name [get_property BOARD_NAME [current_board]]
+# if {$board_name == "vek385"} {
+# set_property -dict [list CONFIG.REMAPS {M04_INI {{0xA_0000_0000 0x500_0000_0000 4G}}}] [get_bd_intf_pins /Master_NoC/S00_AXI]
+# set_property -dict [list CONFIG.REMAPS {M04_INI {{0xA_0000_0000 0x500_0000_0000 4G}}}] [get_bd_intf_pins /Master_NoC/S01_AXI]
+# set_property -dict [list CONFIG.REMAPS {M04_INI {{0xA_0000_0000 0x500_0000_0000 4G}}}] [get_bd_intf_pins /Master_NoC/S02_AXI]
+# set_property -dict [list CONFIG.REMAPS {M04_INI {{0xA_0000_0000 0x500_0000_0000 4G}}}] [get_bd_intf_pins /Master_NoC/S03_AXI]
+# set_property -dict [list CONFIG.REMAPS {M04_INI {{0xA_0000_0000 0x500_0000_0000 4G}}}] [get_bd_intf_pins /Master_NoC/S04_AXI]
+# set_property -dict [list CONFIG.REMAPS {M04_INI {{0xA_0000_0000 0x500_0000_0000 4G}}}] [get_bd_intf_pins /Master_NoC/S05_AXI]
+# set_property -dict [list CONFIG.REMAPS {M04_INI {{0xA_0000_0000 0x500_0000_0000 4G}}}] [get_bd_intf_pins /Master_NoC/S06_AXI]
+# set_property -dict [list CONFIG.REMAPS {M04_INI {{0xA_0000_0000 0x500_0000_0000 4G}}}] [get_bd_intf_pins /Master_NoC/S07_AXI]
+# set_property -dict [list CONFIG.REMAPS {M04_INI {{0xA_0000_0000 0x500_0000_0000 4G}}}] [get_bd_intf_pins /Master_NoC/S08_AXI]
+# set_property -dict [list CONFIG.REMAPS {M04_INI {{0xA_0000_0000 0x500_0000_0000 4G}}}] [get_bd_intf_pins /Master_NoC/S09_AXI]
+# set_property -dict [list CONFIG.REMAPS {M04_INI {{0xA_0000_0000 0x500_0000_0000 4G}}}] [get_bd_intf_pins /Master_NoC/S10_AXI]
+# } else {
+# set_property -dict [list CONFIG.REMAPS {M04_INI {{0xA_0000_0000 0x500_0000_0000 8G}}}] [get_bd_intf_pins /Master_NoC/S00_AXI]
+# set_property -dict [list CONFIG.REMAPS {M04_INI {{0xA_0000_0000 0x500_0000_0000 8G}}}] [get_bd_intf_pins /Master_NoC/S01_AXI]
+# set_property -dict [list CONFIG.REMAPS {M04_INI {{0xA_0000_0000 0x500_0000_0000 8G}}}] [get_bd_intf_pins /Master_NoC/S02_AXI]
+# set_property -dict [list CONFIG.REMAPS {M04_INI {{0xA_0000_0000 0x500_0000_0000 8G}}}] [get_bd_intf_pins /Master_NoC/S03_AXI]
+# set_property -dict [list CONFIG.REMAPS {M04_INI {{0xA_0000_0000 0x500_0000_0000 8G}}}] [get_bd_intf_pins /Master_NoC/S04_AXI]
+# set_property -dict [list CONFIG.REMAPS {M04_INI {{0xA_0000_0000 0x500_0000_0000 8G}}}] [get_bd_intf_pins /Master_NoC/S05_AXI]
+# set_property -dict [list CONFIG.REMAPS {M04_INI {{0xA_0000_0000 0x500_0000_0000 8G}}}] [get_bd_intf_pins /Master_NoC/S06_AXI]
+# set_property -dict [list CONFIG.REMAPS {M04_INI {{0xA_0000_0000 0x500_0000_0000 8G}}}] [get_bd_intf_pins /Master_NoC/S07_AXI]
+# set_property -dict [list CONFIG.REMAPS {M04_INI {{0xA_0000_0000 0x500_0000_0000 8G}}}] [get_bd_intf_pins /Master_NoC/S08_AXI]
+# set_property -dict [list CONFIG.REMAPS {M04_INI {{0xA_0000_0000 0x500_0000_0000 8G}}}] [get_bd_intf_pins /Master_NoC/S09_AXI]
+# set_property -dict [list CONFIG.REMAPS {M04_INI {{0xA_0000_0000 0x500_0000_0000 8G}}}] [get_bd_intf_pins /Master_NoC/S10_AXI]
+# }
 
 
 puts "INFO: Block design generation completed, yet to set PFM properties"

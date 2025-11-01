@@ -28,13 +28,6 @@
       "ReadTC": "BE",
       "WriteTC": "BE",
       "SysAddresses": [],
-      "Remap": [
-        {
-          "Logical": "0xA00000000",
-          "Physical": "0x50000000000",
-          "Range": "0x200000000"
-        }
-      ],
       "SimMetaData": {
         "IPName": "bd_2854_S00_AXI_nmu_0"
       }
@@ -48,13 +41,6 @@
       "ReadTC": "BE",
       "WriteTC": "BE",
       "SysAddresses": [],
-      "Remap": [
-        {
-          "Logical": "0xA00000000",
-          "Physical": "0x50000000000",
-          "Range": "0x200000000"
-        }
-      ],
       "SimMetaData": {
         "IPName": "bd_2854_S01_AXI_nmu_0"
       }
@@ -68,13 +54,6 @@
       "ReadTC": "BE",
       "WriteTC": "BE",
       "SysAddresses": [],
-      "Remap": [
-        {
-          "Logical": "0xA00000000",
-          "Physical": "0x50000000000",
-          "Range": "0x200000000"
-        }
-      ],
       "SimMetaData": {
         "IPName": "bd_2854_S02_AXI_nmu_0"
       }
@@ -88,13 +67,6 @@
       "ReadTC": "BE",
       "WriteTC": "BE",
       "SysAddresses": [],
-      "Remap": [
-        {
-          "Logical": "0xA00000000",
-          "Physical": "0x50000000000",
-          "Range": "0x200000000"
-        }
-      ],
       "SimMetaData": {
         "IPName": "bd_2854_S03_AXI_nmu_0"
       }
@@ -108,13 +80,6 @@
       "ReadTC": "BE",
       "WriteTC": "BE",
       "SysAddresses": [],
-      "Remap": [
-        {
-          "Logical": "0xA00000000",
-          "Physical": "0x50000000000",
-          "Range": "0x200000000"
-        }
-      ],
       "SimMetaData": {
         "IPName": "bd_2854_S04_AXI_nmu_0"
       }
@@ -128,13 +93,6 @@
       "ReadTC": "BE",
       "WriteTC": "BE",
       "SysAddresses": [],
-      "Remap": [
-        {
-          "Logical": "0xA00000000",
-          "Physical": "0x50000000000",
-          "Range": "0x200000000"
-        }
-      ],
       "SimMetaData": {
         "IPName": "bd_2854_S05_AXI_nmu_0"
       }
@@ -148,13 +106,6 @@
       "ReadTC": "BE",
       "WriteTC": "BE",
       "SysAddresses": [],
-      "Remap": [
-        {
-          "Logical": "0xA00000000",
-          "Physical": "0x50000000000",
-          "Range": "0x200000000"
-        }
-      ],
       "SimMetaData": {
         "IPName": "bd_2854_S06_AXI_nmu_0"
       }
@@ -168,13 +119,6 @@
       "ReadTC": "BE",
       "WriteTC": "BE",
       "SysAddresses": [],
-      "Remap": [
-        {
-          "Logical": "0xA00000000",
-          "Physical": "0x50000000000",
-          "Range": "0x200000000"
-        }
-      ],
       "SimMetaData": {
         "IPName": "bd_2854_S07_AXI_nmu_0"
       }
@@ -188,13 +132,6 @@
       "ReadTC": "BE",
       "WriteTC": "BE",
       "SysAddresses": [],
-      "Remap": [
-        {
-          "Logical": "0xA00000000",
-          "Physical": "0x50000000000",
-          "Range": "0x200000000"
-        }
-      ],
       "SimMetaData": {
         "IPName": "bd_2854_S08_AXI_rpu_0"
       }
@@ -208,13 +145,6 @@
       "ReadTC": "BE",
       "WriteTC": "BE",
       "SysAddresses": [],
-      "Remap": [
-        {
-          "Logical": "0xA00000000",
-          "Physical": "0x50000000000",
-          "Range": "0x200000000"
-        }
-      ],
       "SimMetaData": {
         "IPName": "bd_2854_S09_AXI_nmu_0"
       }
@@ -228,13 +158,6 @@
       "ReadTC": "BE",
       "WriteTC": "BE",
       "SysAddresses": [],
-      "Remap": [
-        {
-          "Logical": "0xA00000000",
-          "Physical": "0x50000000000",
-          "Range": "0x200000000"
-        }
-      ],
       "SimMetaData": {
         "IPName": "bd_2854_S10_AXI_nmu_0"
       }
@@ -257,7 +180,7 @@
         },
         {
           "Base": "0x800000000",
-          "Size": "0x180000000"
+          "Size": "0x80000000"
         }
       ],
       "MemoryParams": {
@@ -268,7 +191,7 @@
         "DDRMC5_DRAM_WIDTH": "x16",
         "DDRMC5_F0_TCK": "938",
         "DDRMC5_F1_TCK": "938",
-        "DDRMC5_MEMORY_DENSITY": "4GB",
+        "DDRMC5_MEMORY_DENSITY": "2GB",
         "DDRMC5_NUM_CH": "1",
         "MC_CHAN_REGION0": "DDR_CH0_LEGACY",
         "MC_CHAN_REGION0_BASEADDR": "0x0",
@@ -276,7 +199,7 @@
         "MC_CHAN_REGION1": "DDR_CH0_MED",
         "MC_CHAN_REGION1_BASEADDR": "0x800000000",
         "MC_CHAN_REGION1_RANGE": "0x800000000",
-        "MC_MEMORY_CAPACITY": "4GB"
+        "MC_MEMORY_CAPACITY": "2GB"
       },
       "ExternalConn": "versal_comn_platform_i/NoC_C0_C1/inst/DDR_INI[0] versal_comn_platform_i/Master_NoC/inst/M00_INI[0] versal_comn_platform_i/NoC_C0_C1/inst/S01_INI[0] versal_comn_platform_i/Master_NoC/inst/M01_INI[0] versal_comn_platform_i/NoC_C0_C1/inst/S02_INI[0] versal_comn_platform_i/Master_NoC/inst/M02_INI[0] versal_comn_platform_i/NoC_C0_C1/inst/S03_INI[0] versal_comn_platform_i/Master_NoC/inst/M03_INI[0] versal_comn_platform_i/NoC_C0_C1/inst/S04_INI[0] versal_comn_platform_i/aggr_noc/inst/M00_INI[0]"
     },
@@ -298,7 +221,7 @@
         },
         {
           "Base": "0x800000000",
-          "Size": "0x180000000"
+          "Size": "0x80000000"
         }
       ],
       "MemoryParams": {
@@ -309,7 +232,7 @@
         "DDRMC5_DRAM_WIDTH": "x16",
         "DDRMC5_F0_TCK": "938",
         "DDRMC5_F1_TCK": "938",
-        "DDRMC5_MEMORY_DENSITY": "4GB",
+        "DDRMC5_MEMORY_DENSITY": "2GB",
         "DDRMC5_NUM_CH": "1",
         "MC_CHAN_REGION0": "DDR_CH0_LEGACY",
         "MC_CHAN_REGION0_BASEADDR": "0x0",
@@ -317,7 +240,7 @@
         "MC_CHAN_REGION1": "DDR_CH0_MED",
         "MC_CHAN_REGION1_BASEADDR": "0x800000000",
         "MC_CHAN_REGION1_RANGE": "0x800000000",
-        "MC_MEMORY_CAPACITY": "4GB"
+        "MC_MEMORY_CAPACITY": "2GB"
       },
       "ExternalConn": "versal_comn_platform_i/NoC_C0_C1/inst/DDR_INI[1] versal_comn_platform_i/Master_NoC/inst/M00_INI[1] versal_comn_platform_i/NoC_C0_C1/inst/S01_INI[1] versal_comn_platform_i/Master_NoC/inst/M01_INI[1] versal_comn_platform_i/NoC_C0_C1/inst/S02_INI[1] versal_comn_platform_i/Master_NoC/inst/M02_INI[1] versal_comn_platform_i/NoC_C0_C1/inst/S03_INI[1] versal_comn_platform_i/Master_NoC/inst/M03_INI[1] versal_comn_platform_i/NoC_C0_C1/inst/S04_INI[1] versal_comn_platform_i/aggr_noc/inst/M00_INI[1]"
     },
@@ -335,7 +258,7 @@
       "SysAddresses": [
         {
           "Base": "0x50000000000",
-          "Size": "0x200000000"
+          "Size": "0x100000000"
         }
       ],
       "MemoryParams": {
@@ -346,12 +269,12 @@
         "DDRMC5_DRAM_WIDTH": "x16",
         "DDRMC5_F0_TCK": "952",
         "DDRMC5_F1_TCK": "952",
-        "DDRMC5_MEMORY_DENSITY": "4GB",
+        "DDRMC5_MEMORY_DENSITY": "2GB",
         "DDRMC5_NUM_CH": "1",
         "MC_CHAN_REGION0": "DDR_CH1",
         "MC_CHAN_REGION0_BASEADDR": "0x50000000000",
         "MC_CHAN_REGION0_RANGE": "0x8000000000",
-        "MC_MEMORY_CAPACITY": "4GB"
+        "MC_MEMORY_CAPACITY": "2GB"
       },
       "ExternalConn": "versal_comn_platform_i/NoC_C2_C3/inst/DDR_INI[0] versal_comn_platform_i/Master_NoC/inst/M04_INI[0] versal_comn_platform_i/NoC_C2_C3/inst/S01_INI[0] versal_comn_platform_i/aggr_noc/inst/M01_INI[0], versal_comn_platform_i/NoC_C2_C3/inst/DDR_INI[1] versal_comn_platform_i/aggr_noc/inst/M02_INI[1]"
     },
@@ -369,7 +292,7 @@
       "SysAddresses": [
         {
           "Base": "0x50000000000",
-          "Size": "0x200000000"
+          "Size": "0x100000000"
         }
       ],
       "MemoryParams": {
@@ -380,12 +303,12 @@
         "DDRMC5_DRAM_WIDTH": "x16",
         "DDRMC5_F0_TCK": "952",
         "DDRMC5_F1_TCK": "952",
-        "DDRMC5_MEMORY_DENSITY": "4GB",
+        "DDRMC5_MEMORY_DENSITY": "2GB",
         "DDRMC5_NUM_CH": "1",
         "MC_CHAN_REGION0": "DDR_CH1",
         "MC_CHAN_REGION0_BASEADDR": "0x50000000000",
         "MC_CHAN_REGION0_RANGE": "0x8000000000",
-        "MC_MEMORY_CAPACITY": "4GB"
+        "MC_MEMORY_CAPACITY": "2GB"
       },
       "ExternalConn": "versal_comn_platform_i/NoC_C2_C3/inst/DDR_INI[1] versal_comn_platform_i/Master_NoC/inst/M04_INI[1] versal_comn_platform_i/NoC_C2_C3/inst/S01_INI[1] versal_comn_platform_i/aggr_noc/inst/M01_INI[1], versal_comn_platform_i/NoC_C2_C3/inst/DDR_INI[1] versal_comn_platform_i/aggr_noc/inst/M02_INI[1]"
     },
@@ -401,7 +324,7 @@
       "SysAddresses": [
         {
           "Base": "0x60000000000",
-          "Size": "0x100000000"
+          "Size": "0x80000000"
         }
       ],
       "MemoryParams": {
@@ -412,12 +335,12 @@
         "DDRMC5_DRAM_WIDTH": "x16",
         "DDRMC5_F0_TCK": "952",
         "DDRMC5_F1_TCK": "952",
-        "DDRMC5_MEMORY_DENSITY": "4GB",
+        "DDRMC5_MEMORY_DENSITY": "2GB",
         "DDRMC5_NUM_CH": "1",
         "MC_CHAN_REGION0": "DDR_CH2",
         "MC_CHAN_REGION0_BASEADDR": "0x60000000000",
         "MC_CHAN_REGION0_RANGE": "0x8000000000",
-        "MC_MEMORY_CAPACITY": "4GB"
+        "MC_MEMORY_CAPACITY": "2GB"
       },
       "ExternalConn": "versal_comn_platform_i/NoC_C4/inst/DDR_INI[0] versal_comn_platform_i/Master_NoC/inst/M05_INI[0] versal_comn_platform_i/NoC_C4/inst/S01_INI[0] versal_comn_platform_i/aggr_noc/inst/M03_INI[0], versal_comn_platform_i/NoC_C4/inst/DDR_INI[0] versal_comn_platform_i/aggr_noc/inst/M04_INI[0]"
     }
@@ -426,9 +349,9 @@
     {
       "Phase": 0,
       "From": "versal_comn_platform_i/Master_NoC/inst/S00_AXI_nmu/bd_2854_S00_AXI_nmu_0_top_INST/NOC2_NMU128_INST",
-      "FromLocked": false,
+      "FromLocked": true,
       "To": "versal_comn_platform_i/ConfigNoc/inst/M00_AXI_nsu/bd_d9a0_M00_AXI_nsu_0_top_INST/NOC2_NSU128_INST",
-      "ToLocked": false,
+      "ToLocked": true,
       "Port": "PORT0",
       "ReadTC": "BE",
       "WriteTC": "BE",
@@ -720,9 +643,9 @@
     {
       "Phase": 0,
       "From": "versal_comn_platform_i/Master_NoC/inst/S00_AXI_nmu/bd_2854_S00_AXI_nmu_0_top_INST/NOC2_NMU128_INST",
-      "FromLocked": false,
+      "FromLocked": true,
       "To": "versal_comn_platform_i/NoC_C2_C3/inst/MC0_ddrc/inst/noc_ddr5_phy/inst/DDRMC5_COMP",
-      "ToLocked": false,
+      "ToLocked": true,
       "Port": "PORT0",
       "ReadTC": "BE",
       "WriteTC": "BE",
@@ -902,9 +825,9 @@
     {
       "Phase": 0,
       "From": "versal_comn_platform_i/Master_NoC/inst/S00_AXI_nmu/bd_2854_S00_AXI_nmu_0_top_INST/NOC2_NMU128_INST",
-      "FromLocked": false,
+      "FromLocked": true,
       "To": "versal_comn_platform_i/NoC_C2_C3/inst/MC1_ddrc/inst/noc_ddr5_phy/inst/DDRMC5_COMP",
-      "ToLocked": false,
+      "ToLocked": true,
       "Port": "PORT0",
       "ReadTC": "BE",
       "WriteTC": "BE",
@@ -1132,9 +1055,9 @@
     {
       "Phase": 0,
       "From": "versal_comn_platform_i/Master_NoC/inst/S00_AXI_nmu/bd_2854_S00_AXI_nmu_0_top_INST/NOC2_NMU128_INST",
-      "FromLocked": false,
+      "FromLocked": true,
       "To": "versal_comn_platform_i/NoC_C4/inst/MC0_ddrc/inst/noc_ddr5_phy/inst/DDRMC5_COMP",
-      "ToLocked": false,
+      "ToLocked": true,
       "Port": "PORT0",
       "ReadTC": "BE",
       "WriteTC": "BE",
@@ -1378,9 +1301,9 @@
     {
       "Phase": 0,
       "From": "versal_comn_platform_i/Master_NoC/inst/S00_AXI_nmu/bd_2854_S00_AXI_nmu_0_top_INST/NOC2_NMU128_INST",
-      "FromLocked": false,
+      "FromLocked": true,
       "To": "versal_comn_platform_i/NoC_C0_C1/inst/MC0_ddrc/inst/noc_ddr5_phy/inst/DDRMC5_COMP",
-      "ToLocked": false,
+      "ToLocked": true,
       "Port": "PORT0",
       "ReadTC": "BE",
       "WriteTC": "BE",
@@ -1496,9 +1419,9 @@
     {
       "Phase": 0,
       "From": "versal_comn_platform_i/Master_NoC/inst/S00_AXI_nmu/bd_2854_S00_AXI_nmu_0_top_INST/NOC2_NMU128_INST",
-      "FromLocked": false,
+      "FromLocked": true,
       "To": "versal_comn_platform_i/NoC_C0_C1/inst/MC1_ddrc/inst/noc_ddr5_phy/inst/DDRMC5_COMP",
-      "ToLocked": false,
+      "ToLocked": true,
       "Port": "PORT0",
       "ReadTC": "BE",
       "WriteTC": "BE",
@@ -1630,9 +1553,9 @@
     {
       "Phase": 0,
       "From": "versal_comn_platform_i/Master_NoC/inst/S01_AXI_nmu/bd_2854_S01_AXI_nmu_0_top_INST/NOC2_NMU128_INST",
-      "FromLocked": false,
+      "FromLocked": true,
       "To": "versal_comn_platform_i/NoC_C0_C1/inst/MC0_ddrc/inst/noc_ddr5_phy/inst/DDRMC5_COMP",
-      "ToLocked": false,
+      "ToLocked": true,
       "Port": "PORT0",
       "ReadTC": "BE",
       "WriteTC": "BE",
@@ -1748,9 +1671,9 @@
     {
       "Phase": 0,
       "From": "versal_comn_platform_i/Master_NoC/inst/S01_AXI_nmu/bd_2854_S01_AXI_nmu_0_top_INST/NOC2_NMU128_INST",
-      "FromLocked": false,
+      "FromLocked": true,
       "To": "versal_comn_platform_i/NoC_C0_C1/inst/MC1_ddrc/inst/noc_ddr5_phy/inst/DDRMC5_COMP",
-      "ToLocked": false,
+      "ToLocked": true,
       "Port": "PORT0",
       "ReadTC": "BE",
       "WriteTC": "BE",
@@ -1882,9 +1805,9 @@
     {
       "Phase": 0,
       "From": "versal_comn_platform_i/Master_NoC/inst/S01_AXI_nmu/bd_2854_S01_AXI_nmu_0_top_INST/NOC2_NMU128_INST",
-      "FromLocked": false,
+      "FromLocked": true,
       "To": "versal_comn_platform_i/ConfigNoc/inst/M00_AXI_nsu/bd_d9a0_M00_AXI_nsu_0_top_INST/NOC2_NSU128_INST",
-      "ToLocked": false,
+      "ToLocked": true,
       "Port": "PORT0",
       "ReadTC": "BE",
       "WriteTC": "BE",
@@ -2208,9 +2131,9 @@
     {
       "Phase": 0,
       "From": "versal_comn_platform_i/Master_NoC/inst/S01_AXI_nmu/bd_2854_S01_AXI_nmu_0_top_INST/NOC2_NMU128_INST",
-      "FromLocked": false,
+      "FromLocked": true,
       "To": "versal_comn_platform_i/NoC_C2_C3/inst/MC0_ddrc/inst/noc_ddr5_phy/inst/DDRMC5_COMP",
-      "ToLocked": false,
+      "ToLocked": true,
       "Port": "PORT0",
       "ReadTC": "BE",
       "WriteTC": "BE",
@@ -2390,9 +2313,9 @@
     {
       "Phase": 0,
       "From": "versal_comn_platform_i/Master_NoC/inst/S01_AXI_nmu/bd_2854_S01_AXI_nmu_0_top_INST/NOC2_NMU128_INST",
-      "FromLocked": false,
+      "FromLocked": true,
       "To": "versal_comn_platform_i/NoC_C2_C3/inst/MC1_ddrc/inst/noc_ddr5_phy/inst/DDRMC5_COMP",
-      "ToLocked": false,
+      "ToLocked": true,
       "Port": "PORT0",
       "ReadTC": "BE",
       "WriteTC": "BE",
@@ -2620,9 +2543,9 @@
     {
       "Phase": 0,
       "From": "versal_comn_platform_i/Master_NoC/inst/S01_AXI_nmu/bd_2854_S01_AXI_nmu_0_top_INST/NOC2_NMU128_INST",
-      "FromLocked": false,
+      "FromLocked": true,
       "To": "versal_comn_platform_i/NoC_C4/inst/MC0_ddrc/inst/noc_ddr5_phy/inst/DDRMC5_COMP",
-      "ToLocked": false,
+      "ToLocked": true,
       "Port": "PORT0",
       "ReadTC": "BE",
       "WriteTC": "BE",
@@ -2866,9 +2789,9 @@
     {
       "Phase": 0,
       "From": "versal_comn_platform_i/Master_NoC/inst/S02_AXI_nmu/bd_2854_S02_AXI_nmu_0_top_INST/NOC2_NMU128_INST",
-      "FromLocked": false,
+      "FromLocked": true,
       "To": "versal_comn_platform_i/NoC_C0_C1/inst/MC0_ddrc/inst/noc_ddr5_phy/inst/DDRMC5_COMP",
-      "ToLocked": false,
+      "ToLocked": true,
       "Port": "PORT0",
       "ReadTC": "BE",
       "WriteTC": "BE",
@@ -2984,9 +2907,9 @@
     {
       "Phase": 0,
       "From": "versal_comn_platform_i/Master_NoC/inst/S02_AXI_nmu/bd_2854_S02_AXI_nmu_0_top_INST/NOC2_NMU128_INST",
-      "FromLocked": false,
+      "FromLocked": true,
       "To": "versal_comn_platform_i/NoC_C0_C1/inst/MC1_ddrc/inst/noc_ddr5_phy/inst/DDRMC5_COMP",
-      "ToLocked": false,
+      "ToLocked": true,
       "Port": "PORT0",
       "ReadTC": "BE",
       "WriteTC": "BE",
@@ -3118,9 +3041,9 @@
     {
       "Phase": 0,
       "From": "versal_comn_platform_i/Master_NoC/inst/S02_AXI_nmu/bd_2854_S02_AXI_nmu_0_top_INST/NOC2_NMU128_INST",
-      "FromLocked": false,
+      "FromLocked": true,
       "To": "versal_comn_platform_i/ConfigNoc/inst/M00_AXI_nsu/bd_d9a0_M00_AXI_nsu_0_top_INST/NOC2_NSU128_INST",
-      "ToLocked": false,
+      "ToLocked": true,
       "Port": "PORT0",
       "ReadTC": "BE",
       "WriteTC": "BE",
@@ -3428,9 +3351,9 @@
     {
       "Phase": 0,
       "From": "versal_comn_platform_i/Master_NoC/inst/S02_AXI_nmu/bd_2854_S02_AXI_nmu_0_top_INST/NOC2_NMU128_INST",
-      "FromLocked": false,
+      "FromLocked": true,
       "To": "versal_comn_platform_i/NoC_C2_C3/inst/MC0_ddrc/inst/noc_ddr5_phy/inst/DDRMC5_COMP",
-      "ToLocked": false,
+      "ToLocked": true,
       "Port": "PORT0",
       "ReadTC": "BE",
       "WriteTC": "BE",
@@ -3610,9 +3533,9 @@
     {
       "Phase": 0,
       "From": "versal_comn_platform_i/Master_NoC/inst/S02_AXI_nmu/bd_2854_S02_AXI_nmu_0_top_INST/NOC2_NMU128_INST",
-      "FromLocked": false,
+      "FromLocked": true,
       "To": "versal_comn_platform_i/NoC_C2_C3/inst/MC1_ddrc/inst/noc_ddr5_phy/inst/DDRMC5_COMP",
-      "ToLocked": false,
+      "ToLocked": true,
       "Port": "PORT0",
       "ReadTC": "BE",
       "WriteTC": "BE",
@@ -3840,9 +3763,9 @@
     {
       "Phase": 0,
       "From": "versal_comn_platform_i/Master_NoC/inst/S02_AXI_nmu/bd_2854_S02_AXI_nmu_0_top_INST/NOC2_NMU128_INST",
-      "FromLocked": false,
+      "FromLocked": true,
       "To": "versal_comn_platform_i/NoC_C4/inst/MC0_ddrc/inst/noc_ddr5_phy/inst/DDRMC5_COMP",
-      "ToLocked": false,
+      "ToLocked": true,
       "Port": "PORT0",
       "ReadTC": "BE",
       "WriteTC": "BE",
@@ -4086,9 +4009,9 @@
     {
       "Phase": 0,
       "From": "versal_comn_platform_i/Master_NoC/inst/S03_AXI_nmu/bd_2854_S03_AXI_nmu_0_top_INST/NOC2_NMU128_INST",
-      "FromLocked": false,
+      "FromLocked": true,
       "To": "versal_comn_platform_i/ConfigNoc/inst/M00_AXI_nsu/bd_d9a0_M00_AXI_nsu_0_top_INST/NOC2_NSU128_INST",
-      "ToLocked": false,
+      "ToLocked": true,
       "Port": "PORT0",
       "ReadTC": "BE",
       "WriteTC": "BE",
@@ -4396,9 +4319,9 @@
     {
       "Phase": 0,
       "From": "versal_comn_platform_i/Master_NoC/inst/S03_AXI_nmu/bd_2854_S03_AXI_nmu_0_top_INST/NOC2_NMU128_INST",
-      "FromLocked": false,
+      "FromLocked": true,
       "To": "versal_comn_platform_i/NoC_C0_C1/inst/MC0_ddrc/inst/noc_ddr5_phy/inst/DDRMC5_COMP",
-      "ToLocked": false,
+      "ToLocked": true,
       "Port": "PORT0",
       "ReadTC": "BE",
       "WriteTC": "BE",
@@ -4514,9 +4437,9 @@
     {
       "Phase": 0,
       "From": "versal_comn_platform_i/Master_NoC/inst/S03_AXI_nmu/bd_2854_S03_AXI_nmu_0_top_INST/NOC2_NMU128_INST",
-      "FromLocked": false,
+      "FromLocked": true,
       "To": "versal_comn_platform_i/NoC_C0_C1/inst/MC1_ddrc/inst/noc_ddr5_phy/inst/DDRMC5_COMP",
-      "ToLocked": false,
+      "ToLocked": true,
       "Port": "PORT0",
       "ReadTC": "BE",
       "WriteTC": "BE",
@@ -4648,9 +4571,9 @@
     {
       "Phase": 0,
       "From": "versal_comn_platform_i/Master_NoC/inst/S03_AXI_nmu/bd_2854_S03_AXI_nmu_0_top_INST/NOC2_NMU128_INST",
-      "FromLocked": false,
+      "FromLocked": true,
       "To": "versal_comn_platform_i/NoC_C2_C3/inst/MC0_ddrc/inst/noc_ddr5_phy/inst/DDRMC5_COMP",
-      "ToLocked": false,
+      "ToLocked": true,
       "Port": "PORT0",
       "ReadTC": "BE",
       "WriteTC": "BE",
@@ -4830,9 +4753,9 @@
     {
       "Phase": 0,
       "From": "versal_comn_platform_i/Master_NoC/inst/S03_AXI_nmu/bd_2854_S03_AXI_nmu_0_top_INST/NOC2_NMU128_INST",
-      "FromLocked": false,
+      "FromLocked": true,
       "To": "versal_comn_platform_i/NoC_C2_C3/inst/MC1_ddrc/inst/noc_ddr5_phy/inst/DDRMC5_COMP",
-      "ToLocked": false,
+      "ToLocked": true,
       "Port": "PORT0",
       "ReadTC": "BE",
       "WriteTC": "BE",
@@ -5060,9 +4983,9 @@
     {
       "Phase": 0,
       "From": "versal_comn_platform_i/Master_NoC/inst/S03_AXI_nmu/bd_2854_S03_AXI_nmu_0_top_INST/NOC2_NMU128_INST",
-      "FromLocked": false,
+      "FromLocked": true,
       "To": "versal_comn_platform_i/NoC_C4/inst/MC0_ddrc/inst/noc_ddr5_phy/inst/DDRMC5_COMP",
-      "ToLocked": false,
+      "ToLocked": true,
       "Port": "PORT0",
       "ReadTC": "BE",
       "WriteTC": "BE",
@@ -5306,9 +5229,9 @@
     {
       "Phase": 0,
       "From": "versal_comn_platform_i/Master_NoC/inst/S04_AXI_nmu/bd_2854_S04_AXI_nmu_0_top_INST/NOC2_NMU128_INST",
-      "FromLocked": false,
+      "FromLocked": true,
       "To": "versal_comn_platform_i/ConfigNoc/inst/M00_AXI_nsu/bd_d9a0_M00_AXI_nsu_0_top_INST/NOC2_NSU128_INST",
-      "ToLocked": false,
+      "ToLocked": true,
       "Port": "PORT0",
       "ReadTC": "BE",
       "WriteTC": "BE",
@@ -5600,9 +5523,9 @@
     {
       "Phase": 0,
       "From": "versal_comn_platform_i/Master_NoC/inst/S04_AXI_nmu/bd_2854_S04_AXI_nmu_0_top_INST/NOC2_NMU128_INST",
-      "FromLocked": false,
+      "FromLocked": true,
       "To": "versal_comn_platform_i/NoC_C2_C3/inst/MC0_ddrc/inst/noc_ddr5_phy/inst/DDRMC5_COMP",
-      "ToLocked": false,
+      "ToLocked": true,
       "Port": "PORT0",
       "ReadTC": "BE",
       "WriteTC": "BE",
@@ -5766,9 +5689,9 @@
     {
       "Phase": 0,
       "From": "versal_comn_platform_i/Master_NoC/inst/S04_AXI_nmu/bd_2854_S04_AXI_nmu_0_top_INST/NOC2_NMU128_INST",
-      "FromLocked": false,
+      "FromLocked": true,
       "To": "versal_comn_platform_i/NoC_C2_C3/inst/MC1_ddrc/inst/noc_ddr5_phy/inst/DDRMC5_COMP",
-      "ToLocked": false,
+      "ToLocked": true,
       "Port": "PORT0",
       "ReadTC": "BE",
       "WriteTC": "BE",
@@ -5980,9 +5903,9 @@
     {
       "Phase": 0,
       "From": "versal_comn_platform_i/Master_NoC/inst/S04_AXI_nmu/bd_2854_S04_AXI_nmu_0_top_INST/NOC2_NMU128_INST",
-      "FromLocked": false,
+      "FromLocked": true,
       "To": "versal_comn_platform_i/NoC_C4/inst/MC0_ddrc/inst/noc_ddr5_phy/inst/DDRMC5_COMP",
-      "ToLocked": false,
+      "ToLocked": true,
       "Port": "PORT0",
       "ReadTC": "BE",
       "WriteTC": "BE",
@@ -6210,9 +6133,9 @@
     {
       "Phase": 0,
       "From": "versal_comn_platform_i/Master_NoC/inst/S04_AXI_nmu/bd_2854_S04_AXI_nmu_0_top_INST/NOC2_NMU128_INST",
-      "FromLocked": false,
+      "FromLocked": true,
       "To": "versal_comn_platform_i/NoC_C0_C1/inst/MC0_ddrc/inst/noc_ddr5_phy/inst/DDRMC5_COMP",
-      "ToLocked": false,
+      "ToLocked": true,
       "Port": "PORT0",
       "ReadTC": "BE",
       "WriteTC": "BE",
@@ -6344,9 +6267,9 @@
     {
       "Phase": 0,
       "From": "versal_comn_platform_i/Master_NoC/inst/S04_AXI_nmu/bd_2854_S04_AXI_nmu_0_top_INST/NOC2_NMU128_INST",
-      "FromLocked": false,
+      "FromLocked": true,
       "To": "versal_comn_platform_i/NoC_C0_C1/inst/MC1_ddrc/inst/noc_ddr5_phy/inst/DDRMC5_COMP",
-      "ToLocked": false,
+      "ToLocked": true,
       "Port": "PORT0",
       "ReadTC": "BE",
       "WriteTC": "BE",
@@ -6462,9 +6385,9 @@
     {
       "Phase": 0,
       "From": "versal_comn_platform_i/Master_NoC/inst/S05_AXI_nmu/bd_2854_S05_AXI_nmu_0_top_INST/NOC2_NMU128_INST",
-      "FromLocked": false,
+      "FromLocked": true,
       "To": "versal_comn_platform_i/NoC_C0_C1/inst/MC0_ddrc/inst/noc_ddr5_phy/inst/DDRMC5_COMP",
-      "ToLocked": false,
+      "ToLocked": true,
       "Port": "PORT0",
       "ReadTC": "BE",
       "WriteTC": "BE",
@@ -6596,9 +6519,9 @@
     {
       "Phase": 0,
       "From": "versal_comn_platform_i/Master_NoC/inst/S05_AXI_nmu/bd_2854_S05_AXI_nmu_0_top_INST/NOC2_NMU128_INST",
-      "FromLocked": false,
+      "FromLocked": true,
       "To": "versal_comn_platform_i/NoC_C0_C1/inst/MC1_ddrc/inst/noc_ddr5_phy/inst/DDRMC5_COMP",
-      "ToLocked": false,
+      "ToLocked": true,
       "Port": "PORT0",
       "ReadTC": "BE",
       "WriteTC": "BE",
@@ -6714,9 +6637,9 @@
     {
       "Phase": 0,
       "From": "versal_comn_platform_i/Master_NoC/inst/S05_AXI_nmu/bd_2854_S05_AXI_nmu_0_top_INST/NOC2_NMU128_INST",
-      "FromLocked": false,
+      "FromLocked": true,
       "To": "versal_comn_platform_i/ConfigNoc/inst/M00_AXI_nsu/bd_d9a0_M00_AXI_nsu_0_top_INST/NOC2_NSU128_INST",
-      "ToLocked": false,
+      "ToLocked": true,
       "Port": "PORT0",
       "ReadTC": "BE",
       "WriteTC": "BE",
@@ -7008,9 +6931,9 @@
     {
       "Phase": 0,
       "From": "versal_comn_platform_i/Master_NoC/inst/S05_AXI_nmu/bd_2854_S05_AXI_nmu_0_top_INST/NOC2_NMU128_INST",
-      "FromLocked": false,
+      "FromLocked": true,
       "To": "versal_comn_platform_i/NoC_C2_C3/inst/MC0_ddrc/inst/noc_ddr5_phy/inst/DDRMC5_COMP",
-      "ToLocked": false,
+      "ToLocked": true,
       "Port": "PORT0",
       "ReadTC": "BE",
       "WriteTC": "BE",
@@ -7174,9 +7097,9 @@
     {
       "Phase": 0,
       "From": "versal_comn_platform_i/Master_NoC/inst/S05_AXI_nmu/bd_2854_S05_AXI_nmu_0_top_INST/NOC2_NMU128_INST",
-      "FromLocked": false,
+      "FromLocked": true,
       "To": "versal_comn_platform_i/NoC_C2_C3/inst/MC1_ddrc/inst/noc_ddr5_phy/inst/DDRMC5_COMP",
-      "ToLocked": false,
+      "ToLocked": true,
       "Port": "PORT0",
       "ReadTC": "BE",
       "WriteTC": "BE",
@@ -7388,9 +7311,9 @@
     {
       "Phase": 0,
       "From": "versal_comn_platform_i/Master_NoC/inst/S05_AXI_nmu/bd_2854_S05_AXI_nmu_0_top_INST/NOC2_NMU128_INST",
-      "FromLocked": false,
+      "FromLocked": true,
       "To": "versal_comn_platform_i/NoC_C4/inst/MC0_ddrc/inst/noc_ddr5_phy/inst/DDRMC5_COMP",
-      "ToLocked": false,
+      "ToLocked": true,
       "Port": "PORT0",
       "ReadTC": "BE",
       "WriteTC": "BE",
@@ -7618,9 +7541,9 @@
     {
       "Phase": 0,
       "From": "versal_comn_platform_i/Master_NoC/inst/S06_AXI_nmu/bd_2854_S06_AXI_nmu_0_top_INST/NOC2_NMU128_INST",
-      "FromLocked": false,
+      "FromLocked": true,
       "To": "versal_comn_platform_i/NoC_C0_C1/inst/MC0_ddrc/inst/noc_ddr5_phy/inst/DDRMC5_COMP",
-      "ToLocked": false,
+      "ToLocked": true,
       "Port": "PORT0",
       "ReadTC": "BE",
       "WriteTC": "BE",
@@ -7752,9 +7675,9 @@
     {
       "Phase": 0,
       "From": "versal_comn_platform_i/Master_NoC/inst/S06_AXI_nmu/bd_2854_S06_AXI_nmu_0_top_INST/NOC2_NMU128_INST",
-      "FromLocked": false,
+      "FromLocked": true,
       "To": "versal_comn_platform_i/NoC_C0_C1/inst/MC1_ddrc/inst/noc_ddr5_phy/inst/DDRMC5_COMP",
-      "ToLocked": false,
+      "ToLocked": true,
       "Port": "PORT0",
       "ReadTC": "BE",
       "WriteTC": "BE",
@@ -7870,9 +7793,9 @@
     {
       "Phase": 0,
       "From": "versal_comn_platform_i/Master_NoC/inst/S06_AXI_nmu/bd_2854_S06_AXI_nmu_0_top_INST/NOC2_NMU128_INST",
-      "FromLocked": false,
+      "FromLocked": true,
       "To": "versal_comn_platform_i/ConfigNoc/inst/M00_AXI_nsu/bd_d9a0_M00_AXI_nsu_0_top_INST/NOC2_NSU128_INST",
-      "ToLocked": false,
+      "ToLocked": true,
       "Port": "PORT0",
       "ReadTC": "BE",
       "WriteTC": "BE",
@@ -8180,9 +8103,9 @@
     {
       "Phase": 0,
       "From": "versal_comn_platform_i/Master_NoC/inst/S06_AXI_nmu/bd_2854_S06_AXI_nmu_0_top_INST/NOC2_NMU128_INST",
-      "FromLocked": false,
+      "FromLocked": true,
       "To": "versal_comn_platform_i/NoC_C2_C3/inst/MC0_ddrc/inst/noc_ddr5_phy/inst/DDRMC5_COMP",
-      "ToLocked": false,
+      "ToLocked": true,
       "Port": "PORT0",
       "ReadTC": "BE",
       "WriteTC": "BE",
@@ -8346,9 +8269,9 @@
     {
       "Phase": 0,
       "From": "versal_comn_platform_i/Master_NoC/inst/S06_AXI_nmu/bd_2854_S06_AXI_nmu_0_top_INST/NOC2_NMU128_INST",
-      "FromLocked": false,
+      "FromLocked": true,
       "To": "versal_comn_platform_i/NoC_C2_C3/inst/MC1_ddrc/inst/noc_ddr5_phy/inst/DDRMC5_COMP",
-      "ToLocked": false,
+      "ToLocked": true,
       "Port": "PORT0",
       "ReadTC": "BE",
       "WriteTC": "BE",
@@ -8560,9 +8483,9 @@
     {
       "Phase": 0,
       "From": "versal_comn_platform_i/Master_NoC/inst/S06_AXI_nmu/bd_2854_S06_AXI_nmu_0_top_INST/NOC2_NMU128_INST",
-      "FromLocked": false,
+      "FromLocked": true,
       "To": "versal_comn_platform_i/NoC_C4/inst/MC0_ddrc/inst/noc_ddr5_phy/inst/DDRMC5_COMP",
-      "ToLocked": false,
+      "ToLocked": true,
       "Port": "PORT0",
       "ReadTC": "BE",
       "WriteTC": "BE",
@@ -8790,9 +8713,9 @@
     {
       "Phase": 0,
       "From": "versal_comn_platform_i/Master_NoC/inst/S07_AXI_nmu/bd_2854_S07_AXI_nmu_0_top_INST/NOC2_NMU128_INST",
-      "FromLocked": false,
+      "FromLocked": true,
       "To": "versal_comn_platform_i/ConfigNoc/inst/M00_AXI_nsu/bd_d9a0_M00_AXI_nsu_0_top_INST/NOC2_NSU128_INST",
-      "ToLocked": false,
+      "ToLocked": true,
       "Port": "PORT0",
       "ReadTC": "BE",
       "WriteTC": "BE",
@@ -9068,9 +8991,9 @@
     {
       "Phase": 0,
       "From": "versal_comn_platform_i/Master_NoC/inst/S07_AXI_nmu/bd_2854_S07_AXI_nmu_0_top_INST/NOC2_NMU128_INST",
-      "FromLocked": false,
+      "FromLocked": true,
       "To": "versal_comn_platform_i/NoC_C0_C1/inst/MC0_ddrc/inst/noc_ddr5_phy/inst/DDRMC5_COMP",
-      "ToLocked": false,
+      "ToLocked": true,
       "Port": "PORT0",
       "ReadTC": "BE",
       "WriteTC": "BE",
@@ -9202,9 +9125,9 @@
     {
       "Phase": 0,
       "From": "versal_comn_platform_i/Master_NoC/inst/S07_AXI_nmu/bd_2854_S07_AXI_nmu_0_top_INST/NOC2_NMU128_INST",
-      "FromLocked": false,
+      "FromLocked": true,
       "To": "versal_comn_platform_i/NoC_C0_C1/inst/MC1_ddrc/inst/noc_ddr5_phy/inst/DDRMC5_COMP",
-      "ToLocked": false,
+      "ToLocked": true,
       "Port": "PORT0",
       "ReadTC": "BE",
       "WriteTC": "BE",
@@ -9320,9 +9243,9 @@
     {
       "Phase": 0,
       "From": "versal_comn_platform_i/Master_NoC/inst/S07_AXI_nmu/bd_2854_S07_AXI_nmu_0_top_INST/NOC2_NMU128_INST",
-      "FromLocked": false,
+      "FromLocked": true,
       "To": "versal_comn_platform_i/NoC_C2_C3/inst/MC0_ddrc/inst/noc_ddr5_phy/inst/DDRMC5_COMP",
-      "ToLocked": false,
+      "ToLocked": true,
       "Port": "PORT0",
       "ReadTC": "BE",
       "WriteTC": "BE",
@@ -9486,9 +9409,9 @@
     {
       "Phase": 0,
       "From": "versal_comn_platform_i/Master_NoC/inst/S07_AXI_nmu/bd_2854_S07_AXI_nmu_0_top_INST/NOC2_NMU128_INST",
-      "FromLocked": false,
+      "FromLocked": true,
       "To": "versal_comn_platform_i/NoC_C2_C3/inst/MC1_ddrc/inst/noc_ddr5_phy/inst/DDRMC5_COMP",
-      "ToLocked": false,
+      "ToLocked": true,
       "Port": "PORT0",
       "ReadTC": "BE",
       "WriteTC": "BE",
@@ -9700,9 +9623,9 @@
     {
       "Phase": 0,
       "From": "versal_comn_platform_i/Master_NoC/inst/S07_AXI_nmu/bd_2854_S07_AXI_nmu_0_top_INST/NOC2_NMU128_INST",
-      "FromLocked": false,
+      "FromLocked": true,
       "To": "versal_comn_platform_i/NoC_C4/inst/MC0_ddrc/inst/noc_ddr5_phy/inst/DDRMC5_COMP",
-      "ToLocked": false,
+      "ToLocked": true,
       "Port": "PORT0",
       "ReadTC": "BE",
       "WriteTC": "BE",
@@ -9930,9 +9853,9 @@
     {
       "Phase": 0,
       "From": "versal_comn_platform_i/Master_NoC/inst/S08_AXI_rpu/bd_2854_S08_AXI_rpu_0_top_INST/NOC2_NMU128_INST",
-      "FromLocked": false,
+      "FromLocked": true,
       "To": "versal_comn_platform_i/ConfigNoc/inst/M00_AXI_nsu/bd_d9a0_M00_AXI_nsu_0_top_INST/NOC2_NSU128_INST",
-      "ToLocked": false,
+      "ToLocked": true,
       "Port": "PORT0",
       "ReadTC": "BE",
       "WriteTC": "BE",
@@ -10224,9 +10147,9 @@
     {
       "Phase": 0,
       "From": "versal_comn_platform_i/Master_NoC/inst/S08_AXI_rpu/bd_2854_S08_AXI_rpu_0_top_INST/NOC2_NMU128_INST",
-      "FromLocked": false,
+      "FromLocked": true,
       "To": "versal_comn_platform_i/NoC_C2_C3/inst/MC0_ddrc/inst/noc_ddr5_phy/inst/DDRMC5_COMP",
-      "ToLocked": false,
+      "ToLocked": true,
       "Port": "PORT0",
       "ReadTC": "BE",
       "WriteTC": "BE",
@@ -10406,9 +10329,9 @@
     {
       "Phase": 0,
       "From": "versal_comn_platform_i/Master_NoC/inst/S08_AXI_rpu/bd_2854_S08_AXI_rpu_0_top_INST/NOC2_NMU128_INST",
-      "FromLocked": false,
+      "FromLocked": true,
       "To": "versal_comn_platform_i/NoC_C2_C3/inst/MC1_ddrc/inst/noc_ddr5_phy/inst/DDRMC5_COMP",
-      "ToLocked": false,
+      "ToLocked": true,
       "Port": "PORT0",
       "ReadTC": "BE",
       "WriteTC": "BE",
@@ -10636,9 +10559,9 @@
     {
       "Phase": 0,
       "From": "versal_comn_platform_i/Master_NoC/inst/S08_AXI_rpu/bd_2854_S08_AXI_rpu_0_top_INST/NOC2_NMU128_INST",
-      "FromLocked": false,
+      "FromLocked": true,
       "To": "versal_comn_platform_i/NoC_C4/inst/MC0_ddrc/inst/noc_ddr5_phy/inst/DDRMC5_COMP",
-      "ToLocked": false,
+      "ToLocked": true,
       "Port": "PORT0",
       "ReadTC": "BE",
       "WriteTC": "BE",
@@ -10882,9 +10805,9 @@
     {
       "Phase": 0,
       "From": "versal_comn_platform_i/Master_NoC/inst/S08_AXI_rpu/bd_2854_S08_AXI_rpu_0_top_INST/NOC2_NMU128_INST",
-      "FromLocked": false,
+      "FromLocked": true,
       "To": "versal_comn_platform_i/NoC_C0_C1/inst/MC0_ddrc/inst/noc_ddr5_phy/inst/DDRMC5_COMP",
-      "ToLocked": false,
+      "ToLocked": true,
       "Port": "PORT0",
       "ReadTC": "BE",
       "WriteTC": "BE",
@@ -11000,9 +10923,9 @@
     {
       "Phase": 0,
       "From": "versal_comn_platform_i/Master_NoC/inst/S08_AXI_rpu/bd_2854_S08_AXI_rpu_0_top_INST/NOC2_NMU128_INST",
-      "FromLocked": false,
+      "FromLocked": true,
       "To": "versal_comn_platform_i/NoC_C0_C1/inst/MC1_ddrc/inst/noc_ddr5_phy/inst/DDRMC5_COMP",
-      "ToLocked": false,
+      "ToLocked": true,
       "Port": "PORT0",
       "ReadTC": "BE",
       "WriteTC": "BE",
@@ -11134,9 +11057,9 @@
     {
       "Phase": 0,
       "From": "versal_comn_platform_i/Master_NoC/inst/S09_AXI_nmu/bd_2854_S09_AXI_nmu_0_top_INST/NOC2_NMU128_INST",
-      "FromLocked": false,
+      "FromLocked": true,
       "To": "versal_comn_platform_i/ConfigNoc/inst/M00_AXI_nsu/bd_d9a0_M00_AXI_nsu_0_top_INST/NOC2_NSU128_INST",
-      "ToLocked": false,
+      "ToLocked": true,
       "Port": "PORT0",
       "ReadTC": "BE",
       "WriteTC": "BE",
@@ -11460,9 +11383,9 @@
     {
       "Phase": 0,
       "From": "versal_comn_platform_i/Master_NoC/inst/S09_AXI_nmu/bd_2854_S09_AXI_nmu_0_top_INST/NOC2_NMU128_INST",
-      "FromLocked": false,
+      "FromLocked": true,
       "To": "versal_comn_platform_i/NoC_C2_C3/inst/MC0_ddrc/inst/noc_ddr5_phy/inst/DDRMC5_COMP",
-      "ToLocked": false,
+      "ToLocked": true,
       "Port": "PORT0",
       "ReadTC": "BE",
       "WriteTC": "BE",
@@ -11658,9 +11581,9 @@
     {
       "Phase": 0,
       "From": "versal_comn_platform_i/Master_NoC/inst/S09_AXI_nmu/bd_2854_S09_AXI_nmu_0_top_INST/NOC2_NMU128_INST",
-      "FromLocked": false,
+      "FromLocked": true,
       "To": "versal_comn_platform_i/NoC_C2_C3/inst/MC1_ddrc/inst/noc_ddr5_phy/inst/DDRMC5_COMP",
-      "ToLocked": false,
+      "ToLocked": true,
       "Port": "PORT0",
       "ReadTC": "BE",
       "WriteTC": "BE",
@@ -11904,9 +11827,9 @@
     {
       "Phase": 0,
       "From": "versal_comn_platform_i/Master_NoC/inst/S09_AXI_nmu/bd_2854_S09_AXI_nmu_0_top_INST/NOC2_NMU128_INST",
-      "FromLocked": false,
+      "FromLocked": true,
       "To": "versal_comn_platform_i/NoC_C4/inst/MC0_ddrc/inst/noc_ddr5_phy/inst/DDRMC5_COMP",
-      "ToLocked": false,
+      "ToLocked": true,
       "Port": "PORT0",
       "ReadTC": "BE",
       "WriteTC": "BE",
@@ -12166,9 +12089,9 @@
     {
       "Phase": 0,
       "From": "versal_comn_platform_i/Master_NoC/inst/S09_AXI_nmu/bd_2854_S09_AXI_nmu_0_top_INST/NOC2_NMU128_INST",
-      "FromLocked": false,
+      "FromLocked": true,
       "To": "versal_comn_platform_i/NoC_C0_C1/inst/MC0_ddrc/inst/noc_ddr5_phy/inst/DDRMC5_COMP",
-      "ToLocked": false,
+      "ToLocked": true,
       "Port": "PORT0",
       "ReadTC": "BE",
       "WriteTC": "BE",
@@ -12300,9 +12223,9 @@
     {
       "Phase": 0,
       "From": "versal_comn_platform_i/Master_NoC/inst/S09_AXI_nmu/bd_2854_S09_AXI_nmu_0_top_INST/NOC2_NMU128_INST",
-      "FromLocked": false,
+      "FromLocked": true,
       "To": "versal_comn_platform_i/NoC_C0_C1/inst/MC1_ddrc/inst/noc_ddr5_phy/inst/DDRMC5_COMP",
-      "ToLocked": false,
+      "ToLocked": true,
       "Port": "PORT0",
       "ReadTC": "BE",
       "WriteTC": "BE",
@@ -12450,9 +12373,9 @@
     {
       "Phase": 0,
       "From": "versal_comn_platform_i/Master_NoC/inst/S10_AXI_nmu/bd_2854_S10_AXI_nmu_0_top_INST/NOC2_NMU128_INST",
-      "FromLocked": false,
+      "FromLocked": true,
       "To": "versal_comn_platform_i/ConfigNoc/inst/M00_AXI_nsu/bd_d9a0_M00_AXI_nsu_0_top_INST/NOC2_NSU128_INST",
-      "ToLocked": false,
+      "ToLocked": true,
       "Port": "PORT0",
       "ReadTC": "BE",
       "WriteTC": "BE",
@@ -12728,9 +12651,9 @@
     {
       "Phase": 0,
       "From": "versal_comn_platform_i/Master_NoC/inst/S10_AXI_nmu/bd_2854_S10_AXI_nmu_0_top_INST/NOC2_NMU128_INST",
-      "FromLocked": false,
+      "FromLocked": true,
       "To": "versal_comn_platform_i/NoC_C2_C3/inst/MC0_ddrc/inst/noc_ddr5_phy/inst/DDRMC5_COMP",
-      "ToLocked": false,
+      "ToLocked": true,
       "Port": "PORT0",
       "ReadTC": "BE",
       "WriteTC": "BE",
@@ -12878,9 +12801,9 @@
     {
       "Phase": 0,
       "From": "versal_comn_platform_i/Master_NoC/inst/S10_AXI_nmu/bd_2854_S10_AXI_nmu_0_top_INST/NOC2_NMU128_INST",
-      "FromLocked": false,
+      "FromLocked": true,
       "To": "versal_comn_platform_i/NoC_C2_C3/inst/MC1_ddrc/inst/noc_ddr5_phy/inst/DDRMC5_COMP",
-      "ToLocked": false,
+      "ToLocked": true,
       "Port": "PORT0",
       "ReadTC": "BE",
       "WriteTC": "BE",
@@ -13076,9 +12999,9 @@
     {
       "Phase": 0,
       "From": "versal_comn_platform_i/Master_NoC/inst/S10_AXI_nmu/bd_2854_S10_AXI_nmu_0_top_INST/NOC2_NMU128_INST",
-      "FromLocked": false,
+      "FromLocked": true,
       "To": "versal_comn_platform_i/NoC_C4/inst/MC0_ddrc/inst/noc_ddr5_phy/inst/DDRMC5_COMP",
-      "ToLocked": false,
+      "ToLocked": true,
       "Port": "PORT0",
       "ReadTC": "BE",
       "WriteTC": "BE",
@@ -13290,9 +13213,9 @@
     {
       "Phase": 0,
       "From": "versal_comn_platform_i/Master_NoC/inst/S10_AXI_nmu/bd_2854_S10_AXI_nmu_0_top_INST/NOC2_NMU128_INST",
-      "FromLocked": false,
+      "FromLocked": true,
       "To": "versal_comn_platform_i/NoC_C0_C1/inst/MC0_ddrc/inst/noc_ddr5_phy/inst/DDRMC5_COMP",
-      "ToLocked": false,
+      "ToLocked": true,
       "Port": "PORT0",
       "ReadTC": "BE",
       "WriteTC": "BE",
@@ -13440,9 +13363,9 @@
     {
       "Phase": 0,
       "From": "versal_comn_platform_i/Master_NoC/inst/S10_AXI_nmu/bd_2854_S10_AXI_nmu_0_top_INST/NOC2_NMU128_INST",
-      "FromLocked": false,
+      "FromLocked": true,
       "To": "versal_comn_platform_i/NoC_C0_C1/inst/MC1_ddrc/inst/noc_ddr5_phy/inst/DDRMC5_COMP",
-      "ToLocked": false,
+      "ToLocked": true,
       "Port": "PORT0",
       "ReadTC": "BE",
       "WriteTC": "BE",
