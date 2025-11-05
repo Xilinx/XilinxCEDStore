@@ -40,15 +40,8 @@ proc getSupportedBoards {} {
 # }
 
 proc addOptions {DESIGNOBJ PROJECT_PARAM.BOARD_PART} {
-
-   if {[regexp sp701 ${PROJECT_PARAM.BOARD_PART}] || [regexp scu200_es ${PROJECT_PARAM.BOARD_PART}]} {
-    # puts "INFO :: Debug - sp701 or scu200 ES Board selected"
-      lappend x [dict create name "Preset" type "string" value "Microcontroller" value_list {"Microcontroller Microcontroller___Suitable_for_running_baremetal_code" "Real-time_Processor Real-time____________Deterministic_real-time_processing_on_RTOS" "Application_Processor Application_________Embedded_linux_capable"} enabled true]
-      return $x
-   } else {
       lappend x [dict create name "Preset" type "string" value "Microcontroller" value_list {"Microcontroller Microcontroller___Suitable_for_running_baremetal_code" "Real-time_Processor Real-time____________Deterministic_real-time_processing_on_RTOS"} enabled true]
       return $x
-}
 }
 
 proc addGUILayout {DESIGNOBJ PROJECT_PARAM.BOARD_PART} {

@@ -121,32 +121,18 @@ proc createDesign {design_name options} {
         set fpga_part [get_property PART_NAME [current_board_part]]
         set mem_ctrl [set mem_int ""]
 
-        # if { [regexp "xcvu" $fpga_part]||[regexp "xcku" $fpga_part] } {
-            # set mem_ctrl ddr4
-            # set mem_int /ddr4_0/addn_ui_clkout1
-        # } else {
-            # set mem_ctrl ddr3
-            # set mem_int /mig_7series_0/ui_addn_clk_0 
-        # }
-if {[regexp "xcsu200p" $fpga_part]} {
-    set lpddrmc_mem_ctrl lpddrmc
-    set lpddrmc_mem_int /lpddrmc_0/pll_clkout0
-    set mem_ctrl ddr4
-    set mem_int /ddr4_0/addn_ui_clkout1
-
-} elseif { [regexp "xcvu" $fpga_part]||[regexp "xcku" $fpga_part] } {
-    set mem_ctrl ddr4
-    set mem_int /ddr4_0/addn_ui_clkout1
-    } else {
-    set mem_ctrl ddr3
-    set mem_int /mig_7series_0/ui_addn_clk_0 
-}
+        if { [regexp "xcvu" $fpga_part]||[regexp "xcku" $fpga_part] } {
+            set mem_ctrl ddr4
+            set mem_int /ddr4_0/addn_ui_clkout1
+        } else {
+            set mem_ctrl ddr3
+            set mem_int /mig_7series_0/ui_addn_clk_0 
+        }
 
         puts "INFO: $board_part is selected"
 
         set uart_board_interface [set iic_board_interface [set qspi_flash_board_interface [set bpi_flash_board_interface ""]]]
         set ddr3_board_interface [set ddr4_board_interface [set ddr3_board_interface_1 [set ddr4_board_interface_1 ""]]]
-        set lpddrmc_board_interface [set lpddrmc_board_interface_1 ""]
         set ethenet_board_interface [set sfp_board_interface [set rgmii_board_interface ""]]
         set inpt [set phy_rst ""]
 
@@ -197,14 +183,11 @@ if {[regexp "xcsu200p" $fpga_part]} {
         set ddr4_board_interface [board::get_board_part_interfaces *ddr4*]
         set ddr4_board_interface_1 [lindex [split $ddr4_board_interface { }] 0]
 
-        set lpddrmc_board_interface [board::get_board_part_interfaces *lpddr5_sdram*]
-        set lpddrmc_board_interface_1 [lindex [split $lpddrmc_board_interface { }] 0]
-
         if {([lsearch $temp_options Preset.VALUE] == -1) || ([lsearch $temp_options "Microcontroller"] != -1)} {
             
             puts "INFO: Microcontroller preset enabled"
 
-           if {[regexp scu35 $board_name] || [regexp scu200_es $board_name]} {
+           if {[regexp scu35 $board_name]} {
    
               puts "INFO:: SpartanUS+ Board Selected"
 
@@ -593,11 +576,11 @@ if {[regexp "xcsu200p" $fpga_part]} {
                         connect_bd_net -net rst_ddr4_0_100M_mb_reset [get_bd_pins rst_ddr4_0_100M/mb_reset] [get_bd_pins microblaze_riscv_0/Reset] [get_bd_pins microblaze_riscv_0_axi_intc/processor_rst]
                         connect_bd_net -net rst_ddr4_0_100M_peripheral_aresetn [get_bd_pins rst_ddr4_0_100M/peripheral_aresetn] [get_bd_pins microblaze_riscv_0_axi_periph/aresetn] [get_bd_pins microblaze_riscv_0_axi_intc/s_axi_aresetn]
 
-                        # # Create address segments
-                        # assign_bd_address -offset 0x00000000 -range 0x00020000 -target_address_space [get_bd_addr_spaces microblaze_riscv_0/Data] [get_bd_addr_segs microblaze_riscv_0_local_memory/dlmb_bram_if_cntlr/SLMB/Mem] -force
-                        # assign_bd_address -offset 0x41200000 -range 0x00010000 -target_address_space [get_bd_addr_spaces microblaze_riscv_0/Data] [get_bd_addr_segs microblaze_riscv_0_axi_intc/S_AXI/Reg] -force
-                        # assign_bd_address -offset 0x00000000 -range 0x00020000 -target_address_space [get_bd_addr_spaces microblaze_riscv_0/Instruction] [get_bd_addr_segs microblaze_riscv_0_local_memory/ilmb_bram_if_cntlr/SLMB/Mem] -force
-                        # ############################################################################
+                        # Create address segments
+                        assign_bd_address -offset 0x00000000 -range 0x00020000 -target_address_space [get_bd_addr_spaces microblaze_riscv_0/Data] [get_bd_addr_segs microblaze_riscv_0_local_memory/dlmb_bram_if_cntlr/SLMB/Mem] -force
+                        assign_bd_address -offset 0x41200000 -range 0x00010000 -target_address_space [get_bd_addr_spaces microblaze_riscv_0/Data] [get_bd_addr_segs microblaze_riscv_0_axi_intc/S_AXI/Reg] -force
+                        assign_bd_address -offset 0x00000000 -range 0x00020000 -target_address_space [get_bd_addr_spaces microblaze_riscv_0/Instruction] [get_bd_addr_segs microblaze_riscv_0_local_memory/ilmb_bram_if_cntlr/SLMB/Mem] -force
+                        ############################################################################
 
                         apply_bd_automation -rule xilinx.com:bd_rule:axi4 -config { Clk_master {/ddr4_0/addn_ui_clkout1 (100 MHz)} Clk_slave {/ddr4_0/c0_ddr4_ui_clk (300 MHz)} Clk_xbar {Auto} Master {/microblaze_riscv_0 (Cached)} Slave {/ddr4_0/C0_DDR4_S_AXI} ddr_seg {Auto} intc_ip {New AXI SmartConnect} master_apm {0}}  [get_bd_intf_pins ddr4_0/C0_DDR4_S_AXI]
                         #    set_property -dict [list CONFIG.C_USE_MMU {2}] [get_bd_cells microblaze_riscv_0]
@@ -684,11 +667,7 @@ if {[regexp "xcsu200p" $fpga_part]} {
                         assign_bd_address -offset 0x00000000 -range 0x00020000 -target_address_space [get_bd_addr_spaces microblaze_riscv_0/Instruction] [get_bd_addr_segs microblaze_riscv_0_local_memory/ilmb_bram_if_cntlr/SLMB/Mem] -force
                         ##########################################################################################
 
-                     if {[regexp scu200_es $board_name]} {
-                        apply_board_connection -board_interface "sys_diff_clock" -ip_intf "clk_wiz_1/CLK_IN1_D" -diagram "microblaze_v_preset"
-                     } else {
                         apply_bd_automation -rule xilinx.com:bd_rule:board -config { Board_Interface {default_sysclk1_300 ( 300 MHz System differential clock1 ) } Manual_Source {Auto}}  [get_bd_intf_pins clk_wiz_1/CLK_IN1_D]
-                     }
 
 #                        apply_bd_automation -rule xilinx.com:bd_rule:board -config { Board_Interface {default_sysclk1_300 ( 300 MHz System differential clock1 ) } Manual_Source {Auto}}  [get_bd_intf_pins clk_wiz_1/CLK_IN1_D]
                         apply_bd_automation -rule xilinx.com:bd_rule:board -config { Board_Interface {reset ( FPGA Reset ) } Manual_Source {Auto}}  [get_bd_pins clk_wiz_1/reset]
@@ -714,62 +693,14 @@ if {[regexp "xcsu200p" $fpga_part]} {
                         apply_bd_automation -rule xilinx.com:bd_rule:bram_cntlr -config {BRAM "Auto" }  [get_bd_intf_pins axi_bram_ctrl_0/BRAM_PORTA]
                         apply_bd_automation -rule xilinx.com:bd_rule:bram_cntlr -config {BRAM "Auto" }  [get_bd_intf_pins axi_bram_ctrl_0/BRAM_PORTB]
 
-                     if {[regexp scu200_es $board_name]} {
-                        assign_bd_address
-                        set_property offset 0x40A00000 [get_bd_addr_segs {microblaze_riscv_0/Data/SEG_axi_bram_ctrl_0_Mem0}] 
-                        set_property offset 0x40A00000 [get_bd_addr_segs {microblaze_riscv_0/Instruction/SEG_axi_bram_ctrl_0_Mem0}]
-                        set_property range 512K [get_bd_addr_segs {microblaze_riscv_0/Data/SEG_axi_bram_ctrl_0_Mem0}]
-                        set_property range 512K [get_bd_addr_segs {microblaze_riscv_0/Instruction/SEG_axi_bram_ctrl_0_Mem0}]
-                     } else {
                         assign_bd_address
                         set_property range 1M [get_bd_addr_segs {microblaze_riscv_0/Data/SEG_axi_bram_ctrl_0_Mem0}]
                         set_property range 1M [get_bd_addr_segs {microblaze_riscv_0/Instruction/SEG_axi_bram_ctrl_0_Mem0}]
-                     }
-                     
+
                 }
             }
 
-                    if { $lpddrmc_board_interface != "" } {
-                    create_bd_cell -type ip -vlnv xilinx.com:ip:lpddrmc lpddrmc_0
-                                            
-                    set_property -dict [list \
-                      CONFIG.LPDDR5_BOARD_INTERFACE {lpddr5_sdram} \
-                      CONFIG.SYSCLK_BOARD_INTERFACE {default_sysclk1_320} \
-                    ] [get_bd_cells lpddrmc_0]
-                    
-                    apply_bd_automation -rule xilinx.com:bd_rule:axi4 -config { Clk_master {/clk_wiz_0/clk_out1 (100 MHz)} Clk_slave {Auto} Clk_xbar {Auto} Master {/microblaze_riscv_0 (Cached)} Slave {/lpddrmc_0/S0_AXI} ddr_seg {Auto} intc_ip {New AXI SmartConnect} master_apm {0}}  [get_bd_intf_pins lpddrmc_0/S0_AXI]
-                    apply_bd_automation -rule xilinx.com:bd_rule:board -config { Board_Interface {default_sysclk1_320 ( LPDDR5, 320 MHz System differential clock ) } Manual_Source {Auto}}  [get_bd_intf_pins lpddrmc_0/SYS_CLK]
-                    
-                    make_bd_intf_pins_external  [get_bd_intf_pins lpddrmc_0/LPDDR5]
 
-                    create_bd_cell -type ip -vlnv xilinx.com:ip:pmcbridge:* pmcbridge_0
-                    apply_bd_automation -rule xilinx.com:bd_rule:axi4 -config { Clk_master {/ddr4_0/addn_ui_clkout1 (100 MHz)} Clk_slave {Auto} Clk_xbar {/ddr4_0/addn_ui_clkout1 (100 MHz)} Master {/microblaze_riscv_0 (Periph)} Slave {/pmcbridge_0/S_AXI} ddr_seg {Auto} intc_ip {/microblaze_riscv_0_axi_periph} master_apm {0}}  [get_bd_intf_pins pmcbridge_0/S_AXI]
-
-                       delete_bd_objs [get_bd_addr_segs] [get_bd_addr_segs -excluded]
-                        # Create address segments
-                        assign_bd_address -offset 0x00000000 -range 0x00020000 -target_address_space [get_bd_addr_spaces microblaze_riscv_0/Data] [get_bd_addr_segs microblaze_riscv_0_local_memory/dlmb_bram_if_cntlr/SLMB/Mem] -force
-                        # assign_bd_address -offset 0x00080000 -range 0x00010000 -target_address_space [get_bd_addr_spaces microblaze_riscv_0/Data] [get_bd_addr_segs microblaze_riscv_0_axi_intc/S_AXI/Reg] -force
-                        assign_bd_address -offset 0x00000000 -range 0x00020000 -target_address_space [get_bd_addr_spaces microblaze_riscv_0/Instruction] [get_bd_addr_segs microblaze_riscv_0_local_memory/ilmb_bram_if_cntlr/SLMB/Mem] -force
-                        ############################################################################
-                        
-                       assign_bd_address -target_address_space /microblaze_riscv_0/Instruction [get_bd_addr_segs lpddrmc_0/LPDDRMC_MEMORY_MAP/LPDDRMC_ADDRESS_BLOCK] -force
-                       assign_bd_address -target_address_space /microblaze_riscv_0/Data [get_bd_addr_segs lpddrmc_0/LPDDRMC_MEMORY_MAP/LPDDRMC_ADDRESS_BLOCK] -force
-                       assign_bd_address -target_address_space /microblaze_riscv_0/Instruction [get_bd_addr_segs ddr4_0/C0_DDR4_MEMORY_MAP/C0_DDR4_ADDRESS_BLOCK] -force
-                       assign_bd_address -target_address_space /microblaze_riscv_0/Data [get_bd_addr_segs ddr4_0/C0_DDR4_MEMORY_MAP/C0_DDR4_ADDRESS_BLOCK] -force
-                       assign_bd_address
-					   
-                    } else {
-                        delete_bd_objs [get_bd_addr_segs] [get_bd_addr_segs -excluded]
-                        # Create address segments
-                        assign_bd_address -offset 0x00000000 -range 0x00020000 -target_address_space [get_bd_addr_spaces microblaze_riscv_0/Data] [get_bd_addr_segs microblaze_riscv_0_local_memory/dlmb_bram_if_cntlr/SLMB/Mem] -force
-                        assign_bd_address -offset 0x41200000 -range 0x00010000 -target_address_space [get_bd_addr_spaces microblaze_riscv_0/Data] [get_bd_addr_segs microblaze_riscv_0_axi_intc/S_AXI/Reg] -force
-                        assign_bd_address -offset 0x00000000 -range 0x00020000 -target_address_space [get_bd_addr_spaces microblaze_riscv_0/Instruction] [get_bd_addr_segs microblaze_riscv_0_local_memory/ilmb_bram_if_cntlr/SLMB/Mem] -force
-                        ############################################################################
-                        assign_bd_address
-                    }
-
-
-                     
                 if { $qspi_flash_board_interface != "" } {
 
                     apply_bd_automation -rule xilinx.com:bd_rule:axi4 -config { Clk_master {$mem_int (100 MHz)} Clk_slave {Auto} Clk_xbar {$mem_int (100 MHz)} Master {/microblaze_riscv_0 (Periph)} Slave {/axi_quad_spi_0/AXI_LITE} ddr_seg {Auto} intc_ip {/microblaze_riscv_0_axi_periph} master_apm {0}}  [get_bd_intf_pins axi_quad_spi_0/AXI_LITE]
@@ -940,44 +871,6 @@ if {[regexp "xcsu200p" $fpga_part]} {
                 
             } else {
 
-            if {[regexp scu200_es $board_name]} {
-#                puts "INFO:: scu200_es Board Selected"
-
-                if { $ddr4_board_interface_1 != "" } {
-
-                    create_bd_cell -type ip -vlnv xilinx.com:ip:ddr4 ddr4_0
-                    apply_board_connection -board_interface "$ddr4_board_interface_1" -ip_intf "ddr4_0/C0_DDR4" -diagram $design_name
-                    apply_bd_automation -rule xilinx.com:bd_rule:microblaze_riscv -config { axi_intc {1} axi_periph {Enabled} cache {32KB} clk {/ddr4_0/addn_ui_clkout1 (100 MHz)} debug_module {Debug Enabled} ecc {None} local_mem {128KB} preset {Application}}  [get_bd_cells microblaze_riscv_0]
-                    apply_bd_automation -rule xilinx.com:bd_rule:axi4 -config { Clk_master {/ddr4_0/addn_ui_clkout1 (100 MHz)} Clk_slave {/ddr4_0/c0_ddr4_ui_clk (300 MHz)} Clk_xbar {Auto} Master {/microblaze_riscv_0 (Cached)} Slave {/ddr4_0/C0_DDR4_S_AXI} ddr_seg {Auto} intc_ip {New AXI SmartConnect} master_apm {0}}  [get_bd_intf_pins ddr4_0/C0_DDR4_S_AXI]
-
-                    set ddr_sys_clk [get_property CONFIG.System_Clock [ get_ips ${design_name}_ddr4_0_0]]
-                    if { $ddr_sys_clk == "No_Buffer" } {
-                        set_property -dict [list CONFIG.System_Clock {Differential}] [get_bd_cells ddr4_0]
-                    }
-
-                    set def_clk [lindex [board::get_board_part_interfaces *default*] 0]
-                    apply_board_connection -board_interface "$def_clk" -ip_intf "ddr4_0/C0_SYS_CLK" -diagram $design_name
-
-                    set s_axi_ctrl [get_property CONFIG.C0.DDR4_Ecc [ get_ips ${design_name}_ddr4_0_0]]
-                    if { $s_axi_ctrl == "true" } {
-                        apply_bd_automation -rule xilinx.com:bd_rule:axi4 -config { Clk_master {/ddr4_0/addn_ui_clkout1 (100 MHz)} Clk_slave {/ddr4_0/c0_ddr4_ui_clk (333 MHz)} Clk_xbar {/ddr4_0/addn_ui_clkout1 (100 MHz)} Master {/microblaze_riscv_0 (Periph)} Slave {/ddr4_0/C0_DDR4_S_AXI_CTRL} ddr_seg {Auto} intc_ip {/microblaze_riscv_0_axi_periph} master_apm {0}}  [get_bd_intf_pins ddr4_0/C0_DDR4_S_AXI_CTRL]
-                    }
-
-                    apply_bd_automation -rule xilinx.com:bd_rule:board -config { Board_Interface {reset ( FPGA Reset ) } Manual_Source {Auto}}  [get_bd_pins ddr4_0/sys_rst]
-                    apply_bd_automation -rule xilinx.com:bd_rule:board -config { Board_Interface {Custom} Manual_Source {/ddr4_0/c0_ddr4_ui_clk_sync_rst (ACTIVE_HIGH)}}  [get_bd_pins rst_ddr4_0_100M/ext_reset_in]
-
-                    create_bd_cell -type ip -vlnv xilinx.com:ip:pmcbridge:* pmcbridge_0
-                    apply_bd_automation -rule xilinx.com:bd_rule:axi4 -config { Clk_master {/ddr4_0/addn_ui_clkout1 (100 MHz)} Clk_slave {Auto} Clk_xbar {/ddr4_0/addn_ui_clkout1 (100 MHz)} Master {/microblaze_riscv_0 (Periph)} Slave {/pmcbridge_0/S_AXI} ddr_seg {Auto} intc_ip {/microblaze_riscv_0_axi_periph} master_apm {0}}  [get_bd_intf_pins pmcbridge_0/S_AXI]
-
-                } else {
-
-                    apply_bd_automation -rule xilinx.com:bd_rule:microblaze_riscv -config { axi_intc {1} axi_periph {Enabled} cache {32KB} clk {New Clocking Wizard} debug_module {Debug Enabled} ecc {None} local_mem {128KB} preset {Application}}  [get_bd_cells microblaze_riscv_0]
-                    apply_bd_automation -rule xilinx.com:bd_rule:board -config { Board_Interface {default_sysclk1_300 ( 300 MHz System differential clock1 ) } Manual_Source {Auto}}  [get_bd_intf_pins clk_wiz_1/CLK_IN1_D]
-                    apply_bd_automation -rule xilinx.com:bd_rule:board -config { Board_Interface {reset ( FPGA Reset ) } Manual_Source {Auto}}  [get_bd_pins clk_wiz_1/reset]
-                    apply_bd_automation -rule xilinx.com:bd_rule:board -config { Board_Interface {reset ( FPGA Reset ) } Manual_Source {Auto}}  [get_bd_pins rst_clk_wiz_1_100M/ext_reset_in]
-                }
-
-             } else {
 
                 if { $ddr4_board_interface_1 != "" } {
 
@@ -1008,27 +901,6 @@ if {[regexp "xcsu200p" $fpga_part]} {
                     apply_bd_automation -rule xilinx.com:bd_rule:board -config { Board_Interface {default_sysclk1_300 ( 300 MHz System differential clock1 ) } Manual_Source {Auto}}  [get_bd_intf_pins clk_wiz_1/CLK_IN1_D]
                     apply_bd_automation -rule xilinx.com:bd_rule:board -config { Board_Interface {reset ( FPGA Reset ) } Manual_Source {Auto}}  [get_bd_pins clk_wiz_1/reset]
                     apply_bd_automation -rule xilinx.com:bd_rule:board -config { Board_Interface {reset ( FPGA Reset ) } Manual_Source {Auto}}  [get_bd_pins rst_clk_wiz_1_100M/ext_reset_in]
-                }
-           }
-
-                if { $lpddrmc_board_interface != "" } {
-                create_bd_cell -type ip -vlnv xilinx.com:ip:lpddrmc lpddrmc_0
-                                        
-                set_property -dict [list \
-                  CONFIG.LPDDR5_BOARD_INTERFACE {lpddr5_sdram} \
-                  CONFIG.SYSCLK_BOARD_INTERFACE {default_sysclk1_320} \
-                ] [get_bd_cells lpddrmc_0]
-                
-                startgroup
-                apply_bd_automation -rule xilinx.com:bd_rule:axi4 -config { Clk_master {/clk_wiz_0/clk_out1 (100 MHz)} Clk_slave {Auto} Clk_xbar {Auto} Master {/microblaze_riscv_0 (Cached)} Slave {/lpddrmc_0/S0_AXI} ddr_seg {Auto} intc_ip {New AXI SmartConnect} master_apm {0}}  [get_bd_intf_pins lpddrmc_0/S0_AXI]
-                apply_bd_automation -rule xilinx.com:bd_rule:board -config { Board_Interface {default_sysclk1_320 ( LPDDR5, 320 MHz System differential clock ) } Manual_Source {Auto}}  [get_bd_intf_pins lpddrmc_0/SYS_CLK]
-                endgroup
-                
-                startgroup
-                make_bd_intf_pins_external  [get_bd_intf_pins lpddrmc_0/LPDDR5]
-                endgroup
-                #set_property range 2G [get_bd_addr_segs {microblaze_riscv_0/Data/SEG_lpddrmc_0_LPDDRMC_ADDRESS_BLOCK}]
-                
                 }
 
                 set usl_ethernet [lindex [board::get_board_component_interfaces *sgmii*] 0]
