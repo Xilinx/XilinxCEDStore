@@ -573,10 +573,13 @@ proc create_root_design {currentDir design_name use_lpddr clk_options irqs use_a
 
 	if { $use_lpddr } {
 
-		puts "INFO: lpddr5 selected"
-		set_property -dict [list CONFIG.NUM_NMI {2} ] [get_bd_cells ps_wiz_noc2]
+		puts "INFO: LPDDR5 selected"
 		
-		if {$use_aie } {
+		if { $noc2_ddr5_flag == 1 } {
+			set_property -dict [list CONFIG.NUM_NMI {2} ] [get_bd_cells ps_wiz_noc2]
+		}
+		
+		if { $use_aie && $noc2_ddr5_flag } {
 		
 			if { ([regexp "xc2v" $fpga_part]) && (![regexp "xc2vp" $fpga_part]) } {
 
@@ -618,7 +621,7 @@ proc create_root_design {currentDir design_name use_lpddr clk_options irqs use_a
 				
 			}
 
-		} else {
+		} elseif { $noc2_ddr5_flag } {
 
 			if { ([regexp "xc2v" $fpga_part]) && (![regexp "xc2vp" $fpga_part]) } {
 
@@ -679,7 +682,15 @@ proc create_root_design {currentDir design_name use_lpddr clk_options irqs use_a
 			set_property -dict [list CONFIG.CONNECTIONS {MC_0 {read_bw {500} write_bw {500} read_avg_burst {4} write_avg_burst {4}} MC_1 {read_bw {500} write_bw {500} read_avg_burst {4} write_avg_burst {4}}}] [get_bd_intf_pins /noc2_lpddr5/S00_INI]
 		}
 	
-		connect_bd_intf_net [get_bd_intf_pins ps_wiz_noc2/M01_INI] [get_bd_intf_pins noc2_lpddr5/S00_INI]
+		if { $noc2_ddr5_flag } {
+			connect_bd_intf_net [get_bd_intf_pins ps_wiz_noc2/M01_INI] [get_bd_intf_pins noc2_lpddr5/S00_INI]
+		} else {
+			connect_bd_intf_net [get_bd_intf_pins ps_wiz_noc2/M00_INI] [get_bd_intf_pins noc2_lpddr5/S00_INI]
+		}
+
+		if { [regexp "xc2vp3602-vsva3014" $fpga_part] } {
+			set_property -dict [list CONFIG.DDRMC5_CONFIG(DDRMC5_SYSTEM_CLOCK) {Differential} ] [get_bd_cells noc2_lpddr5]		
+		}
 		
 		make_bd_intf_pins_external  [get_bd_intf_pins noc2_lpddr5/C0_CH0_LPDDR5] [get_bd_intf_pins noc2_lpddr5/C0_CH1_LPDDR5] [get_bd_intf_pins noc2_lpddr5/sys_clk0]
 		
