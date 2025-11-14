@@ -145,8 +145,8 @@ proc create_hier_cell_qdma_0_support { parentCell nameHier } {
     CONFIG.pf0_bar0_64bit {true} \
     CONFIG.pf0_bar0_enabled {true} \
     CONFIG.pf0_bar0_prefetchable {true} \
-    CONFIG.pf0_bar0_scale {Gigabytes} \
-    CONFIG.pf0_bar0_size {64} \
+    CONFIG.pf0_bar0_scale {Terabytes} \
+    CONFIG.pf0_bar0_size {16} \
     CONFIG.pf0_bar2_enabled {false} \
     CONFIG.pf0_bar4_enabled {false} \
     CONFIG.pf0_base_class_menu {Bridge_device} \
@@ -545,8 +545,8 @@ proc create_root_design { parentCell } {
     CONFIG.mode_selection {Advanced} \
     CONFIG.pcie_blk_locn {X1Y0} \
     CONFIG.pf0_bar0_prefetchable_qdma {true} \
-    CONFIG.pf0_bar0_scale_qdma {Gigabytes} \
-    CONFIG.pf0_bar0_size_qdma {64} \
+    CONFIG.pf0_bar0_scale_qdma {Terabytes} \
+    CONFIG.pf0_bar0_size_qdma {16} \
     CONFIG.pf0_bar0_type_qdma {AXI_Bridge_Master} \
     CONFIG.pf0_base_class_menu_qdma {Bridge_device} \
     CONFIG.pf0_class_code_base_qdma {06} \

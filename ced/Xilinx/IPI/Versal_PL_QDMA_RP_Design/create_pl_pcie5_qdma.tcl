@@ -177,8 +177,8 @@ proc create_hier_cell_qdma_0_support { parentCell nameHier } {
     CONFIG.pf0_bar0_64bit {true} \
     CONFIG.pf0_bar0_enabled {true} \
     CONFIG.pf0_bar0_prefetchable {false} \
-    CONFIG.pf0_bar0_scale {Gigabytes} \
-    CONFIG.pf0_bar0_size {64} \
+    CONFIG.pf0_bar0_scale {Terabytes} \
+    CONFIG.pf0_bar0_size {16} \
     CONFIG.pf0_bar2_64bit {true} \
     CONFIG.pf0_bar2_enabled {true} \
     CONFIG.pf0_bar2_prefetchable {false} \
@@ -1042,8 +1042,8 @@ proc create_root_design { parentCell } {
     CONFIG.pf0_bar0_64bit_qdma {true} \
     CONFIG.pf0_bar0_index {0} \
     CONFIG.pf0_bar0_prefetchable_qdma {false} \
-    CONFIG.pf0_bar0_scale_qdma {Gigabytes} \
-    CONFIG.pf0_bar0_size_qdma {64} \
+    CONFIG.pf0_bar0_scale_qdma {Terabytes} \
+    CONFIG.pf0_bar0_size_qdma {16} \
     CONFIG.pf0_bar0_type_qdma {AXI_Bridge_Master} \
     CONFIG.pf0_bar1_index {7} \
     CONFIG.pf0_bar2_index {7} \
