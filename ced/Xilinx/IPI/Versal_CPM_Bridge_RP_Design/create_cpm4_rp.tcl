@@ -25,6 +25,7 @@ HBM_PC1_ADDRESS_MAP SID,RA14,RA13,RA12,RA11,RA10,RA9,RA8,RA7,RA6,RA5,RA4,RA3,RA2
     CONFIG.MC3_CONFIG_NUM {config17} \
     CONFIG.MC_CASLATENCY {18} \
     CONFIG.MC_CASWRITELATENCY {16} \
+    CONFIG.MC_CHAN_REGION1 {DDR_CH1} \
     CONFIG.MC_CONFIG_NUM {config17} \
     CONFIG.MC_DDR4_2T {Disable} \
     CONFIG.MC_EN_INTR_RESP {FALSE} \
@@ -208,19 +209,21 @@ HBM_PC1_ADDRESS_MAP SID,RA14,RA13,RA12,RA11,RA10,RA9,RA8,RA7,RA6,RA5,RA4,RA3,RA2
       CPM_PCIE0_PF0_AXIBAR2PCIE_BASEADDR_0 {0x0000000000000000} \
       CPM_PCIE0_PF0_AXIBAR2PCIE_BASEADDR_1 {0x0000008000000000} \
       CPM_PCIE0_PF0_AXIBAR2PCIE_BRIDGE_0 {0x0000000000000000} \
-      CPM_PCIE0_PF0_AXIBAR2PCIE_BRIDGE_1 {0x0000000000000000} \
+      CPM_PCIE0_PF0_AXIBAR2PCIE_BRIDGE_1 {0x0000008000000000} \
       CPM_PCIE0_PF0_AXIBAR2PCIE_HIGHADDR_0 {0x000000000ffffffff} \
       CPM_PCIE0_PF0_AXIBAR2PCIE_HIGHADDR_1 {0x00000081FFFFFFFF} \
+      CPM_PCIE0_PF0_BAR0_BRIDGE_64BIT {1} \
       CPM_PCIE0_PF0_BAR0_BRIDGE_ENABLED {1} \
-      CPM_PCIE0_PF0_BAR0_BRIDGE_SCALE {Gigabytes} \
-      CPM_PCIE0_PF0_BAR0_BRIDGE_SIZE {2} \
+      CPM_PCIE0_PF0_BAR0_BRIDGE_PREFETCHABLE {1} \
+      CPM_PCIE0_PF0_BAR0_BRIDGE_SCALE {Terabytes} \
+      CPM_PCIE0_PF0_BAR0_BRIDGE_SIZE {16} \
       CPM_PCIE0_PF0_BAR0_QDMA_64BIT {0} \
       CPM_PCIE0_PF0_BAR0_QDMA_ENABLED {0} \
       CPM_PCIE0_PF0_BAR0_QDMA_PREFETCHABLE {0} \
       CPM_PCIE0_PF0_BAR0_QDMA_SCALE {Kilobytes} \
       CPM_PCIE0_PF0_BAR0_QDMA_TYPE {AXI_Bridge_Master} \
-      CPM_PCIE0_PF0_BAR0_SCALE {Gigabytes} \
-      CPM_PCIE0_PF0_BAR0_SIZE {2} \
+      CPM_PCIE0_PF0_BAR0_SCALE {Terabytes} \
+      CPM_PCIE0_PF0_BAR0_SIZE {16} \
       CPM_PCIE0_PF0_BAR0_XDMA_64BIT {0} \
       CPM_PCIE0_PF0_BAR0_XDMA_ENABLED {0} \
       CPM_PCIE0_PF0_BAR0_XDMA_PREFETCHABLE {0} \
@@ -296,6 +299,7 @@ HBM_PC1_ADDRESS_MAP SID,RA14,RA13,RA12,RA11,RA10,RA9,RA8,RA7,RA6,RA5,RA4,RA3,RA2
       PS_USE_PS_NOC_PCI_0 {1} \
       PS_USE_PS_NOC_PCI_1 {0} \
     } \
+    CONFIG.IO_CONFIG_MODE {Custom} \
     CONFIG.PS_PMC_CONFIG { \
       CLOCK_MODE {Custom} \
       DDR_MEMORY_MODE {Custom} \
@@ -313,6 +317,8 @@ HBM_PC1_ADDRESS_MAP SID,RA14,RA13,RA12,RA11,RA10,RA9,RA8,RA7,RA6,RA5,RA4,RA3,RA2
       PS_BOARD_INTERFACE {Custom} \
       PS_CRF_ACPU_CTRL_FREQMHZ {1350} \
       PS_CRL_CPM_TOPSW_REF_CTRL_FREQMHZ {775} \
+      PS_ENET0_MDIO {{ENABLE 1} {IO {PS_MIO 24 .. 25}}} \
+      PS_ENET0_PERIPHERAL {{ENABLE 1} {IO {PS_MIO 0 .. 11}}} \
       PS_GEN_IPI0_ENABLE {1} \
       PS_GEN_IPI1_ENABLE {1} \
       PS_GEN_IPI2_ENABLE {1} \
@@ -369,17 +375,26 @@ HBM_PC1_ADDRESS_MAP SID,RA14,RA13,RA12,RA11,RA10,RA9,RA8,RA7,RA6,RA5,RA4,RA3,RA2
   connect_bd_net -net versal_cips_0_pmc_axi_noc_axi0_clk [get_bd_pins versal_cips_0/pmc_axi_noc_axi0_clk] [get_bd_pins axi_noc_0/aclk1]
 
   # Create address segments
+  assign_bd_address -offset 0x050000000000 -range 0x000180000000 -target_address_space [get_bd_addr_spaces versal_cips_0/CPM_PCIE_NOC_0] [get_bd_addr_segs axi_noc_0/S00_AXI/C0_DDR_CH1] -force
   assign_bd_address -offset 0x00000000 -range 0x80000000 -target_address_space [get_bd_addr_spaces versal_cips_0/CPM_PCIE_NOC_0] [get_bd_addr_segs axi_noc_0/S00_AXI/C0_DDR_LOW0] -force
+  assign_bd_address -offset 0x050000000000 -range 0x000180000000 -target_address_space [get_bd_addr_spaces versal_cips_0/FPD_AXI_NOC_0] [get_bd_addr_segs axi_noc_0/S07_AXI/C3_DDR_CH1] -force
   assign_bd_address -offset 0x00000000 -range 0x80000000 -target_address_space [get_bd_addr_spaces versal_cips_0/FPD_AXI_NOC_0] [get_bd_addr_segs axi_noc_0/S07_AXI/C3_DDR_LOW0] -force
+  assign_bd_address -offset 0x050000000000 -range 0x000180000000 -target_address_space [get_bd_addr_spaces versal_cips_0/FPD_AXI_NOC_1] [get_bd_addr_segs axi_noc_0/S08_AXI/C3_DDR_CH1] -force
   assign_bd_address -offset 0x00000000 -range 0x80000000 -target_address_space [get_bd_addr_spaces versal_cips_0/FPD_AXI_NOC_1] [get_bd_addr_segs axi_noc_0/S08_AXI/C3_DDR_LOW0] -force
+  assign_bd_address -offset 0x050000000000 -range 0x000180000000 -target_address_space [get_bd_addr_spaces versal_cips_0/FPD_CCI_NOC_0] [get_bd_addr_segs axi_noc_0/S02_AXI/C1_DDR_CH1] -force
   assign_bd_address -offset 0x00000000 -range 0x80000000 -target_address_space [get_bd_addr_spaces versal_cips_0/FPD_CCI_NOC_0] [get_bd_addr_segs axi_noc_0/S02_AXI/C1_DDR_LOW0] -force
+  assign_bd_address -offset 0x050000000000 -range 0x000180000000 -target_address_space [get_bd_addr_spaces versal_cips_0/FPD_CCI_NOC_1] [get_bd_addr_segs axi_noc_0/S03_AXI/C1_DDR_CH1] -force
   assign_bd_address -offset 0x00000000 -range 0x80000000 -target_address_space [get_bd_addr_spaces versal_cips_0/FPD_CCI_NOC_1] [get_bd_addr_segs axi_noc_0/S03_AXI/C1_DDR_LOW0] -force
+  assign_bd_address -offset 0x050000000000 -range 0x000180000000 -target_address_space [get_bd_addr_spaces versal_cips_0/FPD_CCI_NOC_2] [get_bd_addr_segs axi_noc_0/S04_AXI/C2_DDR_CH1] -force
   assign_bd_address -offset 0x00000000 -range 0x80000000 -target_address_space [get_bd_addr_spaces versal_cips_0/FPD_CCI_NOC_2] [get_bd_addr_segs axi_noc_0/S04_AXI/C2_DDR_LOW0] -force
+  assign_bd_address -offset 0x050000000000 -range 0x000180000000 -target_address_space [get_bd_addr_spaces versal_cips_0/FPD_CCI_NOC_3] [get_bd_addr_segs axi_noc_0/S05_AXI/C2_DDR_CH1] -force
   assign_bd_address -offset 0x00000000 -range 0x80000000 -target_address_space [get_bd_addr_spaces versal_cips_0/FPD_CCI_NOC_3] [get_bd_addr_segs axi_noc_0/S05_AXI/C2_DDR_LOW0] -force
+  assign_bd_address -offset 0x050000000000 -range 0x000180000000 -target_address_space [get_bd_addr_spaces versal_cips_0/LPD_AXI_NOC_0] [get_bd_addr_segs axi_noc_0/S06_AXI/C3_DDR_CH1] -force
   assign_bd_address -offset 0x00000000 -range 0x80000000 -target_address_space [get_bd_addr_spaces versal_cips_0/LPD_AXI_NOC_0] [get_bd_addr_segs axi_noc_0/S06_AXI/C3_DDR_LOW0] -force
   assign_bd_address -offset 0xE0000000 -range 0x10000000 -target_address_space [get_bd_addr_spaces versal_cips_0/LPD_AXI_NOC_0] [get_bd_addr_segs versal_cips_0/NOC_CPM_PCIE_0/pspmc_0_psv_noc_pcie_0] -force
   assign_bd_address -offset 0x000600000000 -range 0x000200000000 -target_address_space [get_bd_addr_spaces versal_cips_0/LPD_AXI_NOC_0] [get_bd_addr_segs versal_cips_0/NOC_CPM_PCIE_0/pspmc_0_psv_noc_pcie_1] -force
   assign_bd_address -offset 0x008000000000 -range 0x004000000000 -target_address_space [get_bd_addr_spaces versal_cips_0/LPD_AXI_NOC_0] [get_bd_addr_segs versal_cips_0/NOC_CPM_PCIE_0/pspmc_0_psv_noc_pcie_2] -force
+  assign_bd_address -offset 0x050000000000 -range 0x000180000000 -target_address_space [get_bd_addr_spaces versal_cips_0/PMC_NOC_AXI_0] [get_bd_addr_segs axi_noc_0/S01_AXI/C0_DDR_CH1] -force
   assign_bd_address -offset 0x00000000 -range 0x80000000 -target_address_space [get_bd_addr_spaces versal_cips_0/PMC_NOC_AXI_0] [get_bd_addr_segs axi_noc_0/S01_AXI/C0_DDR_LOW0] -force
   assign_bd_address -offset 0xE0000000 -range 0x10000000 -target_address_space [get_bd_addr_spaces versal_cips_0/PMC_NOC_AXI_0] [get_bd_addr_segs versal_cips_0/NOC_CPM_PCIE_0/pspmc_0_psv_noc_pcie_0] -force
   assign_bd_address -offset 0x000600000000 -range 0x000200000000 -target_address_space [get_bd_addr_spaces versal_cips_0/PMC_NOC_AXI_0] [get_bd_addr_segs versal_cips_0/NOC_CPM_PCIE_0/pspmc_0_psv_noc_pcie_1] -force
