@@ -834,11 +834,11 @@
         "name": "pl_pcie_qdma_rp",
         "display": "Versal PL QDMA EP Design",
         "latest_revision": "1.0",
-        "commit_id": "a0fe019a3dc1c3b10567f82832208809cbe6f0ba",
+        "commit_id": "05215c94cb4381c79f853511e20854f275302f0e",
         "revisions": [
           {
             "revision": "1.0",
-            "commit_id": "a0fe019a3dc1c3b10567f82832208809cbe6f0ba",
+            "commit_id": "05215c94cb4381c79f853511e20854f275302f0e",
             "date": "26-09-2025:12:11:53",
             "history": "Added board Versal PL QDMA EP Design v1.0"
           }
