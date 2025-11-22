@@ -72,7 +72,12 @@ module board;
   localparam [4:0] PL_LINK_CAP_MAX_LINK_SPEED   = 5'd8;   // 1- GEN1, 2 - GEN2, 4 - GEN3, 8 - GEN4. 16 - GEN5
   localparam [4:0] PL_LINK_CAP_MAX_LINK_WIDTH   = 5'd8;  // 1- X1, 2 - X2, 4 - X4, 8 - X8, 16 - X16
   localparam [2:0] PF0_DEV_CAP_MAX_PAYLOAD_SIZE = 3'b011;
-
+  
+  localparam       AXISTEN_IF_RQ_STRADDLE = 1;
+  localparam       AXISTEN_IF_RC_STRADDLE = 1;
+  localparam       AXISTEN_IF_CQ_STRADDLE = 0;
+  localparam       AXISTEN_IF_CC_STRADDLE = 0;
+  
   localparam REF_CLK_HALF_CYCLE = (REF_CLK_FREQ == 0) ? 5000 :
                                   (REF_CLK_FREQ == 1) ? 4000 :
                                   (REF_CLK_FREQ == 2) ? 2000 : 0;
@@ -178,7 +183,12 @@ module board;
   // PCI-Express Endpoint Instance
   //
 
-  design_1_wrapper EP (
+  design_1_wrapper #(
+    .AXISTEN_IF_RQ_STRADDLE (AXISTEN_IF_RQ_STRADDLE),
+    .AXISTEN_IF_RC_STRADDLE (AXISTEN_IF_RC_STRADDLE),
+    .AXISTEN_IF_CQ_STRADDLE (AXISTEN_IF_CQ_STRADDLE),
+    .AXISTEN_IF_CC_STRADDLE (AXISTEN_IF_CC_STRADDLE)
+  ) EP (
     // SYS Inteface
     .gt_refclk0_0_clk_n(ep_sys_clk_n),
     .gt_refclk0_0_clk_p(ep_sys_clk_p),

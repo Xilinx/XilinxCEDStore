@@ -15,21 +15,26 @@
 // ////////////////////////////////////////////////////////////////////////
 `timescale 1 ps / 1 ps
 
-module design_1_wrapper
-   (gt_refclk0_0_clk_n,
+module design_1_wrapper #(
+   parameter  [1:0]  AXISTEN_IF_RQ_STRADDLE         = 2'b10,
+   parameter  [1:0]  AXISTEN_IF_RC_STRADDLE         = 2'b11,
+   parameter  [1:0]  AXISTEN_IF_CQ_STRADDLE         = 2'b00,
+   parameter  [1:0]  AXISTEN_IF_CC_STRADDLE         = 2'b00,
+   parameter         TAG_10B_SUPPORT_EN             = "TRUE",
+   parameter         C_DATA_WIDTH                   = 1024,                              // RX/TX interface data width
+   parameter         KEEP_WIDTH                     = C_DATA_WIDTH / 32,
+   parameter         AXI4_CQ_TUSER_WIDTH            = 465,
+   parameter         AXI4_CC_TUSER_WIDTH            = 165,
+   parameter         AXI4_RQ_TUSER_WIDTH            = 373,
+   parameter         AXI4_RC_TUSER_WIDTH            = 337
+   )(gt_refclk0_0_clk_n,
     gt_refclk0_0_clk_p,
     PCIE0_GT_0_grx_n,
     PCIE0_GT_0_grx_p,
     PCIE0_GT_0_gtx_n,
     PCIE0_GT_0_gtx_p
    );
-   parameter         C_DATA_WIDTH                   = 1024;                              // RX/TX interface data width
-   parameter         KEEP_WIDTH                     = C_DATA_WIDTH / 32;
-   parameter         AXI4_CQ_TUSER_WIDTH            = 465;
-   parameter         AXI4_CC_TUSER_WIDTH            = 165;
-   parameter         AXI4_RQ_TUSER_WIDTH            = 373;
-   parameter         AXI4_RC_TUSER_WIDTH            = 337;
-   
+
   input gt_refclk0_0_clk_n;
   input gt_refclk0_0_clk_p;
   input [15:0]PCIE0_GT_0_grx_n;
@@ -311,11 +316,15 @@ module design_1_wrapper
 //                                      BMD Example Design Top Level                                                //
 //------------------------------------------------------------------------------------------------------------------//
   pcie_app_versal_bmd # (
-    .C_DATA_WIDTH                 (1024 ),
-   // .AXISTEN_IF_ENABLE_CLIENT_TAG (0)
+     .C_DATA_WIDTH                 (1024 )
+   // ,.AXISTEN_IF_ENABLE_CLIENT_TAG (0)
    //,.TAG_10B_SUPPORT_EN           ("FALSE")
-    .AXISTEN_IF_ENABLE_CLIENT_TAG (1)
-   ,.TAG_10B_SUPPORT_EN           ("TRUE")
+    ,.AXISTEN_IF_RQ_STRADDLE (AXISTEN_IF_RQ_STRADDLE)
+    ,.AXISTEN_IF_RC_STRADDLE (AXISTEN_IF_RC_STRADDLE)
+    ,.AXISTEN_IF_CQ_STRADDLE (AXISTEN_IF_CQ_STRADDLE)
+    ,.AXISTEN_IF_CC_STRADDLE (AXISTEN_IF_CC_STRADDLE)
+    ,.AXISTEN_IF_ENABLE_CLIENT_TAG (1)
+   ,.TAG_10B_SUPPORT_EN           (TAG_10B_SUPPORT_EN)
   ) pcie_app_versal_i (
     .user_clk                                       ( pcie0_user_clk_0 ),
     .user_reset                                     ( pcie0_user_reset_0 ),

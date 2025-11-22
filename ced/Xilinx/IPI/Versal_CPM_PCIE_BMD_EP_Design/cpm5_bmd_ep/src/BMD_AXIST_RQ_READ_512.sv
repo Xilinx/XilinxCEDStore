@@ -228,12 +228,17 @@ endgenerate
                   s_axis_rq_tuser_wire.last_be           = (mrd_len_i == 1)? 8'h00: 8'h0F;
                   s_axis_rq_tuser_wire.first_be          = 8'h0F;
                   s_axis_rq_tuser_wire.addr_offset       = (AXISTEN_IF_REQ_ALIGNMENT_MODE == "TRUE") ? {2'h0,rd_addr_31_2[1:0]} : 4'h0;
+                  if (AXISTEN_IF_RQ_STRADDLE) begin
                      s_axis_rq_tuser_wire.is_sop         = 2'b01;
                      s_axis_rq_tuser_wire.is_eop         = 2'b01;
                      s_axis_rq_tuser_wire.is_sop0_ptr    = 2'b00;                  
                      s_axis_rq_tuser_wire.is_eop0_ptr    = 4'd3;                  
+                  end else begin
                      s_axis_rq_tlast_wire                = 1'b1;
+                     s_axis_rq_tuser_wire.is_sop         = 2'b00; //2'b01;
+                     s_axis_rq_tuser_wire.is_sop0_ptr    = 2'b00;
                      s_axis_rq_tkeep_wire                = 16'h000F;
+                  end
    
                   // Update flags
                   total_mrd_count_wire       = total_mrd_count - 1;
@@ -278,14 +283,19 @@ endgenerate
                   s_axis_rq_tdata_wire.lh.addr_63_2      = {32'd0, rd_addr_31_2};
                   s_axis_rq_tuser_wire.last_be           = (mrd_len_i == 1)? 8'h00: 8'hFF;
                   s_axis_rq_tuser_wire.first_be          = 8'hFF;
+                  if (AXISTEN_IF_RQ_STRADDLE) begin
                      s_axis_rq_tuser_wire.is_sop         = 2'b11;
                      s_axis_rq_tuser_wire.is_eop         = 2'b11;
                      s_axis_rq_tuser_wire.is_sop0_ptr    = 2'b00;                  
                      s_axis_rq_tuser_wire.is_sop1_ptr    = 2'b10;                  
                      s_axis_rq_tuser_wire.is_eop0_ptr    = 4'd3;                  
                      s_axis_rq_tuser_wire.is_eop1_ptr    = 4'd11;                  
+                  end else begin
                      s_axis_rq_tlast_wire                = 1'b1;
+ 		             s_axis_rq_tuser_wire.is_sop         = 2'b00; //2'b01;
+                     s_axis_rq_tuser_wire.is_sop0_ptr    = 2'b00; 
                      s_axis_rq_tkeep_wire                = 16'h000F;
+                  end
    
                   // Update flags
                   total_mrd_count_wire       = total_mrd_count - 2;

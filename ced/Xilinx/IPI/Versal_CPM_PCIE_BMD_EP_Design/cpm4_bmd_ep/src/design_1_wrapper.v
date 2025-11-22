@@ -25,6 +25,11 @@ module design_1_wrapper
   output [7:0]PCIE0_GT_0_gtx_n;
   output [7:0]PCIE0_GT_0_gtx_p;
 
+   parameter      AXISTEN_IF_RQ_STRADDLE = 1;
+   parameter      AXISTEN_IF_RC_STRADDLE = 1;
+   parameter      AXISTEN_IF_CQ_STRADDLE = 0;
+   parameter      AXISTEN_IF_CC_STRADDLE = 0;
+
   wire gt_refclk0_0_clk_n;
   wire gt_refclk0_0_clk_p;
   wire [7:0]PCIE0_GT_0_grx_n;
@@ -291,7 +296,12 @@ module design_1_wrapper
 //------------------------------------------------------------------------------------------------------------------//
 //                                      BMD Example Design Top Level                                                //
 //------------------------------------------------------------------------------------------------------------------//
-  pcie_app_versal_bmd pcie_app_versal_i (
+   pcie_app_versal_bmd #(
+    .AXISTEN_IF_RQ_STRADDLE (AXISTEN_IF_RQ_STRADDLE),
+    .AXISTEN_IF_RC_STRADDLE (AXISTEN_IF_RC_STRADDLE),
+    .AXISTEN_IF_CQ_STRADDLE (AXISTEN_IF_CQ_STRADDLE),
+    .AXISTEN_IF_CC_STRADDLE (AXISTEN_IF_CC_STRADDLE)
+  ) pcie_app_versal_i (
        .user_clk                                    ( pcie0_user_clk_0 ),
     .user_reset                                     ( pcie0_user_reset_0 ),
     .user_lnk_up                                    ( pcie0_user_lnk_up_0 ), // 

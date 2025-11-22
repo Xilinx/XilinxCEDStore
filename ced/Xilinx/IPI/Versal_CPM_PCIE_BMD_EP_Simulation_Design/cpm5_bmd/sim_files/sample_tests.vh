@@ -651,11 +651,11 @@ begin
     // Start BMD Traffic Iter 1 /////////////////////
 
     //WDMATLPS
-      board.RP.tx_usrapp.TSK_MEM64_WR(32'h0c, 32'h00000001,4'hf); // 32DW
+      board.RP.tx_usrapp.TSK_MEM64_WR(32'h0c, 32'h20,4'hf); // 32DW
       board.RP.tx_usrapp.TSK_MEM64_RD(32'h0c);
 
     //Write DMA TLP Count 
-      board.RP.tx_usrapp.TSK_MEM64_WR(32'h10, 32'h000C,4'hf);  // 1MB Transfer 
+      board.RP.tx_usrapp.TSK_MEM64_WR(32'h10, 32'h4,4'hf);  // 1MB Transfer 
 
     // Read DMA TLP Count
       board.RP.tx_usrapp.TSK_MEM64_RD(32'h10);        // 1MB Transfer 
@@ -666,10 +666,10 @@ begin
       board.RP.tx_usrapp.TSK_MEM64_WR(32'h18, 32'h54535251,4'hf);  
       board.RP.tx_usrapp.TSK_MEM64_RD(32'h18);
     //RDMATLPS
-      board.RP.tx_usrapp.TSK_MEM64_WR(32'h20, 32'h00000001,4'hf);
+      board.RP.tx_usrapp.TSK_MEM64_WR(32'h20, 32'h20,4'hf);
       board.RP.tx_usrapp.TSK_MEM64_RD(32'h20);
     //RDMATPC
-      board.RP.tx_usrapp.TSK_MEM64_WR(32'h24, 32'h01,4'hf);  
+      board.RP.tx_usrapp.TSK_MEM64_WR(32'h24, 32'h4,4'hf);  
       board.RP.tx_usrapp.TSK_MEM64_RD(32'h24);
     //DCSR2- Start Writes
       board.RP.tx_usrapp.TSK_MEM64_WR(32'h4, 32'h00010001,4'hf);

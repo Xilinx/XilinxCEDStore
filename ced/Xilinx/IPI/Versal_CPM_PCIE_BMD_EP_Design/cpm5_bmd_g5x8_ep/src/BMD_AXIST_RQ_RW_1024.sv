@@ -2399,7 +2399,7 @@ enum {
                              s_axis_rq_tuser_w.is_sop2_ptr = 2'b00; 
                              s_axis_rq_tuser_w.is_sop1_ptr = 2'b00; 
                              s_axis_rq_tuser_w.is_sop0_ptr = 2'b00; 
-                             s_axis_rq_tuser_w.is_sop      = 4'b0001; 
+                             s_axis_rq_tuser_w.is_sop      = 4'b0000; 
                              s_axis_rq_tuser_w.is_eop3_ptr = 5'b0;
                              s_axis_rq_tuser_w.is_eop2_ptr = 5'b0;
                              s_axis_rq_tuser_w.is_eop1_ptr = 5'b0;
@@ -2540,7 +2540,7 @@ enum {
                                s_axis_rq_tuser_w.is_sop2_ptr = 2'b00; 
                                s_axis_rq_tuser_w.is_sop1_ptr = 2'b00; 
                                s_axis_rq_tuser_w.is_sop0_ptr = 2'b00; 
-                               s_axis_rq_tuser_w.is_sop      = 4'b0001;
+                               s_axis_rq_tuser_w.is_sop      = 4'b0000;
                                s_axis_rq_tuser_w.is_eop3_ptr = 5'b0;
                                s_axis_rq_tuser_w.is_eop2_ptr = 5'b0;
                                s_axis_rq_tuser_w.is_eop1_ptr = 5'b0;
