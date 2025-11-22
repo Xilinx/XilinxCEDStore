@@ -235,6 +235,8 @@ endgenerate
                      s_axis_rq_tuser_wire.is_eop0_ptr    = 4'd3;                  
                   end else begin
                      s_axis_rq_tlast_wire                = 1'b1;
+                     s_axis_rq_tuser_wire.is_sop         = 2'b00; //2'b01;
+                     s_axis_rq_tuser_wire.is_sop0_ptr    = 2'b00;
                      s_axis_rq_tkeep_wire                = 16'h000F;
                   end
    
@@ -290,6 +292,8 @@ endgenerate
                      s_axis_rq_tuser_wire.is_eop1_ptr    = 4'd11;                  
                   end else begin
                      s_axis_rq_tlast_wire                = 1'b1;
+ 		             s_axis_rq_tuser_wire.is_sop         = 2'b00; //2'b01;
+                     s_axis_rq_tuser_wire.is_sop0_ptr    = 2'b00; 
                      s_axis_rq_tkeep_wire                = 16'h000F;
                   end
    

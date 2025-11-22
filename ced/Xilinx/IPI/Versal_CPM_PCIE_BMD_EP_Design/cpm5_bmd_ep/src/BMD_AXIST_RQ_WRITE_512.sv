@@ -184,8 +184,12 @@ module BMD_AXIST_RQ_WRITE_512 #(
                     s_axis_rq_tdata_wire.lh.addr_63_2      = {32'd0, wr_addr_31_2};
                     s_axis_rq_tuser_wire.last_be           = 8'h0F;
                     s_axis_rq_tuser_wire.first_be          = 8'h0F;
+                    if (AXISTEN_IF_RQ_STRADDLE) begin
                        s_axis_rq_tuser_wire.is_sop         = 2'b01;
+                    end else begin
                        s_axis_rq_tkeep_wire                = 16'hFFFF;
+		               s_axis_rq_tuser_wire.is_sop         = 2'b00; //2'b01;
+                    end
 
                     cur_mwr_dw_count_wire      = cur_mwr_dw_count - 12;
                     if (AXISTEN_IF_RQ_STRADDLE & (cur_mwr_dw_count <= 20) & (total_mwr_count != 1)) begin
@@ -200,12 +204,16 @@ module BMD_AXIST_RQ_WRITE_512 #(
                     s_axis_rq_tdata_wire.lh.addr_63_2      = {32'd0, wr_addr_31_2};
                     s_axis_rq_tuser_wire.last_be           = (mwr_len_i == 1)? 8'h00: 8'h0F;
                     s_axis_rq_tuser_wire.first_be          = 8'h0F;
+                    if (AXISTEN_IF_RQ_STRADDLE) begin
                        s_axis_rq_tuser_wire.is_sop         = 2'b01;
                        s_axis_rq_tuser_wire.is_eop         = 2'b01;
                        s_axis_rq_tuser_wire.is_sop0_ptr    = 2'b00;
                        s_axis_rq_tuser_wire.is_eop0_ptr    = mwr_len_i[3:0] + 3;
+                    end else begin
                        s_axis_rq_tlast_wire                = 1'b1;
+		               s_axis_rq_tuser_wire.is_sop         = 2'b00; //2'b01;
                        s_axis_rq_tkeep_wire                = 16'hFFFF >> (12 - cur_mwr_dw_count);
+                    end
 
                     // Update flags
                     total_mwr_count_wire       = total_mwr_count - 1;
@@ -233,16 +241,21 @@ module BMD_AXIST_RQ_WRITE_512 #(
 
                  if (cur_mwr_dw_count > 16) begin
                     s_axis_rq_tdata_wire                   = {16{mwr_data_i}};
+                    if (~AXISTEN_IF_RQ_STRADDLE) begin
                        s_axis_rq_tkeep_wire                = 16'hFFFF;
+                    end
 
                     cur_mwr_dw_count_wire      = cur_mwr_dw_count - 16;
                     state_rq_wire[SEND_DATA]   = 1'b1;
                  end else begin // (cur_mwr_dw_count <= 16)
                     s_axis_rq_tdata_wire                   = {16{mwr_data_i}} & ({16{32'hFFFFFFFF}} >> ((16 - cur_mwr_dw_count) * 32));
+                    if (AXISTEN_IF_RQ_STRADDLE) begin
                        s_axis_rq_tuser_wire.is_eop         = 2'b01;
                        s_axis_rq_tuser_wire.is_eop0_ptr    = cur_mwr_dw_count[3:0] - 1;
+                    end else begin
                        s_axis_rq_tlast_wire                = 1'b1;
                        s_axis_rq_tkeep_wire                = 16'hFFFF >> (16 - cur_mwr_dw_count);
+                    end
 
                     // Update flags
                     total_mwr_count_wire       = total_mwr_count - 1;
@@ -563,16 +576,21 @@ module BMD_AXIST_RQ_WRITE_512 #(
 
                  if (cur_mwr_dw_count > 16) begin
                     s_axis_rq_tdata_wire                   = {16{mwr_data_i}};
+                    if (~AXISTEN_IF_RQ_STRADDLE) begin
                        s_axis_rq_tkeep_wire                = 16'hFFFF;
+                    end
 
                     cur_mwr_dw_count_wire      = cur_mwr_dw_count - 16;
                     state_rq_wire[SEND_DATA]   = 1'b1;
                  end else begin // (cur_mwr_dw_count <= 16)
                     s_axis_rq_tdata_wire                   = {16{mwr_data_i}} & ({16{32'hFFFFFFFF}} >> ((16 - cur_mwr_dw_count) * 32));
+                    if (AXISTEN_IF_RQ_STRADDLE) begin
                        s_axis_rq_tuser_wire.is_eop         = 2'b01;
                        s_axis_rq_tuser_wire.is_eop0_ptr    = cur_mwr_dw_count[3:0] - 1;
+                    end else begin
                        s_axis_rq_tlast_wire                = 1'b1;
                        s_axis_rq_tkeep_wire                = 16'hFFFF >> (16 - cur_mwr_dw_count);
+                    end
 
                     // Update flags
                     total_mwr_count_wire       = total_mwr_count - 1;

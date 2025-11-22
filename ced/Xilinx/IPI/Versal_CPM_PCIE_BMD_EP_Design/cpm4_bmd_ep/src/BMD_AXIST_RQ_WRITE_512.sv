@@ -188,6 +188,7 @@ module BMD_AXIST_RQ_WRITE_512 #(
                        s_axis_rq_tuser_wire.is_sop         = 2'b01;
                     end else begin
                        s_axis_rq_tkeep_wire                = 16'hFFFF;
+                       s_axis_rq_tuser_wire.is_sop         = 2'b00; //2'b01;
                     end
 
                     cur_mwr_dw_count_wire      = cur_mwr_dw_count - 12;
@@ -210,6 +211,7 @@ module BMD_AXIST_RQ_WRITE_512 #(
                        s_axis_rq_tuser_wire.is_eop0_ptr    = mwr_len_i[3:0] + 3;
                     end else begin
                        s_axis_rq_tlast_wire                = 1'b1;
+                       s_axis_rq_tuser_wire.is_sop         = 2'b00; //2'b01;
                        s_axis_rq_tkeep_wire                = 16'hFFFF >> (12 - cur_mwr_dw_count);
                     end
 

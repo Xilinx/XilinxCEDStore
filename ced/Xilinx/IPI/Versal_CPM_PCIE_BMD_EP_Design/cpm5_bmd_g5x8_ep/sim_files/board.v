@@ -25,6 +25,12 @@ module board;
   parameter     REF_CLK_FREQ = 0 ;      // 0 - 100 MHz, 1 - 125 MHz,  2 - 250 MHz
   parameter [4:0] LINK_WIDTH = 5'd8;
 
+  localparam [1:0]        AXISTEN_IF_RQ_STRADDLE           = 2'b10; //00: max 1 packet, 01: max 2 TLPs, 10: max 4 TLPs, 11: rsvd
+  localparam [1:0]        AXISTEN_IF_RC_STRADDLE           = 2'b11;
+  localparam [1:0]        AXISTEN_IF_CQ_STRADDLE           = 2'b00;
+  localparam [1:0]        AXISTEN_IF_CC_STRADDLE           = 2'b00;
+  localparam              TAG_10B_SUPPORT_EN               = "TRUE";
+  
   localparam REF_CLK_HALF_CYCLE = (REF_CLK_FREQ == 0) ? 5000 :
                                   (REF_CLK_FREQ == 1) ? 4000 :
                                   (REF_CLK_FREQ == 2) ? 2000 : 0;
@@ -130,7 +136,13 @@ module board;
   // PCI-Express Endpoint Instance
   //
 
-  design_1_wrapper EP (
+  design_1_wrapper #(
+    .AXISTEN_IF_RQ_STRADDLE (AXISTEN_IF_RQ_STRADDLE)
+   ,.AXISTEN_IF_RC_STRADDLE (AXISTEN_IF_RC_STRADDLE)
+   ,.AXISTEN_IF_CQ_STRADDLE (AXISTEN_IF_CQ_STRADDLE)
+   ,.AXISTEN_IF_CC_STRADDLE (AXISTEN_IF_CC_STRADDLE)
+   ,.TAG_10B_SUPPORT_EN (TAG_10B_SUPPORT_EN)
+   ) EP(
     // SYS Inteface
     .gt_refclk1_0_clk_n(ep_sys_clk_n),
     .gt_refclk1_0_clk_p(ep_sys_clk_p),
