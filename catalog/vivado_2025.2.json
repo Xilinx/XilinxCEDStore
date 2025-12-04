@@ -796,11 +796,11 @@
         "name": "Versal_CPM_Tandem_PCIe_DFX",
         "display": "Versal CPM Tandem PCIe and DFX",
         "latest_revision": "2.0",
-        "commit_id": "a0fe019a3dc1c3b10567f82832208809cbe6f0ba",
+        "commit_id": "8fabfa9d86f77e8cf974449e68b33824aa7c5099",
         "revisions": [
           {
             "revision": "2.0",
-            "commit_id": "a0fe019a3dc1c3b10567f82832208809cbe6f0ba",
+            "commit_id": "8fabfa9d86f77e8cf974449e68b33824aa7c5099",
             "date": "18-03-2025:17:09:13",
             "history": "Added board Versal CPM Tandem PCIe and DFX v2.0"
           }
