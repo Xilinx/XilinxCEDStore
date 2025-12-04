@@ -481,70 +481,70 @@ proc create_root_design { parentCell } {
    CONFIG.REMAPS {} \
    CONFIG.NOC_PARAMS {} \
    CONFIG.CATEGORY {ps_pcie} \
- ] [get_bd_intf_pins /axi_noc_0/S00_AXI]
+ ] [get_bd_intf_pins $axi_noc_0/S00_AXI]
 
   set_property -dict [ list \
    CONFIG.CONNECTIONS {M00_INI {read_bw {500} write_bw {500} initial_boot {true}} MC_3 {read_bw {500} write_bw {500} read_avg_burst {4} write_avg_burst {4} initial_boot {true}}} \
    CONFIG.DEST_IDS {} \
    CONFIG.NOC_PARAMS {} \
    CONFIG.CATEGORY {ps_cci} \
- ] [get_bd_intf_pins /axi_noc_0/S01_AXI]
+ ] [get_bd_intf_pins $axi_noc_0/S01_AXI]
 
   set_property -dict [ list \
    CONFIG.CONNECTIONS {M00_INI {read_bw {500} write_bw {500} initial_boot {true}} MC_3 {read_bw {500} write_bw {500} read_avg_burst {4} write_avg_burst {4} initial_boot {true}}} \
    CONFIG.DEST_IDS {} \
    CONFIG.NOC_PARAMS {} \
    CONFIG.CATEGORY {ps_cci} \
- ] [get_bd_intf_pins /axi_noc_0/S02_AXI]
+ ] [get_bd_intf_pins $axi_noc_0/S02_AXI]
 
   set_property -dict [ list \
    CONFIG.CONNECTIONS {M00_INI {read_bw {500} write_bw {500} initial_boot {true}} MC_3 {read_bw {500} write_bw {500} read_avg_burst {4} write_avg_burst {4} initial_boot {true}}} \
    CONFIG.DEST_IDS {} \
    CONFIG.NOC_PARAMS {} \
    CONFIG.CATEGORY {ps_cci} \
- ] [get_bd_intf_pins /axi_noc_0/S03_AXI]
+ ] [get_bd_intf_pins $axi_noc_0/S03_AXI]
 
   set_property -dict [ list \
    CONFIG.CONNECTIONS {M00_INI {read_bw {500} write_bw {500} initial_boot {true}} MC_3 {read_bw {500} write_bw {500} read_avg_burst {4} write_avg_burst {4} initial_boot {true}}} \
    CONFIG.DEST_IDS {} \
    CONFIG.NOC_PARAMS {} \
    CONFIG.CATEGORY {ps_cci} \
- ] [get_bd_intf_pins /axi_noc_0/S04_AXI]
+ ] [get_bd_intf_pins $axi_noc_0/S04_AXI]
 
   set_property -dict [ list \
    CONFIG.CONNECTIONS {M00_INI {read_bw {500} write_bw {500} initial_boot {true}} MC_3 {read_bw {500} write_bw {500} read_avg_burst {4} write_avg_burst {4} initial_boot {true}}} \
    CONFIG.DEST_IDS {} \
    CONFIG.NOC_PARAMS {} \
    CONFIG.CATEGORY {ps_pmc} \
- ] [get_bd_intf_pins /axi_noc_0/S05_AXI]
+ ] [get_bd_intf_pins $axi_noc_0/S05_AXI]
 
   set_property -dict [ list \
    CONFIG.ASSOCIATED_BUSIF {S00_AXI} \
- ] [get_bd_pins /axi_noc_0/aclk0]
+ ] [get_bd_pins $axi_noc_0/aclk0]
 
   set_property -dict [ list \
    CONFIG.ASSOCIATED_BUSIF {} \
- ] [get_bd_pins /axi_noc_0/aclk1]
+ ] [get_bd_pins $axi_noc_0/aclk1]
 
   set_property -dict [ list \
    CONFIG.ASSOCIATED_BUSIF {S01_AXI} \
- ] [get_bd_pins /axi_noc_0/aclk2]
+ ] [get_bd_pins $axi_noc_0/aclk2]
 
   set_property -dict [ list \
    CONFIG.ASSOCIATED_BUSIF {S02_AXI} \
- ] [get_bd_pins /axi_noc_0/aclk3]
+ ] [get_bd_pins $axi_noc_0/aclk3]
 
   set_property -dict [ list \
    CONFIG.ASSOCIATED_BUSIF {S03_AXI} \
- ] [get_bd_pins /axi_noc_0/aclk4]
+ ] [get_bd_pins $axi_noc_0/aclk4]
 
   set_property -dict [ list \
    CONFIG.ASSOCIATED_BUSIF {S04_AXI} \
- ] [get_bd_pins /axi_noc_0/aclk5]
+ ] [get_bd_pins $axi_noc_0/aclk5]
 
   set_property -dict [ list \
    CONFIG.ASSOCIATED_BUSIF {S05_AXI} \
- ] [get_bd_pins /axi_noc_0/aclk6]
+ ] [get_bd_pins $axi_noc_0/aclk6]
 
   # Create instance: versal_cips_0, and set properties
   set versal_cips_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:versal_cips versal_cips_0 ]
@@ -1722,12 +1722,12 @@ proc create_root_design { parentCell } {
 
   set_property -dict [ list \
    CONFIG.CATEGORY {ps_pmc} \
- ] [get_bd_intf_pins /axi_noc_1/M00_AXI]
+ ] [get_bd_intf_pins $axi_noc_1/M00_AXI]
 
   set_property -dict [ list \
-   CONFIG.APERTURES {{0x201_0000_0000 1G}} \
+   CONFIG.APERTURES {{0x201_0001_0000 64K}} \
    CONFIG.CATEGORY {pl} \
- ] [get_bd_intf_pins /axi_noc_1/M01_AXI]
+ ] [get_bd_intf_pins $axi_noc_1/M01_AXI]
 
   set_property -dict [ list \
    CONFIG.CONNECTIONS {M01_AXI {read_bw {500} write_bw {500} read_avg_burst {4} write_avg_burst {4} initial_boot {false}} M00_AXI {read_bw {1720} write_bw {1720} read_avg_burst {4} write_avg_burst {4} initial_boot {true}} MC_2 {read_bw {500} write_bw {500} read_avg_burst {4} write_avg_burst {4} initial_boot {true}}} \
@@ -1735,19 +1735,19 @@ proc create_root_design { parentCell } {
    CONFIG.REMAPS {M00_AXI {{0x201_0030_0000 0xFF30_0000 1M} {0x201_0200_0000 0x1_0200_0000 128K} {0x201_000C_0000 0xFFFC_0000 256K} {0x201_0400_0000 0xFC00_0000 16M} {0x201_0103_0000 0x1_0103_0000 64K} {0x201_0210_0000 0x1_0210_0000 64K} {0x201_0122_0000 0x1_0122_0000 64K}}} \
    CONFIG.NOC_PARAMS {} \
    CONFIG.CATEGORY {ps_pcie} \
- ] [get_bd_intf_pins /axi_noc_1/S00_AXI]
+ ] [get_bd_intf_pins $axi_noc_1/S00_AXI]
 
   set_property -dict [ list \
    CONFIG.ASSOCIATED_BUSIF {M00_AXI} \
- ] [get_bd_pins /axi_noc_1/aclk0]
+ ] [get_bd_pins $axi_noc_1/aclk0]
 
   set_property -dict [ list \
    CONFIG.ASSOCIATED_BUSIF {S00_AXI} \
- ] [get_bd_pins /axi_noc_1/aclk1]
+ ] [get_bd_pins $axi_noc_1/aclk1]
 
   set_property -dict [ list \
    CONFIG.ASSOCIATED_BUSIF {M01_AXI} \
- ] [get_bd_pins /axi_noc_1/aclk2]
+ ] [get_bd_pins $axi_noc_1/aclk2]
 
   # Create instance: axi_noc_2, and set properties
   set axi_noc_2 [ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_noc axi_noc_2 ]
@@ -1893,31 +1893,31 @@ proc create_root_design { parentCell } {
    CONFIG.CONNECTIONS {MC_1 {read_bw {500} write_bw {500} read_avg_burst {4} write_avg_burst {4} initial_boot {false}}} \
    CONFIG.NOC_PARAMS {} \
    CONFIG.CATEGORY {pl} \
- ] [get_bd_intf_pins /axi_noc_2/S00_AXI]
+ ] [get_bd_intf_pins $axi_noc_2/S00_AXI]
 
   set_property -dict [ list \
    CONFIG.CONNECTIONS {MC_1 {read_bw {500} write_bw {500} read_avg_burst {4} write_avg_burst {4} initial_boot {true}}} \
- ] [get_bd_intf_pins /axi_noc_2/S00_INI]
+ ] [get_bd_intf_pins $axi_noc_2/S00_INI]
 
   set_property -dict [ list \
    CONFIG.CONNECTIONS {MC_1 {read_bw {500} write_bw {500} read_avg_burst {4} write_avg_burst {4} initial_boot {false}}} \
    CONFIG.NOC_PARAMS {} \
    CONFIG.CATEGORY {pl} \
- ] [get_bd_intf_pins /axi_noc_2/S01_AXI]
+ ] [get_bd_intf_pins $axi_noc_2/S01_AXI]
 
   set_property -dict [ list \
    CONFIG.CONNECTIONS {MC_1 {read_bw {500} write_bw {500} read_avg_burst {4} write_avg_burst {4} initial_boot {true}}} \
    CONFIG.NOC_PARAMS {} \
    CONFIG.CATEGORY {ps_nci} \
- ] [get_bd_intf_pins /axi_noc_2/S02_AXI]
+ ] [get_bd_intf_pins $axi_noc_2/S02_AXI]
 
   set_property -dict [ list \
    CONFIG.ASSOCIATED_BUSIF {S00_AXI:S01_AXI} \
- ] [get_bd_pins /axi_noc_2/aclk0]
+ ] [get_bd_pins $axi_noc_2/aclk0]
 
   set_property -dict [ list \
    CONFIG.ASSOCIATED_BUSIF {S02_AXI} \
- ] [get_bd_pins /axi_noc_2/aclk1]
+ ] [get_bd_pins $axi_noc_2/aclk1]
 
   # Create instance: axi_cdma_0, and set properties
   set axi_cdma_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_cdma axi_cdma_0 ]
@@ -1944,7 +1944,12 @@ proc create_root_design { parentCell } {
   set emb_fifo_gen_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:emb_fifo_gen emb_fifo_gen_0 ]
   set_property -dict [list \
     CONFIG.AXI_ADDR_WIDTH {64} \
+    CONFIG.AXI_ARUSER_WIDTH {0} \
+    CONFIG.AXI_AWUSER_WIDTH {0} \
+    CONFIG.AXI_BUSER_WIDTH {0} \
     CONFIG.AXI_DATA_WIDTH {128} \
+    CONFIG.AXI_RUSER_WIDTH {0} \
+    CONFIG.AXI_WUSER_WIDTH {0} \
     CONFIG.INTERFACE_TYPE {AXI4_Full} \
   ] $emb_fifo_gen_0
 
@@ -2170,10 +2175,28 @@ connect_bd_intf_net -intf_net [get_bd_intf_nets versal_cips_0_dma0_m_axis_h2c] [
   assign_bd_address -offset 0x020100390000 -range 0x00010000 -target_address_space [get_bd_addr_spaces versal_cips_0/CPM_PCIE_NOC_1] [get_bd_addr_segs versal_cips_0/NOC_PMC_AXI_0/pspmc_0_psv_ipi_pmc_nobuf] -force
   assign_bd_address -offset 0x020100310000 -range 0x00010000 -target_address_space [get_bd_addr_spaces versal_cips_0/CPM_PCIE_NOC_1] [get_bd_addr_segs versal_cips_0/NOC_PMC_AXI_0/pspmc_0_psv_ipi_psm] -force
   assign_bd_address -offset 0x0201000C0000 -range 0x00040000 -target_address_space [get_bd_addr_spaces versal_cips_0/CPM_PCIE_NOC_1] [get_bd_addr_segs versal_cips_0/NOC_PMC_AXI_0/pspmc_0_psv_ocm_ram_0] -force
+  assign_bd_address -offset 0x000101160000 -range 0x00030000 -target_address_space [get_bd_addr_spaces versal_cips_0/CPM_PCIE_NOC_1] [get_bd_addr_segs versal_cips_0/NOC_PMC_AXI_0/pspmc_0_psv_pmc_analog_0] -force
+  assign_bd_address -offset 0x0001012D2000 -range 0x00001000 -target_address_space [get_bd_addr_spaces versal_cips_0/CPM_PCIE_NOC_1] [get_bd_addr_segs versal_cips_0/NOC_PMC_AXI_0/pspmc_0_psv_pmc_cfi_cframe_1] -force
+  assign_bd_address -offset 0x0001012D4000 -range 0x00001000 -target_address_space [get_bd_addr_spaces versal_cips_0/CPM_PCIE_NOC_1] [get_bd_addr_segs versal_cips_0/NOC_PMC_AXI_0/pspmc_0_psv_pmc_cfi_cframe_2] -force
+  assign_bd_address -offset 0x0001012D6000 -range 0x00001000 -target_address_space [get_bd_addr_spaces versal_cips_0/CPM_PCIE_NOC_1] [get_bd_addr_segs versal_cips_0/NOC_PMC_AXI_0/pspmc_0_psv_pmc_cfi_cframe_3] -force
+  assign_bd_address -offset 0x0001012D8000 -range 0x00001000 -target_address_space [get_bd_addr_spaces versal_cips_0/CPM_PCIE_NOC_1] [get_bd_addr_segs versal_cips_0/NOC_PMC_AXI_0/pspmc_0_psv_pmc_cfi_cframe_4] -force
+  assign_bd_address -offset 0x0001012DA000 -range 0x00001000 -target_address_space [get_bd_addr_spaces versal_cips_0/CPM_PCIE_NOC_1] [get_bd_addr_segs versal_cips_0/NOC_PMC_AXI_0/pspmc_0_psv_pmc_cfi_cframe_5] -force
+  assign_bd_address -offset 0x0001012DC000 -range 0x00001000 -target_address_space [get_bd_addr_spaces versal_cips_0/CPM_PCIE_NOC_1] [get_bd_addr_segs versal_cips_0/NOC_PMC_AXI_0/pspmc_0_psv_pmc_cfi_cframe_6] -force
+  assign_bd_address -offset 0x0001012DE000 -range 0x00001000 -target_address_space [get_bd_addr_spaces versal_cips_0/CPM_PCIE_NOC_1] [get_bd_addr_segs versal_cips_0/NOC_PMC_AXI_0/pspmc_0_psv_pmc_cfi_cframe_7] -force
+  assign_bd_address -offset 0x0001012E0000 -range 0x00001000 -target_address_space [get_bd_addr_spaces versal_cips_0/CPM_PCIE_NOC_1] [get_bd_addr_segs versal_cips_0/NOC_PMC_AXI_0/pspmc_0_psv_pmc_cfi_cframe_8] -force
+  assign_bd_address -offset 0x0001012E2000 -range 0x00001000 -target_address_space [get_bd_addr_spaces versal_cips_0/CPM_PCIE_NOC_1] [get_bd_addr_segs versal_cips_0/NOC_PMC_AXI_0/pspmc_0_psv_pmc_cfi_cframe_9] -force
+  assign_bd_address -offset 0x0001012E4000 -range 0x00001000 -target_address_space [get_bd_addr_spaces versal_cips_0/CPM_PCIE_NOC_1] [get_bd_addr_segs versal_cips_0/NOC_PMC_AXI_0/pspmc_0_psv_pmc_cfi_cframe_10] -force
+  assign_bd_address -offset 0x0001012E6000 -range 0x00001000 -target_address_space [get_bd_addr_spaces versal_cips_0/CPM_PCIE_NOC_1] [get_bd_addr_segs versal_cips_0/NOC_PMC_AXI_0/pspmc_0_psv_pmc_cfi_cframe_11] -force
+  assign_bd_address -offset 0x0001012E8000 -range 0x00001000 -target_address_space [get_bd_addr_spaces versal_cips_0/CPM_PCIE_NOC_1] [get_bd_addr_segs versal_cips_0/NOC_PMC_AXI_0/pspmc_0_psv_pmc_cfi_cframe_12] -force
+  assign_bd_address -offset 0x0001012EA000 -range 0x00001000 -target_address_space [get_bd_addr_spaces versal_cips_0/CPM_PCIE_NOC_1] [get_bd_addr_segs versal_cips_0/NOC_PMC_AXI_0/pspmc_0_psv_pmc_cfi_cframe_13] -force
+  assign_bd_address -offset 0x0001012EC000 -range 0x00001000 -target_address_space [get_bd_addr_spaces versal_cips_0/CPM_PCIE_NOC_1] [get_bd_addr_segs versal_cips_0/NOC_PMC_AXI_0/pspmc_0_psv_pmc_cfi_cframe_14] -force
+  assign_bd_address -offset 0x0001012EE000 -range 0x00001000 -target_address_space [get_bd_addr_spaces versal_cips_0/CPM_PCIE_NOC_1] [get_bd_addr_segs versal_cips_0/NOC_PMC_AXI_0/pspmc_0_psv_pmc_cfi_cframe_bcast] -force
+  assign_bd_address -offset 0xF1060000 -range 0x00010000 -target_address_space [get_bd_addr_spaces versal_cips_0/CPM_PCIE_NOC_1] [get_bd_addr_segs versal_cips_0/NOC_PMC_AXI_0/pspmc_0_psv_pmc_iou_slcr_0] -force
   assign_bd_address -offset 0x020101030000 -range 0x00010000 -target_address_space [get_bd_addr_spaces versal_cips_0/CPM_PCIE_NOC_1] [get_bd_addr_segs versal_cips_0/NOC_PMC_AXI_0/pspmc_0_psv_pmc_qspi_0] -force
   assign_bd_address -offset 0x020102000000 -range 0x00020000 -target_address_space [get_bd_addr_spaces versal_cips_0/CPM_PCIE_NOC_1] [get_bd_addr_segs versal_cips_0/NOC_PMC_AXI_0/pspmc_0_psv_pmc_ram] -force
   assign_bd_address -offset 0x020101220000 -range 0x00010000 -target_address_space [get_bd_addr_spaces versal_cips_0/CPM_PCIE_NOC_1] [get_bd_addr_segs versal_cips_0/NOC_PMC_AXI_0/pspmc_0_psv_pmc_slave_boot] -force
   assign_bd_address -offset 0x020102100000 -range 0x00010000 -target_address_space [get_bd_addr_spaces versal_cips_0/CPM_PCIE_NOC_1] [get_bd_addr_segs versal_cips_0/NOC_PMC_AXI_0/pspmc_0_psv_pmc_slave_boot_stream] -force
+  assign_bd_address -offset 0x0001011A0000 -range 0x00020000 -target_address_space [get_bd_addr_spaces versal_cips_0/CPM_PCIE_NOC_1] [get_bd_addr_segs versal_cips_0/NOC_PMC_AXI_0/pspmc_0_psv_pmc_tap] -force
   assign_bd_address -offset 0x070000000000 -range 0x40000000 -target_address_space [get_bd_addr_spaces versal_cips_0/FPD_AXI_NOC_0] [get_bd_addr_segs axi_noc_2/S02_AXI/C1_DDR_CH3] -force
   assign_bd_address -offset 0x078000000000 -range 0x40000000 -target_address_space [get_bd_addr_spaces versal_cips_0/FPD_AXI_NOC_0] [get_bd_addr_segs axi_noc_2/S02_AXI/C1_DDR_CH3_1] -force
   assign_bd_address -offset 0x050000000000 -range 0x80000000 -target_address_space [get_bd_addr_spaces versal_cips_0/FPD_CCI_NOC_0] [get_bd_addr_segs axi_noc_0/S01_AXI/C3_DDR_CH1] -force
@@ -2204,7 +2227,7 @@ connect_bd_intf_net -intf_net [get_bd_intf_nets versal_cips_0_dma0_m_axis_h2c] [
 
   # Exclude Address Segments
   exclude_bd_addr_seg -target_address_space [get_bd_addr_spaces axi_cdma_0/Data] [get_bd_addr_segs axi_noc_2/S01_AXI/C1_DDR_CH3_1]
-  exclude_bd_addr_seg -offset 0x020100000000 -range 0x00010000 -target_address_space [get_bd_addr_spaces versal_cips_0/CPM_PCIE_NOC_1] [get_bd_addr_segs axi_cdma_0/S_AXI_LITE/Reg]
+  exclude_bd_addr_seg -target_address_space [get_bd_addr_spaces versal_cips_0/CPM_PCIE_NOC_1] [get_bd_addr_segs axi_cdma_0/S_AXI_LITE/Reg]
   exclude_bd_addr_seg -target_address_space [get_bd_addr_spaces versal_cips_0/CPM_PCIE_NOC_1] [get_bd_addr_segs ps_pl_axil/Reg]
   exclude_bd_addr_seg -target_address_space [get_bd_addr_spaces versal_cips_0/CPM_PCIE_NOC_1] [get_bd_addr_segs versal_cips_0/NOC_PMC_AXI_0/pspmc_0_psv_adma_0]
   exclude_bd_addr_seg -target_address_space [get_bd_addr_spaces versal_cips_0/CPM_PCIE_NOC_1] [get_bd_addr_segs versal_cips_0/NOC_PMC_AXI_0/pspmc_0_psv_adma_1]
