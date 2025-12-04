@@ -404,11 +404,11 @@
         "name": "cpm_bmd_ep",
         "display": "Versal CPM PCIE BMD EP Design",
         "latest_revision": "1.0",
-        "commit_id": "e1056ab80472ddbde1f559892accbdab5bf90686",
+        "commit_id": "3ef34e6be2f6324152f5b282afeda66cb284236a",
         "revisions": [
           {
             "revision": "1.0",
-            "commit_id": "e1056ab80472ddbde1f559892accbdab5bf90686",
+            "commit_id": "3ef34e6be2f6324152f5b282afeda66cb284236a",
             "date": "15-10-2023:17:45:27",
             "history": "Added board Versal CPM PCIE BMD EP Design v1.0"
           }
@@ -423,11 +423,11 @@
         "name": "cpm_bmd",
         "display": "Versal CPM PCIE BMD EP Simulation Design",
         "latest_revision": "1.0",
-        "commit_id": "7f2ac9d93fbabfe439e4839c84c8492e0673d14a",
+        "commit_id": "3ef34e6be2f6324152f5b282afeda66cb284236a",
         "revisions": [
           {
             "revision": "1.0",
-            "commit_id": "7f2ac9d93fbabfe439e4839c84c8492e0673d14a",
+            "commit_id": "3ef34e6be2f6324152f5b282afeda66cb284236a",
             "date": "15-10-2023:17:45:27",
             "history": "Added board Versal CPM PCIE BMD EP Simulation Design v1.0"
           }
