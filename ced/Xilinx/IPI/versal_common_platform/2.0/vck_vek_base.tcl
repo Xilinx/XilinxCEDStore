@@ -259,7 +259,7 @@ connect_bd_intf_net [get_bd_intf_pins aggr_noc/M04_INI] [get_bd_intf_pins $addit
 # Create instance: ctrl_smc, and set properties
 set ctrl_smc [ create_bd_cell -type ip -vlnv xilinx.com:ip:smartconnect ctrl_smc ]
 set_property -dict [list \
-  CONFIG.NUM_MI {3} \
+  CONFIG.NUM_MI {5} \
   CONFIG.NUM_SI {1} \
 ] [get_bd_cells ctrl_smc]
 
@@ -310,32 +310,46 @@ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_bram_ctrl:* axi_bram_ctrl_0
 apply_bd_automation -rule xilinx.com:bd_rule:bram_cntlr -config {BRAM "Auto" }  [get_bd_intf_pins axi_bram_ctrl_0/BRAM_PORTA]
 apply_bd_automation -rule xilinx.com:bd_rule:bram_cntlr -config {BRAM "Auto" }  [get_bd_intf_pins axi_bram_ctrl_0/BRAM_PORTB]
 
-
 connect_bd_intf_net [get_bd_intf_pins ctrl_smc/M00_AXI] [get_bd_intf_pins axi_bram_ctrl_0/S_AXI]
 connect_bd_intf_net [get_bd_intf_pins ctrl_smc/M01_AXI] [get_bd_intf_pins axi_gpio_0/S_AXI]
 connect_bd_intf_net [get_bd_intf_pins ctrl_smc/M02_AXI] [get_bd_intf_pins axi_gpio_1/S_AXI]
-
-apply_bd_automation -rule xilinx.com:bd_rule:clkrst -config { Clk {/clk_wizard_0/clk_out1 (100 MHz)} Freq {100} Ref_Clk0 {} Ref_Clk1 {} Ref_Clk2 {}}  [get_bd_pins axi_bram_ctrl_0/s_axi_aclk]
-apply_bd_automation -rule xilinx.com:bd_rule:clkrst -config { Clk {/clk_wizard_0/clk_out1 (100 MHz)} Freq {100} Ref_Clk0 {} Ref_Clk1 {} Ref_Clk2 {}}  [get_bd_pins axi_gpio_0/s_axi_aclk]
-apply_bd_automation -rule xilinx.com:bd_rule:clkrst -config { Clk {/clk_wizard_0/clk_out1 (100 MHz)} Freq {100} Ref_Clk0 {} Ref_Clk1 {} Ref_Clk2 {}}  [get_bd_pins axi_gpio_1/s_axi_aclk]
-#apply_bd_automation -rule xilinx.com:bd_rule:clkrst -config { Clk {/clk_wizard_0/clk_out1 (100 MHz)} Freq {100} Ref_Clk0 {} Ref_Clk1 {} Ref_Clk2 {}}  [get_bd_pins axi_register_slice_0/aclk]
-apply_bd_automation -rule xilinx.com:bd_rule:clkrst -config { Clk {/clk_wizard_0/clk_out1 (100 MHz)} Freq {100} Ref_Clk0 {} Ref_Clk1 {} Ref_Clk2 {}}  [get_bd_pins CIPS_0/m_axi_fpd_aclk]
-
-catch {apply_bd_automation -rule xilinx.com:bd_rule:axi4 -config { Clk_master {/clk_wizard_0/clk_out1 (100 MHz)} Clk_slave {/clk_wizard_0/clk_out1 (100 MHz)} Clk_xbar {/clk_wizard_0/clk_out1 (100 MHz)} Master {/CIPS_0/M_AXI_FPD} Slave {/axi_gpio_2/S_AXI} ddr_seg {Auto} intc_ip {/ctrl_smc} master_apm {0}}  [get_bd_intf_pins axi_gpio_2/S_AXI] }
-
-
-apply_bd_automation -rule xilinx.com:bd_rule:board -config { Clk {/CIPS_0/pl0_ref_clk (99 MHz)} Manual_Source {Auto}}  [get_bd_pins clk_wizard_0/clk_in1]
-apply_bd_automation -rule xilinx.com:bd_rule:board -config { Manual_Source {/CIPS_0/pl0_resetn (ACTIVE_LOW)}}  [get_bd_pins clk_wizard_0/resetn]
-apply_bd_automation -rule xilinx.com:bd_rule:board -config { Manual_Source {/CIPS_0/pl0_resetn (ACTIVE_LOW)}}  [get_bd_pins rst_clk_wizard_0_100M/ext_reset_in]
-#connect_bd_net [get_bd_pins ctrl_smc/aresetn] [get_bd_pins rst_clk_wizard_0_100M/peripheral_aresetn]
+connect_bd_intf_net [get_bd_intf_pins ctrl_smc/M03_AXI] [get_bd_intf_pins axi_gpio_2/S_AXI] 
 
 create_bd_cell -type ip -vlnv xilinx.com:ip:axi_uart16550 axi_uart16550_0
 if {[regexp "vek280" $board_name]} {
 apply_board_connection -board_interface "uart1_bank401" -ip_intf "axi_uart16550_0/UART" -diagram $design_name 
+} elseif {[regexp "vpk180" $board_name]||[regexp "vpk120" $board_name]} {
+apply_board_connection -board_interface "uart2_bank712" -ip_intf "axi_uart16550_0/UART" -diagram $design_name 
 } else {
 apply_board_connection -board_interface "uart2_bank306" -ip_intf "axi_uart16550_0/UART" -diagram $design_name 
 }
-apply_bd_automation -rule xilinx.com:bd_rule:axi4 -config { Clk_master {/clk_wizard_0/clk_out1 (100 MHz)} Clk_slave {Auto} Clk_xbar {Auto} Master {/CIPS_0/M_AXI_FPD} Slave {/axi_uart16550_0/S_AXI} ddr_seg {Auto} intc_ip {Auto} master_apm {0}}  [get_bd_intf_pins axi_uart16550_0/S_AXI]
+
+connect_bd_intf_net [get_bd_intf_pins ctrl_smc/M04_AXI] [get_bd_intf_pins axi_uart16550_0/S_AXI]
+
+create_bd_cell -type ip -vlnv xilinx.com:ip:proc_sys_reset rst_clk_wizard
+
+# Create port connections
+connect_bd_net [get_bd_pins CIPS_0/pl0_ref_clk] [get_bd_pins clk_wizard_0/clk_in1]
+connect_bd_net [get_bd_pins CIPS_0/pl0_resetn] [get_bd_pins clk_wizard_0/resetn] [get_bd_pins rst_clk_wizard/ext_reset_in]
+
+connect_bd_net [get_bd_pins clk_wizard_0/clk_out1] \
+[get_bd_pins axi_bram_ctrl_0/s_axi_aclk] \
+[get_bd_pins ctrl_smc/aclk] \
+[get_bd_pins rst_clk_wizard/slowest_sync_clk] \
+[get_bd_pins axi_gpio_0/s_axi_aclk] \
+[get_bd_pins axi_gpio_1/s_axi_aclk] \
+[get_bd_pins CIPS_0/m_axi_fpd_aclk] \
+[get_bd_pins axi_gpio_2/s_axi_aclk] \
+[get_bd_pins axi_uart16550_0/s_axi_aclk]
+
+connect_bd_net [get_bd_pins clk_wizard_0/locked] [get_bd_pins rst_clk_wizard/dcm_locked]
+connect_bd_net [get_bd_pins rst_clk_wizard/peripheral_aresetn] \
+[get_bd_pins axi_bram_ctrl_0/s_axi_aresetn] \
+[get_bd_pins axi_gpio_0/s_axi_aresetn] \
+[get_bd_pins axi_gpio_1/s_axi_aresetn] \
+[get_bd_pins axi_gpio_2/s_axi_aresetn] \
+[get_bd_pins ctrl_smc/aresetn] \
+[get_bd_pins axi_uart16550_0/s_axi_aresetn]
 
 if {$use_aie} {
 # Add USER_COMMENTS on $design_name

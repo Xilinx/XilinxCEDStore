@@ -1173,7 +1173,7 @@ if { $use_aie } {
 			\t --> AI Engine control path is connected to PS_WIZARD
 			\t --> V++ will connect AI Engine data path automatically
 			\t --> Execute TCL command : launch_simulation -scripts_only ,to establish the sim_1 source set hierarchy after successful design creation.
-			\t --> For Next steps, Refer to README.md https://github.com/Xilinx/XilinxCEDStore/tree/2025.2/ced/Xilinx/IPI/versal_common_platform/2.0/README.md",
+			\t --> For Next steps, Refer to README.md https://github.com/Xilinx/XilinxCEDStore/tree/2025.2.1/ced/Xilinx/IPI/versal_common_platform/2.0/README.md",
 		   "commentid":"comment_0|",
 		   "font_comment_0":"14",
 		   "guistr":"# # String gsaved with Nlview 7.0r4  2019-12-20 bk=1.5203 VDI=41 GEI=36 GUI=JA:10.0 TLS
@@ -1190,7 +1190,7 @@ if { $use_aie } {
 			\t Note:
 			\t --> Board preset applied to PS_WIZARD and memory controller
 			\t --> Execute TCL command : launch_simulation -scripts_only ,to establish the sim_1 source set hierarchy after successful design creation.
-			\t --> For Next steps, Refer to README.md https://github.com/Xilinx/XilinxCEDStore/tree/2025.2/ced/Xilinx/IPI/versal_common_platform/2.0/README.md",
+			\t --> For Next steps, Refer to README.md https://github.com/Xilinx/XilinxCEDStore/tree/2025.2.1/ced/Xilinx/IPI/versal_common_platform/2.0/README.md",
 		   "commentid":"comment_0|",
 		   "font_comment_0":"14",
 		   "guistr":"# # String gsaved with Nlview 7.0r4  2019-12-20 bk=1.5203 VDI=41 GEI=36 GUI=JA:10.0 TLS

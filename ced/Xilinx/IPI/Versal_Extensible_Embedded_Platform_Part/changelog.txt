@@ -1,4 +1,6 @@
 ######### Extensible Embedded Platform example design change log ##############
+2025.2.1 Changes
+Update PFM properties for xave2102,xcve2102 & xqve2102 parts.
 
 2025.2 Changes
 Updated criterion for setting PFM property

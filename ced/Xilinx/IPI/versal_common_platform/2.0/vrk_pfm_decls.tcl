@@ -44,7 +44,7 @@ set_property PFM.CLOCK {clk_out1_o1 {id "0" is_default false proc_sys_reset "/pr
 #Platform Level Properties
 set_property platform.default_output_type "sd_card" [current_project]
 set_property platform.design_intent.embedded "true" [current_project]
-set_property platform.num_compute_units 15 [current_project]
+set_property platform.num_compute_units 255 [current_project]
 set_property platform.design_intent.server_managed "false" [current_project]
 set_property platform.design_intent.external_host "false" [current_project]
 set_property platform.design_intent.datacenter "false" [current_project]

@@ -81,6 +81,9 @@ if { $noc_ddr != 0 } {
 	
 }
 
+if { ([regexp "xcve2102-sbva625" $fpga_part])||([regexp "xqve2102-sbra484" $fpga_part])||([regexp "xave2102-sbva625" $fpga_part]) } {
+set_property PFM.AXI_PORT {S00_AXI {memport "S_AXI_NOC" sptag "DDR" memory "" is_range "true"} S01_AXI {memport "S_AXI_NOC" sptag "DDR" memory "" is_range "true"} S02_AXI {memport "S_AXI_NOC" sptag "DDR" memory "" is_range "true"} S03_AXI {memport "S_AXI_NOC" sptag "DDR" memory "" is_range "true"}} [get_bd_cells $noc_ddr] }
+
 if { $use_lpddr } {
 	
 	puts "PFM_INFO: LPDDR selected"
@@ -103,7 +106,7 @@ set_property PFM_NAME $pfmName [get_files ${pfm_bd_name}.bd]
 set clocks {}
 
 set i 0
-#Updated PFM property to fixed ref clock
+# Updated PFM property to fixed ref clock
 if {[regexp "xc2v" $fpga_part]} {
 	foreach { port freq id is_default } $clk_options {
 		dict append clocks $port "id \"$id\" is_default \"$is_default\" proc_sys_reset \"/proc_sys_reset_$i\" status \"fixed\""
