@@ -111,6 +111,8 @@ set_property -dict [list \
   CONFIG.PS11_CONFIG(SMON_MEAS44) {ENABLE 1 MODE 1V_unipolar NAME VP_VN AVERAGE_EN 0 ALARM_ENABLE 0 ALARM_LOWER 0.00 ALARM_UPPER 1.00 SUPPLY_NUM 6} \
 ] [get_bd_cells ps_wizard_0]
 
+set_property -dict [list CONFIG.MMI_CONFIG(PCIE0_TYPE1_MEMBASE_MEMLIMIT) {Enabled}] [get_bd_cells ps_wizard_0]
+
 connect_bd_net [get_bd_pins ps_wizard_0/pl2_ref_clk] [get_bd_pins ps_wizard_0/emio_gem_tsu_clk_from_pl]
 
 # Create instance: pl_mmi_clk_wiz, and set properties
