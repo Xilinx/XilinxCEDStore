@@ -197,7 +197,7 @@ if {[regexp "xcsu200p" $fpga_part]} {
             
             puts "INFO: Microcontroller preset enabled"
 
-           if {[regexp scu35 $board_name] || [regexp scu200_es $board_name]} {
+           if {[regexp scu35 $board_name] || [regexp scu200 $board_name]} {
    
               puts "INFO:: SpartanUS+ Board Selected"
 
@@ -520,7 +520,7 @@ if {[regexp "xcsu200p" $fpga_part]} {
 
                 } else {
 
-                   if {[regexp scu200_es $board_name]} {
+                   if {[regexp scu200 $board_name]} {
                         # Create Real-Time CED design with LPDDR5 for SCU200 Board
                         set mem_int /clk_wiz_1/clk_out1
 
@@ -585,8 +585,9 @@ if {[regexp "xcsu200p" $fpga_part]} {
 						connect_bd_net -net microblaze_riscv_0_Clk [get_bd_pins clk_wiz_1/clk_out1] [get_bd_pins microblaze_riscv_0/Clk] [get_bd_pins microblaze_riscv_0_axi_periph/aclk] [get_bd_pins microblaze_riscv_0_axi_intc/s_axi_aclk] [get_bd_pins microblaze_riscv_0_axi_intc/processor_clk] [get_bd_pins microblaze_riscv_0_local_memory/LMB_Clk]
 
                         create_bd_cell -type ip -vlnv xilinx.com:ip:lpddrmc lpddrmc_0
-                        apply_board_connection -board_interface "lpddr5_sdram" -ip_intf "lpddrmc_0/LPDDR5" -diagram $design_name 
-                        apply_board_connection -board_interface "default_sysclk1_320" -ip_intf "lpddrmc_0/SYS_CLK" -diagram $design_name 
+                        apply_board_connection -board_interface "$lpddrmc_board_interface_1" -ip_intf "lpddrmc_0/LPDDR5" -diagram $design_name 
+                        set def_clk1 [lindex [board::get_board_part_interfaces *default*] 1]
+                        apply_board_connection -board_interface "$def_clk1" -ip_intf "lpddrmc_0/SYS_CLK" -diagram $design_name 
                         
                         apply_bd_automation -rule xilinx.com:bd_rule:axi4 -config { Clk_master {Auto} Clk_slave {Auto} Clk_xbar {Auto} Master {/microblaze_riscv_0 (Cached)} Slave {/lpddrmc_0/S0_AXI} ddr_seg {Auto} intc_ip {New AXI SmartConnect} master_apm {0}}  [get_bd_intf_pins lpddrmc_0/S0_AXI]
                         apply_bd_automation -rule xilinx.com:bd_rule:axi4 -config { Clk_master {Auto} Clk_slave {Auto} Clk_xbar {Auto} Master {/microblaze_riscv_0 (Cached)} Slave {/lpddrmc_0/S1_AXI} ddr_seg {Auto} intc_ip {New AXI SmartConnect} master_apm {0}}  [get_bd_intf_pins lpddrmc_0/S1_AXI]
@@ -610,16 +611,14 @@ if {[regexp "xcsu200p" $fpga_part]} {
 
                     ############################################################################	
                      # Create address segments and add static address for LPDDR5
-                     assign_bd_address -target_address_space /microblaze_riscv_0/Data [get_bd_addr_segs lpddrmc_0/LPDDRMC_S1_AXI/LPDDRMC_ADDRESS_BLOCK] -force
-                     assign_bd_address -target_address_space /microblaze_riscv_0/Data [get_bd_addr_segs lpddrmc_0/LPDDRMC_S0_AXI/LPDDRMC_ADDRESS_BLOCK] -force
-                     assign_bd_address -target_address_space /microblaze_riscv_0/Instruction [get_bd_addr_segs lpddrmc_0/LPDDRMC_S0_AXI/LPDDRMC_ADDRESS_BLOCK] -force
-                     assign_bd_address -target_address_space /microblaze_riscv_0/Instruction [get_bd_addr_segs lpddrmc_0/LPDDRMC_S1_AXI/LPDDRMC_ADDRESS_BLOCK] -force
-                     set_property offset 0x80000000 [get_bd_addr_segs {microblaze_riscv_0/Data/SEG_lpddrmc_0_LPDDRMC_ADDRESS_BLOCK_1}]
-                     set_property offset 0xC0000000 [get_bd_addr_segs {microblaze_riscv_0/Data/SEG_lpddrmc_0_LPDDRMC_ADDRESS_BLOCK}]
-                     set_property offset 0x80000000 [get_bd_addr_segs {microblaze_riscv_0/Instruction/SEG_lpddrmc_0_LPDDRMC_ADDRESS_BLOCK}]
-                     set_property offset 0xC0000000 [get_bd_addr_segs {microblaze_riscv_0/Instruction/SEG_lpddrmc_0_LPDDRMC_ADDRESS_BLOCK_1}]
+
+                     assign_bd_address -target_address_space /microblaze_riscv_0/Data [get_bd_addr_segs lpddrmc_0/LPDDRMC_S0_AXI/LPDDRMC_ADDRESS_BLOCK] -offset 0x8000_0000 -range 1G -force
+                     assign_bd_address -target_address_space /microblaze_riscv_0/Data [get_bd_addr_segs lpddrmc_0/LPDDRMC_S1_AXI/LPDDRMC_ADDRESS_BLOCK] -offset 0xC000_0000 -range 1G -force
+                     assign_bd_address -target_address_space /microblaze_riscv_0/Instruction [get_bd_addr_segs lpddrmc_0/LPDDRMC_S0_AXI/LPDDRMC_ADDRESS_BLOCK] -offset 0x8000_0000 -range 1G -force
+                     assign_bd_address -target_address_space /microblaze_riscv_0/Instruction [get_bd_addr_segs lpddrmc_0/LPDDRMC_S1_AXI/LPDDRMC_ADDRESS_BLOCK] -offset 0xC000_0000 -range 1G -force
+
 					 assign_bd_address
-                     puts "Debug: scu200 Address assignment completed" 
+                     # puts "Debug: scu200 Address assignment completed" 
 
                    } else {
 
@@ -847,7 +846,7 @@ if {[regexp "xcsu200p" $fpga_part]} {
                     puts $fd "set_property CLOCK_DELAY_GROUP ddr_clk_grp \[get_nets -hier -filter {name =~ */c0_ddr4_ui_clk}\]"
                 }
                 close $fd
-                if {[regexp scu200_es $board_name]} {
+                if {[regexp scu200 $board_name]} {
                 } else {
                 add_files  -fileset constrs_1 [ list "$proj_dir/$proj_name.srcs/constrs_1/constrs/top.xdc" ]
                 }
@@ -970,8 +969,8 @@ if {[regexp "xcsu200p" $fpga_part]} {
                 
             } else {
 
-            if {[regexp scu200_es $board_name]} {
-#                puts "INFO:: scu200_es Board Selected"
+            if {[regexp scu200 $board_name]} {
+#                puts "INFO:: scu200 Board Selected"
 
                 if { $ddr4_board_interface_1 != "" } {
 
