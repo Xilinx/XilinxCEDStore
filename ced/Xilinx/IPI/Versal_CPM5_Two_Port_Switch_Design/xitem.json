@@ -1,0 +1,33 @@
+{
+    "config": {
+      "items": [
+        {
+          "infra": {
+            "name": "two_port_switch",
+            "display": "Versal CPM5 Two Port Switch Design",
+            "revision": "1.0",
+            "description": "Versal CPM5 Two Port Switch Example Design",
+            "company": "xilinx.com",
+            "company_display": "Xilinx",
+            "author": "Sindhura",
+            "contributors": [
+              {
+                "group": "Xilinx",
+                "url": "www.xilinx.com"
+              }
+            ],
+            "category": "PCIe",
+            "website": "www.xilinx.com",
+            "is_active" : true, 
+            "search-keywords": [
+              "Versal CPM5 Two Port Switch Design",
+              "xilinx.com",
+              "example"             
+            ]
+          }
+        }
+      ]
+    },
+    "_major" : 1,
+    "_minor" : 0
+}

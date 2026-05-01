@@ -1,0 +1,15 @@
+######### Versal MMI DPDC example design change log ##############
+3.0
+Updated designs to EDF flow and added two CED designs (DDR sourced video
+designs).
+
+2.0
+Converted designs from part based to VEK385 board
+
+1.1
+Removed Video and Audio Feedback logic from DC Functional designs
+
+1.0
+Initial design for vek385 device
+
+

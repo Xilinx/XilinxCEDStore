@@ -1,0 +1,9 @@
+######### Versal Embedded Common Platform example design change log ##############
+2.0
+2025.2.1 Changes
+Enabled MMI PF Bars with MemBase and MemLimit and updated platform.num_compute_units
+
+2025.2 Changes
+Initial design for vek385, vek280,vck190 and vrk160 boards.
+
+ 

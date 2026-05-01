@@ -1,0 +1,24 @@
+﻿<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+
+<ExampleDesign>
+
+<Vendor>xilinx.com</Vendor>
+
+<Library>design</Library>
+
+<Name>ext_platform_part</Name>
+
+<DisplayName>Versal Extensible Embedded Platform (Part based)</DisplayName>
+
+<Description>An extensible platform is the foundation of the Vitis software acceleration flow. This platform enables Vitis to create AIE kernels and PL kernels. It gives the kernels access to DDR memory, an interrupt controller, and clocking resources. Extensible interfaces are marked with PFM properties and the platform is exported to Vitis using write_hw_platform to create an XSA.</Description>
+
+<Version>1.0</Version>
+
+<Design>init.tcl</Design>
+
+<Image>extensible.png</Image>
+
+<DesignType>IPI</DesignType>
+
+</ExampleDesign>
+

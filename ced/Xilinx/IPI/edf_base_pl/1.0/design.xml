@@ -1,0 +1,30 @@
+﻿<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+
+<ExampleDesign>
+ 
+<Vendor>xilinx.com</Vendor>
+ 
+<Library>design</Library>
+ 
+<Name>edf_base_pl</Name>
+ 
+<DisplayName>Versal Embedded Common Platform - Simple PL</DisplayName>
+
+<Description>This design is based on the Versal Embedded Common Platform – No PL and adds a very small programmable logic (PL) design. 
+
+The PL is not intended for user applications; it is included only to support creation of an EDF WIC boot image and to validate the segmented configuration boot flow. 
+
+The generated WIC image serves as a verified, known‑good Linux boot image. This same WIC image can be reused for all designs derived from the Versal Embedded Common Platform – No PL, without regeneration for Gen2 devices.   
+
+</Description>
+ 
+<Version>1.0</Version>
+ 
+<Design>init.tcl</Design>
+ 
+<Image></Image>
+ 
+<DesignType>IPI</DesignType>
+ 
+</ExampleDesign>
+

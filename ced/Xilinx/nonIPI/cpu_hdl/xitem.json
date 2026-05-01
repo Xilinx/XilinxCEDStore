@@ -1,0 +1,33 @@
+{
+    "config": {
+      "items": [
+        {
+          "infra": {
+            "name": "cpu_hdl",
+            "display": "CPU (HDL)",
+            "revision": "1.0",
+            "description": "Large mixed-language RTL project",
+            "company": "xilinx.com",
+            "company_display": "Xilinx",
+            "author": "vanitha",
+            "contributors": [
+              {
+                "group": "Xilinx",
+                "url": "www.xilinx.com"
+              }
+            ],
+            "category": "nonIPI",
+            "website": "www.xilinx.com",
+            "is_active" : true, 
+            "search-keywords": [
+              "CPU (HDL)",
+              "xilinx.com",
+              "example"             
+            ]
+          }
+        }
+      ]
+    },
+    "_major" : 1,
+    "_minor" : 0
+}

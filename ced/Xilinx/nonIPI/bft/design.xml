@@ -1,0 +1,10 @@
+<ExampleDesign>
+<Vendor>xilinx.com</Vendor>
+<Library>design</Library>
+<Name>bft</Name>
+<Version>1.0</Version> 
+<Design>init.tcl</Design>
+<DisplayName>BFT</DisplayName>
+<Description>Small RTL project</Description>
+<Image>bft.png</Image>
+</ExampleDesign>

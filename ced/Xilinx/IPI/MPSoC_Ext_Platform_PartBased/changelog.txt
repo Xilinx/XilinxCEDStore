@@ -1,0 +1,8 @@
+######### MPSoC Extensible Platform (Part based) ExampleDesign example design change log ##############
+
+2025.2 Changes
+Replaced discontinued axi_interconnect IPs with Smarconnect IPs
+
+2022.2 Changes 
+Initial version
+Added user note to clock gui options 

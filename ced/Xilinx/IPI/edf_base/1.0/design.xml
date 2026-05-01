@@ -1,0 +1,38 @@
+﻿<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+
+<ExampleDesign>
+ 
+<Vendor>xilinx.com</Vendor>
+ 
+<Library>design</Library>
+ 
+<Name>edf_base</Name>
+ 
+<DisplayName>Versal Embedded Common Platform - No PL</DisplayName>
+
+<Description>The Versal Embedded Common Platform - No PL provides a minimal, Linux‑bootable starting point for Versal designs.
+
+It includes only the PS, NoC, and DDR configuration required to boot Linux, with no default programmable logic (PL). This makes it a stable and reusable hardware baseline across Vivado, Vitis, and Embedded Linux flows.
+
+Users can build their own applications by adding PL designs later, either directly in Vivado or as secondary pl.pdi images.
+
+This approach ensures:
+
+* A consistent hardware foundation across tools and examples
+
+* Easier reuse and validation
+
+* Clean separation between boot infrastructure and application logic
+
+</Description>
+ 
+<Version>1.0</Version>
+ 
+<Design>init.tcl</Design>
+ 
+<Image></Image>
+ 
+<DesignType>IPI</DesignType>
+ 
+</ExampleDesign>
+
