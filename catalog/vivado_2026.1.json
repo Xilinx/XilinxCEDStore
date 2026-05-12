@@ -594,11 +594,11 @@
         "name": "edf_base",
         "display": "Versal Embedded Common Platform - No PL",
         "latest_revision": "1.0",
-        "commit_id": "c05e31c2d63ea3d74f558d279c6dbd27c513206b",
+        "commit_id": "1eb1d50d5088ca09fb83261f66d553de5c0150b8",
         "revisions": [
           {
             "revision": "1.0",
-            "commit_id": "c05e31c2d63ea3d74f558d279c6dbd27c513206b",
+            "commit_id": "1eb1d50d5088ca09fb83261f66d553de5c0150b8",
             "date": "01-05-2026:08:59:48",
             "history": "Added board Versal Embedded Common Platform - No PL v1.0"
           }
@@ -613,11 +613,11 @@
         "name": "edf_base_pl",
         "display": "Versal Embedded Common Platform - Simple PL",
         "latest_revision": "1.0",
-        "commit_id": "c05e31c2d63ea3d74f558d279c6dbd27c513206b",
+        "commit_id": "1eb1d50d5088ca09fb83261f66d553de5c0150b8",
         "revisions": [
           {
             "revision": "1.0",
-            "commit_id": "c05e31c2d63ea3d74f558d279c6dbd27c513206b",
+            "commit_id": "1eb1d50d5088ca09fb83261f66d553de5c0150b8",
             "date": "01-05-2026:08:59:48",
             "history": "Added board Versal Embedded Common Platform - Simple PL v1.0"
           }
