@@ -1,7 +1,4 @@
 ######### MicroBlaze RISC-V Design Presets example design change log ##############
-2026.1 Changes
-Enabled SCU200 CED (MicroBlaze RISC-V Design Presets - Application Preset)
-Enabled SP701 CED (MicroBlaze RISC-V Design Presets - Application Preset)
 
 2025.2.1 Changes
 Added SCU200 CED (MicroBlaze RISC-V Design Presets - Microcontroller and Real-Time Presets)
