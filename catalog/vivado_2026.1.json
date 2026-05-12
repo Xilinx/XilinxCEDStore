@@ -62,11 +62,11 @@
         "name": "microblaze_v_preset",
         "display": "MicroBlaze V Design Presets",
         "latest_revision": "1.0",
-        "commit_id": "c05e31c2d63ea3d74f558d279c6dbd27c513206b",
+        "commit_id": "8d86752441b612acc2003d0f8be4c18bd50da05c",
         "revisions": [
           {
             "revision": "1.0",
-            "commit_id": "c05e31c2d63ea3d74f558d279c6dbd27c513206b",
+            "commit_id": "8d86752441b612acc2003d0f8be4c18bd50da05c",
             "date": "01-05-2026:08:59:48",
             "history": "Added board MicroBlaze V Design Presets v1.0"
           }
