@@ -277,7 +277,6 @@ proc create_hier_cell_rst_module { parentCell nameHier } {
     CONFIG.MMI_CONFIG(MMI_DP_HPD) {PMC_MIO_48} \
     CONFIG.MMI_CONFIG(PL_MMI_INTERRUPTS_EN) {0} \
     CONFIG.MMI_CONFIG(RTL_DEBUG) {0} \
-    CONFIG.PS11_CONFIG(PS_UART0_PERIPHERAL) {ENABLE 0 IO PMC_MIO_16:17 IO_TYPE MIO} \
     CONFIG.MMI_CONFIG(UDH_GT) {DP_X4} \
     CONFIG.PS11_CONFIG(UDH_GT) {DP_X4} \
   ] [get_bd_cells ps_wizard_0]

@@ -90,7 +90,6 @@ proc create_hier_cell_rst_module { parentCell nameHier } {
   # Create instance: ps_wizard_0, and set properties
   set_property -dict [list \
     CONFIG.MMI_CONFIG(DPDC_PRESENTATION_MODE) {Non_Live} \
-    CONFIG.PS11_CONFIG(PS_UART0_PERIPHERAL) {ENABLE 0 IO PS_MIO_16:17 IO_TYPE MIO} \
     CONFIG.MMI_CONFIG(UDH_GT) {DP_X4} \
     CONFIG.PS11_CONFIG(UDH_GT) {DP_X4} \
   ] [get_bd_cells ps_wizard_0]

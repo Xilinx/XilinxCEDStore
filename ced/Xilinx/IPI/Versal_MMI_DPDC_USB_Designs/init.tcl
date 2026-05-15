@@ -11,7 +11,7 @@ proc getSupportedBoards {} {
 }
 
 proc addOptions {DESIGNOBJ PROJECT_PARAM.BOARD_PART} {
-	lappend x [dict create name "MMI_Config" type "string" value "DC_Functional" value_list {"DC_Functional" "DC_Bypass" "USB"} enabled true]
+	lappend x [dict create name "MMI_Config" type "string" value "DC_Functional" value_list {"DC_Functional" "DC_Bypass" "USB" "Dual_Display_GPU_(HDMI_and_DP)"} enabled true]
     lappend x [dict create name "DPDC_Presentation_Mode" type "string" value "Non_Live" value_list {"Non_Live" "Mixed" "Live"} enabled true]
     lappend x [dict create name "Video_Interface" type "string" value "Native" value_list {"Native" "AXI_Stream"} enabled true]
     
@@ -56,6 +56,10 @@ if { ${MMI_Config.VALUE} == "USB" } {
 set DPDC_Config.DISPLAYNAME "MMI DC Configurations"
 set DPDC_Presentation_Mode.VISIBLE false
 set Image.IMAGE_PATH "usb.png"
+} elseif { ${MMI_Config.VALUE} == "Dual_Display_GPU_(HDMI_and_DP)" } {
+set DPDC_Config.DISPLAYNAME "MMI DC Configurations"
+set DPDC_Presentation_Mode.VISIBLE false
+set Image.IMAGE_PATH "gpu_dual_display.png"
 } elseif { ${MMI_Config.VALUE} == "DC_Bypass" } {
 set DPDC_Config.DISPLAYNAME "MMI DC Configurations"
 set DPDC_Presentation_Mode.VISIBLE false

@@ -30,6 +30,23 @@ add_files -norecurse ${proj_dir}/${proj_name}.srcs/sources_1/bd/${design}/hdl/${
 update_compile_order -fileset sources_1
 update_compile_order -fileset sim_1
 
+} elseif { ([lsearch $options "Dual_Display_GPU*"] != -1) } {
+set design mmi_dual_display_gpu_hdmi_dp
+source "$currentDir/Dual_Display_GPU/dual_display_GPU_hdmi_dp.tcl"
+
+remove_files ${proj_dir}/${proj_name}.srcs/sources_1/ip/*/*xci
+file delete -force {*}[glob -nocomplain ${proj_dir}/${proj_name}.srcs/sources_1/ip/*]
+
+remove_files ${proj_dir}/${proj_name}.srcs/sources_1/imports/hdl/${design}_wrapper.v
+file delete -force ${proj_dir}/${proj_name}.srcs/sources_1/imports/hdl/${design}_wrapper.v
+make_wrapper -files [get_files ${proj_dir}/${proj_name}.srcs/sources_1/bd/${design}/${design}.bd] -top -force
+add_files -norecurse ${proj_dir}/${proj_name}.gen/sources_1/bd/$design/hdl/${design}_wrapper.v
+validate_bd_design
+save_bd_design
+generate_target all [get_files ${proj_dir}/${proj_name}.srcs/sources_1/bd/${design}/${design}.bd]
+update_compile_order -fileset sources_1
+update_compile_order -fileset sim_1
+
 } elseif { ([lsearch $options "DC_Bypass*"] != -1) } {
 # Check Stream_Source value
 if { ([lsearch $options "DDR_(SST)*"] != -1) } {
