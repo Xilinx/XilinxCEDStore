@@ -377,7 +377,7 @@ proc createDesign {design_name options} {
         puts $f "set_property -dict \[list CONFIG.PS_PMC_CONFIG(PMC_CRP_PL0_REF_CTRL_FREQMHZ) {125} \\"
         puts $f "  CONFIG.PS_PMC_CONFIG(PS_NUM_FABRIC_RESETS) {0} CONFIG.PS_PMC_CONFIG(PS_USE_PMCPL_CLK0) {1} \] \[get_bd_cells versal_cips_0\]"
       }
-    } elseif {$device eq "xc2ve3504" || $device eq "xc2ve3558" || $device eq "xc2ve3804" || $device eq "xc2ve3858" || $device eq "xc2vm3558" || $device eq "xc2vm3858" || $device eq "xc2vm3358" || $device eq "xc2ve3304" || $device eq "xc2ve3358" } {
+    } elseif {$device eq "xc2ve3504" || $device eq "xc2ve3558" || $device eq "xc2ve3804" || $device eq "xc2ve3858" || $device eq "xc2vm3558" || $device eq "xc2vm3858" || $device eq "xc2vm3358" || $device eq "xc2ve3304" || $device eq "xc2ve3358"} {
       create_bd_cell -type ip -vlnv xilinx.com:ip:ps_wizard:1.0 versal_cips_0
       set_property -dict [list \
         CONFIG.PS11_CONFIG(PMC_CRP_PL0_REF_CTRL_FREQMHZ) {125} \
@@ -439,6 +439,7 @@ proc createDesign {design_name options} {
       set ref_freq [dict get $protocols $i ref_freq]
       set type [get_quad_type [dict get $protocols $i quad0]]
 
+      if {$type ne "GTM2"} {
       
       if {$logStuff} {
         puts $f "# type = $type, name = $name"
@@ -750,6 +751,651 @@ proc createDesign {design_name options} {
       connect_bd_net [get_bd_pins gtwiz_versal_$name/INTF0_rst_tx_done_out] [get_bd_pins bridge_$name/tx_reset_in]
       connect_bd_net [get_bd_pins gtwiz_versal_$name/INTF0_rst_rx_done_out] [get_bd_pins bridge_$name/rx_reset_in]
       connect_bd_net [get_bd_pins versal_cips_0/pl0_ref_clk] [get_bd_pins bridge_$name/apb3clk] [get_bd_pins gtwiz_versal_$name/gtwiz_freerun_clk]
+    } else {
+      
+      #source [::bd::get_vlnv_dir xilinx.com:ip:gtwiz_versal:1.0]/tcl/rtl_params.tcl
+      #if {$logStuff} { puts $f "# got params.tcl" }
+	create_bd_cell -type ip -vlnv xilinx.com:ip:util_ds_buf util_ds_buf_$name
+	set_property CONFIG.C_BUF_TYPE {IBUFDS_GTM2} [get_bd_cells util_ds_buf_$name]
+	make_bd_intf_pins_external  [get_bd_intf_pins util_ds_buf_$name/CLK_IN_D3]
+	set_property name gt_refclk_$name [get_bd_intf_ports CLK_IN_D3_0]
+        set pam_sel [get_pam_sel $lr]
+        set width [get_${type}_width $lr]
+        set user_settings_dict [dict create TX_LINE_RATE $lr TX_REFCLK_FREQUENCY $ref_freq RX_LINE_RATE $lr RX_REFCLK_FREQUENCY $ref_freq GT_TYPE GTM2 RX_PAM_SEL $pam_sel TX_PAM_SEL $pam_sel TX_USER_DATA_WIDTH $width RX_USER_DATA_WIDTH $width TX_OUTCLK_SOURCE TXPROGDIVCLK RX_OUTCLK_SOURCE RXPROGDIVCLK]
+
+      set settings_dict [dict create LR0 $user_settings_dict]
+      set complete_settings [get_GT_string "None" $settings_dict ""]
+      set values [dict create ]
+      set values [dict get $complete_settings LR0_SETTINGS]
+      
+
+     
+
+      if {$num_quads == 1} {    
+
+	create_bd_cell -type ip -vlnv xilinx.com:ip:prbs_generator_checker bridge_0_$name
+        set_property -dict [list \
+          CONFIG.IP_NO_OF_LANES {4} \
+          CONFIG.GT_TYPE $type \
+          CONFIG.IP_LR0_SETTINGS $values \
+          ] [get_bd_cells bridge_0_$name]
+
+	 
+      
+        create_bd_cell -type ip -vlnv xilinx.com:ip:gtwiz_versal gtwiz_versal_0_$name
+        create_bd_cell -type ip -vlnv xilinx.com:ip:bufg_gt bufg_gt_tx_0_$name
+        create_bd_cell -type ip -vlnv xilinx.com:ip:bufg_gt bufg_gt_rx_0_$name
+
+        set_property -dict [list \
+          CONFIG.INTF0_NO_OF_LANES {4} \
+          CONFIG.GT_TYPE $type \
+          CONFIG.NO_OF_QUADS {1} \
+          ] [get_bd_cells gtwiz_versal_0_$name]
+	
+	connect_bd_net [get_bd_pins bufg_gt_tx_0_$name/usrclk] [get_bd_pins bridge_0_$name/gt_txusrclk] [get_bd_pins gtwiz_versal_0_$name/QUAD0_TX0_usrclk] [get_bd_pins gtwiz_versal_0_$name/QUAD0_TX1_usrclk] [get_bd_pins gtwiz_versal_0_$name/QUAD0_TX2_usrclk] [get_bd_pins gtwiz_versal_0_$name/QUAD0_TX3_usrclk]
+	connect_bd_net [get_bd_pins bufg_gt_rx_0_$name/usrclk] [get_bd_pins bridge_0_$name/gt_rxusrclk] [get_bd_pins gtwiz_versal_0_$name/QUAD0_RX0_usrclk] [get_bd_pins gtwiz_versal_0_$name/QUAD0_RX1_usrclk] [get_bd_pins gtwiz_versal_0_$name/QUAD0_RX2_usrclk] [get_bd_pins gtwiz_versal_0_$name/QUAD0_RX3_usrclk]
+
+	connect_bd_intf_net [get_bd_intf_pins bridge_0_$name/GT_TX0] [get_bd_intf_pins gtwiz_versal_0_$name/INTF0_TX0_GT_IP_Interface]
+	connect_bd_intf_net [get_bd_intf_pins bridge_0_$name/GT_TX1] [get_bd_intf_pins gtwiz_versal_0_$name/INTF0_TX1_GT_IP_Interface]
+	connect_bd_intf_net [get_bd_intf_pins bridge_0_$name/GT_TX2] [get_bd_intf_pins gtwiz_versal_0_$name/INTF0_TX2_GT_IP_Interface]
+	connect_bd_intf_net [get_bd_intf_pins bridge_0_$name/GT_TX3] [get_bd_intf_pins gtwiz_versal_0_$name/INTF0_TX3_GT_IP_Interface]
+	connect_bd_intf_net [get_bd_intf_pins bridge_0_$name/GT_RX0] [get_bd_intf_pins gtwiz_versal_0_$name/INTF0_RX0_GT_IP_Interface]
+	connect_bd_intf_net [get_bd_intf_pins bridge_0_$name/GT_RX1] [get_bd_intf_pins gtwiz_versal_0_$name/INTF0_RX1_GT_IP_Interface]
+	connect_bd_intf_net [get_bd_intf_pins bridge_0_$name/GT_RX2] [get_bd_intf_pins gtwiz_versal_0_$name/INTF0_RX2_GT_IP_Interface]
+	connect_bd_intf_net [get_bd_intf_pins bridge_0_$name/GT_RX3] [get_bd_intf_pins gtwiz_versal_0_$name/INTF0_RX3_GT_IP_Interface]
+
+	make_bd_intf_pins_external  [get_bd_intf_pins gtwiz_versal_0_$name/Quad0_GT_Serial]
+
+        if {$type eq "GTM"} {
+          connect_bd_net [get_bd_pins util_ds_buf_$name/IBUFDS_GTME5_O] [get_bd_pins gtwiz_versal_0_$name/QUAD0_GTREFCLK0]
+	} elseif {$type eq "GTM2"} {
+          connect_bd_net [get_bd_pins util_ds_buf_$name/IBUFDS_GTM2_O] [get_bd_pins gtwiz_versal_0_$name/QUAD0_GTREFCLK0]
+	} else {
+          connect_bd_net [get_bd_pins util_ds_buf_$name/IBUF_OUT] [get_bd_pins gtwiz_versal_0_$name/QUAD0_GTREFCLK0]
+	}
+
+      connect_bd_net [get_bd_pins gtwiz_versal_0_$name/QUAD0_TX0_outclk] [get_bd_pins bufg_gt_tx_0_$name/outclk]
+      connect_bd_net [get_bd_pins gtwiz_versal_0_$name/QUAD0_RX0_outclk] [get_bd_pins bufg_gt_rx_0_$name/outclk]
+      connect_bd_net [get_bd_pins gtwiz_versal_0_$name/INTF0_TX_clr_out] [get_bd_pins bufg_gt_tx_0_$name/gt_bufgtclr]
+      connect_bd_net [get_bd_pins gtwiz_versal_0_$name/INTF0_TX_clr_out] [get_bd_pins bufg_gt_rx_0_$name/gt_bufgtclr]
+      connect_bd_net [get_bd_pins gtwiz_versal_0_$name/INTF0_rst_tx_done_out] [get_bd_pins bridge_0_$name/tx_reset_in]
+      connect_bd_net [get_bd_pins gtwiz_versal_0_$name/INTF0_rst_rx_done_out] [get_bd_pins bridge_0_$name/rx_reset_in]
+      connect_bd_net [get_bd_pins versal_cips_0/pl0_ref_clk] [get_bd_pins bridge_0_$name/apb3clk] [get_bd_pins gtwiz_versal_0_$name/gtwiz_freerun_clk]	
+
+      } elseif {$num_quads == 2} {  
+
+          create_bd_cell -type ip -vlnv xilinx.com:ip:prbs_generator_checker bridge_0_$name
+          set_property -dict [list \
+            CONFIG.IP_NO_OF_LANES {4} \
+            CONFIG.GT_TYPE $type \
+            CONFIG.IP_LR0_SETTINGS $values \
+            ] [get_bd_cells bridge_0_$name]
+
+	 
+      
+        create_bd_cell -type ip -vlnv xilinx.com:ip:gtwiz_versal gtwiz_versal_0_$name
+        create_bd_cell -type ip -vlnv xilinx.com:ip:bufg_gt bufg_gt_tx_0_$name
+        create_bd_cell -type ip -vlnv xilinx.com:ip:bufg_gt bufg_gt_rx_0_$name
+
+          create_bd_cell -type ip -vlnv xilinx.com:ip:prbs_generator_checker bridge_1_$name
+          set_property -dict [list \
+            CONFIG.IP_NO_OF_LANES {4} \
+            CONFIG.GT_TYPE $type \
+            CONFIG.IP_LR0_SETTINGS $values \
+            ] [get_bd_cells bridge_1_$name]
+
+	 
+      
+        create_bd_cell -type ip -vlnv xilinx.com:ip:gtwiz_versal gtwiz_versal_1_$name
+        create_bd_cell -type ip -vlnv xilinx.com:ip:bufg_gt bufg_gt_tx_1_$name
+        create_bd_cell -type ip -vlnv xilinx.com:ip:bufg_gt bufg_gt_rx_1_$name	
+
+        set_property -dict [list \
+          CONFIG.INTF0_NO_OF_LANES {4} \
+          CONFIG.GT_TYPE $type \
+          CONFIG.NO_OF_QUADS {1} \
+          ] [get_bd_cells gtwiz_versal_0_$name]
+
+        set_property -dict [list \
+          CONFIG.INTF0_NO_OF_LANES {4} \
+          CONFIG.GT_TYPE $type \
+          CONFIG.NO_OF_QUADS {1} \
+          ] [get_bd_cells gtwiz_versal_1_$name]	  
+
+	connect_bd_net [get_bd_pins bufg_gt_tx_0_$name/usrclk] [get_bd_pins bridge_0_$name/gt_txusrclk] [get_bd_pins gtwiz_versal_0_$name/QUAD0_TX0_usrclk] [get_bd_pins gtwiz_versal_0_$name/QUAD0_TX1_usrclk] [get_bd_pins gtwiz_versal_0_$name/QUAD0_TX2_usrclk] [get_bd_pins gtwiz_versal_0_$name/QUAD0_TX3_usrclk]
+	connect_bd_net [get_bd_pins bufg_gt_rx_0_$name/usrclk] [get_bd_pins bridge_0_$name/gt_rxusrclk] [get_bd_pins gtwiz_versal_0_$name/QUAD0_RX0_usrclk] [get_bd_pins gtwiz_versal_0_$name/QUAD0_RX1_usrclk] [get_bd_pins gtwiz_versal_0_$name/QUAD0_RX2_usrclk] [get_bd_pins gtwiz_versal_0_$name/QUAD0_RX3_usrclk]
+
+	connect_bd_net [get_bd_pins bufg_gt_tx_1_$name/usrclk] [get_bd_pins bridge_1_$name/gt_txusrclk] [get_bd_pins gtwiz_versal_1_$name/QUAD0_TX0_usrclk] [get_bd_pins gtwiz_versal_1_$name/QUAD0_TX1_usrclk] [get_bd_pins gtwiz_versal_1_$name/QUAD0_TX2_usrclk] [get_bd_pins gtwiz_versal_1_$name/QUAD0_TX3_usrclk]
+	connect_bd_net [get_bd_pins bufg_gt_rx_1_$name/usrclk] [get_bd_pins bridge_1_$name/gt_rxusrclk] [get_bd_pins gtwiz_versal_1_$name/QUAD0_RX0_usrclk] [get_bd_pins gtwiz_versal_1_$name/QUAD0_RX1_usrclk] [get_bd_pins gtwiz_versal_1_$name/QUAD0_RX2_usrclk] [get_bd_pins gtwiz_versal_1_$name/QUAD0_RX3_usrclk]	
+
+	connect_bd_intf_net [get_bd_intf_pins bridge_0_$name/GT_TX0] [get_bd_intf_pins gtwiz_versal_0_$name/INTF0_TX0_GT_IP_Interface]
+	connect_bd_intf_net [get_bd_intf_pins bridge_0_$name/GT_TX1] [get_bd_intf_pins gtwiz_versal_0_$name/INTF0_TX1_GT_IP_Interface]
+	connect_bd_intf_net [get_bd_intf_pins bridge_0_$name/GT_TX2] [get_bd_intf_pins gtwiz_versal_0_$name/INTF0_TX2_GT_IP_Interface]
+	connect_bd_intf_net [get_bd_intf_pins bridge_0_$name/GT_TX3] [get_bd_intf_pins gtwiz_versal_0_$name/INTF0_TX3_GT_IP_Interface]
+	connect_bd_intf_net [get_bd_intf_pins bridge_0_$name/GT_RX0] [get_bd_intf_pins gtwiz_versal_0_$name/INTF0_RX0_GT_IP_Interface]
+	connect_bd_intf_net [get_bd_intf_pins bridge_0_$name/GT_RX1] [get_bd_intf_pins gtwiz_versal_0_$name/INTF0_RX1_GT_IP_Interface]
+	connect_bd_intf_net [get_bd_intf_pins bridge_0_$name/GT_RX2] [get_bd_intf_pins gtwiz_versal_0_$name/INTF0_RX2_GT_IP_Interface]
+	connect_bd_intf_net [get_bd_intf_pins bridge_0_$name/GT_RX3] [get_bd_intf_pins gtwiz_versal_0_$name/INTF0_RX3_GT_IP_Interface]
+	connect_bd_intf_net [get_bd_intf_pins bridge_1_$name/GT_TX0] [get_bd_intf_pins gtwiz_versal_1_$name/INTF0_TX0_GT_IP_Interface]
+	connect_bd_intf_net [get_bd_intf_pins bridge_1_$name/GT_TX1] [get_bd_intf_pins gtwiz_versal_1_$name/INTF0_TX1_GT_IP_Interface]
+	connect_bd_intf_net [get_bd_intf_pins bridge_1_$name/GT_TX2] [get_bd_intf_pins gtwiz_versal_1_$name/INTF0_TX2_GT_IP_Interface]
+	connect_bd_intf_net [get_bd_intf_pins bridge_1_$name/GT_TX3] [get_bd_intf_pins gtwiz_versal_1_$name/INTF0_TX3_GT_IP_Interface]
+	connect_bd_intf_net [get_bd_intf_pins bridge_1_$name/GT_RX0] [get_bd_intf_pins gtwiz_versal_1_$name/INTF0_RX0_GT_IP_Interface]
+	connect_bd_intf_net [get_bd_intf_pins bridge_1_$name/GT_RX1] [get_bd_intf_pins gtwiz_versal_1_$name/INTF0_RX1_GT_IP_Interface]
+	connect_bd_intf_net [get_bd_intf_pins bridge_1_$name/GT_RX2] [get_bd_intf_pins gtwiz_versal_1_$name/INTF0_RX2_GT_IP_Interface]
+	connect_bd_intf_net [get_bd_intf_pins bridge_1_$name/GT_RX3] [get_bd_intf_pins gtwiz_versal_1_$name/INTF0_RX3_GT_IP_Interface]
+
+	make_bd_intf_pins_external  [get_bd_intf_pins gtwiz_versal_0_$name/Quad0_GT_Serial]
+	make_bd_intf_pins_external  [get_bd_intf_pins gtwiz_versal_1_$name/Quad0_GT_Serial]
+
+	if {$type eq "GTM"} {  
+	  connect_bd_net [get_bd_pins util_ds_buf_$name/IBUFDS_GTME5_O] [get_bd_pins gtwiz_versal_$name/QUAD0_GTREFCLK0] [get_bd_pins gtwiz_versal_$name/QUAD1_GTREFCLK0]
+	} elseif {$type eq "GTM2"} {  
+	  connect_bd_net [get_bd_pins util_ds_buf_$name/IBUFDS_GTM2_O] [get_bd_pins gtwiz_versal_0_$name/QUAD0_GTREFCLK0] [get_bd_pins gtwiz_versal_1_$name/QUAD0_GTREFCLK0]
+	} else {
+          connect_bd_net [get_bd_pins util_ds_buf_$name/IBUF_OUT] [get_bd_pins gtwiz_versal_$name/QUAD0_GTREFCLK0] [get_bd_pins gtwiz_versal_$name/QUAD1_GTREFCLK0]
+        }
+
+      connect_bd_net [get_bd_pins gtwiz_versal_0_$name/QUAD0_TX0_outclk] [get_bd_pins bufg_gt_tx_0_$name/outclk]
+      connect_bd_net [get_bd_pins gtwiz_versal_0_$name/QUAD0_RX0_outclk] [get_bd_pins bufg_gt_rx_0_$name/outclk]
+      connect_bd_net [get_bd_pins gtwiz_versal_0_$name/INTF0_TX_clr_out] [get_bd_pins bufg_gt_tx_0_$name/gt_bufgtclr]
+      connect_bd_net [get_bd_pins gtwiz_versal_0_$name/INTF0_TX_clr_out] [get_bd_pins bufg_gt_rx_0_$name/gt_bufgtclr]
+      connect_bd_net [get_bd_pins gtwiz_versal_0_$name/INTF0_rst_tx_done_out] [get_bd_pins bridge_0_$name/tx_reset_in]
+      connect_bd_net [get_bd_pins gtwiz_versal_0_$name/INTF0_rst_rx_done_out] [get_bd_pins bridge_0_$name/rx_reset_in]
+      connect_bd_net [get_bd_pins gtwiz_versal_1_$name/QUAD0_TX0_outclk] [get_bd_pins bufg_gt_tx_1_$name/outclk]
+      connect_bd_net [get_bd_pins gtwiz_versal_1_$name/QUAD0_RX0_outclk] [get_bd_pins bufg_gt_rx_1_$name/outclk]
+      connect_bd_net [get_bd_pins gtwiz_versal_1_$name/INTF0_TX_clr_out] [get_bd_pins bufg_gt_tx_1_$name/gt_bufgtclr]
+      connect_bd_net [get_bd_pins gtwiz_versal_1_$name/INTF0_TX_clr_out] [get_bd_pins bufg_gt_rx_1_$name/gt_bufgtclr]
+      connect_bd_net [get_bd_pins gtwiz_versal_1_$name/INTF0_rst_tx_done_out] [get_bd_pins bridge_1_$name/tx_reset_in]
+      connect_bd_net [get_bd_pins gtwiz_versal_1_$name/INTF0_rst_rx_done_out] [get_bd_pins bridge_1_$name/rx_reset_in]
+      connect_bd_net [get_bd_pins versal_cips_0/pl0_ref_clk] [get_bd_pins bridge_0_$name/apb3clk] [get_bd_pins gtwiz_versal_0_$name/gtwiz_freerun_clk] [get_bd_pins bridge_1_$name/apb3clk] [get_bd_pins gtwiz_versal_1_$name/gtwiz_freerun_clk]	 
+
+      } elseif {$num_quads == 3} {
+          create_bd_cell -type ip -vlnv xilinx.com:ip:prbs_generator_checker bridge_0_$name
+          set_property -dict [list \
+            CONFIG.IP_NO_OF_LANES {4} \
+            CONFIG.GT_TYPE $type \
+            CONFIG.IP_LR0_SETTINGS $values \
+            ] [get_bd_cells bridge_0_$name]
+
+	 
+      
+        create_bd_cell -type ip -vlnv xilinx.com:ip:gtwiz_versal gtwiz_versal_0_$name
+        create_bd_cell -type ip -vlnv xilinx.com:ip:bufg_gt bufg_gt_tx_0_$name
+        create_bd_cell -type ip -vlnv xilinx.com:ip:bufg_gt bufg_gt_rx_0_$name
+
+          create_bd_cell -type ip -vlnv xilinx.com:ip:prbs_generator_checker bridge_1_$name
+          set_property -dict [list \
+            CONFIG.IP_NO_OF_LANES {4} \
+            CONFIG.GT_TYPE $type \
+            CONFIG.IP_LR0_SETTINGS $values \
+            ] [get_bd_cells bridge_1_$name]
+
+	 
+      
+        create_bd_cell -type ip -vlnv xilinx.com:ip:gtwiz_versal gtwiz_versal_1_$name
+        create_bd_cell -type ip -vlnv xilinx.com:ip:bufg_gt bufg_gt_tx_1_$name
+        create_bd_cell -type ip -vlnv xilinx.com:ip:bufg_gt bufg_gt_rx_1_$name
+
+          create_bd_cell -type ip -vlnv xilinx.com:ip:prbs_generator_checker bridge_2_$name
+          set_property -dict [list \
+            CONFIG.IP_NO_OF_LANES {4} \
+            CONFIG.GT_TYPE $type \
+            CONFIG.IP_LR0_SETTINGS $values \
+            ] [get_bd_cells bridge_2_$name]
+
+	 
+      
+        create_bd_cell -type ip -vlnv xilinx.com:ip:gtwiz_versal gtwiz_versal_2_$name
+        create_bd_cell -type ip -vlnv xilinx.com:ip:bufg_gt bufg_gt_tx_2_$name
+        create_bd_cell -type ip -vlnv xilinx.com:ip:bufg_gt bufg_gt_rx_2_$name	
+
+        set_property -dict [list \
+          CONFIG.INTF0_NO_OF_LANES {4} \
+          CONFIG.GT_TYPE $type \
+          CONFIG.NO_OF_QUADS {1} \
+          ] [get_bd_cells gtwiz_versal_0_$name]
+
+        set_property -dict [list \
+          CONFIG.INTF0_NO_OF_LANES {4} \
+          CONFIG.GT_TYPE $type \
+          CONFIG.NO_OF_QUADS {1} \
+          ] [get_bd_cells gtwiz_versal_1_$name]
+
+        set_property -dict [list \
+          CONFIG.INTF0_NO_OF_LANES {4} \
+          CONFIG.GT_TYPE $type \
+          CONFIG.NO_OF_QUADS {1} \
+          ] [get_bd_cells gtwiz_versal_2_$name]	  
+
+	connect_bd_net [get_bd_pins bufg_gt_tx_0_$name/usrclk] [get_bd_pins bridge_0_$name/gt_txusrclk] [get_bd_pins gtwiz_versal_0_$name/QUAD0_TX0_usrclk] [get_bd_pins gtwiz_versal_0_$name/QUAD0_TX1_usrclk] [get_bd_pins gtwiz_versal_0_$name/QUAD0_TX2_usrclk] [get_bd_pins gtwiz_versal_0_$name/QUAD0_TX3_usrclk]
+	connect_bd_net [get_bd_pins bufg_gt_rx_0_$name/usrclk] [get_bd_pins bridge_0_$name/gt_rxusrclk] [get_bd_pins gtwiz_versal_0_$name/QUAD0_RX0_usrclk] [get_bd_pins gtwiz_versal_0_$name/QUAD0_RX1_usrclk] [get_bd_pins gtwiz_versal_0_$name/QUAD0_RX2_usrclk] [get_bd_pins gtwiz_versal_0_$name/QUAD0_RX3_usrclk]
+
+	connect_bd_net [get_bd_pins bufg_gt_tx_1_$name/usrclk] [get_bd_pins bridge_1_$name/gt_txusrclk] [get_bd_pins gtwiz_versal_1_$name/QUAD0_TX0_usrclk] [get_bd_pins gtwiz_versal_1_$name/QUAD0_TX1_usrclk] [get_bd_pins gtwiz_versal_1_$name/QUAD0_TX2_usrclk] [get_bd_pins gtwiz_versal_1_$name/QUAD0_TX3_usrclk]
+	connect_bd_net [get_bd_pins bufg_gt_rx_1_$name/usrclk] [get_bd_pins bridge_1_$name/gt_rxusrclk] [get_bd_pins gtwiz_versal_1_$name/QUAD0_RX0_usrclk] [get_bd_pins gtwiz_versal_1_$name/QUAD0_RX1_usrclk] [get_bd_pins gtwiz_versal_1_$name/QUAD0_RX2_usrclk] [get_bd_pins gtwiz_versal_1_$name/QUAD0_RX3_usrclk]	
+
+	connect_bd_net [get_bd_pins bufg_gt_tx_2_$name/usrclk] [get_bd_pins bridge_2_$name/gt_txusrclk] [get_bd_pins gtwiz_versal_2_$name/QUAD0_TX0_usrclk] [get_bd_pins gtwiz_versal_2_$name/QUAD0_TX1_usrclk] [get_bd_pins gtwiz_versal_2_$name/QUAD0_TX2_usrclk] [get_bd_pins gtwiz_versal_2_$name/QUAD0_TX3_usrclk]
+	connect_bd_net [get_bd_pins bufg_gt_rx_2_$name/usrclk] [get_bd_pins bridge_2_$name/gt_rxusrclk] [get_bd_pins gtwiz_versal_2_$name/QUAD0_RX0_usrclk] [get_bd_pins gtwiz_versal_2_$name/QUAD0_RX1_usrclk] [get_bd_pins gtwiz_versal_2_$name/QUAD0_RX2_usrclk] [get_bd_pins gtwiz_versal_2_$name/QUAD0_RX3_usrclk]	
+
+	connect_bd_intf_net [get_bd_intf_pins bridge_0_$name/GT_TX0] [get_bd_intf_pins gtwiz_versal_0_$name/INTF0_TX0_GT_IP_Interface]
+	connect_bd_intf_net [get_bd_intf_pins bridge_0_$name/GT_TX1] [get_bd_intf_pins gtwiz_versal_0_$name/INTF0_TX1_GT_IP_Interface]
+	connect_bd_intf_net [get_bd_intf_pins bridge_0_$name/GT_TX2] [get_bd_intf_pins gtwiz_versal_0_$name/INTF0_TX2_GT_IP_Interface]
+	connect_bd_intf_net [get_bd_intf_pins bridge_0_$name/GT_TX3] [get_bd_intf_pins gtwiz_versal_0_$name/INTF0_TX3_GT_IP_Interface]
+	connect_bd_intf_net [get_bd_intf_pins bridge_0_$name/GT_RX0] [get_bd_intf_pins gtwiz_versal_0_$name/INTF0_RX0_GT_IP_Interface]
+	connect_bd_intf_net [get_bd_intf_pins bridge_0_$name/GT_RX1] [get_bd_intf_pins gtwiz_versal_0_$name/INTF0_RX1_GT_IP_Interface]
+	connect_bd_intf_net [get_bd_intf_pins bridge_0_$name/GT_RX2] [get_bd_intf_pins gtwiz_versal_0_$name/INTF0_RX2_GT_IP_Interface]
+	connect_bd_intf_net [get_bd_intf_pins bridge_0_$name/GT_RX3] [get_bd_intf_pins gtwiz_versal_0_$name/INTF0_RX3_GT_IP_Interface]
+	connect_bd_intf_net [get_bd_intf_pins bridge_1_$name/GT_TX0] [get_bd_intf_pins gtwiz_versal_1_$name/INTF0_TX0_GT_IP_Interface]
+	connect_bd_intf_net [get_bd_intf_pins bridge_1_$name/GT_TX1] [get_bd_intf_pins gtwiz_versal_1_$name/INTF0_TX1_GT_IP_Interface]
+	connect_bd_intf_net [get_bd_intf_pins bridge_1_$name/GT_TX2] [get_bd_intf_pins gtwiz_versal_1_$name/INTF0_TX2_GT_IP_Interface]
+	connect_bd_intf_net [get_bd_intf_pins bridge_1_$name/GT_TX3] [get_bd_intf_pins gtwiz_versal_1_$name/INTF0_TX3_GT_IP_Interface]
+	connect_bd_intf_net [get_bd_intf_pins bridge_1_$name/GT_RX0] [get_bd_intf_pins gtwiz_versal_1_$name/INTF0_RX0_GT_IP_Interface]
+	connect_bd_intf_net [get_bd_intf_pins bridge_1_$name/GT_RX1] [get_bd_intf_pins gtwiz_versal_1_$name/INTF0_RX1_GT_IP_Interface]
+	connect_bd_intf_net [get_bd_intf_pins bridge_1_$name/GT_RX2] [get_bd_intf_pins gtwiz_versal_1_$name/INTF0_RX2_GT_IP_Interface]
+	connect_bd_intf_net [get_bd_intf_pins bridge_1_$name/GT_RX3] [get_bd_intf_pins gtwiz_versal_1_$name/INTF0_RX3_GT_IP_Interface]
+	connect_bd_intf_net [get_bd_intf_pins bridge_2_$name/GT_TX0] [get_bd_intf_pins gtwiz_versal_2_$name/INTF0_TX0_GT_IP_Interface]
+	connect_bd_intf_net [get_bd_intf_pins bridge_2_$name/GT_TX1] [get_bd_intf_pins gtwiz_versal_2_$name/INTF0_TX1_GT_IP_Interface]
+	connect_bd_intf_net [get_bd_intf_pins bridge_2_$name/GT_TX2] [get_bd_intf_pins gtwiz_versal_2_$name/INTF0_TX2_GT_IP_Interface]
+	connect_bd_intf_net [get_bd_intf_pins bridge_2_$name/GT_TX3] [get_bd_intf_pins gtwiz_versal_2_$name/INTF0_TX3_GT_IP_Interface]
+	connect_bd_intf_net [get_bd_intf_pins bridge_2_$name/GT_RX0] [get_bd_intf_pins gtwiz_versal_2_$name/INTF0_RX0_GT_IP_Interface]
+	connect_bd_intf_net [get_bd_intf_pins bridge_2_$name/GT_RX1] [get_bd_intf_pins gtwiz_versal_2_$name/INTF0_RX1_GT_IP_Interface]
+	connect_bd_intf_net [get_bd_intf_pins bridge_2_$name/GT_RX2] [get_bd_intf_pins gtwiz_versal_2_$name/INTF0_RX2_GT_IP_Interface]
+	connect_bd_intf_net [get_bd_intf_pins bridge_2_$name/GT_RX3] [get_bd_intf_pins gtwiz_versal_2_$name/INTF0_RX3_GT_IP_Interface]	
+
+	make_bd_intf_pins_external  [get_bd_intf_pins gtwiz_versal_0_$name/Quad0_GT_Serial]
+	make_bd_intf_pins_external  [get_bd_intf_pins gtwiz_versal_1_$name/Quad0_GT_Serial]
+	make_bd_intf_pins_external  [get_bd_intf_pins gtwiz_versal_2_$name/Quad0_GT_Serial]
+
+	if {$type eq "GTM"} {
+	  connect_bd_net [get_bd_pins util_ds_buf_$name/IBUFDS_GTME5_O] [get_bd_pins gtwiz_versal_$name/QUAD0_GTREFCLK0] [get_bd_pins gtwiz_versal_$name/QUAD1_GTREFCLK0] [get_bd_pins gtwiz_versal_$name/QUAD2_GTREFCLK0]
+        } elseif {$type eq "GTM2"} {
+	  connect_bd_net [get_bd_pins util_ds_buf_$name/IBUFDS_GTM2_O] [get_bd_pins gtwiz_versal_0_$name/QUAD0_GTREFCLK0] [get_bd_pins gtwiz_versal_1_$name/QUAD0_GTREFCLK0] [get_bd_pins gtwiz_versal_2_$name/QUAD0_GTREFCLK0]
+        } else {
+          connect_bd_net [get_bd_pins util_ds_buf_$name/IBUF_OUT] [get_bd_pins gtwiz_versal_$name/QUAD0_GTREFCLK0] [get_bd_pins gtwiz_versal_$name/QUAD1_GTREFCLK0] [get_bd_pins gtwiz_versal_$name/QUAD2_GTREFCLK0]
+        }
+
+      connect_bd_net [get_bd_pins gtwiz_versal_0_$name/QUAD0_TX0_outclk] [get_bd_pins bufg_gt_tx_0_$name/outclk]
+      connect_bd_net [get_bd_pins gtwiz_versal_0_$name/QUAD0_RX0_outclk] [get_bd_pins bufg_gt_rx_0_$name/outclk]
+      connect_bd_net [get_bd_pins gtwiz_versal_0_$name/INTF0_TX_clr_out] [get_bd_pins bufg_gt_tx_0_$name/gt_bufgtclr]
+      connect_bd_net [get_bd_pins gtwiz_versal_0_$name/INTF0_TX_clr_out] [get_bd_pins bufg_gt_rx_0_$name/gt_bufgtclr]
+      connect_bd_net [get_bd_pins gtwiz_versal_0_$name/INTF0_rst_tx_done_out] [get_bd_pins bridge_0_$name/tx_reset_in]
+      connect_bd_net [get_bd_pins gtwiz_versal_0_$name/INTF0_rst_rx_done_out] [get_bd_pins bridge_0_$name/rx_reset_in]
+      connect_bd_net [get_bd_pins gtwiz_versal_1_$name/QUAD0_TX0_outclk] [get_bd_pins bufg_gt_tx_1_$name/outclk]
+      connect_bd_net [get_bd_pins gtwiz_versal_1_$name/QUAD0_RX0_outclk] [get_bd_pins bufg_gt_rx_1_$name/outclk]
+      connect_bd_net [get_bd_pins gtwiz_versal_1_$name/INTF0_TX_clr_out] [get_bd_pins bufg_gt_tx_1_$name/gt_bufgtclr]
+      connect_bd_net [get_bd_pins gtwiz_versal_1_$name/INTF0_TX_clr_out] [get_bd_pins bufg_gt_rx_1_$name/gt_bufgtclr]
+      connect_bd_net [get_bd_pins gtwiz_versal_1_$name/INTF0_rst_tx_done_out] [get_bd_pins bridge_1_$name/tx_reset_in]
+      connect_bd_net [get_bd_pins gtwiz_versal_1_$name/INTF0_rst_rx_done_out] [get_bd_pins bridge_1_$name/rx_reset_in]
+      connect_bd_net [get_bd_pins gtwiz_versal_2_$name/QUAD0_TX0_outclk] [get_bd_pins bufg_gt_tx_2_$name/outclk]
+      connect_bd_net [get_bd_pins gtwiz_versal_2_$name/QUAD0_RX0_outclk] [get_bd_pins bufg_gt_rx_2_$name/outclk]
+      connect_bd_net [get_bd_pins gtwiz_versal_2_$name/INTF0_TX_clr_out] [get_bd_pins bufg_gt_tx_2_$name/gt_bufgtclr]
+      connect_bd_net [get_bd_pins gtwiz_versal_2_$name/INTF0_TX_clr_out] [get_bd_pins bufg_gt_rx_2_$name/gt_bufgtclr]
+      connect_bd_net [get_bd_pins gtwiz_versal_2_$name/INTF0_rst_tx_done_out] [get_bd_pins bridge_2_$name/tx_reset_in]
+      connect_bd_net [get_bd_pins gtwiz_versal_2_$name/INTF0_rst_rx_done_out] [get_bd_pins bridge_2_$name/rx_reset_in]      
+      connect_bd_net [get_bd_pins versal_cips_0/pl0_ref_clk] [get_bd_pins bridge_0_$name/apb3clk] [get_bd_pins gtwiz_versal_0_$name/gtwiz_freerun_clk] [get_bd_pins bridge_1_$name/apb3clk] [get_bd_pins gtwiz_versal_1_$name/gtwiz_freerun_clk] [get_bd_pins bridge_2_$name/apb3clk] [get_bd_pins gtwiz_versal_2_$name/gtwiz_freerun_clk]
+
+      } elseif {$num_quads == 4} {
+          create_bd_cell -type ip -vlnv xilinx.com:ip:prbs_generator_checker bridge_0_$name
+          set_property -dict [list \
+            CONFIG.IP_NO_OF_LANES {4} \
+            CONFIG.GT_TYPE $type \
+            CONFIG.IP_LR0_SETTINGS $values \
+            ] [get_bd_cells bridge_0_$name]
+
+	 
+      
+        create_bd_cell -type ip -vlnv xilinx.com:ip:gtwiz_versal gtwiz_versal_0_$name
+        create_bd_cell -type ip -vlnv xilinx.com:ip:bufg_gt bufg_gt_tx_0_$name
+        create_bd_cell -type ip -vlnv xilinx.com:ip:bufg_gt bufg_gt_rx_0_$name
+
+          create_bd_cell -type ip -vlnv xilinx.com:ip:prbs_generator_checker bridge_1_$name
+          set_property -dict [list \
+            CONFIG.IP_NO_OF_LANES {4} \
+            CONFIG.GT_TYPE $type \
+            CONFIG.IP_LR0_SETTINGS $values \
+            ] [get_bd_cells bridge_1_$name]
+
+	 
+      
+        create_bd_cell -type ip -vlnv xilinx.com:ip:gtwiz_versal gtwiz_versal_1_$name
+        create_bd_cell -type ip -vlnv xilinx.com:ip:bufg_gt bufg_gt_tx_1_$name
+        create_bd_cell -type ip -vlnv xilinx.com:ip:bufg_gt bufg_gt_rx_1_$name
+
+          create_bd_cell -type ip -vlnv xilinx.com:ip:prbs_generator_checker bridge_2_$name
+          set_property -dict [list \
+            CONFIG.IP_NO_OF_LANES {4} \
+            CONFIG.GT_TYPE $type \
+            CONFIG.IP_LR0_SETTINGS $values \
+            ] [get_bd_cells bridge_2_$name]
+
+	 
+      
+        create_bd_cell -type ip -vlnv xilinx.com:ip:gtwiz_versal gtwiz_versal_2_$name
+        create_bd_cell -type ip -vlnv xilinx.com:ip:bufg_gt bufg_gt_tx_2_$name
+        create_bd_cell -type ip -vlnv xilinx.com:ip:bufg_gt bufg_gt_rx_2_$name	
+
+          create_bd_cell -type ip -vlnv xilinx.com:ip:prbs_generator_checker bridge_3_$name
+          set_property -dict [list \
+            CONFIG.IP_NO_OF_LANES {4} \
+            CONFIG.GT_TYPE $type \
+            CONFIG.IP_LR0_SETTINGS $values \
+            ] [get_bd_cells bridge_3_$name]
+
+	 
+      
+        create_bd_cell -type ip -vlnv xilinx.com:ip:gtwiz_versal gtwiz_versal_3_$name
+        create_bd_cell -type ip -vlnv xilinx.com:ip:bufg_gt bufg_gt_tx_3_$name
+        create_bd_cell -type ip -vlnv xilinx.com:ip:bufg_gt bufg_gt_rx_3_$name	
+
+        set_property -dict [list \
+          CONFIG.INTF0_NO_OF_LANES {4} \
+          CONFIG.GT_TYPE $type \
+          CONFIG.NO_OF_QUADS {1} \
+          ] [get_bd_cells gtwiz_versal_0_$name]
+
+        set_property -dict [list \
+          CONFIG.INTF0_NO_OF_LANES {4} \
+          CONFIG.GT_TYPE $type \
+          CONFIG.NO_OF_QUADS {1} \
+          ] [get_bd_cells gtwiz_versal_1_$name]
+
+        set_property -dict [list \
+          CONFIG.INTF0_NO_OF_LANES {4} \
+          CONFIG.GT_TYPE $type \
+          CONFIG.NO_OF_QUADS {1} \
+          ] [get_bd_cells gtwiz_versal_2_$name]	  
+
+        set_property -dict [list \
+          CONFIG.INTF0_NO_OF_LANES {4} \
+          CONFIG.GT_TYPE $type \
+          CONFIG.NO_OF_QUADS {1} \
+          ] [get_bd_cells gtwiz_versal_3_$name]	  
+
+	connect_bd_net [get_bd_pins bufg_gt_tx_0_$name/usrclk] [get_bd_pins bridge_0_$name/gt_txusrclk] [get_bd_pins gtwiz_versal_0_$name/QUAD0_TX0_usrclk] [get_bd_pins gtwiz_versal_0_$name/QUAD0_TX1_usrclk] [get_bd_pins gtwiz_versal_0_$name/QUAD0_TX2_usrclk] [get_bd_pins gtwiz_versal_0_$name/QUAD0_TX3_usrclk]
+	connect_bd_net [get_bd_pins bufg_gt_rx_0_$name/usrclk] [get_bd_pins bridge_0_$name/gt_rxusrclk] [get_bd_pins gtwiz_versal_0_$name/QUAD0_RX0_usrclk] [get_bd_pins gtwiz_versal_0_$name/QUAD0_RX1_usrclk] [get_bd_pins gtwiz_versal_0_$name/QUAD0_RX2_usrclk] [get_bd_pins gtwiz_versal_0_$name/QUAD0_RX3_usrclk]
+
+	connect_bd_net [get_bd_pins bufg_gt_tx_1_$name/usrclk] [get_bd_pins bridge_1_$name/gt_txusrclk] [get_bd_pins gtwiz_versal_1_$name/QUAD0_TX0_usrclk] [get_bd_pins gtwiz_versal_1_$name/QUAD0_TX1_usrclk] [get_bd_pins gtwiz_versal_1_$name/QUAD0_TX2_usrclk] [get_bd_pins gtwiz_versal_1_$name/QUAD0_TX3_usrclk]
+	connect_bd_net [get_bd_pins bufg_gt_rx_1_$name/usrclk] [get_bd_pins bridge_1_$name/gt_rxusrclk] [get_bd_pins gtwiz_versal_1_$name/QUAD0_RX0_usrclk] [get_bd_pins gtwiz_versal_1_$name/QUAD0_RX1_usrclk] [get_bd_pins gtwiz_versal_1_$name/QUAD0_RX2_usrclk] [get_bd_pins gtwiz_versal_1_$name/QUAD0_RX3_usrclk]	
+
+	connect_bd_net [get_bd_pins bufg_gt_tx_2_$name/usrclk] [get_bd_pins bridge_2_$name/gt_txusrclk] [get_bd_pins gtwiz_versal_2_$name/QUAD0_TX0_usrclk] [get_bd_pins gtwiz_versal_2_$name/QUAD0_TX1_usrclk] [get_bd_pins gtwiz_versal_2_$name/QUAD0_TX2_usrclk] [get_bd_pins gtwiz_versal_2_$name/QUAD0_TX3_usrclk]
+	connect_bd_net [get_bd_pins bufg_gt_rx_2_$name/usrclk] [get_bd_pins bridge_2_$name/gt_rxusrclk] [get_bd_pins gtwiz_versal_2_$name/QUAD0_RX0_usrclk] [get_bd_pins gtwiz_versal_2_$name/QUAD0_RX1_usrclk] [get_bd_pins gtwiz_versal_2_$name/QUAD0_RX2_usrclk] [get_bd_pins gtwiz_versal_2_$name/QUAD0_RX3_usrclk]	
+
+	connect_bd_net [get_bd_pins bufg_gt_tx_3_$name/usrclk] [get_bd_pins bridge_3_$name/gt_txusrclk] [get_bd_pins gtwiz_versal_3_$name/QUAD0_TX0_usrclk] [get_bd_pins gtwiz_versal_3_$name/QUAD0_TX1_usrclk] [get_bd_pins gtwiz_versal_3_$name/QUAD0_TX2_usrclk] [get_bd_pins gtwiz_versal_3_$name/QUAD0_TX3_usrclk]
+	connect_bd_net [get_bd_pins bufg_gt_rx_3_$name/usrclk] [get_bd_pins bridge_3_$name/gt_rxusrclk] [get_bd_pins gtwiz_versal_3_$name/QUAD0_RX0_usrclk] [get_bd_pins gtwiz_versal_3_$name/QUAD0_RX1_usrclk] [get_bd_pins gtwiz_versal_3_$name/QUAD0_RX2_usrclk] [get_bd_pins gtwiz_versal_3_$name/QUAD0_RX3_usrclk]	
+
+	connect_bd_intf_net [get_bd_intf_pins bridge_0_$name/GT_TX0] [get_bd_intf_pins gtwiz_versal_0_$name/INTF0_TX0_GT_IP_Interface]
+	connect_bd_intf_net [get_bd_intf_pins bridge_0_$name/GT_TX1] [get_bd_intf_pins gtwiz_versal_0_$name/INTF0_TX1_GT_IP_Interface]
+	connect_bd_intf_net [get_bd_intf_pins bridge_0_$name/GT_TX2] [get_bd_intf_pins gtwiz_versal_0_$name/INTF0_TX2_GT_IP_Interface]
+	connect_bd_intf_net [get_bd_intf_pins bridge_0_$name/GT_TX3] [get_bd_intf_pins gtwiz_versal_0_$name/INTF0_TX3_GT_IP_Interface]
+	connect_bd_intf_net [get_bd_intf_pins bridge_0_$name/GT_RX0] [get_bd_intf_pins gtwiz_versal_0_$name/INTF0_RX0_GT_IP_Interface]
+	connect_bd_intf_net [get_bd_intf_pins bridge_0_$name/GT_RX1] [get_bd_intf_pins gtwiz_versal_0_$name/INTF0_RX1_GT_IP_Interface]
+	connect_bd_intf_net [get_bd_intf_pins bridge_0_$name/GT_RX2] [get_bd_intf_pins gtwiz_versal_0_$name/INTF0_RX2_GT_IP_Interface]
+	connect_bd_intf_net [get_bd_intf_pins bridge_0_$name/GT_RX3] [get_bd_intf_pins gtwiz_versal_0_$name/INTF0_RX3_GT_IP_Interface]
+	connect_bd_intf_net [get_bd_intf_pins bridge_1_$name/GT_TX0] [get_bd_intf_pins gtwiz_versal_1_$name/INTF0_TX0_GT_IP_Interface]
+	connect_bd_intf_net [get_bd_intf_pins bridge_1_$name/GT_TX1] [get_bd_intf_pins gtwiz_versal_1_$name/INTF0_TX1_GT_IP_Interface]
+	connect_bd_intf_net [get_bd_intf_pins bridge_1_$name/GT_TX2] [get_bd_intf_pins gtwiz_versal_1_$name/INTF0_TX2_GT_IP_Interface]
+	connect_bd_intf_net [get_bd_intf_pins bridge_1_$name/GT_TX3] [get_bd_intf_pins gtwiz_versal_1_$name/INTF0_TX3_GT_IP_Interface]
+	connect_bd_intf_net [get_bd_intf_pins bridge_1_$name/GT_RX0] [get_bd_intf_pins gtwiz_versal_1_$name/INTF0_RX0_GT_IP_Interface]
+	connect_bd_intf_net [get_bd_intf_pins bridge_1_$name/GT_RX1] [get_bd_intf_pins gtwiz_versal_1_$name/INTF0_RX1_GT_IP_Interface]
+	connect_bd_intf_net [get_bd_intf_pins bridge_1_$name/GT_RX2] [get_bd_intf_pins gtwiz_versal_1_$name/INTF0_RX2_GT_IP_Interface]
+	connect_bd_intf_net [get_bd_intf_pins bridge_1_$name/GT_RX3] [get_bd_intf_pins gtwiz_versal_1_$name/INTF0_RX3_GT_IP_Interface]
+	connect_bd_intf_net [get_bd_intf_pins bridge_2_$name/GT_TX0] [get_bd_intf_pins gtwiz_versal_2_$name/INTF0_TX0_GT_IP_Interface]
+	connect_bd_intf_net [get_bd_intf_pins bridge_2_$name/GT_TX1] [get_bd_intf_pins gtwiz_versal_2_$name/INTF0_TX1_GT_IP_Interface]
+	connect_bd_intf_net [get_bd_intf_pins bridge_2_$name/GT_TX2] [get_bd_intf_pins gtwiz_versal_2_$name/INTF0_TX2_GT_IP_Interface]
+	connect_bd_intf_net [get_bd_intf_pins bridge_2_$name/GT_TX3] [get_bd_intf_pins gtwiz_versal_2_$name/INTF0_TX3_GT_IP_Interface]
+	connect_bd_intf_net [get_bd_intf_pins bridge_2_$name/GT_RX0] [get_bd_intf_pins gtwiz_versal_2_$name/INTF0_RX0_GT_IP_Interface]
+	connect_bd_intf_net [get_bd_intf_pins bridge_2_$name/GT_RX1] [get_bd_intf_pins gtwiz_versal_2_$name/INTF0_RX1_GT_IP_Interface]
+	connect_bd_intf_net [get_bd_intf_pins bridge_2_$name/GT_RX2] [get_bd_intf_pins gtwiz_versal_2_$name/INTF0_RX2_GT_IP_Interface]
+	connect_bd_intf_net [get_bd_intf_pins bridge_2_$name/GT_RX3] [get_bd_intf_pins gtwiz_versal_2_$name/INTF0_RX3_GT_IP_Interface]
+	connect_bd_intf_net [get_bd_intf_pins bridge_3_$name/GT_TX0] [get_bd_intf_pins gtwiz_versal_3_$name/INTF0_TX0_GT_IP_Interface]
+	connect_bd_intf_net [get_bd_intf_pins bridge_3_$name/GT_TX1] [get_bd_intf_pins gtwiz_versal_3_$name/INTF0_TX1_GT_IP_Interface]
+	connect_bd_intf_net [get_bd_intf_pins bridge_3_$name/GT_TX2] [get_bd_intf_pins gtwiz_versal_3_$name/INTF0_TX2_GT_IP_Interface]
+	connect_bd_intf_net [get_bd_intf_pins bridge_3_$name/GT_TX3] [get_bd_intf_pins gtwiz_versal_3_$name/INTF0_TX3_GT_IP_Interface]
+	connect_bd_intf_net [get_bd_intf_pins bridge_3_$name/GT_RX0] [get_bd_intf_pins gtwiz_versal_3_$name/INTF0_RX0_GT_IP_Interface]
+	connect_bd_intf_net [get_bd_intf_pins bridge_3_$name/GT_RX1] [get_bd_intf_pins gtwiz_versal_3_$name/INTF0_RX1_GT_IP_Interface]
+	connect_bd_intf_net [get_bd_intf_pins bridge_3_$name/GT_RX2] [get_bd_intf_pins gtwiz_versal_3_$name/INTF0_RX2_GT_IP_Interface]
+	connect_bd_intf_net [get_bd_intf_pins bridge_3_$name/GT_RX3] [get_bd_intf_pins gtwiz_versal_3_$name/INTF0_RX3_GT_IP_Interface]	
+
+	make_bd_intf_pins_external  [get_bd_intf_pins gtwiz_versal_0_$name/Quad0_GT_Serial]
+	make_bd_intf_pins_external  [get_bd_intf_pins gtwiz_versal_1_$name/Quad0_GT_Serial]
+	make_bd_intf_pins_external  [get_bd_intf_pins gtwiz_versal_2_$name/Quad0_GT_Serial]
+	make_bd_intf_pins_external  [get_bd_intf_pins gtwiz_versal_3_$name/Quad0_GT_Serial]
+
+	if {$type eq "GTM"} {
+	  connect_bd_net [get_bd_pins util_ds_buf_$name/IBUFDS_GTME5_O] [get_bd_pins gtwiz_versal_$name/QUAD0_GTREFCLK0] [get_bd_pins gtwiz_versal_$name/QUAD1_GTREFCLK0] [get_bd_pins gtwiz_versal_$name/QUAD2_GTREFCLK0] [get_bd_pins gtwiz_versal_$name/QUAD3_GTREFCLK0]
+        } elseif {$type eq "GTM2"} {
+	  connect_bd_net [get_bd_pins util_ds_buf_$name/IBUFDS_GTM2_O] [get_bd_pins gtwiz_versal_0_$name/QUAD0_GTREFCLK0] [get_bd_pins gtwiz_versal_1_$name/QUAD0_GTREFCLK0] [get_bd_pins gtwiz_versal_2_$name/QUAD0_GTREFCLK0] [get_bd_pins gtwiz_versal_3_$name/QUAD0_GTREFCLK0]
+        } else {
+	  connect_bd_net [get_bd_pins util_ds_buf_$name/IBUF_OUT] [get_bd_pins gtwiz_versal_$name/QUAD0_GTREFCLK0] [get_bd_pins gtwiz_versal_$name/QUAD1_GTREFCLK0] [get_bd_pins gtwiz_versal_$name/QUAD2_GTREFCLK0] [get_bd_pins gtwiz_versal_$name/QUAD3_GTREFCLK0LK0]
+        }
+
+      connect_bd_net [get_bd_pins gtwiz_versal_0_$name/QUAD0_TX0_outclk] [get_bd_pins bufg_gt_tx_0_$name/outclk]
+      connect_bd_net [get_bd_pins gtwiz_versal_0_$name/QUAD0_RX0_outclk] [get_bd_pins bufg_gt_rx_0_$name/outclk]
+      connect_bd_net [get_bd_pins gtwiz_versal_0_$name/INTF0_TX_clr_out] [get_bd_pins bufg_gt_tx_0_$name/gt_bufgtclr]
+      connect_bd_net [get_bd_pins gtwiz_versal_0_$name/INTF0_TX_clr_out] [get_bd_pins bufg_gt_rx_0_$name/gt_bufgtclr]
+      connect_bd_net [get_bd_pins gtwiz_versal_0_$name/INTF0_rst_tx_done_out] [get_bd_pins bridge_0_$name/tx_reset_in]
+      connect_bd_net [get_bd_pins gtwiz_versal_0_$name/INTF0_rst_rx_done_out] [get_bd_pins bridge_0_$name/rx_reset_in]
+      connect_bd_net [get_bd_pins gtwiz_versal_1_$name/QUAD0_TX0_outclk] [get_bd_pins bufg_gt_tx_1_$name/outclk]
+      connect_bd_net [get_bd_pins gtwiz_versal_1_$name/QUAD0_RX0_outclk] [get_bd_pins bufg_gt_rx_1_$name/outclk]
+      connect_bd_net [get_bd_pins gtwiz_versal_1_$name/INTF0_TX_clr_out] [get_bd_pins bufg_gt_tx_1_$name/gt_bufgtclr]
+      connect_bd_net [get_bd_pins gtwiz_versal_1_$name/INTF0_TX_clr_out] [get_bd_pins bufg_gt_rx_1_$name/gt_bufgtclr]
+      connect_bd_net [get_bd_pins gtwiz_versal_1_$name/INTF0_rst_tx_done_out] [get_bd_pins bridge_1_$name/tx_reset_in]
+      connect_bd_net [get_bd_pins gtwiz_versal_1_$name/INTF0_rst_rx_done_out] [get_bd_pins bridge_1_$name/rx_reset_in]
+      connect_bd_net [get_bd_pins gtwiz_versal_2_$name/QUAD0_TX0_outclk] [get_bd_pins bufg_gt_tx_2_$name/outclk]
+      connect_bd_net [get_bd_pins gtwiz_versal_2_$name/QUAD0_RX0_outclk] [get_bd_pins bufg_gt_rx_2_$name/outclk]
+      connect_bd_net [get_bd_pins gtwiz_versal_2_$name/INTF0_TX_clr_out] [get_bd_pins bufg_gt_tx_2_$name/gt_bufgtclr]
+      connect_bd_net [get_bd_pins gtwiz_versal_2_$name/INTF0_TX_clr_out] [get_bd_pins bufg_gt_rx_2_$name/gt_bufgtclr]
+      connect_bd_net [get_bd_pins gtwiz_versal_2_$name/INTF0_rst_tx_done_out] [get_bd_pins bridge_2_$name/tx_reset_in]
+      connect_bd_net [get_bd_pins gtwiz_versal_2_$name/INTF0_rst_rx_done_out] [get_bd_pins bridge_2_$name/rx_reset_in]  
+      connect_bd_net [get_bd_pins gtwiz_versal_3_$name/QUAD0_TX0_outclk] [get_bd_pins bufg_gt_tx_3_$name/outclk]
+      connect_bd_net [get_bd_pins gtwiz_versal_3_$name/QUAD0_RX0_outclk] [get_bd_pins bufg_gt_rx_3_$name/outclk]
+      connect_bd_net [get_bd_pins gtwiz_versal_3_$name/INTF0_TX_clr_out] [get_bd_pins bufg_gt_tx_3_$name/gt_bufgtclr]
+      connect_bd_net [get_bd_pins gtwiz_versal_3_$name/INTF0_TX_clr_out] [get_bd_pins bufg_gt_rx_3_$name/gt_bufgtclr]
+      connect_bd_net [get_bd_pins gtwiz_versal_3_$name/INTF0_rst_tx_done_out] [get_bd_pins bridge_3_$name/tx_reset_in]
+      connect_bd_net [get_bd_pins gtwiz_versal_3_$name/INTF0_rst_rx_done_out] [get_bd_pins bridge_3_$name/rx_reset_in]      
+      connect_bd_net [get_bd_pins versal_cips_0/pl0_ref_clk] [get_bd_pins bridge_0_$name/apb3clk] [get_bd_pins gtwiz_versal_0_$name/gtwiz_freerun_clk] [get_bd_pins bridge_1_$name/apb3clk] [get_bd_pins gtwiz_versal_1_$name/gtwiz_freerun_clk] [get_bd_pins bridge_2_$name/apb3clk] [get_bd_pins gtwiz_versal_2_$name/gtwiz_freerun_clk] [get_bd_pins bridge_3_$name/apb3clk] [get_bd_pins gtwiz_versal_3_$name/gtwiz_freerun_clk]	
+	
+      } elseif {$num_quads == 5} {
+          create_bd_cell -type ip -vlnv xilinx.com:ip:prbs_generator_checker bridge_0_$name
+          set_property -dict [list \
+            CONFIG.IP_NO_OF_LANES {4} \
+            CONFIG.GT_TYPE $type \
+            CONFIG.IP_LR0_SETTINGS $values \
+            ] [get_bd_cells bridge_0_$name]
+
+	 
+      
+        create_bd_cell -type ip -vlnv xilinx.com:ip:gtwiz_versal gtwiz_versal_0_$name
+        create_bd_cell -type ip -vlnv xilinx.com:ip:bufg_gt bufg_gt_tx_0_$name
+        create_bd_cell -type ip -vlnv xilinx.com:ip:bufg_gt bufg_gt_rx_0_$name
+
+          create_bd_cell -type ip -vlnv xilinx.com:ip:prbs_generator_checker bridge_1_$name
+          set_property -dict [list \
+            CONFIG.IP_NO_OF_LANES {4} \
+            CONFIG.GT_TYPE $type \
+            CONFIG.IP_LR0_SETTINGS $values \
+            ] [get_bd_cells bridge_1_$name]
+
+	 
+      
+        create_bd_cell -type ip -vlnv xilinx.com:ip:gtwiz_versal gtwiz_versal_1_$name
+        create_bd_cell -type ip -vlnv xilinx.com:ip:bufg_gt bufg_gt_tx_1_$name
+        create_bd_cell -type ip -vlnv xilinx.com:ip:bufg_gt bufg_gt_rx_1_$name
+
+          create_bd_cell -type ip -vlnv xilinx.com:ip:prbs_generator_checker bridge_2_$name
+          set_property -dict [list \
+            CONFIG.IP_NO_OF_LANES {4} \
+            CONFIG.GT_TYPE $type \
+            CONFIG.IP_LR0_SETTINGS $values \
+            ] [get_bd_cells bridge_2_$name]
+
+	 
+      
+        create_bd_cell -type ip -vlnv xilinx.com:ip:gtwiz_versal gtwiz_versal_2_$name
+        create_bd_cell -type ip -vlnv xilinx.com:ip:bufg_gt bufg_gt_tx_2_$name
+        create_bd_cell -type ip -vlnv xilinx.com:ip:bufg_gt bufg_gt_rx_2_$name	
+
+          create_bd_cell -type ip -vlnv xilinx.com:ip:prbs_generator_checker bridge_3_$name
+          set_property -dict [list \
+            CONFIG.IP_NO_OF_LANES {4} \
+            CONFIG.GT_TYPE $type \
+            CONFIG.IP_LR0_SETTINGS $values \
+            ] [get_bd_cells bridge_3_$name]
+
+	 
+      
+        create_bd_cell -type ip -vlnv xilinx.com:ip:gtwiz_versal gtwiz_versal_3_$name
+        create_bd_cell -type ip -vlnv xilinx.com:ip:bufg_gt bufg_gt_tx_3_$name
+        create_bd_cell -type ip -vlnv xilinx.com:ip:bufg_gt bufg_gt_rx_3_$name	
+
+          create_bd_cell -type ip -vlnv xilinx.com:ip:prbs_generator_checker bridge_4_$name
+          set_property -dict [list \
+            CONFIG.IP_NO_OF_LANES {4} \
+            CONFIG.GT_TYPE $type \
+            CONFIG.IP_LR0_SETTINGS $values \
+            ] [get_bd_cells bridge_4_$name]
+
+	 
+      
+        create_bd_cell -type ip -vlnv xilinx.com:ip:gtwiz_versal gtwiz_versal_4_$name
+        create_bd_cell -type ip -vlnv xilinx.com:ip:bufg_gt bufg_gt_tx_4_$name
+        create_bd_cell -type ip -vlnv xilinx.com:ip:bufg_gt bufg_gt_rx_4_$name	
+
+        set_property -dict [list \
+          CONFIG.INTF0_NO_OF_LANES {4} \
+          CONFIG.GT_TYPE $type \
+          CONFIG.NO_OF_QUADS {1} \
+          ] [get_bd_cells gtwiz_versal_0_$name]
+
+        set_property -dict [list \
+          CONFIG.INTF0_NO_OF_LANES {4} \
+          CONFIG.GT_TYPE $type \
+          CONFIG.NO_OF_QUADS {1} \
+          ] [get_bd_cells gtwiz_versal_1_$name]
+
+        set_property -dict [list \
+          CONFIG.INTF0_NO_OF_LANES {4} \
+          CONFIG.GT_TYPE $type \
+          CONFIG.NO_OF_QUADS {1} \
+          ] [get_bd_cells gtwiz_versal_2_$name]	  
+
+        set_property -dict [list \
+          CONFIG.INTF0_NO_OF_LANES {4} \
+          CONFIG.GT_TYPE $type \
+          CONFIG.NO_OF_QUADS {1} \
+          ] [get_bd_cells gtwiz_versal_3_$name]
+
+        set_property -dict [list \
+          CONFIG.INTF0_NO_OF_LANES {4} \
+          CONFIG.GT_TYPE $type \
+          CONFIG.NO_OF_QUADS {1} \
+          ] [get_bd_cells gtwiz_versal_4_$name]	  
+
+	connect_bd_net [get_bd_pins bufg_gt_tx_0_$name/usrclk] [get_bd_pins bridge_0_$name/gt_txusrclk] [get_bd_pins gtwiz_versal_0_$name/QUAD0_TX0_usrclk] [get_bd_pins gtwiz_versal_0_$name/QUAD0_TX1_usrclk] [get_bd_pins gtwiz_versal_0_$name/QUAD0_TX2_usrclk] [get_bd_pins gtwiz_versal_0_$name/QUAD0_TX3_usrclk]
+	connect_bd_net [get_bd_pins bufg_gt_rx_0_$name/usrclk] [get_bd_pins bridge_0_$name/gt_rxusrclk] [get_bd_pins gtwiz_versal_0_$name/QUAD0_RX0_usrclk] [get_bd_pins gtwiz_versal_0_$name/QUAD0_RX1_usrclk] [get_bd_pins gtwiz_versal_0_$name/QUAD0_RX2_usrclk] [get_bd_pins gtwiz_versal_0_$name/QUAD0_RX3_usrclk]
+
+	connect_bd_net [get_bd_pins bufg_gt_tx_1_$name/usrclk] [get_bd_pins bridge_1_$name/gt_txusrclk] [get_bd_pins gtwiz_versal_1_$name/QUAD0_TX0_usrclk] [get_bd_pins gtwiz_versal_1_$name/QUAD0_TX1_usrclk] [get_bd_pins gtwiz_versal_1_$name/QUAD0_TX2_usrclk] [get_bd_pins gtwiz_versal_1_$name/QUAD0_TX3_usrclk]
+	connect_bd_net [get_bd_pins bufg_gt_rx_1_$name/usrclk] [get_bd_pins bridge_1_$name/gt_rxusrclk] [get_bd_pins gtwiz_versal_1_$name/QUAD0_RX0_usrclk] [get_bd_pins gtwiz_versal_1_$name/QUAD0_RX1_usrclk] [get_bd_pins gtwiz_versal_1_$name/QUAD0_RX2_usrclk] [get_bd_pins gtwiz_versal_1_$name/QUAD0_RX3_usrclk]	
+
+	connect_bd_net [get_bd_pins bufg_gt_tx_2_$name/usrclk] [get_bd_pins bridge_2_$name/gt_txusrclk] [get_bd_pins gtwiz_versal_2_$name/QUAD0_TX0_usrclk] [get_bd_pins gtwiz_versal_2_$name/QUAD0_TX1_usrclk] [get_bd_pins gtwiz_versal_2_$name/QUAD0_TX2_usrclk] [get_bd_pins gtwiz_versal_2_$name/QUAD0_TX3_usrclk]
+	connect_bd_net [get_bd_pins bufg_gt_rx_2_$name/usrclk] [get_bd_pins bridge_2_$name/gt_rxusrclk] [get_bd_pins gtwiz_versal_2_$name/QUAD0_RX0_usrclk] [get_bd_pins gtwiz_versal_2_$name/QUAD0_RX1_usrclk] [get_bd_pins gtwiz_versal_2_$name/QUAD0_RX2_usrclk] [get_bd_pins gtwiz_versal_2_$name/QUAD0_RX3_usrclk]	
+
+	connect_bd_net [get_bd_pins bufg_gt_tx_3_$name/usrclk] [get_bd_pins bridge_3_$name/gt_txusrclk] [get_bd_pins gtwiz_versal_3_$name/QUAD0_TX0_usrclk] [get_bd_pins gtwiz_versal_3_$name/QUAD0_TX1_usrclk] [get_bd_pins gtwiz_versal_3_$name/QUAD0_TX2_usrclk] [get_bd_pins gtwiz_versal_3_$name/QUAD0_TX3_usrclk]
+	connect_bd_net [get_bd_pins bufg_gt_rx_3_$name/usrclk] [get_bd_pins bridge_3_$name/gt_rxusrclk] [get_bd_pins gtwiz_versal_3_$name/QUAD0_RX0_usrclk] [get_bd_pins gtwiz_versal_3_$name/QUAD0_RX1_usrclk] [get_bd_pins gtwiz_versal_3_$name/QUAD0_RX2_usrclk] [get_bd_pins gtwiz_versal_3_$name/QUAD0_RX3_usrclk]
+
+	connect_bd_net [get_bd_pins bufg_gt_tx_4_$name/usrclk] [get_bd_pins bridge_4_$name/gt_txusrclk] [get_bd_pins gtwiz_versal_4_$name/QUAD0_TX0_usrclk] [get_bd_pins gtwiz_versal_4_$name/QUAD0_TX1_usrclk] [get_bd_pins gtwiz_versal_4_$name/QUAD0_TX2_usrclk] [get_bd_pins gtwiz_versal_4_$name/QUAD0_TX3_usrclk]
+	connect_bd_net [get_bd_pins bufg_gt_rx_4_$name/usrclk] [get_bd_pins bridge_4_$name/gt_rxusrclk] [get_bd_pins gtwiz_versal_4_$name/QUAD0_RX0_usrclk] [get_bd_pins gtwiz_versal_4_$name/QUAD0_RX1_usrclk] [get_bd_pins gtwiz_versal_4_$name/QUAD0_RX2_usrclk] [get_bd_pins gtwiz_versal_4_$name/QUAD0_RX3_usrclk]	
+
+	connect_bd_intf_net [get_bd_intf_pins bridge_0_$name/GT_TX0] [get_bd_intf_pins gtwiz_versal_0_$name/INTF0_TX0_GT_IP_Interface]
+	connect_bd_intf_net [get_bd_intf_pins bridge_0_$name/GT_TX1] [get_bd_intf_pins gtwiz_versal_0_$name/INTF0_TX1_GT_IP_Interface]
+	connect_bd_intf_net [get_bd_intf_pins bridge_0_$name/GT_TX2] [get_bd_intf_pins gtwiz_versal_0_$name/INTF0_TX2_GT_IP_Interface]
+	connect_bd_intf_net [get_bd_intf_pins bridge_0_$name/GT_TX3] [get_bd_intf_pins gtwiz_versal_0_$name/INTF0_TX3_GT_IP_Interface]
+	connect_bd_intf_net [get_bd_intf_pins bridge_0_$name/GT_RX0] [get_bd_intf_pins gtwiz_versal_0_$name/INTF0_RX0_GT_IP_Interface]
+	connect_bd_intf_net [get_bd_intf_pins bridge_0_$name/GT_RX1] [get_bd_intf_pins gtwiz_versal_0_$name/INTF0_RX1_GT_IP_Interface]
+	connect_bd_intf_net [get_bd_intf_pins bridge_0_$name/GT_RX2] [get_bd_intf_pins gtwiz_versal_0_$name/INTF0_RX2_GT_IP_Interface]
+	connect_bd_intf_net [get_bd_intf_pins bridge_0_$name/GT_RX3] [get_bd_intf_pins gtwiz_versal_0_$name/INTF0_RX3_GT_IP_Interface]
+	connect_bd_intf_net [get_bd_intf_pins bridge_1_$name/GT_TX0] [get_bd_intf_pins gtwiz_versal_1_$name/INTF0_TX0_GT_IP_Interface]
+	connect_bd_intf_net [get_bd_intf_pins bridge_1_$name/GT_TX1] [get_bd_intf_pins gtwiz_versal_1_$name/INTF0_TX1_GT_IP_Interface]
+	connect_bd_intf_net [get_bd_intf_pins bridge_1_$name/GT_TX2] [get_bd_intf_pins gtwiz_versal_1_$name/INTF0_TX2_GT_IP_Interface]
+	connect_bd_intf_net [get_bd_intf_pins bridge_1_$name/GT_TX3] [get_bd_intf_pins gtwiz_versal_1_$name/INTF0_TX3_GT_IP_Interface]
+	connect_bd_intf_net [get_bd_intf_pins bridge_1_$name/GT_RX0] [get_bd_intf_pins gtwiz_versal_1_$name/INTF0_RX0_GT_IP_Interface]
+	connect_bd_intf_net [get_bd_intf_pins bridge_1_$name/GT_RX1] [get_bd_intf_pins gtwiz_versal_1_$name/INTF0_RX1_GT_IP_Interface]
+	connect_bd_intf_net [get_bd_intf_pins bridge_1_$name/GT_RX2] [get_bd_intf_pins gtwiz_versal_1_$name/INTF0_RX2_GT_IP_Interface]
+	connect_bd_intf_net [get_bd_intf_pins bridge_1_$name/GT_RX3] [get_bd_intf_pins gtwiz_versal_1_$name/INTF0_RX3_GT_IP_Interface]
+	connect_bd_intf_net [get_bd_intf_pins bridge_2_$name/GT_TX0] [get_bd_intf_pins gtwiz_versal_2_$name/INTF0_TX0_GT_IP_Interface]
+	connect_bd_intf_net [get_bd_intf_pins bridge_2_$name/GT_TX1] [get_bd_intf_pins gtwiz_versal_2_$name/INTF0_TX1_GT_IP_Interface]
+	connect_bd_intf_net [get_bd_intf_pins bridge_2_$name/GT_TX2] [get_bd_intf_pins gtwiz_versal_2_$name/INTF0_TX2_GT_IP_Interface]
+	connect_bd_intf_net [get_bd_intf_pins bridge_2_$name/GT_TX3] [get_bd_intf_pins gtwiz_versal_2_$name/INTF0_TX3_GT_IP_Interface]
+	connect_bd_intf_net [get_bd_intf_pins bridge_2_$name/GT_RX0] [get_bd_intf_pins gtwiz_versal_2_$name/INTF0_RX0_GT_IP_Interface]
+	connect_bd_intf_net [get_bd_intf_pins bridge_2_$name/GT_RX1] [get_bd_intf_pins gtwiz_versal_2_$name/INTF0_RX1_GT_IP_Interface]
+	connect_bd_intf_net [get_bd_intf_pins bridge_2_$name/GT_RX2] [get_bd_intf_pins gtwiz_versal_2_$name/INTF0_RX2_GT_IP_Interface]
+	connect_bd_intf_net [get_bd_intf_pins bridge_2_$name/GT_RX3] [get_bd_intf_pins gtwiz_versal_2_$name/INTF0_RX3_GT_IP_Interface]
+	connect_bd_intf_net [get_bd_intf_pins bridge_3_$name/GT_TX0] [get_bd_intf_pins gtwiz_versal_3_$name/INTF0_TX0_GT_IP_Interface]
+	connect_bd_intf_net [get_bd_intf_pins bridge_3_$name/GT_TX1] [get_bd_intf_pins gtwiz_versal_3_$name/INTF0_TX1_GT_IP_Interface]
+	connect_bd_intf_net [get_bd_intf_pins bridge_3_$name/GT_TX2] [get_bd_intf_pins gtwiz_versal_3_$name/INTF0_TX2_GT_IP_Interface]
+	connect_bd_intf_net [get_bd_intf_pins bridge_3_$name/GT_TX3] [get_bd_intf_pins gtwiz_versal_3_$name/INTF0_TX3_GT_IP_Interface]
+	connect_bd_intf_net [get_bd_intf_pins bridge_3_$name/GT_RX0] [get_bd_intf_pins gtwiz_versal_3_$name/INTF0_RX0_GT_IP_Interface]
+	connect_bd_intf_net [get_bd_intf_pins bridge_3_$name/GT_RX1] [get_bd_intf_pins gtwiz_versal_3_$name/INTF0_RX1_GT_IP_Interface]
+	connect_bd_intf_net [get_bd_intf_pins bridge_3_$name/GT_RX2] [get_bd_intf_pins gtwiz_versal_3_$name/INTF0_RX2_GT_IP_Interface]
+	connect_bd_intf_net [get_bd_intf_pins bridge_3_$name/GT_RX3] [get_bd_intf_pins gtwiz_versal_3_$name/INTF0_RX3_GT_IP_Interface]
+	connect_bd_intf_net [get_bd_intf_pins bridge_4_$name/GT_TX0] [get_bd_intf_pins gtwiz_versal_4_$name/INTF0_TX0_GT_IP_Interface]
+	connect_bd_intf_net [get_bd_intf_pins bridge_4_$name/GT_TX1] [get_bd_intf_pins gtwiz_versal_4_$name/INTF0_TX1_GT_IP_Interface]
+	connect_bd_intf_net [get_bd_intf_pins bridge_4_$name/GT_TX2] [get_bd_intf_pins gtwiz_versal_4_$name/INTF0_TX2_GT_IP_Interface]
+	connect_bd_intf_net [get_bd_intf_pins bridge_4_$name/GT_TX3] [get_bd_intf_pins gtwiz_versal_4_$name/INTF0_TX3_GT_IP_Interface]
+	connect_bd_intf_net [get_bd_intf_pins bridge_4_$name/GT_RX0] [get_bd_intf_pins gtwiz_versal_4_$name/INTF0_RX0_GT_IP_Interface]
+	connect_bd_intf_net [get_bd_intf_pins bridge_4_$name/GT_RX1] [get_bd_intf_pins gtwiz_versal_4_$name/INTF0_RX1_GT_IP_Interface]
+	connect_bd_intf_net [get_bd_intf_pins bridge_4_$name/GT_RX2] [get_bd_intf_pins gtwiz_versal_4_$name/INTF0_RX2_GT_IP_Interface]
+	connect_bd_intf_net [get_bd_intf_pins bridge_4_$name/GT_RX3] [get_bd_intf_pins gtwiz_versal_4_$name/INTF0_RX3_GT_IP_Interface]	
+
+	make_bd_intf_pins_external  [get_bd_intf_pins gtwiz_versal_0_$name/Quad0_GT_Serial]
+	make_bd_intf_pins_external  [get_bd_intf_pins gtwiz_versal_1_$name/Quad0_GT_Serial]
+	make_bd_intf_pins_external  [get_bd_intf_pins gtwiz_versal_2_$name/Quad0_GT_Serial]
+	make_bd_intf_pins_external  [get_bd_intf_pins gtwiz_versal_3_$name/Quad0_GT_Serial]
+	make_bd_intf_pins_external  [get_bd_intf_pins gtwiz_versal_4_$name/Quad0_GT_Serial]
+
+	if {$type eq "GTM"} {  
+	  connect_bd_net [get_bd_pins util_ds_buf_$name/IBUFDS_GTME5_O] [get_bd_pins gtwiz_versal_$name/QUAD0_GTREFCLK0] [get_bd_pins gtwiz_versal_$name/QUAD1_GTREFCLK0] [get_bd_pins gtwiz_versal_$name/QUAD2_GTREFCLK0] [get_bd_pins gtwiz_versal_$name/QUAD3_GTREFCLK0] [get_bd_pins gtwiz_versal_$name/QUAD4_GTREFCLK0]
+	} elseif {$type eq "GTM2"} {  
+	  connect_bd_net [get_bd_pins util_ds_buf_$name/IBUFDS_GTM2_O] [get_bd_pins gtwiz_versal_0_$name/QUAD0_GTREFCLK0] [get_bd_pins gtwiz_versal_1_$name/QUAD0_GTREFCLK0] [get_bd_pins gtwiz_versal_2_$name/QUAD0_GTREFCLK0] [get_bd_pins gtwiz_versal_3_$name/QUAD0_GTREFCLK0] [get_bd_pins gtwiz_versal_4_$name/QUAD0_GTREFCLK0]
+	} else {
+	  connect_bd_net [get_bd_pins util_ds_buf_$name/IBUF_OUT] [get_bd_pins gtwiz_versal_$name/QUAD0_GTREFCLK0] [get_bd_pins gtwiz_versal_$name/QUAD1_GTREFCLK0] [get_bd_pins gtwiz_versal_$name/QUAD2_GTREFCLK0] [get_bd_pins gtwiz_versal_$name/QUAD3_GTREFCLK0] [get_bd_pins gtwiz_versal_$name/QUAD4_GTREFCLK0]
+	}
+
+      connect_bd_net [get_bd_pins gtwiz_versal_0_$name/QUAD0_TX0_outclk] [get_bd_pins bufg_gt_tx_0_$name/outclk]
+      connect_bd_net [get_bd_pins gtwiz_versal_0_$name/QUAD0_RX0_outclk] [get_bd_pins bufg_gt_rx_0_$name/outclk]
+      connect_bd_net [get_bd_pins gtwiz_versal_0_$name/INTF0_TX_clr_out] [get_bd_pins bufg_gt_tx_0_$name/gt_bufgtclr]
+      connect_bd_net [get_bd_pins gtwiz_versal_0_$name/INTF0_TX_clr_out] [get_bd_pins bufg_gt_rx_0_$name/gt_bufgtclr]
+      connect_bd_net [get_bd_pins gtwiz_versal_0_$name/INTF0_rst_tx_done_out] [get_bd_pins bridge_0_$name/tx_reset_in]
+      connect_bd_net [get_bd_pins gtwiz_versal_0_$name/INTF0_rst_rx_done_out] [get_bd_pins bridge_0_$name/rx_reset_in]
+      connect_bd_net [get_bd_pins gtwiz_versal_1_$name/QUAD0_TX0_outclk] [get_bd_pins bufg_gt_tx_1_$name/outclk]
+      connect_bd_net [get_bd_pins gtwiz_versal_1_$name/QUAD0_RX0_outclk] [get_bd_pins bufg_gt_rx_1_$name/outclk]
+      connect_bd_net [get_bd_pins gtwiz_versal_1_$name/INTF0_TX_clr_out] [get_bd_pins bufg_gt_tx_1_$name/gt_bufgtclr]
+      connect_bd_net [get_bd_pins gtwiz_versal_1_$name/INTF0_TX_clr_out] [get_bd_pins bufg_gt_rx_1_$name/gt_bufgtclr]
+      connect_bd_net [get_bd_pins gtwiz_versal_1_$name/INTF0_rst_tx_done_out] [get_bd_pins bridge_1_$name/tx_reset_in]
+      connect_bd_net [get_bd_pins gtwiz_versal_1_$name/INTF0_rst_rx_done_out] [get_bd_pins bridge_1_$name/rx_reset_in]
+      connect_bd_net [get_bd_pins gtwiz_versal_2_$name/QUAD0_TX0_outclk] [get_bd_pins bufg_gt_tx_2_$name/outclk]
+      connect_bd_net [get_bd_pins gtwiz_versal_2_$name/QUAD0_RX0_outclk] [get_bd_pins bufg_gt_rx_2_$name/outclk]
+      connect_bd_net [get_bd_pins gtwiz_versal_2_$name/INTF0_TX_clr_out] [get_bd_pins bufg_gt_tx_2_$name/gt_bufgtclr]
+      connect_bd_net [get_bd_pins gtwiz_versal_2_$name/INTF0_TX_clr_out] [get_bd_pins bufg_gt_rx_2_$name/gt_bufgtclr]
+      connect_bd_net [get_bd_pins gtwiz_versal_2_$name/INTF0_rst_tx_done_out] [get_bd_pins bridge_2_$name/tx_reset_in]
+      connect_bd_net [get_bd_pins gtwiz_versal_2_$name/INTF0_rst_rx_done_out] [get_bd_pins bridge_2_$name/rx_reset_in]  
+      connect_bd_net [get_bd_pins gtwiz_versal_3_$name/QUAD0_TX0_outclk] [get_bd_pins bufg_gt_tx_3_$name/outclk]
+      connect_bd_net [get_bd_pins gtwiz_versal_3_$name/QUAD0_RX0_outclk] [get_bd_pins bufg_gt_rx_3_$name/outclk]
+      connect_bd_net [get_bd_pins gtwiz_versal_3_$name/INTF0_TX_clr_out] [get_bd_pins bufg_gt_tx_3_$name/gt_bufgtclr]
+      connect_bd_net [get_bd_pins gtwiz_versal_3_$name/INTF0_TX_clr_out] [get_bd_pins bufg_gt_rx_3_$name/gt_bufgtclr]
+      connect_bd_net [get_bd_pins gtwiz_versal_3_$name/INTF0_rst_tx_done_out] [get_bd_pins bridge_3_$name/tx_reset_in]
+      connect_bd_net [get_bd_pins gtwiz_versal_3_$name/INTF0_rst_rx_done_out] [get_bd_pins bridge_3_$name/rx_reset_in] 
+      connect_bd_net [get_bd_pins gtwiz_versal_4_$name/QUAD0_TX0_outclk] [get_bd_pins bufg_gt_tx_4_$name/outclk]
+      connect_bd_net [get_bd_pins gtwiz_versal_4_$name/QUAD0_RX0_outclk] [get_bd_pins bufg_gt_rx_4_$name/outclk]
+      connect_bd_net [get_bd_pins gtwiz_versal_4_$name/INTF0_TX_clr_out] [get_bd_pins bufg_gt_tx_4_$name/gt_bufgtclr]
+      connect_bd_net [get_bd_pins gtwiz_versal_4_$name/INTF0_TX_clr_out] [get_bd_pins bufg_gt_rx_4_$name/gt_bufgtclr]
+      connect_bd_net [get_bd_pins gtwiz_versal_4_$name/INTF0_rst_tx_done_out] [get_bd_pins bridge_4_$name/tx_reset_in]
+      connect_bd_net [get_bd_pins gtwiz_versal_4_$name/INTF0_rst_rx_done_out] [get_bd_pins bridge_4_$name/rx_reset_in]      
+      connect_bd_net [get_bd_pins versal_cips_0/pl0_ref_clk] [get_bd_pins bridge_0_$name/apb3clk] [get_bd_pins gtwiz_versal_0_$name/gtwiz_freerun_clk] [get_bd_pins bridge_1_$name/apb3clk] [get_bd_pins gtwiz_versal_1_$name/gtwiz_freerun_clk] [get_bd_pins bridge_2_$name/apb3clk] [get_bd_pins gtwiz_versal_2_$name/gtwiz_freerun_clk] [get_bd_pins bridge_3_$name/apb3clk] [get_bd_pins gtwiz_versal_3_$name/gtwiz_freerun_clk] [get_bd_pins bridge_4_$name/apb3clk] [get_bd_pins gtwiz_versal_4_$name/gtwiz_freerun_clk]
+
+      }      
+
+    }
     }
     
 
@@ -811,6 +1457,8 @@ proc createDesign {design_name options} {
             #set inst "${design_name}_i/gt_quad_base_${idx_p80}/inst/quad_inst"
           }
           set total_quads_temp [expr $total_quads_temp - 2]
+        } elseif {$type eq "GTM2"} {
+            set inst "${design_name}_i/gtwiz_versal_${idx}_${name}/inst/intf_quad_map_inst/quad_top_inst/gt_quad_base_0_inst/inst/quad_inst"
         } else {
           if {$idx == 0} {
             set inst "${design_name}_i/gtwiz_versal_${name}/inst/intf_quad_map_inst/quad_top_inst/gt_quad_base_0_inst/inst/quad_inst"
@@ -909,4 +1557,3 @@ proc createDesign {design_name options} {
   open_bd_design [get_bd_files $design_name]
   
 }
-
