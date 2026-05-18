@@ -1438,6 +1438,7 @@ set_property -dict [list \
 # Create instance: ISP_hier/visp_ss_tile0, and set properties
  set_property -dict [list \
   CONFIG.C_CONFIG_ONLY {false} \
+  CONFIG.C_ENABLE_OVERDRIVE {1} \								 
   CONFIG.C_LLPATH0_DELAY {2000} \
   CONFIG.C_LLPATH0_TILE {0} \
   CONFIG.C_LLPATH1_DELAY {2000} \
