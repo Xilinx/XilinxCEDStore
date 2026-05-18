@@ -164,7 +164,7 @@ proc addGUILayout {DESIGNOBJ PROJECT_PARAM.PART PROJECT_PARAM.PACKAGE PROJECT_PA
         set obj_quad [lindex $left_quads $i]
         #  source quads can be up to two above and two below the object quad (lrange will property size results from list)
         set source_quads [get_refclk_neighbors $pkg $obj_quad]
-        gui_refclk_choice_generation $obj_quad $source_quads
+        gui_refclk_choice_generation $obj_quad $source_quads $left_quads
       }
     }
     
@@ -208,7 +208,7 @@ proc addGUILayout {DESIGNOBJ PROJECT_PARAM.PART PROJECT_PARAM.PACKAGE PROJECT_PA
         set obj_quad [lindex $right_quads $i]
         #  source quads can be up to two above and two below the object quad (lrange will property size results from list)
         set source_quads [get_refclk_neighbors $pkg $obj_quad]
-        gui_refclk_choice_generation $obj_quad $source_quads
+        gui_refclk_choice_generation $obj_quad $source_quads $right_quads
       }
     }
   }
@@ -273,7 +273,7 @@ proc gui_quad_enablement {quad_list} {
 #  gui_updater call is needed for each. Dependencies will change based on the 
 #  part and package combination.
 #
-proc gui_refclk_choice_generation {object_quad source_quads} {
+proc gui_refclk_choice_generation {object_quad source_quads {displayed_quads {}}} {
   
   set watch_params ""
   set change_params ""
@@ -303,6 +303,15 @@ proc gui_refclk_choice_generation {object_quad source_quads} {
     if {[expr abs($source_quad_num-$object_quad_num)] != 1} {
       set middle_quad_num [expr ($source_quad_num+$object_quad_num)/2]
       set middle_quad [regsub {\d+$} $object_quad $middle_quad_num]
+      # Skip this source quad if the required relay (middle) quad is not
+      # exposed in this package's GUI. Otherwise the generated gui_updater
+      # would watch a non-existent parameter (${middle_quad}_ref.VALUE)
+      # and Vivado would invoke the updater proc with fewer arguments than
+      # its declared signature, producing a "wrong # args" error.
+      if {[llength $displayed_quads] > 0 && [lsearch -exact $displayed_quads $middle_quad] < 0} {
+        log "skipping source_quad $quad for $object_quad: relay $middle_quad not in displayed_quads"
+        continue
+      }
       set extra_term "\$\{${middle_quad}_en.VALUE\} == true && \$\{${middle_quad}_ref.VALUE\} eq {$quad} &&"
       lappend watch_params ${middle_quad}_ref.VALUE
     }
