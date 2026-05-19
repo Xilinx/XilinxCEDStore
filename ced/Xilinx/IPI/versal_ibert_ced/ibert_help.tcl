@@ -183,11 +183,20 @@ proc get_default_lr {quad} {
   }
 }
 
-proc get_pam_sel {lr} {
+proc get_pam_sel {lr type} {
+  if {$type ne "GTM2" && $type ne "GTMPW"} {
   if {$lr < 19.0} {
     return "NRZ"
   } else {
     return "PAM4"
+  }
+  } else {
+  if {$lr < 25.0} {
+    return "NRZ"
+  } else {
+    return "PAM4"
+  }
+
   }
 }
 
@@ -458,17 +467,17 @@ proc createDesign {design_name options} {
 	create_bd_cell -type inline_hdl -vlnv xilinx.com:inline_hdl:ilconstant xlconstant_$name
 	set_property CONFIG.CONST_VAL {0} [get_bd_cells xlconstant_$name]
 	connect_bd_net [get_bd_pins xlconstant_$name/dout] [get_bd_pins util_ds_buf_$name/IBUFDS_GTME5_CEB]
-        set pam_sel [get_pam_sel $lr]
+        #set pam_sel [get_pam_sel $lr $type]
         set width [get_${type}_width $lr]
-        set user_settings_dict [dict create TX_LINE_RATE $lr TX_REFCLK_FREQUENCY $ref_freq RX_LINE_RATE $lr RX_REFCLK_FREQUENCY $ref_freq GT_TYPE GTM RX_PAM_SEL $pam_sel TX_PAM_SEL $pam_sel TX_USER_DATA_WIDTH $width RX_USER_DATA_WIDTH $width TX_OUTCLK_SOURCE TXPROGDIVCLK RX_OUTCLK_SOURCE RXPROGDIVCLK]
+        set user_settings_dict [dict create TX_LINE_RATE $lr TX_REFCLK_FREQUENCY $ref_freq RX_LINE_RATE $lr RX_REFCLK_FREQUENCY $ref_freq GT_TYPE GTM TX_USER_DATA_WIDTH $width RX_USER_DATA_WIDTH $width TX_OUTCLK_SOURCE TXPROGDIVCLK RX_OUTCLK_SOURCE RXPROGDIVCLK]
       } elseif {$type eq "GTM2"} {
 	create_bd_cell -type ip -vlnv xilinx.com:ip:util_ds_buf util_ds_buf_$name
 	set_property CONFIG.C_BUF_TYPE {IBUFDS_GTM2} [get_bd_cells util_ds_buf_$name]
 	make_bd_intf_pins_external  [get_bd_intf_pins util_ds_buf_$name/CLK_IN_D3]
 	set_property name gt_refclk_$name [get_bd_intf_ports CLK_IN_D3_0]
-        set pam_sel [get_pam_sel $lr]
+        #set pam_sel [get_pam_sel $lr $type]
         set width [get_${type}_width $lr]
-        set user_settings_dict [dict create TX_LINE_RATE $lr TX_REFCLK_FREQUENCY $ref_freq RX_LINE_RATE $lr RX_REFCLK_FREQUENCY $ref_freq GT_TYPE GTM2 RX_PAM_SEL $pam_sel TX_PAM_SEL $pam_sel TX_USER_DATA_WIDTH $width RX_USER_DATA_WIDTH $width TX_OUTCLK_SOURCE TXPROGDIVCLK RX_OUTCLK_SOURCE RXPROGDIVCLK]
+        set user_settings_dict [dict create TX_LINE_RATE $lr TX_REFCLK_FREQUENCY $ref_freq RX_LINE_RATE $lr RX_REFCLK_FREQUENCY $ref_freq GT_TYPE GTM2 TX_USER_DATA_WIDTH $width RX_USER_DATA_WIDTH $width TX_OUTCLK_SOURCE TXPROGDIVCLK RX_OUTCLK_SOURCE RXPROGDIVCLK]
       } else {
 	create_bd_cell -type ip -vlnv xilinx.com:ip:util_ds_buf util_ds_buf_$name
 	set_property CONFIG.C_BUF_TYPE {IBUFDSGTE} [get_bd_cells util_ds_buf_$name]
@@ -759,9 +768,9 @@ proc createDesign {design_name options} {
 	set_property CONFIG.C_BUF_TYPE {IBUFDS_GTM2} [get_bd_cells util_ds_buf_$name]
 	make_bd_intf_pins_external  [get_bd_intf_pins util_ds_buf_$name/CLK_IN_D3]
 	set_property name gt_refclk_$name [get_bd_intf_ports CLK_IN_D3_0]
-        set pam_sel [get_pam_sel $lr]
+        #set pam_sel [get_pam_sel $lr $type]
         set width [get_${type}_width $lr]
-        set user_settings_dict [dict create TX_LINE_RATE $lr TX_REFCLK_FREQUENCY $ref_freq RX_LINE_RATE $lr RX_REFCLK_FREQUENCY $ref_freq GT_TYPE GTM2 RX_PAM_SEL $pam_sel TX_PAM_SEL $pam_sel TX_USER_DATA_WIDTH $width RX_USER_DATA_WIDTH $width TX_OUTCLK_SOURCE TXPROGDIVCLK RX_OUTCLK_SOURCE RXPROGDIVCLK]
+        set user_settings_dict [dict create TX_LINE_RATE $lr TX_REFCLK_FREQUENCY $ref_freq RX_LINE_RATE $lr RX_REFCLK_FREQUENCY $ref_freq GT_TYPE GTM2 TX_USER_DATA_WIDTH $width RX_USER_DATA_WIDTH $width TX_OUTCLK_SOURCE TXPROGDIVCLK RX_OUTCLK_SOURCE RXPROGDIVCLK]
 
       set settings_dict [dict create LR0 $user_settings_dict]
       set complete_settings [get_GT_string "None" $settings_dict ""]
@@ -1430,6 +1439,24 @@ proc createDesign {design_name options} {
     set part [get_property PART [current_project]]
     set device [lindex [split $part -] 0]
 
+    # Build a dict of TX_PAM_SEL per protocol by reading the actual
+    # CONFIG.INTF0_LR0_SETTINGS on each gtwiz_versal_<name> bd cell.
+    # This replaces the previous get_pam_sel helper.
+    set pam_sel_dict [dict create]
+    for {set p 0} {$p < [dict size $protocols]} {incr p} {
+      set pname [dict get $protocols $p name]
+      set cell  [get_bd_cells -quiet gtwiz_versal_$pname]
+      if {$cell eq ""} {
+        continue
+      }
+      set lr0    [get_property CONFIG.INTF0_LR0_SETTINGS $cell]
+      set ps_idx [lsearch $lr0 TX_PAM_SEL]
+      if {$ps_idx >= 0} {
+        dict set pam_sel_dict $pname [lindex $lr0 [expr {$ps_idx + 1}]]
+      }
+    }
+    log "pam_sel_dict: $pam_sel_dict"
+
     for {set i 0} {$i < [dict size $protocols]} {incr i} {
       set idx 0
       set name [dict get $protocols $i name]
@@ -1480,13 +1507,14 @@ proc createDesign {design_name options} {
       
       if {$type == "GTM"} {
         set instroot "U0/USE_IBUFDS_GTME5.GEN_IBUFDS_GTME5\[0\].IBUFDS_GTME5_U"
-        set pam_sel [get_pam_sel $line_rate] 
+        set pam_sel [dict get $pam_sel_dict $name]
+        #set actual_ref [dict get $protocols $i ref_freq]	
         set actual_ref [gtwiz::Ip_gtwiz_calculateActualRefclk_GTME5 $line_rate $refclk_freq 0 GTM $pam_sel]
       } elseif {$type == "GTM2"} {
         set instroot "U0/USE_IBUFDS_GTM2.GEN_IBUFDS_GTM2\[0\].IBUFDS_GTM2_U"
-	set actual_ref [dict get $protocols $i ref_freq]
+	#set actual_ref [dict get $protocols $i ref_freq]
         #set pam_sel [get_pam_sel $line_rate] 
-        #set actual_ref [gtwiz::Ip_gtwiz_calculateActualRefclk_GTM2 $line_rate $refclk_freq 0 GTM2 $pam_sel]
+        set actual_ref [gtwiz::Ip_gtwiz_calculateActualRefclk_GTM2 $line_rate $refclk_freq LCPLL]
       } else {
         set instroot "U0/USE_IBUFDS_GTE5.GEN_IBUFDS_GTE5\[0\].IBUFDS_GTE5_I"
         set actual_ref [gtwiz::Ip_gtwiz_calculateActualRefclk $line_rate $refclk_freq LCPLL]
