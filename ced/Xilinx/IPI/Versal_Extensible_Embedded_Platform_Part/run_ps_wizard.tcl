@@ -749,7 +749,6 @@ if { ([regexp "xc2vp" $fpga_part]) } {
 }
 
 
-# Limit MC usage to only DDR5 for L40, L60 and L75 devices due to IO constraints
 if { ([regexp "xc2vp3202" $fpga_part]) || ([regexp "xc2vp3402" $fpga_part]) || ([regexp "xc2vp3502" $fpga_part])} {
 	set use_lpddr 0
 }
@@ -795,7 +794,6 @@ set bdc false
 source -notrace "$currentDir/pfm_properties.tcl"
 
 
-# # Lhotse devices do not support Vitis Emulation flow - Setting SIM_MODEL to RTL rather than TLM
 # if { ([regexp "xc2vp" $fpga_part])  } {
 	# set_property SELECTED_SIM_MODEL rtl [get_bd_cells /ps_wizard_0]
 # } else {
