@@ -55,8 +55,33 @@ proc getSupportedBoards {} {
   }
   set r [list]
   foreach b $boards {
-    set p [lindex [get_board_parts *${b}:* -latest_file_version] 0]
-    lappend r [get_boards -of $p]
+    if {$b eq "vek385"} {
+      # Include both Rev A and Rev B boards if available. In Vivado, the Rev B
+      # board is published as a separate board (e.g. vek385_1) with "Rev B" in
+      # its DISPLAY_NAME, while the original Rev A board uses "vek385".
+      set rev_a ""
+      set rev_b ""
+      foreach brd [get_boards -quiet *vek385*] {
+        set dname [get_property -quiet DISPLAY_NAME $brd]
+        # Match "Rev A" / "Rev B" as whole tokens so revisions like "Rev A1"
+        # don't get picked up as Rev A.
+        if {[regexp -nocase {Rev[[:space:]]+B(\M|$)} $dname]} {
+          if {$rev_b eq ""} { set rev_b $brd }
+        } elseif {[regexp -nocase {Rev[[:space:]]+A(\M|$)} $dname]} {
+          if {$rev_a eq ""} { set rev_a $brd }
+        }
+      }
+      if {$rev_a eq "" && $rev_b eq ""} {
+        set p [lindex [get_board_parts *${b}:*] 0]
+        lappend r [get_boards -of $p]
+      } else {
+        if {$rev_a ne ""} { lappend r $rev_a }
+        if {$rev_b ne ""} { lappend r $rev_b }
+      }
+    } else {
+      set p [lindex [get_board_parts *${b}:*] 0]
+      lappend r [get_boards -of $p]
+    }
   }
 
   return $r
@@ -139,7 +164,13 @@ proc createDesign {design_name options} {
       set_property used_in_synthesis false [get_files  ${proj_dir}/${proj_name}.srcs/constrs_1/imports/versal_ibert_vek280_timing.xdc]
     }
     vek385 {
-      create_root_design_vek385 ""
+      create_root_design_vek385_reva ""
+      import_files -fileset constrs_1 -norecurse -flat "${currentDir}/xdc/versal_ibert_vek385.xdc"
+      import_files -fileset constrs_1 -norecurse -flat "${currentDir}/timing_constraints/versal_ibert_vek385_timing.xdc"
+      set_property used_in_synthesis false [get_files  ${proj_dir}/${proj_name}.srcs/constrs_1/imports/versal_ibert_vek385_timing.xdc]
+    }
+    vek385_1 {
+      create_root_design_vek385_revb ""
       import_files -fileset constrs_1 -norecurse -flat "${currentDir}/xdc/versal_ibert_vek385.xdc"
       import_files -fileset constrs_1 -norecurse -flat "${currentDir}/timing_constraints/versal_ibert_vek385_timing.xdc"
       set_property used_in_synthesis false [get_files  ${proj_dir}/${proj_name}.srcs/constrs_1/imports/versal_ibert_vek385_timing.xdc]
