@@ -339,7 +339,7 @@ proc create_root_design {currentDir design_name use_lpddr clk_options irqs use_a
 		
 		set_property CONFIG.MC_CHAN_REGION1 {DDR_CH0_MED} [get_bd_cells noc2_ddr5]
 
-	} elseif { [regexp "xc2vm3358" $fpga_part] || [regexp "xc2vm3654" $fpga_part] || [regexp "xc2vp3602" $fpga_part] } {
+	} elseif { [regexp "xc2vm3358" $fpga_part] || [regexp "xc2vm3654" $fpga_part] || [regexp "xc2vp3602" $fpga_part] || [regexp "xc2vp3202" $fpga_part] || [regexp "xc2vp3402" $fpga_part] || [regexp "xc2vp3502" $fpga_part]} {
 		
 		puts "NOC2_DDR5_INFO :: Applying Versal DDR5 configuration - 2"
 		set noc2_ddr5_flag 1
@@ -748,6 +748,12 @@ if { ([regexp "xc2vp" $fpga_part]) } {
 	set use_lpddr 1
 }
 
+
+# Limit MC usage to only DDR5 for L40, L60 and L75 devices due to IO constraints
+if { ([regexp "xc2vp3202" $fpga_part]) || ([regexp "xc2vp3402" $fpga_part]) || ([regexp "xc2vp3502" $fpga_part])} {
+	set use_lpddr 0
+}
+
 #Force disable NOC2 lpddr5 instantiation as already noc2_ddr5 configured as lpddr5 in 2023.2.1
 #set use_lpddr 0
 
@@ -788,6 +794,13 @@ set bdc false
 
 source -notrace "$currentDir/pfm_properties.tcl"
 
+
+# # Lhotse devices do not support Vitis Emulation flow - Setting SIM_MODEL to RTL rather than TLM
+# if { ([regexp "xc2vp" $fpga_part])  } {
+	# set_property SELECTED_SIM_MODEL rtl [get_bd_cells /ps_wizard_0]
+# } else {
+	# set_property SELECTED_SIM_MODEL tlm [get_bd_cells /ps_wizard_0]
+# }
 
 set_property SELECTED_SIM_MODEL tlm [get_bd_cells /ps_wizard_0]
 set_property SELECTED_SIM_MODEL tlm [get_bd_cells /ps_wiz_noc2]
