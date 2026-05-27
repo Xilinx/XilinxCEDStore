@@ -437,6 +437,21 @@ module qdma_app #(
   assign dsc_crdt_in_crdt  = credit_needed;
 
   assign c2h_byp_in_st_sim_at = c2h_byp_in_st_csh_at;
+
+  // FIX: Hold s_axil_araddr stable from AR-handshake until R-handshake so that
+  // user_control_i.m_axil_rdata (combinational on rd_addr) reflects the address
+  // the master AR'd, not the next pipelined AR. Without this, when the master
+  // issues consecutive ARs (AXI-Lite legal pipelining), m_axil_araddr advances
+  // before rvalid fires for the previous read and the master samples the wrong
+  // register's value (e.g. read(0x10) returns h2c_count at 0x14).
+  reg [31:0] s_axil_araddr_held;
+  always @(posedge clk) begin
+    if (!rst_n)
+      s_axil_araddr_held <= 32'h0;
+    else if (s_axil_arvalid & s_axil_arready)
+      s_axil_araddr_held <= s_axil_araddr;
+  end
+
   user_control
     #(
       .C_DATA_WIDTH (C_DATA_WIDTH),
@@ -473,7 +488,7 @@ module qdma_app #(
      .m_axil_wdata     (s_axil_wdata),
      .m_axil_rdata     (s_axil_rdata),
      .m_axil_rdata_bram(s_axil_rdata_bram),
-     .m_axil_araddr    (s_axil_araddr[31:0]),
+     .m_axil_araddr    (s_axil_araddr_held[31:0]),
      .m_axil_arvalid   (s_axil_arvalid),
      .soft_reset_n     (soft_reset_n),
      .st_loopback(st_loopback),
