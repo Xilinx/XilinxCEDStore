@@ -324,12 +324,12 @@ set_property top board [get_filesets sim_1]
 set_property top_lib xil_defaultlib [get_filesets sim_1]
 update_compile_order -fileset sim_1
 
-set_property target_simulator VCS [current_project]
+set_property target_simulator Questa [current_project]
 
-set_property -name "vcs.elaborate.vcs.more_options" -value "+nospecify +notimingchecks" -objects $obj
-set_property -name {vcs.simulate.runtime} -value {all} -objects [get_filesets sim_1]
-set_property -name {vcs.simulate.vcs.more_options} -value {} -objects [get_filesets sim_1]
-set_property -name {vcs.simulate.log_all_signals} -value {true} -objects [get_filesets sim_1]
+set_property -name {questa.elaborate.vopt.more_options} -value {+nospecify +notimingchecks} -objects [get_filesets sim_1]
+set_property -name {questa.simulate.log_all_signals} -value {true} -objects [get_filesets sim_1]
+set_property -name {questa.simulate.runtime} -value {-all} -objects [get_filesets sim_1]
+set_property -name {questa.simulate.vsim.more_options} -value {+notimingchecks} -objects [get_filesets sim_1]
 
 
 }
