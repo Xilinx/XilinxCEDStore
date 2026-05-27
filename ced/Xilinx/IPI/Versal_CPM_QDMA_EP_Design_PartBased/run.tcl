@@ -164,8 +164,8 @@ puts "INFO: default CPM5_QDMA_Gen5x8_ST_Performance_Design preset is selected."
 
 source "$currentDir/cpm5_qdma_g5x8_st_perf/design_1_bd.tcl"
 # Set synthesis property to be non-OOC
-set_property synth_checkpoint_mode Hierarchical [get_files $design_name.bd]
-#set_property synth_checkpoint_mode None [get_files $design_name.bd]
+#set_property synth_checkpoint_mode Hierarchical [get_files $design_name.bd]
+set_property synth_checkpoint_mode None [get_files $design_name.bd]
 generate_target all [get_files $design_name.bd]
 puts "INFO: EP bd generated"
 
@@ -185,8 +185,8 @@ set_property strategy Performance_Explore [get_runs impl_*]
 puts "INFO: default CPM5_QDMA_Dual_Gen5x8_ST_Performance_Design preset is selected."
 source "$currentDir/cpm5_qdma_g5x8_dual_perf/design_1_bd.tcl"
 # Set synthesis property to be non-OOC
-set_property synth_checkpoint_mode Hierarchical [get_files $design_name.bd]
-#set_property synth_checkpoint_mode None [get_files $design_name.bd]
+#set_property synth_checkpoint_mode Hierarchical [get_files $design_name.bd]
+set_property synth_checkpoint_mode None [get_files $design_name.bd]
 generate_target all [get_files $design_name.bd]
 puts "INFO: EP bd generated"
 
@@ -197,7 +197,7 @@ open_bd_design [get_bd_files $design_name.bd]
 validate_bd_design
 save_bd_design
 
-set_property strategy Performance_Explore [get_runs impl_*]
+set_property strategy Performance_ExploreWithRemap [get_runs impl_*]
 
 puts "INFO: design generation completed successfully"
 
