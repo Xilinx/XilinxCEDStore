@@ -59,9 +59,12 @@ proc getSupportedBoards {} {
       # Include both Rev A and Rev B boards if available. In Vivado, the Rev B
       # board is published as a separate board (e.g. vek385_1) with "Rev B" in
       # its DISPLAY_NAME, while the original Rev A board uses "vek385".
+      # Use -latest_file_version so we pick the newest file version of each board.
       set rev_a ""
       set rev_b ""
-      foreach brd [get_boards -quiet *vek385*] {
+      foreach bp [get_board_parts -quiet -latest_file_version *vek385*] {
+        set brd [lindex [get_boards -quiet -of $bp] 0]
+        if {$brd eq ""} { continue }
         set dname [get_property -quiet DISPLAY_NAME $brd]
         # Match "Rev A" / "Rev B" as whole tokens so revisions like "Rev A1"
         # don't get picked up as Rev A.
@@ -72,14 +75,16 @@ proc getSupportedBoards {} {
         }
       }
       if {$rev_a eq "" && $rev_b eq ""} {
-        set p [lindex [get_board_parts *${b}:*] 0]
+        set p [lindex [get_board_parts -quiet -latest_file_version *${b}:*] 0]
         lappend r [get_boards -of $p]
       } else {
         if {$rev_a ne ""} { lappend r $rev_a }
         if {$rev_b ne ""} { lappend r $rev_b }
       }
     } else {
-      set p [lindex [get_board_parts *${b}:*] 0]
+      # Use -latest_file_version so the GUI shows the newest available
+      # board file version (e.g. vck190 3.4 instead of 2.2).
+      set p [lindex [get_board_parts -quiet -latest_file_version *${b}:*] 0]
       lappend r [get_boards -of $p]
     }
   }
@@ -182,5 +187,4 @@ proc createDesign {design_name options} {
   open_bd_design [get_bd_designs -filter {NAME == "chipscopy"}]
   # exec echo "PHASE_DONE" > ${proj_dir}/[current_project].srcs/[current_fileset]/bd/chipscopy/ip/chipscopy_noc_tg_0/chipscopy_noc_tg_0_synth_pattern.csv
 }
-
 

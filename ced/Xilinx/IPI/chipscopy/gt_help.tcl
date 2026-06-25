@@ -1,6 +1,12 @@
 
 
-proc create_quad {parentCell nameHier refclk_name gt_type line_rate refclk_freq} {
+proc create_quad {parentCell nameHier refclk_name gt_type line_rate refclk_freq {share_refclk 0}} {
+    # share_refclk: when non-zero, the quad does NOT instantiate its own
+    # util_ds_buf / external diff refclk port. Instead, after grouping, a
+    # single-ended hier pin named 'gt_refclk_in' is exposed and wired to
+    # gtwiz_versal/QUAD0_GTREFCLK0. The caller is responsible for creating ONE
+    # shared util_ds_buf (IBUFDSGTE) at the parent level and connecting its
+    # IBUF_OUT (single-ended) to gt_refclk_in of each sharing quad.
     set parentObj [get_bd_cells $parentCell]
     # Set parent object as current
     current_bd_instance $parentObj
@@ -15,20 +21,24 @@ proc create_quad {parentCell nameHier refclk_name gt_type line_rate refclk_freq}
         } else {
             set pam_sel "NRZ"
         }
-	create_bd_cell -type ip -vlnv xilinx.com:ip:util_ds_buf util_ds_buf
-	set_property CONFIG.C_BUF_TYPE {IBUFDS_GTME5} [get_bd_cells util_ds_buf]
-	make_bd_intf_pins_external  [get_bd_intf_pins util_ds_buf/CLK_IN_D1]
-	#set_property name gt_refclk_$name [get_bd_intf_ports CLK_IN_D1_0]
-	create_bd_cell -type inline_hdl -vlnv xilinx.com:inline_hdl:ilconstant xlconstant
-	set_property CONFIG.CONST_VAL {0} [get_bd_cells xlconstant]
-	connect_bd_net [get_bd_pins xlconstant/dout] [get_bd_pins util_ds_buf/IBUFDS_GTME5_CEB]
+	if {!$share_refclk} {
+	  create_bd_cell -type ip -vlnv xilinx.com:ip:util_ds_buf util_ds_buf
+	  set_property CONFIG.C_BUF_TYPE {IBUFDS_GTME5} [get_bd_cells util_ds_buf]
+	  make_bd_intf_pins_external  [get_bd_intf_pins util_ds_buf/CLK_IN_D1]
+	  #set_property name gt_refclk_$name [get_bd_intf_ports CLK_IN_D1_0]
+	  create_bd_cell -type inline_hdl -vlnv xilinx.com:inline_hdl:ilconstant xlconstant
+	  set_property CONFIG.CONST_VAL {0} [get_bd_cells xlconstant]
+	  connect_bd_net [get_bd_pins xlconstant/dout] [get_bd_pins util_ds_buf/IBUFDS_GTME5_CEB]
+	}
         set width [expr $line_rate > 57.0 ? 320 : 160]
         set user_settings_dict [dict create TX_LINE_RATE $line_rate TX_REFCLK_FREQUENCY $refclk_freq RX_LINE_RATE $line_rate RX_REFCLK_FREQUENCY $refclk_freq GT_TYPE GTM RX_PAM_SEL $pam_sel TX_PAM_SEL $pam_sel TX_USER_DATA_WIDTH $width RX_USER_DATA_WIDTH $width TX_OUTCLK_SOURCE TXPROGDIVCLK RX_OUTCLK_SOURCE RXPROGDIVCLK]
     } else {
-	create_bd_cell -type ip -vlnv xilinx.com:ip:util_ds_buf util_ds_buf
-	set_property CONFIG.C_BUF_TYPE {IBUFDSGTE} [get_bd_cells util_ds_buf]
-	make_bd_intf_pins_external  [get_bd_intf_pins util_ds_buf/CLK_IN_D]
-	#set_property name gt_refclk_$name [get_bd_intf_ports CLK_IN_D_0]
+	if {!$share_refclk} {
+	  create_bd_cell -type ip -vlnv xilinx.com:ip:util_ds_buf util_ds_buf
+	  set_property CONFIG.C_BUF_TYPE {IBUFDSGTE} [get_bd_cells util_ds_buf]
+	  make_bd_intf_pins_external  [get_bd_intf_pins util_ds_buf/CLK_IN_D]
+	  #set_property name gt_refclk_$name [get_bd_intf_ports CLK_IN_D_0]
+	}
         set user_settings_dict [dict create TX_LINE_RATE $line_rate TX_REFCLK_FREQUENCY $refclk_freq RX_LINE_RATE $line_rate RX_REFCLK_FREQUENCY $refclk_freq ]
     }
 
@@ -68,23 +78,38 @@ proc create_quad {parentCell nameHier refclk_name gt_type line_rate refclk_freq}
 
 	make_bd_intf_pins_external  [get_bd_intf_pins gtwiz_versal/Quad0_GT_Serial]
 
-        if {$gt_type eq "GTM"} {
-          connect_bd_net [get_bd_pins util_ds_buf/IBUFDS_GTME5_O] [get_bd_pins gtwiz_versal/QUAD0_GTREFCLK0]
-	} else {
-          connect_bd_net [get_bd_pins util_ds_buf/IBUF_OUT] [get_bd_pins gtwiz_versal/QUAD0_GTREFCLK0]
-	}
+        if {!$share_refclk} {
+          if {$gt_type eq "GTM"} {
+            connect_bd_net [get_bd_pins util_ds_buf/IBUFDS_GTME5_O] [get_bd_pins gtwiz_versal/QUAD0_GTREFCLK0]
+	  } else {
+            connect_bd_net [get_bd_pins util_ds_buf/IBUF_OUT] [get_bd_pins gtwiz_versal/QUAD0_GTREFCLK0]
+	  }
+        }
 
     #puts "renaming refclks"
-    if {$gt_type eq "GTM"} {
-      set_property name bridge_refclk${refclk_name}_diff_gt_ref_clock [get_bd_intf_ports CLK_IN_D1_0]  	
-    } else {
-      set_property name bridge_refclk${refclk_name}_diff_gt_ref_clock [get_bd_intf_ports CLK_IN_D_0]
+    if {!$share_refclk} {
+      if {$gt_type eq "GTM"} {
+        set_property name bridge_refclk${refclk_name}_diff_gt_ref_clock [get_bd_intf_ports CLK_IN_D1_0]
+      } else {
+        set_property name bridge_refclk${refclk_name}_diff_gt_ref_clock [get_bd_intf_ports CLK_IN_D_0]
+      }
     }
     puts "creating hierarchy and clock port"
-    if {$gt_type eq "GTM"} { 
+    if {$share_refclk} {
+      # No util_ds_buf inside the hier; caller drives gt_refclk_in.
+      group_bd_cells $nameHier [get_bd_cells bufg_gt_tx] [get_bd_cells bridge] [get_bd_cells gtwiz_versal] [get_bd_cells bufg_gt_rx]
+    } elseif {$gt_type eq "GTM"} { 
       group_bd_cells $nameHier [get_bd_cells bufg_gt_tx] [get_bd_cells bridge] [get_bd_cells gtwiz_versal] [get_bd_cells bufg_gt_rx] [get_bd_cells util_ds_buf] [get_bd_cells xlconstant]
     } else {
       group_bd_cells $nameHier [get_bd_cells bufg_gt_tx] [get_bd_cells bridge] [get_bd_cells gtwiz_versal] [get_bd_cells bufg_gt_rx] [get_bd_cells util_ds_buf]
+    }
+    if {$share_refclk} {
+      # Expose gtwiz_versal/QUAD0_GTREFCLK0 as a single-ended hier input pin so
+      # the caller can drive it from a shared IBUFDSGTE's IBUF_OUT.
+      current_bd_instance $nameHier
+      create_bd_pin -dir I -type clk gt_refclk_in
+      connect_bd_net [get_bd_pins gt_refclk_in] [get_bd_pins gtwiz_versal/QUAD0_GTREFCLK0]
+      current_bd_instance $parentObj
     }
     current_bd_instance $nameHier
     create_bd_pin -dir I -type clk apb3clk

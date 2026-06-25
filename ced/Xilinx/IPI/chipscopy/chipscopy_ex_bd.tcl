@@ -1233,13 +1233,22 @@ proc create_root_design_vek280 { parentCell } {
   create_quad [current_bd_instance .] gtyp_quad_106 X0Y8 GTYP 10.3125 156.25 
   
    # Create instance: gty_quad_201
-  create_quad [current_bd_instance .] gtyp_quad_204 X1Y4 GTYP 10.3125 100.0
+  create_quad [current_bd_instance .] gtyp_quad_204 X1Y6 GTYP 10.3125 100.0 1
   
    # Create instance: gty_quad_204
-  create_quad [current_bd_instance .] gtyp_quad_205 X1Y6 GTYP 16.0 100.0
+  create_quad [current_bd_instance .] gtyp_quad_205 X1Y6 GTYP 16.0 100.0 1
   
    # Create instance: gty_quad_205
   create_quad [current_bd_instance .] gtyp_quad_206 X1Y8 GTYP 25.0 100.0
+
+    # Shared IBUFDSGTE for the X1Y6 refclk.
+  create_bd_cell -type ip -vlnv xilinx.com:ip:util_ds_buf util_ds_buf_x1y6
+  set_property CONFIG.C_BUF_TYPE {IBUFDSGTE} [get_bd_cells util_ds_buf_x1y6]
+  make_bd_intf_pins_external [get_bd_intf_pins util_ds_buf_x1y6/CLK_IN_D]
+  set_property name bridge_refclkX1Y6_diff_gt_ref_clock [get_bd_intf_ports CLK_IN_D_0]
+  connect_bd_net [get_bd_pins util_ds_buf_x1y6/IBUF_OUT] \
+    [get_bd_pins gtyp_quad_204/gt_refclk_in] \
+    [get_bd_pins gtyp_quad_205/gt_refclk_in] 
   
    # Create interface connections
   connect_bd_intf_net -intf_net axi_noc_0_CH0_LPDDR4_0 [get_bd_intf_ports ch0_lpddr4_trip1] [get_bd_intf_pins axi_noc_0/CH0_LPDDR4_0]
@@ -1690,18 +1699,24 @@ proc create_root_design_vek385_reva { parentCell } {
 
   # Must create quads after CIPs as the apb3 clk is connected to pl_out_clk
 
-      # Create instance: gtyp_quad_200
-  create_quad [current_bd_instance .] gtyp_quad_106 X0Y2 GTYP 25.0 100.0
-  
-   # Create instance: gtyp_quad_201
-  create_quad [current_bd_instance .] gtyp_quad_107 X0Y4 GTYP 16.0 100.0
-  
-   # Create instance: gtm_quad_204
-  create_quad [current_bd_instance .] gtyp_quad_205 X1Y0 GTYP 20 156.25
-  
-   # Create instance: gtm_quad_205
-  create_quad [current_bd_instance .] gtyp_quad_206 X1Y2 GTYP 10 156.25
- 
+  # Same quads / GT settings as vek385_revb: three quads share refclk X1Y2.
+  # Use share_refclk=1 so create_quad does NOT instantiate its own util_ds_buf
+  # / external diff port. We instantiate ONE shared IBUFDSGTE here and fan its
+  # single-ended IBUF_OUT to each quad's gt_refclk_in.
+  create_quad [current_bd_instance .] gtyp_quad_205 X1Y2 GTYP 16.0 322.265 1
+  create_quad [current_bd_instance .] gtyp_quad_206 X1Y2 GTYP 20   322.265 1
+  create_quad [current_bd_instance .] gtyp_quad_207 X1Y2 GTYP 10   322.265 1
+
+  # Shared IBUFDSGTE for the X1Y2 refclk.
+  create_bd_cell -type ip -vlnv xilinx.com:ip:util_ds_buf util_ds_buf_x1y2
+  set_property CONFIG.C_BUF_TYPE {IBUFDSGTE} [get_bd_cells util_ds_buf_x1y2]
+  make_bd_intf_pins_external [get_bd_intf_pins util_ds_buf_x1y2/CLK_IN_D]
+  set_property name bridge_refclkX1Y2_diff_gt_ref_clock [get_bd_intf_ports CLK_IN_D_0]
+  connect_bd_net [get_bd_pins util_ds_buf_x1y2/IBUF_OUT] \
+    [get_bd_pins gtyp_quad_205/gt_refclk_in] \
+    [get_bd_pins gtyp_quad_206/gt_refclk_in] \
+    [get_bd_pins gtyp_quad_207/gt_refclk_in]
+
 
   # Create interface connections
   connect_bd_intf_net -intf_net axi_noc2_C0_CH0_LPDDR5_0 [get_bd_intf_ports ch0_lpddr5] [get_bd_intf_pins axi_noc2_0/C0_CH0_LPDDR5] 
@@ -1723,7 +1738,7 @@ proc create_root_design_vek385_reva { parentCell } {
   connect_bd_intf_net -intf_net ps_wizard_0_FPD_AXI_NOC7 [get_bd_intf_pins ps_wizard_0/FPD_AXI_NOC7] [get_bd_intf_pins axi_noc2_0/S10_AXI]
 
   # Create port connections
-  connect_bd_net -net clk_wizard_0_clk_out1 [get_bd_pins clk_wizard_0/clk_out1] [get_bd_pins axi_noc2_0/aclk2] [get_bd_pins gtyp_quad_106/apb3clk] [get_bd_pins gtyp_quad_107/apb3clk] [get_bd_pins gtyp_quad_205/apb3clk] [get_bd_pins gtyp_quad_206/apb3clk] [get_bd_pins noc_tg_bc/pclk] [get_bd_pins proc_sys_reset_0/slowest_sync_clk]
+  connect_bd_net -net clk_wizard_0_clk_out1 [get_bd_pins clk_wizard_0/clk_out1] [get_bd_pins axi_noc2_0/aclk2] [get_bd_pins gtyp_quad_205/apb3clk] [get_bd_pins gtyp_quad_206/apb3clk] [get_bd_pins gtyp_quad_207/apb3clk] [get_bd_pins noc_tg_bc/pclk] [get_bd_pins proc_sys_reset_0/slowest_sync_clk]
   connect_bd_net -net clk_wizard_0_clk_out2 [get_bd_pins clk_wizard_0/clk_out2] [get_bd_pins counters/clk100]
   connect_bd_net -net clk_wizard_0_clk_out3 [get_bd_pins clk_wizard_0/clk_out3] [get_bd_pins counters/clk200]
   connect_bd_net -net clk_wizard_0_clk_out4 [get_bd_pins axi_noc2_0/aclk3] [get_bd_pins clk_wizard_0/clk_out4] [get_bd_pins noc_tg_bc/clk]
@@ -2216,17 +2231,25 @@ proc create_root_design_vek385_revb { parentCell } {
   ] $ps_wizard_0
 
 
-      # Create instance: gtyp_quad_200
-  create_quad [current_bd_instance .] gtyp_quad_106 X0Y2 GTYP 25.0 100.0
-  
-   # Create instance: gtyp_quad_201
-  create_quad [current_bd_instance .] gtyp_quad_107 X0Y4 GTYP 16.0 100.0
-  
-   # Create instance: gtm_quad_204
-  create_quad [current_bd_instance .] gtyp_quad_205 X1Y0 GTYP 20 156.25
-  
-   # Create instance: gtm_quad_205
-  create_quad [current_bd_instance .] gtyp_quad_206 X1Y2 GTYP 10 156.25
+      # Create instance: gtyp_quad_106 (owns refclk X0Y2)
+  #create_quad [current_bd_instance .] gtyp_quad_106 X0Y2 GTYP 25.0 100.0
+
+  # All three quads below share refclk X1Y2. Use share_refclk=1 so create_quad
+  # skips its own util_ds_buf / external port. We create ONE shared IBUFDSGTE
+  # buffer here and fan its single-ended IBUF_OUT to each quad's gt_refclk_in.
+  create_quad [current_bd_instance .] gtyp_quad_205 X1Y2 GTYP 16.0 322.265 1
+  create_quad [current_bd_instance .] gtyp_quad_206 X1Y2 GTYP 20   322.265 1
+  create_quad [current_bd_instance .] gtyp_quad_207 X1Y2 GTYP 10   322.265 1
+
+  # Shared IBUFDSGTE for the X1Y2 refclk.
+  create_bd_cell -type ip -vlnv xilinx.com:ip:util_ds_buf util_ds_buf_x1y2
+  set_property CONFIG.C_BUF_TYPE {IBUFDSGTE} [get_bd_cells util_ds_buf_x1y2]
+  make_bd_intf_pins_external [get_bd_intf_pins util_ds_buf_x1y2/CLK_IN_D]
+  set_property name bridge_refclkX1Y2_diff_gt_ref_clock [get_bd_intf_ports CLK_IN_D_0]
+  connect_bd_net [get_bd_pins util_ds_buf_x1y2/IBUF_OUT] \
+    [get_bd_pins gtyp_quad_205/gt_refclk_in] \
+    [get_bd_pins gtyp_quad_206/gt_refclk_in] \
+    [get_bd_pins gtyp_quad_207/gt_refclk_in]
 
   # Create instance: util_ds_buf_0, and set properties
   set util_ds_buf_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:util_ds_buf:2.2 util_ds_buf_0 ]
@@ -2237,18 +2260,12 @@ proc create_root_design_vek385_revb { parentCell } {
 
 
   # Create interface connections
-  connect_bd_intf_net -intf_net CLK_IN_D_0_1 [get_bd_intf_ports bridge_refclkX0Y2_diff_gt_ref_clock] [get_bd_intf_pins gtyp_quad_106/bridge_refclkX0Y2_diff_gt_ref_clock]
-  connect_bd_intf_net -intf_net CLK_IN_D_0_2 [get_bd_intf_ports bridge_refclkX0Y4_diff_gt_ref_clock] [get_bd_intf_pins gtyp_quad_107/bridge_refclkX0Y4_diff_gt_ref_clock]
-  connect_bd_intf_net -intf_net CLK_IN_D_0_3 [get_bd_intf_ports bridge_refclkX1Y0_diff_gt_ref_clock] [get_bd_intf_pins gtyp_quad_205/bridge_refclkX1Y0_diff_gt_ref_clock]
-  connect_bd_intf_net -intf_net CLK_IN_D_0_4 [get_bd_intf_ports bridge_refclkX1Y2_diff_gt_ref_clock] [get_bd_intf_pins gtyp_quad_206/bridge_refclkX1Y2_diff_gt_ref_clock]
   connect_bd_intf_net -intf_net axi_noc2_0_M00_AXI [get_bd_intf_pins axi_noc2_0/M00_AXI] [get_bd_intf_pins noc_tg_bc/SLOT_0_AXI]
   set_property HDL_ATTRIBUTE.DEBUG {true} [get_bd_intf_nets axi_noc2_0_M00_AXI]
   connect_bd_intf_net -intf_net axi_noc2_0_M01_AXI [get_bd_intf_pins axi_noc2_0/M01_AXI] [get_bd_intf_pins noc_tg_bc/S00_AXI]
   connect_bd_intf_net -intf_net axi_noc2_C0_CH0_LPDDR5_0 [get_bd_intf_ports ch0_lpddr5] [get_bd_intf_pins axi_noc2_0/C0_CH0_LPDDR5]
-  connect_bd_intf_net -intf_net gtwiz_versal_Quad0_GT_Serial [get_bd_intf_ports Quad0_GT_Serial_0] [get_bd_intf_pins gtyp_quad_106/Quad0_GT_Serial_0]
-  connect_bd_intf_net -intf_net gtwiz_versal_Quad0_GT_Serial1 [get_bd_intf_ports Quad0_GT_Serial_1] [get_bd_intf_pins gtyp_quad_107/Quad0_GT_Serial_1]
-  connect_bd_intf_net -intf_net gtwiz_versal_Quad0_GT_Serial2 [get_bd_intf_ports Quad0_GT_Serial_2] [get_bd_intf_pins gtyp_quad_205/Quad0_GT_Serial_2]
-  connect_bd_intf_net -intf_net gtwiz_versal_Quad0_GT_Serial3 [get_bd_intf_ports Quad0_GT_Serial_3] [get_bd_intf_pins gtyp_quad_206/Quad0_GT_Serial_3]
+  # Quad0_GT_Serial_{0,1,2} external ports were already auto-connected by
+  # make_bd_intf_pins_external inside create_quad; no explicit connection needed here.
   connect_bd_intf_net -intf_net lpddr5_clk0_1_1 [get_bd_intf_ports lpddr5_clk0_1] [get_bd_intf_pins util_ds_buf_0/CLK_IN_D]
   connect_bd_intf_net -intf_net noc_tg_M_AXI [get_bd_intf_pins axi_noc2_0/S00_AXI] [get_bd_intf_pins noc_tg_bc/M_AXI]
   connect_bd_intf_net -intf_net ps_wizard_0_FPD_AXI_NOC0 [get_bd_intf_pins ps_wizard_0/FPD_AXI_NOC0] [get_bd_intf_pins axi_noc2_0/S03_AXI]
@@ -2264,10 +2281,9 @@ proc create_root_design_vek385_revb { parentCell } {
 
   # Create port connections
   connect_bd_net -net clk_wizard_0_clk_out1  [get_bd_pins clk_wizard_0/clk_out1] \
-  [get_bd_pins gtyp_quad_106/apb3clk] \
-  [get_bd_pins gtyp_quad_107/apb3clk] \
   [get_bd_pins gtyp_quad_205/apb3clk] \
   [get_bd_pins gtyp_quad_206/apb3clk] \
+  [get_bd_pins gtyp_quad_207/apb3clk] \
   [get_bd_pins noc_tg_bc/pclk] \
   [get_bd_pins axi_noc2_0/aclk2] \
   [get_bd_pins proc_sys_reset_0/slowest_sync_clk]
@@ -2413,4 +2429,3 @@ preplace cgraphic comment_0 place top -250 -80 textcolor 4 linecolor 3 linewidth
   save_bd_design
 }
 ####
-
