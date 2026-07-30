@@ -523,17 +523,20 @@ NONE HBM_PC1_USER_DEFINED_ADDRESS_MAP NONE} \
   set_property -dict [list \
     CONFIG.NUM_MI {2} \
     CONFIG.NUM_SI {1} \
+    CONFIG.ADVANCED_PROPERTIES {__experimental_features__ {legacy_low_area_mode 1}} \
   ] $smartconnect_0
 
 
   # Create instance: smartconnect_1, and set properties
   set smartconnect_1 [ create_bd_cell -type ip -vlnv xilinx.com:ip:smartconnect smartconnect_1 ]
   set_property CONFIG.NUM_SI {1} $smartconnect_1
+  set_property CONFIG.ADVANCED_PROPERTIES {__experimental_features__ {legacy_low_area_mode 1}} $smartconnect_1
 
 
   # Create instance: smartconnect_2, and set properties
   set smartconnect_2 [ create_bd_cell -type ip -vlnv xilinx.com:ip:smartconnect smartconnect_2 ]
   set_property CONFIG.NUM_SI {1} $smartconnect_2
+  set_property CONFIG.ADVANCED_PROPERTIES {__experimental_features__ {legacy_low_area_mode 1}} $smartconnect_2
 
 
   # Create instance: versal_cips_0, and set properties
