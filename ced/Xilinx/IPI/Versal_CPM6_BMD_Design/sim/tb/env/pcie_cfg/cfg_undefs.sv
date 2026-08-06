@@ -1,0 +1,9 @@
+`undef CDO_SET_BIT
+`undef CDO_CLR_BIT
+`undef CDO_SET_FLD_RA
+`undef CDO_SET_FLD_CA
+`undef CDO_SET_FLD_LA
+`undef CDO_SET_ALL
+`undef CDO_SET_ALL_C
+`undef GET_DFAULT
+`undef GET_DFAULT_C
