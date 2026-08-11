@@ -874,6 +874,25 @@
           "metadata_file": "xitem.json"
         },
         "company": "xilinx.com"
+      },
+      {
+        "name": "cpm6_bmd",
+        "display": "Versal CPM6 BMD Design",
+        "latest_revision": "1.0",
+        "commit_id": "503d969d2d0981031a2d5aaa2fceb560994e9585",
+        "revisions": [
+          {
+            "revision": "1.0",
+            "commit_id": "503d969d2d0981031a2d5aaa2fceb560994e9585",
+            "date": "11-08-2026:09:01:29",
+            "history": "Added board Versal CPM6 BMD Design v1.0"
+          }
+        ],
+        "config": {
+          "root": "ced/Xilinx/IPI/Versal_CPM6_BMD_Design",
+          "metadata_file": "xitem.json"
+        },
+        "company": "xilinx.com"
       }
     ],
     "categories": [
