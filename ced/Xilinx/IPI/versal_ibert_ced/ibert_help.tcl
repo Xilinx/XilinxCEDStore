@@ -370,10 +370,25 @@ proc createDesign {design_name options} {
 
     set part [get_property PART [current_project]]
     set device [lindex [split $part -] 0]
-    set pkg [lindex [split $part -] 1]  
+    set pkg [lindex [split $part -] 1] 
 
-    if {$device eq "xcvp1902" || $device eq "xcvm2152" || $device eq "xcvr1602" || $device eq "xcvr1652" || $device eq "xc10S70" || $device eq "xc2vp3202" || $device eq "xc2vp3402" || $device eq "xc2vp3502" || $device eq "xc2vp3602"} {
-      create_bd_cell -type ip -vlnv xilinx.com:ip:ps_wizard:1.0 versal_cips_0
+    if {[lsearch -inline [split [get_property supported_families [get_ipdefs xilinx.com:ip:ps_wizard:*.*]] ":"] $part*] != ""} {
+      set versal_cips_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:ps_wizard versal_cips_0 ]
+      set cell [get_bd_cells versal_cips_0]
+      set report [report_property -return_string $cell]
+      if {[string match *PS_PMC* $report]} { 
+        set has_pswizard_PS11 0 
+        set has_pswizard_PS9 1 
+      } else { 
+        set has_pswizard_PS11 1
+        set has_pswizard_PS9 0
+      } 
+    } else {
+      set has_pswizard_PS11 0 
+      set has_pswizard_PS9 0 
+    }    
+
+    if {$has_pswizard_PS9} {
       set_property -dict [list \
         CONFIG.PS_PMC_CONFIG(PMC_CRP_PL0_REF_CTRL_FREQMHZ) {125} \
         CONFIG.PS_PMC_CONFIG(PS_NUM_FABRIC_RESETS) {0} \
@@ -386,8 +401,7 @@ proc createDesign {design_name options} {
         puts $f "set_property -dict \[list CONFIG.PS_PMC_CONFIG(PMC_CRP_PL0_REF_CTRL_FREQMHZ) {125} \\"
         puts $f "  CONFIG.PS_PMC_CONFIG(PS_NUM_FABRIC_RESETS) {0} CONFIG.PS_PMC_CONFIG(PS_USE_PMCPL_CLK0) {1} \] \[get_bd_cells versal_cips_0\]"
       }
-    } elseif {$device eq "xc2ve3504" || $device eq "xc2ve3558" || $device eq "xc2ve3804" || $device eq "xc2ve3858" || $device eq "xc2vm3558" || $device eq "xc2vm3858" || $device eq "xc2vm3358" || $device eq "xc2ve3304" || $device eq "xc2ve3358"} {
-      create_bd_cell -type ip -vlnv xilinx.com:ip:ps_wizard:1.0 versal_cips_0
+    } elseif {$has_pswizard_PS11} {
       set_property -dict [list \
         CONFIG.PS11_CONFIG(PMC_CRP_PL0_REF_CTRL_FREQMHZ) {125} \
         CONFIG.PS11_CONFIG(PS_NUM_FABRIC_RESETS) {0} \

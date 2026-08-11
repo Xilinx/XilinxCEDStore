@@ -21,7 +21,7 @@ source -notrace "$currentDir/run.tcl"
 
 proc getSupportedParts {} {
 	 #return [get_parts xcvm2152-nfvm1369-1LP-e-S]
-	 return [get_parts -filter {NAME =~ xcvm2152-nfvm1369-1LP-e-S}]
+	 return [get_parts -filter {NAME =~ xcvm2152-nfvm1369-1LP-e-S} -quiet]
 }
 
 proc getSupportedBoards {} {

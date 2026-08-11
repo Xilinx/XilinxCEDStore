@@ -110,7 +110,16 @@ proc createDesign {design_name options} {
     # Create instance: ps_e, and set properties
     set ps_e [ create_bd_cell -type ip -vlnv xilinx.com:ip:zynq_ultra_ps_e ps_e ]
     apply_bd_automation -rule xilinx.com:bd_rule:zynq_ultra_ps_e -config {apply_board_preset "1" }  [get_bd_cells ps_e]
-    
+
+    if { ![regexp {zcu208ld|zcu216ld|zcu670ld|zcu1275|zcu1285|vermeo|som|k26|k24} $board_name] } {
+      set_property -dict [list \
+        CONFIG.PSU__GEN_IPI_10__MASTER {APU} \
+        CONFIG.PSU__GEN_IPI_7__MASTER {APU} \
+        CONFIG.PSU__GEN_IPI_8__MASTER {APU} \
+        CONFIG.PSU__GEN_IPI_9__MASTER {APU} \
+      ] [get_bd_cells ps_e]
+    }
+
     if {$irqs == "32"} {
      
       if {[regexp "som" $board_name]||[regexp "k26" $board_name]} {

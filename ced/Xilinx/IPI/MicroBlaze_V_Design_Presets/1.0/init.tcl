@@ -30,7 +30,7 @@ proc getSupportedParts {} {
 proc getSupportedBoards {} {
   #return [get_board_parts -filter {(BOARD_NAME =~"*vck190*" && VENDOR_NAME=="xilinx.com" ) || (BOARD_NAME =~"*vmk180*" && VENDOR_NAME=="xilinx.com" )}  -latest_file_version]
   # return [get_board_parts -filter {(PART_NAME!~"*xc7z*" && PART_NAME!~"*xcvc*" && PART_NAME!~"*xcvm*" && PART_NAME!~"*xcvp*" &&  PART_NAME!~"*xczu*" && VENDOR_NAME=="xilinx.com")} -latest_file_version]
-  return [get_board_parts -filter {(DISPLAY_NAME =~"*Kintex*" || DISPLAY_NAME =~"*Artix*" || DISPLAY_NAME =~"*Virtex*" || DISPLAY_NAME =~"*Spartan*" && VENDOR_NAME=="xilinx.com" )} -latest_file_version]
+  return [get_board_parts -filter {(DISPLAY_NAME =~"*Kintex*" || DISPLAY_NAME =~"*Artix*" || DISPLAY_NAME =~"*Virtex*" || DISPLAY_NAME =~"*Spartan*" && VENDOR_NAME=="xilinx.com" )} -latest_file_version -quiet]
 }
 
 
@@ -43,7 +43,6 @@ proc addOptions {DESIGNOBJ PROJECT_PARAM.BOARD_PART} {
 
       lappend x [dict create name "Preset" type "string" value "Microcontroller" value_list {"Microcontroller Microcontroller___Suitable_for_running_baremetal_code" "Real-time_Processor Real-time____________Deterministic_real-time_processing_on_RTOS"} enabled true]
       return $x
-
 }
 
 proc addGUILayout {DESIGNOBJ PROJECT_PARAM.BOARD_PART} {
@@ -57,14 +56,11 @@ proc addGUILayout {DESIGNOBJ PROJECT_PARAM.BOARD_PART} {
 
  updater {PROJECT_PARAM.BOARD_PART Preset.VALUE} {Image.IMAGE_PATH Preset.ENABLEMENT Preset.DISPLAYNAME} {
   set Preset.DISPLAYNAME "Microblaze V Preset Configurations"
-  if { ${Preset.VALUE} == "Application_Processor"} {
-     set Preset.ENABLEMENT true
-     set Image.IMAGE_PATH "microblaze-application-processor.jpg"
-  } elseif { ${Preset.VALUE} == "Microcontroller"} {
+  if { ${Preset.VALUE} == "Microcontroller"} {
 	 set Preset.ENABLEMENT true
 	 set Image.IMAGE_PATH "microblaze-v-microcontroller.png"
   } elseif { ${Preset.VALUE} == "Real-time_Processor" } {
-	 set preset.ENABLEMENT true
+	 set Preset.ENABLEMENT true
 	 set Image.IMAGE_PATH "microblaze-v-real-time-processor.png"
   }
 }

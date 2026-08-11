@@ -33,6 +33,7 @@ proc createDesign {design_name options} {
 
 		#puts "creat_root_desing"
 		set board_part [get_property NAME [current_board_part]]
+		set board_name [get_property BOARD_NAME [current_board]]
 		#set design_repo [get_property REPO_DIRECTORY [get_example_designs *$design_name*]]
 		#puts $design_repo
 		puts "INFO: $board_part selected"
@@ -60,6 +61,14 @@ proc createDesign {design_name options} {
 		connect_bd_net [get_bd_pins zynq_ultra_ps_e_0/pl_clk0] [get_bd_pins zynq_ultra_ps_e_0/maxihpm0_fpd_aclk]
 		connect_bd_net [get_bd_pins zynq_ultra_ps_e_0/maxihpm1_fpd_aclk] [get_bd_pins zynq_ultra_ps_e_0/pl_clk0]
 
+        if { ![regexp {zcu208ld|zcu216ld|zcu670ld|zcu1275|zcu1285|vermeo} $board_name] } {
+          set_property -dict [list \
+            CONFIG.PSU__GEN_IPI_10__MASTER {APU} \
+            CONFIG.PSU__GEN_IPI_7__MASTER {APU} \
+            CONFIG.PSU__GEN_IPI_8__MASTER {APU} \
+            CONFIG.PSU__GEN_IPI_9__MASTER {APU} \
+          ] [get_bd_cells zynq_ultra_ps_e_0]
+        }
 			
 
 		if {([lsearch $temp_options Preset.VALUE] == -1) || ([lsearch $temp_options MPSoC_Only] != -1)}   {

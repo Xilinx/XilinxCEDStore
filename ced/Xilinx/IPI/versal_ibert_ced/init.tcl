@@ -96,7 +96,18 @@ proc addOptions {DESIGNOBJ PROJECT_PARAM.PART PROJECT_PARAM.PACKAGE PROJECT_PARA
     lappend x [dict create name ${v}_lr type double value $default_lr min_value 0 max_value $max_lr enabled false] 
     log "created lr"
     set refs [get_reflocs $v]
-    lappend x [dict create name ${v}_ref type "string" value [lindex $refs 0] value_list $refs enabled false]
+    # Include refclk-forwarding source quads (neighbors) in the static value list
+    # so that scripted/batch instantiate_example_design accepts refclk-sharing
+    # values (e.g. GTM2_QUAD_107_ref = GTM2_QUAD_106). In the GUI these choices are
+    # added dynamically by gui_refclk_choice_generation, but in -mode batch those
+    # updaters do not run, so the neighbor quads must be present up front. The
+    # line-rate/enablement constraints are still enforced at generation time by
+    # options2protocols (it falls back to the local refclk when sharing isn't valid).
+    set ref_choices $refs
+    if {![catch {get_refclk_neighbors ${PROJECT_PARAM.PACKAGE} $v} neighbors] && [llength $neighbors] > 0} {
+      set ref_choices [concat $refs $neighbors]
+    }
+    lappend x [dict create name ${v}_ref type "string" value [lindex $refs 0] value_list $ref_choices enabled false]
     log "created ref"
     lappend x [dict create name ${v}_rr type double value $default_rr min_value 0 max_value $max_rr enabled false]
   }

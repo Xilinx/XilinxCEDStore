@@ -1,0 +1,8 @@
+######### Versal Embedded Common Platform example design change log ############## 
+2.0 (2026.1.1) Changes 
+Added vek386, vrk160 & vrk165 productions board support and updated top wrapper location.
+
+1.0 (2026.1) Changes
+Initial design for vek385_revA,vek385_revB,vpk360,vek386,vek280,vck190,vmk180,vpk120,vpk180,vrk165,vrk160 boards.
+
+ 

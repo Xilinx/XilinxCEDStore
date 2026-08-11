@@ -24,7 +24,7 @@ proc getSupportedParts {} {
 }
 
 proc getSupportedBoards {} {
- return [get_board_parts -latest_file_version -filter {(BOARD_NAME =~"*vck190*" && VENDOR_NAME=="xilinx.com") || \
+ return [get_board_parts -latest_file_version -quiet -filter {(BOARD_NAME =~"*vck190*" && VENDOR_NAME=="xilinx.com") || \
                                                        (BOARD_NAME =~"*vmk180*" && VENDOR_NAME=="xilinx.com") || \
                                                        (BOARD_NAME =~"*vpk120*" && VENDOR_NAME=="xilinx.com")}]
 }

@@ -23,7 +23,7 @@ source -notrace "$currentDir/setup.tcl"
 # }
 # *******************User defined proc (filter versal latest board parts )****************************
 proc get_latest_board_parts {} {
-set V_board_unique [get_board_parts -filter {(BOARD_NAME =~"*vek385*" && VENDOR_NAME=="xilinx.com")||(BOARD_NAME =~"*vck190*" && VENDOR_NAME=="xilinx.com")||(BOARD_NAME =~"*vek280*" && VENDOR_NAME=="xilinx.com")||(BOARD_NAME =~"*vhk158*" && VENDOR_NAME=="xilinx.com")||(BOARD_NAME =~"*vmk180*" && VENDOR_NAME=="xilinx.com")||(BOARD_NAME =~"*vpk120*" && VENDOR_NAME=="xilinx.com")||(BOARD_NAME =~"*vpk180*" && VENDOR_NAME=="xilinx.com")} -latest_file_version]
+set V_board_unique [get_board_parts -filter {(BOARD_NAME =~"*vek385*" && VENDOR_NAME=="xilinx.com")||(BOARD_NAME =~"*vck190*" && VENDOR_NAME=="xilinx.com")||(BOARD_NAME =~"*vek280*" && VENDOR_NAME=="xilinx.com")||(BOARD_NAME =~"*vhk158*" && VENDOR_NAME=="xilinx.com")||(BOARD_NAME =~"*vmk180*" && VENDOR_NAME=="xilinx.com")||(BOARD_NAME =~"*vpk120*" && VENDOR_NAME=="xilinx.com")||(BOARD_NAME =~"*vpk180*" && VENDOR_NAME=="xilinx.com")} -latest_file_version -quiet]
 return $V_board_unique
 }
 # ****************************************************************************************************

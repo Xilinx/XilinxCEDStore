@@ -90,8 +90,8 @@ The following flowchart illustrates the data path flow for Stream (ST) mode of t
 
 
 ## Tool Requirements
- - Vivado 2025.1  
- - Vitis 2025.1
+ - Vivado
+ - Vitis
 
 ## Design Steps
 
@@ -129,10 +129,19 @@ Click "Finish" on this page. This will initiate CED creation process.
 
 #### 8. After the CED has been created, generate .pdi by selecting Generate Device Image step in the "Flow Navigator" section of Vivado GUI. 
 
-#### 9. This design requires a baremetal application to be executing while performing MM transfers. Following command needs to be executed after generating the PDI from Vivado. ipi_cdma_intr.elf and qdma_accel_sys.bif are provided in src directory of this CED. 
+#### 9. This design requires a baremetal application to be executing while performing MM transfers. Two bootgen steps need to be executed after generating the PDI from Vivado. ipi_cdma_intr.elf and qdma_accel_sys.bif are provided in src directory of this CED.
 
-qdma_accel_sys.bif assumes that ipi_cdma_intr.elf and design_1_wrapper_pld.pdi are in the same directory as the bif file.  
+**Step 1** - Regenerate `design_1_wrapper_boot.pdi` so the Image Header Table "Secondary boot device" is updated from `0` (same boot device) to `A` (PCIe). Add `boot_device { pcie }` to the Vivado-generated `design_1_wrapper_boot.bif` and run:
+
+```
+bootgen -arch versal -image ./design_1_wrapper_boot.bif -o ./design_1_wrapper_boot.pdi -w
+```
+
+**Step 2** - Merge `ipi_cdma_intr.elf` into the regenerated boot pdi. `qdma_accel_sys.bif` assumes that `ipi_cdma_intr.elf` and `design_1_wrapper_boot.pdi` are in the same directory as the bif file.
+
+```
 bootgen -arch versal -image ./qdma_accel_sys.bif -o ./boot_with_elf.pdi -w
+```
 
 ## CPM Configuration
 The following snapshots show the configuration done in CPM GUI inside Versal CIPS IP.  
@@ -181,7 +190,7 @@ https://github.com/Xilinx/dma_ip_drivers
 Following scripts are provided with the CED for reference. They are available in scripts folder of this CED. 
 ### qdma_test_h2c_mm.sh
 This script tests the MM data path of the design and performs the following steps. 
-  1. Identify the bus, device, function (BDF) numbers of the PCIe slot to which the VPK120 board is connected. This design is set with DEVICE_ID of "10EE", which is used for the BDF identification process.
+  1. Identify the bus, device, function (BDF) numbers of the PCIe slot to which the VPK120 board is connected. This design is set with VENDOR_ID of "10EE", which is used for the BDF identification process.
   2. Create MM QID for both H2C/C2H directions
   3. Start the QID
   4. Perform an H2C-MM DMA transfer to the 0x72000000000 DDR address.
@@ -192,7 +201,7 @@ This script tests the MM data path of the design and performs the following step
   
 ### qdma_test_h2c_st.sh
 This script tests the ST data path of the design and requires the h2c_data.txt file. It performs the following steps. 
-  1. Identify the bus, device, function (BDF) numbers of the PCIe slot to which the VPK120 board is connected. This design is set with DEVICE_ID of "10EE", which is used for the BDF identification process.
+  1. Identify the bus, device, function (BDF) numbers of the PCIe slot to which the VPK120 board is connected. This design is set with VENDOR_ID of "10EE", which is used for the BDF identification process.
   2. This script includes variables such as desc_bypass_en, pfetch_bypass_en, trfr_size0, trfr_size1, and trfr_size2.
      - desc_bypass_en, pfetch_bypass_en are used to set different C2H-ST use modes (Simple bypass, Csh bypass, Csh Internal) for C2H-ST QID. 
        - Simple bypass mode --> desc_bypass_en = 1, pfetch_bypass_en = 1
@@ -208,7 +217,7 @@ This script tests the ST data path of the design and requires the h2c_data.txt f
   
 ### access_PS_peripherals.sh 
 This script tests access to the memory regions such as OCM, RTCA, SBI, QSPI, CPM. 
-It is important to note that this script presumes a BDF value of 01000 for accessing the PMC peripherals.
+It is important to note that this script presumes a BDF value of b3000 for accessing the PMC peripherals.
 
 ### host_profile_noc0_1.sh
 This script programs host profile registers of QDMA to perform MM transfers to NoC Ch#0 and Ch#1.
@@ -217,11 +226,11 @@ This script programs host profile registers of QDMA to perform MM transfers to N
 
 The test setup for the CED will include the following components. 
 1. VPK120 board inserted to the PCIe slot of a Gen5/Gen4 server.
-2. Connect the JTAG cable to a machine with Vivado 2025.1 installed.
+2. Connect the JTAG cable to a machine with Vivado installed.
 3. Install TeraTerm (or) similar software to view the PLM log and prints from Baremetal application.
 
 Test steps for this CED require the following components.
-1. Vivado 2025.1 - to program the boot image.
+1. Vivado - to program the boot image.
 2. XSDB - to program SBI_CTRL register.
 3. QDMA driver - to perform DMA transactions.
 4. TeraTerm - to review the PLM log and prints from the Baremetal application. 
@@ -248,7 +257,7 @@ If the JTAG cable is connected to a remote host, use the command "conn -host <ho
 
 The details of these commands and instructions can be found in the QDMA driver documentation. The steps are just listed here for ease of use. 
 
-#### Please note that the commands provided in this section assumes VPK120 board to a PCIe slot and host has assigned the PCIe slot with a BDF value of 01000.
+#### Please note that the commands provided in this section assumes VPK120 board to a PCIe slot and host has assigned the PCIe slot with a BDF value of b3000.
 
 1. Download or clone the dma_ip_drivers repo from GitHub to the host system
 2. Compile the QDMA driver and applications
@@ -273,28 +282,28 @@ The details of these commands and instructions can be found in the QDMA driver d
 > source ./host_profile_noc0_1.sh
 
 8. Using sysfs, set the max number of queue pairs. This is arbitrarily chosen
-as 3 in this example, and also assume the B:D.F is 01:00.0.
+as 3 in this example, and also assume the B:D.F is b3:00.0.
 
-> echo 10 > /sys/bus/pci/devices/0000:01:00.0/qdma/qmax
+> echo 10 > /sys/bus/pci/devices/0000:b3:00.0/qdma/qmax
 
 9. Add the queues. Queue 0 is the memory-mapped host-to-card queue, Queue 1
 is the memory-mapped card-to-host queue, and Queue 2 is the streaming
 host-to-card queue
 
-> dma-ctl qdma01000 q add idx 0 mode mm dir h2c
-> dma-ctl qdma01000 q add idx 1 mode mm dir c2h
+> dma-ctl qdmab3000 q add idx 0 mode mm dir h2c
+> dma-ctl qdmab3000 q add idx 1 mode mm dir c2h
 
 10. Start the queues. Queue 0 will be used to transfer the stage two bitstream
 to the configuration engine through the slave boot interface (SBI) and
 requires the aperture_sz parameter to be set
 
-> dma-ctl qdma01000 q start idx 0 dir h2c aperture_sz 4096 mm_chn 1
-> dma-ctl qdma01000 q start idx 1 dir c2h
+> dma-ctl qdmab3000 q start idx 0 dir h2c aperture_sz 4096 mm_chn 1
+> dma-ctl qdmab3000 q start idx 1 dir c2h
 
-11. Transfer the stage two (pld_with_elf.pdi) bitstream to the device to be programmed,
+11. Transfer the stage two (design_1_wrapper_pld.pdi) bitstream to the device to be programmed,
 targeting the SBI FIFO using address 0x102100000
 
-> dma-to-device -d /dev/qdma010000-MM-0 -f <stage2.pdi> -s <size> -a 0x20102100000
+> dma-to-device -d /dev/qdmab3000-MM-0 -f <stage2.pdi> -s <size> -a 0x20102100000
 
 
 Following snapshot shows the PLM log after programming boot.pdi to VPK120 board.

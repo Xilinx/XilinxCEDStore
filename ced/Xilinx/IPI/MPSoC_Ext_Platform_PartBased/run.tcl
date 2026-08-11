@@ -111,7 +111,22 @@ proc createDesign {design_name options} {
     #apply_bd_automation -rule xilinx.com:bd_rule:zynq_ultra_ps_e -config {apply_board_preset "1" }  [get_bd_cells ps_e]
     # set_property -dict [list CONFIG.PSU__UART0__PERIPHERAL__ENABLE {1} CONFIG.PSU__UART0__PERIPHERAL__IO {MIO 18 .. 19}] [get_bd_cells ps_e]
     # set_property -dict [list CONFIG.PSU__UART1__PERIPHERAL__ENABLE {1} CONFIG.PSU__UART1__PERIPHERAL__IO {MIO 20 .. 21}] [get_bd_cells ps_e]
-   
+
+    set_property -dict [list \
+      CONFIG.PSU__GEN_IPI_0__MASTER {APU} \
+      CONFIG.PSU__GEN_IPI_1__MASTER {RPU0} \
+      CONFIG.PSU__GEN_IPI_2__MASTER {RPU1} \
+      CONFIG.PSU__GEN_IPI_3__MASTER {PMU} \
+      CONFIG.PSU__GEN_IPI_7__MASTER {APU} \
+      CONFIG.PSU__GEN_IPI_8__MASTER {APU} \
+      CONFIG.PSU__GEN_IPI_9__MASTER {APU} \
+      CONFIG.PSU__GEN_IPI_10__MASTER {APU} \
+      CONFIG.PSU__TTC0__PERIPHERAL__ENABLE {1} \
+      CONFIG.PSU__TTC1__PERIPHERAL__ENABLE {1} \
+      CONFIG.PSU__TTC2__PERIPHERAL__ENABLE {1} \
+      CONFIG.PSU__TTC3__PERIPHERAL__ENABLE {1} \
+    ] [get_bd_cells ps_e]
+	
     if {$irqs == "32"} {
       set_property -dict [list CONFIG.PSU__USE__S_AXI_GP5 {1} CONFIG.PSU__USE__S_AXI_GP6 {1} CONFIG.PSU__DDRC__ENABLE {0} CONFIG.PSU__SAXIGP6__DATA_WIDTH {32} CONFIG.PSU__USE__IRQ0 {1} CONFIG.PSU__USE__M_AXI_GP1 {0} CONFIG.PSU__USE__M_AXI_GP2 {1} CONFIG.PSU__USE__M_AXI_GP0 {1} CONFIG.PSU__PSS_REF_CLK__FREQMHZ {33.333333} ] [get_bd_cells ps_e]
       set_property -dict [list CONFIG.PSU__DDRC__BUS_WIDTH {32 Bit} CONFIG.PSU__DDRC__ENABLE {0}] [get_bd_cells ps_e]

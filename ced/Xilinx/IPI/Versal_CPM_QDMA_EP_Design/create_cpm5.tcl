@@ -409,14 +409,12 @@ proc create_root_design { parentCell } {
   set_property -dict [list \
     CONFIG.NUM_MI {1} \
     CONFIG.NUM_SI {1} \
-    CONFIG.ADVANCED_PROPERTIES {__experimental_features__ {legacy_low_area_mode 1}} \
   ] $smartconnect_0
 
 
   # Create instance: smartconnect_1, and set properties
   set smartconnect_1 [ create_bd_cell -type ip -vlnv xilinx.com:ip:smartconnect smartconnect_1 ]
   set_property CONFIG.NUM_SI {1} $smartconnect_1
-  set_property CONFIG.ADVANCED_PROPERTIES {__experimental_features__ {legacy_low_area_mode 1}} $smartconnect_1
 
 
   # Create instance: versal_cips_0, and set properties

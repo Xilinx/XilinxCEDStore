@@ -23,6 +23,6 @@ proc getSupportedParts {} {
 }
 
 proc getSupportedBoards {} {
-  return [get_board_parts -filter {(BOARD_NAME =~"*kcu105*" && VENDOR_NAME=="xilinx.com" )}  -latest_file_version]
+  return [get_board_parts -filter {(BOARD_NAME =~"*kcu105*" && VENDOR_NAME=="xilinx.com" )}  -latest_file_version -quiet]
 }
 

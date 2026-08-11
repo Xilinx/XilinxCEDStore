@@ -1,5 +1,8 @@
 ######### MPSoC Extensible Platform (Part based) ExampleDesign example design change log ##############
 
+2026.1.1 Changes
+Enabled IPI_7, IPI_8, IPI_9, IPI_10, all TTC's in Zynq MPSoC IP
+
 2025.2 Changes
 Replaced discontinued axi_interconnect IPs with Smarconnect IPs
 
