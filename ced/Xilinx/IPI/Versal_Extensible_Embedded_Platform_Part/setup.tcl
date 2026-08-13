@@ -27,25 +27,41 @@ proc createDesign {design_name options} {
 	set fpga_part [get_property PART [current_project ]]
 	set part_family [get_property FAMILY $fpga_part]
 
-	if { [regexp "xcvm2152" $fpga_part] || [regexp "xc2v" $fpga_part] || [regexp "xcvr1652" $fpga_part]|| [regexp "xcvr1602" $fpga_part]} {
+	if { [regexp {xcvm2152|xc2v|xq2v|xcvr|xcvp1902|xa2ve} $fpga_part] } {
 
-		puts "INFO : PS_wizard part selected"
-		source "$currentDir/run_ps_wizard.tcl"
+		puts "INFO : Selected PS-Core : PS_wizard"
+		
+		if { [regexp {xc2vp3422|xc2vp3622} $fpga_part] } {
+			puts "INFO : Selected Memory on Package Device (MoP) - Gen 2"
+			source "$currentDir/run_ps_wizard_mop.tcl"
 
-	} elseif {[regexp "xcvp1902" $fpga_part]} {
+		} elseif {[regexp {xcvp1902} $fpga_part]} {
+			puts "INFO : Selected Versal Premium Series"
+			source "$currentDir/run_ps_wizard_premium.tcl"
 
-		puts "INFO : PS_Wizard part selected : Versal Premium Series"
-		source "$currentDir/run_p.tcl"
+		} elseif {[regexp {xa2v} $fpga_part]} {
+			puts "INFO : Selected XA Versal AI Edge Series - Gen 2"
+			source "$currentDir/run_ps_wizard_xa2v.tcl"
+		
+		} elseif {[regexp {xq2v} $fpga_part]} {
+			puts "INFO : Defense Grade Versal Prime - Gen 2"
+			source "$currentDir/run_ps_wizard_defence.tcl"
+
+		} else {
+			puts "INFO : Selected Device Type : PS_wizard"
+			source "$currentDir/run_ps_wizard.tcl"
+		}
+
 
 	} elseif {[regexp "versalnet" $part_family]} {
 
-		puts "INFO : PSX_Wizard part selected : Versal Net ACAP Devices"
+		puts "INFO : Selected Versal Net ACAP Devices : PSX_Wizard"
 		source "$currentDir/run_psx_wizard.tcl"
 
 	} else {
 
 		puts "INFO : CIPS PS part selected"
-		source "$currentDir/run.tcl"
+		source "$currentDir/run_versal_cips.tcl"
 			
 	}
 

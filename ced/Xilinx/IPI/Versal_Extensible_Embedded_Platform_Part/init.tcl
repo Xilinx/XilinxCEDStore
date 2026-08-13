@@ -171,11 +171,13 @@ gui_updater {PROJECT_PARAM.PART} {Include_AIE.VISIBLE Include_AIE.ENABLEMENT Inc
 			
             # set Include_AIE.VISIBLE true
 			set Include_AIE.ENABLEMENT true
-			if { [regexp "xcvm2152" ${PROJECT_PARAM.PART}] || [regexp "xc2v" ${PROJECT_PARAM.PART}] || [regexp "xcvr1652" ${PROJECT_PARAM.PART}] || [regexp "xcvr1602" ${PROJECT_PARAM.PART}] || [regexp "xa2v" ${PROJECT_PARAM.PART}] } {
+
+			if { [regexp {xcvm2152|xcvr1652|xcvr1602|x[acq]?2v} ${PROJECT_PARAM.PART}] } {
 			    set Include_BDC.ENABLEMENT false
 			} else {
 			    set Include_BDC.ENABLEMENT true
 			}
+            
 			set Include_AIE.VALUE true
 			set gui_flag 1
 
