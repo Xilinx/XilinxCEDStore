@@ -1,0 +1,3 @@
+# Smoke regression testlist -- run with: make regr TESTLIST=testlist_smoke.txt
+# One test per line; lines starting with # are ignored.
+hello_world

@@ -1,0 +1,19 @@
+# Full regression testlist -- run with: make regr TESTLIST=testlist_full.txt
+#
+# hdma_ddr/ is the LPDDR5-backed Controller-1 variant, so only the "ddr"
+# HDMA tests are listed here (the "plaxi" HDMA tests target the non-DDR
+# hdma/ variant instead -- see hdma/sim/testlist_full.txt).
+#
+# Source: uvma-pcie-sim-framework/cpm6/common/test/hdma/ (verified passing
+# in cpm6/ctrl1ep_g6x8_hdma_1pf), now compiled in via
+# sim/tb/test/test_pkg.svh + sim/tb/test/hdma/. The variant assignment
+# below (ddr -> hdma_ddr/, plaxi -> hdma/) is based on naming convention
+# and has NOT been independently re-run against this CED-generated
+# project -- verify before relying on it for sign-off.
+hello_world
+test_s_hdma_ddr_ctrlr1
+test_s_hdma_ddr_ctrlr1_msix
+test_s_hdma_ddr_ctrlr1_multipf
+test_M_bridge_ddr_ctrlr1
+test_M_bridge_ddr_ctrlr1_4pf
+test_M_bridge_ddr_ctrlr1_bar24_1pf
