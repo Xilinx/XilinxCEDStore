@@ -41,7 +41,7 @@ proc create_root_design {currentDir design_name use_lpddr clk_options irqs use_a
 	set ps_wizard_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:ps_wizard ps_wizard_0]
 	set ps_wiz_noc2 [ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_noc2 ps_wiz_noc2]
 	
-	if { ([regexp "xc2v" $fpga_part]) && (![regexp "xc2vp" $fpga_part]) } {
+	if { [regexp "xc2v" $fpga_part] && !([regexp "xc2vp|xc2v95" $fpga_part]) } {
 		
 		puts "Applying Versal * Gen 2 config" 
 		
@@ -110,7 +110,7 @@ proc create_root_design {currentDir design_name use_lpddr clk_options irqs use_a
 		connect_bd_net [get_bd_pins ps_wizard_0/pmc_axi_noc0_clk] [get_bd_pins ps_wiz_noc2/aclk[expr {$num_fpd_noc + 2}]]
 
 	
-	} elseif { [regexp "xcvr1652" $fpga_part] || [regexp "xcvr1602" $fpga_part] } {
+	} elseif { [regexp "xcvr1652|xcvr1602" $fpga_part] } {
 	
 		puts "Applying Versal AI RF config"
 		
@@ -321,7 +321,7 @@ proc create_root_design {currentDir design_name use_lpddr clk_options irqs use_a
 	# Create instance: noc2_ddr5, and set properties
 	set noc2_ddr5_flag 0
 	
-	if { [regexp "xc2vm3558" $fpga_part] || [regexp "xc2ve3558" $fpga_part] || [regexp "xc2ve3504" $fpga_part] || [regexp "xc2ve3304" $fpga_part] || [regexp "xc2ve3358" $fpga_part] } {
+	if { [regexp "xc2v(m3558|e3558|e3504|e3304|e3358)" $fpga_part] } {
 	
 		puts "NOC2_DDR5_INFO :: Applying Versal DDR5 configuration - 1"
 		set noc2_ddr5_flag 1
@@ -339,7 +339,7 @@ proc create_root_design {currentDir design_name use_lpddr clk_options irqs use_a
 		
 		set_property CONFIG.MC_CHAN_REGION1 {DDR_CH0_MED} [get_bd_cells noc2_ddr5]
 
-	} elseif { [regexp "xc2vm3358" $fpga_part] || [regexp "xc2vm3654" $fpga_part] || [regexp "xc2vp3602" $fpga_part] || [regexp "xc2vp3202" $fpga_part] || [regexp "xc2vp3402" $fpga_part] || [regexp "xc2vp3502" $fpga_part]} {
+	} elseif { [regexp "xc2v(m3358|m3454|m3654|p3602|p3202|p3402|p3502|p3102)|xc2v95" $fpga_part] } {
 		
 		puts "NOC2_DDR5_INFO :: Applying Versal DDR5 configuration - 2"
 		set noc2_ddr5_flag 1
@@ -356,7 +356,7 @@ proc create_root_design {currentDir design_name use_lpddr clk_options irqs use_a
 		] [get_bd_cells noc2_ddr5]
 
 
-	} elseif { (![regexp "xc2vp3402" $fpga_part]) && (![regexp "xc2vp3502" $fpga_part]) } {
+	} elseif { ![regexp "xc2vp(3402|3502)" $fpga_part] } {
 	
 		puts "NOC2_DDR5_INFO :: Applying Versal DDR5 configuration - 3"
 		set noc2_ddr5_flag 1
@@ -378,7 +378,7 @@ proc create_root_design {currentDir design_name use_lpddr clk_options irqs use_a
 		make_bd_intf_pins_external  [get_bd_intf_pins noc2_ddr5/sys_clk0] [get_bd_intf_pins noc2_ddr5/C0_DDR5]
 		connect_bd_intf_net [get_bd_intf_pins ps_wiz_noc2/M00_INI] [get_bd_intf_pins noc2_ddr5/S00_INI]
 	} elseif { $noc2_ddr5_flag == 0 } {
-		puts "NOC2_DDR5_INFO :: NOC2_DDR5 instance NOT created due limited IO constraints - $fpga_part"
+		puts "NOC2_DDR5_INFO :: NOC2_DDR5 instance NOT created due limited IO constraints / support - $fpga_part"
 	}
 	
 	
@@ -470,7 +470,7 @@ proc create_root_design {currentDir design_name use_lpddr clk_options irqs use_a
 		set_property -dict [list CONFIG.NUM_MI {1}] [get_bd_cells icn_ctrl]
 		connect_bd_intf_net -intf_net icn_ctrl_M00_AXI [get_bd_intf_pins axi_intc_0/s_axi] [get_bd_intf_pins icn_ctrl/M00_AXI]
 		
-		if { ([regexp "xc2v" $fpga_part]) && (![regexp "xc2vp" $fpga_part]) } {
+		if { [regexp "xc2v" $fpga_part] && ![regexp "xc2vp|xc2v95" $fpga_part] } {
 			connect_bd_net [get_bd_pins axi_intc_0/irq] [get_bd_pins ps_wizard_0/pl_fpd_irq0]
 		} else {
 			connect_bd_net -net axi_intc_0_irq [get_bd_pins ps_wizard_0/pl_ps_irq0] [get_bd_pins axi_intc_0/irq]
@@ -485,7 +485,7 @@ proc create_root_design {currentDir design_name use_lpddr clk_options irqs use_a
 		set_property -dict [list CONFIG.NUM_MI {3}] [get_bd_cells icn_ctrl]
 		connect_bd_intf_net -intf_net icn_ctrl_M00_AXI [get_bd_intf_pins axi_intc_0/s_axi] [get_bd_intf_pins icn_ctrl/M00_AXI]
 
-		if { ([regexp "xc2v" $fpga_part]) && (![regexp "xc2vp" $fpga_part]) } {
+		if { [regexp "xc2v" $fpga_part] && ![regexp "xc2vp|xc2v95" $fpga_part] } {
 			connect_bd_net [get_bd_pins axi_intc_0/irq] [get_bd_pins ps_wizard_0/pl_fpd_irq0]
 		} else {
 			connect_bd_net -net axi_intc_0_irq [get_bd_pins ps_wizard_0/pl_ps_irq0] [get_bd_pins axi_intc_0/irq] 
@@ -501,14 +501,15 @@ proc create_root_design {currentDir design_name use_lpddr clk_options irqs use_a
 		connect_bd_net [get_bd_pins axi_intc_cascaded_1/irq] [get_bd_pins xlconcat_0/In31]
 		connect_bd_net [get_bd_pins axi_intc_parent/intr] [get_bd_pins xlconcat_0/dout]
 		
-		if { ([regexp "xc2v" $fpga_part]) && (![regexp "xc2vp" $fpga_part]) } {
+		if { ([regexp "xc2v" $fpga_part]) &&  ![regexp "xc2vp|xc2v95" $fpga_part] } {
 			connect_bd_net [get_bd_pins ps_wizard_0/pl_fpd_irq0] [get_bd_pins axi_intc_parent/irq]
 		} else {
-			connect_bd_net -net axi_intc_0_irq [get_bd_pins ps_wizard_0/pl_ps_irq0] [get_bd_pins axi_intc_parent/irq] }
-			connect_bd_net -net $default_clock_net [get_bd_pins axi_intc_cascaded_1/s_axi_aclk]
-			connect_bd_net -net $default_clock_net [get_bd_pins axi_intc_parent/s_axi_aclk]
-			connect_bd_net -net proc_sys_reset_${default_clk_num}_peripheral_aresetn [get_bd_pins axi_intc_cascaded_1/s_axi_aresetn]
-			connect_bd_net -net proc_sys_reset_${default_clk_num}_peripheral_aresetn [get_bd_pins axi_intc_parent/s_axi_aresetn]
+			connect_bd_net -net axi_intc_0_irq [get_bd_pins ps_wizard_0/pl_ps_irq0] [get_bd_pins axi_intc_parent/irq] 
+		}
+		connect_bd_net -net $default_clock_net [get_bd_pins axi_intc_cascaded_1/s_axi_aclk]
+		connect_bd_net -net $default_clock_net [get_bd_pins axi_intc_parent/s_axi_aclk]
+		connect_bd_net -net proc_sys_reset_${default_clk_num}_peripheral_aresetn [get_bd_pins axi_intc_cascaded_1/s_axi_aresetn]
+		connect_bd_net -net proc_sys_reset_${default_clk_num}_peripheral_aresetn [get_bd_pins axi_intc_parent/s_axi_aresetn]
 	}
 
 	if { $use_aie } {
@@ -570,7 +571,7 @@ proc create_root_design {currentDir design_name use_lpddr clk_options irqs use_a
 		
 		if { $use_aie && $noc2_ddr5_flag } {
 		
-			if { ([regexp "xc2v" $fpga_part]) && (![regexp "xc2vp" $fpga_part]) } {
+			if { [regexp "xc2v" $fpga_part] && ![regexp "xc2vp|xc2v95" $fpga_part] } {
 
 				#set_property CONFIG.NUM_NMI {2} [get_bd_cells ps_wiz_noc2]
 				# set_property -dict [list CONFIG.CONNECTIONS {M01_INI {read_bw {500} write_bw {500}} M00_AXI {read_bw {500} write_bw {500} read_avg_burst {4} write_avg_burst {4}} M00_INI {read_bw {500} write_bw {500}}}] [get_bd_intf_pins /ps_wiz_noc2/S00_AXI]
@@ -612,7 +613,7 @@ proc create_root_design {currentDir design_name use_lpddr clk_options irqs use_a
 
 		} elseif { $noc2_ddr5_flag } {
 
-			if { ([regexp "xc2v" $fpga_part]) && (![regexp "xc2vp" $fpga_part]) } {
+			if { [regexp "xc2v" $fpga_part] && ![regexp "xc2vp|xc2v95" $fpga_part] } {
 
 				#set_property CONFIG.NUM_NMI {2} [get_bd_cells ps_wiz_noc2]
 				set_property -dict [list CONFIG.CONNECTIONS {M01_INI {read_bw {500} write_bw {500}} M00_INI {read_bw {500} write_bw {500}}}] [get_bd_intf_pins /ps_wiz_noc2/S00_AXI]
@@ -643,7 +644,7 @@ proc create_root_design {currentDir design_name use_lpddr clk_options irqs use_a
 		
 		set noc2_lpddr5 [ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_noc2 noc2_lpddr5 ]
 		
-		if { ([regexp "xc2vm3558" $fpga_part]) || ([regexp "xc2ve3558" $fpga_part]) || ([regexp "xc2ve3504" $fpga_part])} {
+		if { [regexp "xc2v(m3558|e3558|e3504)" $fpga_part] } {
 		
 			set_property -dict [list \
 				CONFIG.DDR5_DEVICE_TYPE {Components} \
@@ -681,7 +682,8 @@ proc create_root_design {currentDir design_name use_lpddr clk_options irqs use_a
 			set_property -dict [list CONFIG.DDRMC5_CONFIG(DDRMC5_SYSTEM_CLOCK) {Differential} ] [get_bd_cells noc2_lpddr5]		
 		}
 		
-		make_bd_intf_pins_external  [get_bd_intf_pins noc2_lpddr5/C0_CH0_LPDDR5] [get_bd_intf_pins noc2_lpddr5/C0_CH1_LPDDR5] [get_bd_intf_pins noc2_lpddr5/sys_clk0]
+
+		make_bd_intf_pins_external [get_bd_intf_pins noc2_lpddr5/C0_CH0_LPDDR5] [get_bd_intf_pins noc2_lpddr5/C0_CH1_LPDDR5] [get_bd_intf_pins noc2_lpddr5/sys_clk0]
 		
 	}
 	
@@ -705,6 +707,9 @@ proc create_root_design {currentDir design_name use_lpddr clk_options irqs use_a
 set clk_options_param "Clock_Options.VALUE"
 # set clk_options { clk_out1 200.000 0 true clk_out2 100.000 1 false clk_out3 300.000 2 false }
 set clk_options { clk_out1 156.250000 0 true }
+
+puts "INFO: selected clk_options:: $clk_options"
+
 
 if { [dict exists $options $clk_options_param] } {
 	set clk_options [ dict get $options $clk_options_param ]
@@ -749,7 +754,8 @@ if { ([regexp "xc2vp" $fpga_part]) } {
 }
 
 
-if { ([regexp "xc2vp3202" $fpga_part]) || ([regexp "xc2vp3402" $fpga_part]) || ([regexp "xc2vp3502" $fpga_part])} {
+# Limit MC usage to only DDR5 for L40, L60, L75, V95 and V95N devices due to IO constraints
+if { [regexp "xc2vp(3202|3402|3502|3102)|xc2v95" $fpga_part] } {
 	set use_lpddr 0
 }
 
@@ -793,12 +799,6 @@ set bdc false
 
 source -notrace "$currentDir/pfm_properties.tcl"
 
-
-# if { ([regexp "xc2vp" $fpga_part])  } {
-	# set_property SELECTED_SIM_MODEL rtl [get_bd_cells /ps_wizard_0]
-# } else {
-	# set_property SELECTED_SIM_MODEL tlm [get_bd_cells /ps_wizard_0]
-# }
 
 set_property SELECTED_SIM_MODEL tlm [get_bd_cells /ps_wizard_0]
 set_property SELECTED_SIM_MODEL tlm [get_bd_cells /ps_wiz_noc2]
