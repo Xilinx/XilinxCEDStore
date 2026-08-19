@@ -35,6 +35,11 @@ proc createDesign {design_name options} {
         set fpga_part [get_property PART_NAME [current_board_part]]
         set mem_ctrl [set mem_int ""]
 
+        if {[regexp scu200 $board_name]} {
+            puts "ERROR: MicroBlaze Design Presets CED is not supported for SCU200 Boards"
+            return
+        }
+
         if { [regexp "xcvu" $fpga_part]||[regexp "xcku" $fpga_part] } {
             set mem_ctrl ddr4
             set mem_int /ddr4_0/addn_ui_clkout1
