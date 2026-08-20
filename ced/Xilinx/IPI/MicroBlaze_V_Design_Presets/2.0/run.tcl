@@ -994,23 +994,10 @@ proc create_root_design {parentCell design_name options} {
             puts "INFO: SCU200 board — Linux with LPDDR5"
             set mem_int /clk_wiz_1/clk_out1
 
-            mbv_create_mbv_core 7 1
-            mbv_create_clkwiz_and_rst
-
+            apply_bd_automation -rule xilinx.com:bd_rule:microblaze_riscv -config {axi_intc {1} axi_periph {Enabled} cache {32KB} clk {New Clocking Wizard} debug_module {Debug Enabled} ecc {None} local_mem {128KB} preset {Linux}} [get_bd_cells microblaze_riscv_0]
             mbv_automation_board_sys_clock [get_bd_intf_pins clk_wiz_1/CLK_IN1_D]
             mbv_automation_board_reset     [get_bd_pins clk_wiz_1/reset]
             mbv_automation_board_reset     [get_bd_pins rst_clk_wiz_1_100M/ext_reset_in]
-            apply_bd_automation -rule xilinx.com:bd_rule:clkrst -config {Clk {/clk_wiz_1/clk_out1 (100 MHz)} Freq {100} Ref_Clk0 {} Ref_Clk1 {} Ref_Clk2 {}} [get_bd_pins rst_clk_wiz_1_100M/slowest_sync_clk]
-            # clk_wiz_1/locked must drive dcm_locked so proc_sys_reset releases after PLL locks
-            connect_bd_net [get_bd_pins clk_wiz_1/locked] [get_bd_pins rst_clk_wiz_1_100M/dcm_locked]
-
-            connect_bd_net [get_bd_pins rst_clk_wiz_1_100M/bus_struct_reset] [get_bd_pins microblaze_riscv_0_local_memory/SYS_Rst]
-            connect_bd_net [get_bd_pins rst_clk_wiz_1_100M/peripheral_aresetn] [get_bd_pins microblaze_riscv_0_axi_periph/aresetn] [get_bd_pins microblaze_riscv_0_axi_intc/s_axi_aresetn]
-            connect_bd_net [get_bd_pins rst_clk_wiz_1_100M/mb_reset] [get_bd_pins microblaze_riscv_0_axi_intc/processor_rst]
-            connect_bd_net [get_bd_pins mdm_1/Debug_SYS_Rst] [get_bd_pins rst_clk_wiz_1_100M/mb_debug_sys_rst]
-
-            set_property name microblaze_riscv_0_Clk [get_bd_nets clk_wiz_1_clk_out1]
-            connect_bd_net [get_bd_pins clk_wiz_1/clk_out1] [get_bd_pins microblaze_riscv_0/Clk] [get_bd_pins microblaze_riscv_0_axi_periph/aclk] [get_bd_pins microblaze_riscv_0_axi_intc/s_axi_aclk] [get_bd_pins microblaze_riscv_0_axi_intc/processor_clk] [get_bd_pins microblaze_riscv_0_local_memory/LMB_Clk]
 
             if {$lpddrmc_board_interface_1 ne ""} {
                 create_bd_cell -type ip -vlnv xilinx.com:ip:lpddrmc lpddrmc_0
