@@ -15,8 +15,8 @@ proc getSupportedBoards {} {
 
 proc addOptions {DESIGNOBJ PROJECT_PARAM.BOARD_PART} {
     lappend x [dict create name "CTRL_CONFIG" type "string" \
-        value "CONTROLLER1" \
-        value_list {CONTROLLER0 CONTROLLER1} \
+        value "Controller_1" \
+        value_list {Controller_0 Controller_1} \
         enabled true]
     lappend x [dict create name "DDR_EN" type "boolean" \
         value "false" \
@@ -41,8 +41,8 @@ proc addGUILayout {DESIGNOBJ PROJECT_PARAM.BOARD_PART} {
     set designObj $DESIGNOBJ
     set page [ced::add_page  -name "Configuration" -display_name "CPM6 DMA Configuration" -designObject $designObj]    
     ced::add_param -name CTRL_CONFIG -display_name "Controller selection" -parent $page -designObject $designObj -widget radioGroup -layout horizontal
-    set hdma [ced::add_panel -name hdma -parent $page -designObject $designObj -layout horizontal]
-    ced::add_param -name DDR_EN -display_name "DDR Mode" -parent $hdma -designObject $designObj -widget checkBox
+    set dma [ced::add_panel -name dma -parent $page -designObject $designObj -layout horizontal]
+    ced::add_param -name DDR_EN -display_name "DDR Mode" -parent $dma -designObject $designObj -widget checkBox
     set panel2 [ced::add_panel -name panel2 -parent $page -designObject $designObj -layout horizontal]
     ced::add_param -name NUM_PFS -display_name "Num of PFs" -parent $panel2 -designObject $designObj -widget comboBox
     set panel3 [ced::add_panel -name panel3 -parent $page -designObject $designObj -layout horizontal]

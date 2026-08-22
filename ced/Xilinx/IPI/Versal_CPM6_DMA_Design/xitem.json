@@ -3,10 +3,10 @@
       "items": [
         {
           "infra": {
-            "name": "cpm6_hdma",
-            "display": "Versal CPM6 HDMA Design",
+            "name": "cpm6_dma",
+            "display": "Versal CPM6 DMA Design",
             "revision": "1.0",
-            "description": "Versal CPM6 HDMA Design supporting Controller0 and Controller1 with HDMA and HDMA with DDR variants, PCIe Gen6 up to X8.",
+            "description": "Versal CPM6 DMA Design supporting Controller_0 and Controller_1 with DMA and DMA with DDR variants, PCIe Gen6 up to X8.",
             "company": "xilinx.com",
             "company_display": "Xilinx",
             "author": "AMD",
@@ -20,7 +20,7 @@
             "website": "www.xilinx.com",
             "is_active" : true,
             "search-keywords": [
-              "Versal CPM6 HDMA Design",
+              "Versal CPM6 DMA Design",
               "xilinx.com",
               "example"
             ]
