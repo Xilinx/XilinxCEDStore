@@ -2,11 +2,11 @@
 <ExampleDesign>
   <Vendor>xilinx.com</Vendor>
   <Library>design</Library>
-  <Name>cpm6_hdma</Name>
-   <DisplayName>Versal CPM6 HDMA Design</DisplayName>
-  <Description>Versal CPM6 HDMA Design supporting Controller0 and Controller1 configurations with HDMA and HDMA with DDR variants, link speeds up to PCIe Gen6 and link widths up to X8.</Description>
+  <Name>cpm6_dma</Name>
+   <DisplayName>Versal CPM6 DMA Design</DisplayName>
+  <Description>Versal CPM6 DMA Design supporting Controller_0 and Controller_1 configurations with DMA and DMA with DDR variants, link speeds up to PCIe Gen6 and link widths up to X8.</Description>
    <Version>1.0</Version>
   <Design>init.tcl</Design>
-  <Image>cpm6_hdma.PNG</Image>
+  <Image>cpm6_dma.PNG</Image>
    <DesignType>IPI</DesignType>
 </ExampleDesign>

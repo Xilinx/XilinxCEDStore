@@ -12,7 +12,7 @@ proc replace_file_contents {file string_map} {
 # at the destination instead of erroring out (Tcl's `file copy -force` does
 # NOT merge two same-named directories -- it errors if the destination
 # directory already exists). Used to overlay a variant's sim/* files
-# (e.g. hdma/sim/verif/) on top of the base sim/ tree already copied into
+# (e.g. dma/sim/verif/) on top of the base sim/ tree already copied into
 # the project directory.
 proc copy_overlay {src dst} {
   if {[file isdirectory $src]} {
@@ -33,16 +33,16 @@ proc createDesign {design_name options} {
   # ----------------------------------------------------------------
   # Parse controller config, lane rate and link width
   # ----------------------------------------------------------------
-  set ctrl_config "CONTROLLER1" ; if {[dict exists $options CTRL_CONFIG]}   { set ctrl_config [dict get $options CTRL_CONFIG] }
-  set hdma_ddr_enabled false
-  if {[dict exists $options DDR_EN.VALUE]} { set hdma_ddr_enabled [dict get $options DDR_EN.VALUE] }
-  set ddr_en [expr {$hdma_ddr_enabled ? "DDR_ENABLED" : "DDR_DISABLED"}]
+  set ctrl_config "Controller_1" ; if {[dict exists $options CTRL_CONFIG]}   { set ctrl_config [dict get $options CTRL_CONFIG] }
+  set dma_ddr_enabled false
+  if {[dict exists $options DDR_EN.VALUE]} { set dma_ddr_enabled [dict get $options DDR_EN.VALUE] }
+  set ddr_en [expr {$dma_ddr_enabled ? "DDR_ENABLED" : "DDR_DISABLED"}]
   set num_pfs 1                 ; if {[dict exists $options NUM_PFS]}   { set num_pfs [dict get $options NUM_PFS] }
   set lane_rate   "64.0_GT/s"   ; if {[dict exists $options CTRL_LANE_RATE]}  { set lane_rate   [dict get $options CTRL_LANE_RATE] }
   set link_width  "X8"          ; if {[dict exists $options CTRL_LINK_WIDTH]} { set link_width  [dict get $options CTRL_LINK_WIDTH] }
   set link_width_int [string index $link_width end]
   
-  puts "INFO: HDMA EN           = $hdma_ddr_enabled"
+  puts "INFO: DMA EN            = $dma_ddr_enabled"
   puts "INFO: Controller Config = $ctrl_config"
   puts "INFO: PCIe Link Width   = $link_width"
   puts "INFO: PCIe Lane Rate    = $lane_rate"
@@ -53,10 +53,10 @@ proc createDesign {design_name options} {
   # Set sub-design directory and top module based on controller config
   # ----------------------------------------------------------------
   switch "${ctrl_config}_${ddr_en}" {
-    "CONTROLLER0_DDR_ENABLED" { set sub_name "hdma_ddr_ctrl0"; set g_top "hdma_ddr_top" }
-    "CONTROLLER1_DDR_ENABLED" { set sub_name "hdma_ddr";       set g_top "hdma_ddr_top" }
-    "CONTROLLER0_DDR_DISABLED"  { set sub_name "hdma_ctrl0";     set g_top "design_1_wrapper" }
-    "CONTROLLER1_DDR_DISABLED"  { set sub_name "hdma";           set g_top "hdma_top" }
+    "Controller_0_DDR_ENABLED" { set sub_name "dma_ddr_ctrl0"; set g_top "dma_ddr_top" }
+    "Controller_1_DDR_ENABLED" { set sub_name "dma_ddr";       set g_top "dma_ddr_top" }
+    "Controller_0_DDR_DISABLED"  { set sub_name "dma_ctrl0";     set g_top "design_1_wrapper" }
+    "Controller_1_DDR_DISABLED"  { set sub_name "dma";           set g_top "dma_top" }
     default {
       error "Unsupported combination CTRL_CONFIG=$ctrl_config DDR_EN=$ddr_en"
     }
@@ -83,7 +83,7 @@ if { $ddr_en eq "DDR_ENABLED" } {
     error "Expected exactly one defines.sv in sources_1, found [llength $imported_defines]: $imported_defines"
   }
   set fd [open $imported_defines w]
-  puts $fd "package hdma_link_pkg;"
+  puts $fd "package dma_link_pkg;"
   puts $fd "    parameter LINK_WIDTH    = $link_width_int;"
   puts $fd "    parameter LANE_RATE = \"$lane_rate\";"
   puts $fd "    parameter NUM_PFS = $num_pfs;"
