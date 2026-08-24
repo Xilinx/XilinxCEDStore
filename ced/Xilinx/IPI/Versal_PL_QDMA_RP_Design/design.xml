@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<ExampleDesign>
+  <Vendor>xilinx.com</Vendor>
+  <Library>design</Library>
+  <Name>pl_pcie_qdma_rp</Name>
+   <DisplayName>Versal PL QDMA RP Design</DisplayName>
+  <Description>This is Versal PL QDMA Root Port Design. It allows generating PL QDMA RP design for VCK190 and VPK120 respectively based on the board selected. The associated drivers can be downloaded from: https://github.com/Xilinx/dma_ip_drivers</Description>
+   <Version>1.0</Version>
+  <Design>init.tcl</Design>
+  <Image>versal_pl_pcie_rp.png</Image>
+   <DesignType>IPI</DesignType>
+</ExampleDesign>

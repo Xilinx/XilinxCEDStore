@@ -1,0 +1,6 @@
+######### CIPS DDR PL Debug example design change log ##############
+2022.2 Changes
+Added vhk158 & vek280 support.
+
+2021.1 Changes 
+Updated with CIPS 3.0

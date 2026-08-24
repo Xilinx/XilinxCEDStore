@@ -1,0 +1,4 @@
+######### Zynq 7000 Design Presets Example Design Change Log ##############
+
+2025.2 Changes
+Replaced discontinued axi_interconnect IPs with smartconnect IPs

@@ -1,0 +1,33 @@
+{
+    "config": {
+      "items": [
+        {
+          "infra": {
+            "name": "ver_ps_perf",
+            "display": "Versal Adaptive SOC Processor Performance",
+            "revision": "1.0",
+            "description": "Versal PS performance based example design",
+            "company": "xilinx.com",
+            "company_display": "Xilinx",
+            "author": "tidalan",
+            "contributors": [
+              {
+                "group": "Xilinx",
+                "url": "www.xilinx.com"
+              }
+            ],
+            "category": "Versal",
+            "website": "www.xilinx.com",
+            "is_active" : true, 
+            "search-keywords": [
+              "Versal ACAP Processor Performance",
+              "xilinx.com",
+              "example"             
+            ]
+          }
+        }
+      ]
+    },
+    "_major" : 1,
+    "_minor" : 0
+}

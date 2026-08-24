@@ -1,0 +1,8 @@
+######### MicroBlaze Design Presets example design change log ##############
+2025.2 Changes
+Enabled MicroBlaze CED for SCU35 (Microcontroller Preset)
+Added EOL warning when Application Preset is selected
+Replaced discontinued axi_interconnect IPs with smartconnect IPs
+
+2025.1 Changes
+Converted all xlconcat, xlconstant and xlslice Xilinx IP instances to inline HDL references

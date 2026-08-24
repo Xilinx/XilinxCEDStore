@@ -1,0 +1,6 @@
+######### VM-P-M1369 Embedded Base Platform (Part Based) example design change log ##############
+2025.1
+Updated VLNV, display name & added description
+
+2024.1 
+Initial design for xcvm2152 device

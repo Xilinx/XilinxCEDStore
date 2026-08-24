@@ -1,0 +1,10 @@
+<ExampleDesign>
+<Vendor>xilinx.com</Vendor>
+<Library>design</Library>
+<Name>wave_gen</Name>
+<Version>1.0</Version> 
+<Design>init.tcl</Design>
+<DisplayName>Wavegen (HDL)</DisplayName>
+<Description>Small RTL project with IP</Description>
+<Image>wave.png</Image>
+</ExampleDesign>
