@@ -31,9 +31,6 @@ class test_bmd_read_min_size_min_count extends test_bmd;
 
         csr_cfg.rd_upper_be = 4'b0000;
 
-        csr_cfg.rd_tc_en = 1'b0;
-        csr_cfg.rd_tc    = 3'b000;
-
     endtask
 
 endclass : test_bmd_read_min_size_min_count

@@ -31,9 +31,6 @@ class test_bmd_write_min_size_min_count extends test_bmd;
 
         csr_cfg.wr_upper_be = 4'b0000;
 
-        csr_cfg.wr_tc_en = 1'b0;
-        csr_cfg.wr_tc    = 3'b000;
-
     endtask
 
 endclass : test_bmd_write_min_size_min_count

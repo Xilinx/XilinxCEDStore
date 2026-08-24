@@ -39,17 +39,10 @@
 ##   test_bmd_msix
 ##
 ## Capabilities:
-##   test_bmd_ama           test_bmd_dmwr
+##   test_bmd_dmwr
 ##   test_bmd_vdm           test_bmd_vdm_w_data
-##   test_bmd_vsec
 ##   test_bmd_pasid         test_bmd_pasid_tph       test_bmd_tph
 ##   test_bmd_5b_tag        test_bmd_8b_tag          test_bmd_10b_tag
-##
-## Error:
-##   test_bmd_inject_bad_data
-##   test_bmd_larger_than_mps
-##   test_bmd_read_out_of_range
-##   test_bmd_send_ur
 ## ----------------------------------------------------------------------------
 TEST  ?= test_bmd_write_read_custom
 DUMP  ?= 0

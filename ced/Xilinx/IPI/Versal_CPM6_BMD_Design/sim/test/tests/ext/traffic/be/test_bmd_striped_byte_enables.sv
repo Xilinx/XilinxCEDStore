@@ -40,11 +40,6 @@ class test_bmd_striped_byte_enables extends test_bmd;
             csr_cfg.wr_lower_be inside {4'b0001, 4'b0010, 4'b0100, 4'b1000};
         };
 
-        csr_cfg.wr_tc_en = 1'b0;
-        csr_cfg.wr_tc    = 3'b000;
-        csr_cfg.rd_tc_en = 1'b0;
-        csr_cfg.rd_tc    = 3'b000;
-
     endtask
 
 endclass : test_bmd_striped_byte_enables

@@ -52,10 +52,6 @@ class test_bmd_custom_perf extends test_bmd;
         if (csr_cfg.rd_upper_be == 4'b0000) csr_cfg.rd_upper_be = 4'b1111;
         if (csr_cfg.rd_lower_be == 4'b0000) csr_cfg.rd_lower_be = 4'b1111;
 
-        csr_cfg.wr_tc_en = 1'b0;
-        csr_cfg.wr_tc    = 3'b000;
-        csr_cfg.rd_tc_en = 1'b0;
-        csr_cfg.rd_tc    = 3'b000;
     endtask
 
 endclass : test_bmd_custom_perf

@@ -40,9 +40,6 @@ class test_bmd_read_max_size_max_count extends test_bmd;
             csr_cfg.rd_lower_be = 4'b1111;
         end
 
-        csr_cfg.rd_tc_en = 1'b0;
-        csr_cfg.rd_tc    = 3'b000;
-
     endtask
 
 endclass : test_bmd_read_max_size_max_count
