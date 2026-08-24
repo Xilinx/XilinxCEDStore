@@ -1,0 +1,33 @@
+{
+    "config": {
+      "items": [
+        {
+          "infra": {
+            "name": "cpm6_dma",
+            "display": "Versal CPM6 DMA Design",
+            "revision": "1.0",
+            "description": "Versal CPM6 DMA Design supporting Controller_0 and Controller_1 with DMA and DMA with DDR variants, PCIe Gen6 up to X8.",
+            "company": "xilinx.com",
+            "company_display": "Xilinx",
+            "author": "AMD",
+            "contributors": [
+              {
+                "group": "Xilinx",
+                "url": "www.xilinx.com"
+              }
+            ],
+            "category": "PCIe",
+            "website": "www.xilinx.com",
+            "is_active" : true,
+            "search-keywords": [
+              "Versal CPM6 DMA Design",
+              "xilinx.com",
+              "example"
+            ]
+          }
+        }
+      ]
+    },
+    "_major" : 1,
+    "_minor" : 0
+}

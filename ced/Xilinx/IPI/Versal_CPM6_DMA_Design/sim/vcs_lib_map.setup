@@ -1,0 +1,5 @@
+LIBRARY_SCAN=TRUE
+uvm         : clibs/uvm
+uvma_agents : clibs/uvma_agents
+avery       : clibs/avery
+cpm6_secip  : clibs/cpm6_secip
