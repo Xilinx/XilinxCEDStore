@@ -343,7 +343,7 @@ proc create_root_design {currentDir design_name use_lpddr clk_options irqs use_a
 		set ai_engine_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:ai_engine:* ai_engine_0 ]
 		
 		set noc_clk_num_ai [expr {1 + $noc_clk_num}]
-		set_property -dict [list CONFIG.MI_SIDEBAND_PINS {} CONFIG.NUM_CLKS $noc_clk_num_ai CONFIG.NUM_MI {1} ] [get_bd_cells ps_wiz_noc2] 
+		set_property -dict [list CONFIG.MI_SIDEBAND_PINS {} CONFIG.NUM_CLKS $noc_clk_num_ai CONFIG.NUM_MI {1}] [get_bd_cells ps_wiz_noc2] 
 
 		set_property -dict [list CONFIG.CATEGORY {aie}] [get_bd_intf_pins /ps_wiz_noc2/M00_AXI]
 			
@@ -357,11 +357,11 @@ proc create_root_design {currentDir design_name use_lpddr clk_options irqs use_a
 		set_property -dict [list CONFIG.CONNECTIONS {M00_AXI {read_bw {500} write_bw {500} read_avg_burst {4} write_avg_burst {4}} M00_INI {read_bw {500} write_bw {500}}}] [get_bd_intf_pins /ps_wiz_noc2/S07_AXI]
 		set_property -dict [list CONFIG.CATEGORY {ps_rpu} CONFIG.CONNECTIONS {M00_AXI {read_bw {500} write_bw {500} read_avg_burst {4} write_avg_burst {4}} M00_INI {read_bw {500} write_bw {500}}}] [get_bd_intf_pins /ps_wiz_noc2/S08_AXI]
 		
-		#set_property -dict [list CONFIG.CONNECTIONS {M00_INI {read_bw {500} write_bw {500}}}] [get_bd_intf_pins /ps_wiz_noc2/S08_AXI]
+		# set_property -dict [list CONFIG.CONNECTIONS {M00_INI {read_bw {500} write_bw {500}}}] [get_bd_intf_pins /ps_wiz_noc2/S08_AXI]
 		
 		set_property -dict [list CONFIG.CONNECTIONS {M00_AXI {read_bw {500} write_bw {500} read_avg_burst {4} write_avg_burst {4}} M00_INI {read_bw {500} write_bw {500}}}] [get_bd_intf_pins /ps_wiz_noc2/S09_AXI]
 		
-		connect_bd_net [get_bd_pins ai_engine_0/s00_axi_aclk] [get_bd_pins ps_wiz_noc2/aclk [expr {$noc_clk_num_ai - 1}]]
+		connect_bd_net [get_bd_pins ai_engine_0/s00_axi_aclk] [get_bd_pins ps_wiz_noc2/aclk[expr {$noc_clk_num_ai - 1}]]
 		
 		connect_bd_intf_net [get_bd_intf_pins ps_wiz_noc2/M00_AXI] [get_bd_intf_pins ai_engine_0/S00_AXI]
 
