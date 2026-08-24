@@ -136,7 +136,7 @@ h help:
 	@echo "   2. Load Avery module     : module load averyvip/2025.3_1"
 	@echo "                              (sets AVERY_PLI, AVERY_PCIE, AVERY_SIM)"
 	@echo "   3. Set CPM6 Secure IP   : setenv CPM6_SECUREIP <path>"
-	@echo "                              (download separately, see README)"
+	@echo "                              (download separately, see ../README.md)"
 	@echo "   4. Create project from CED in Vivado"
 	@echo "   5. Set Compiled Libraries Dir in Vivado (2026.1 clibs)"
 	@echo "   6. Run launch_simulation -scripts_only in Vivado"
