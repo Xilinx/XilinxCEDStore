@@ -1,3 +1,19 @@
+////////////////////////////////////////////////////////////////////////
+// Copyright (C) 2026, Advanced Micro Devices, Inc. All rights reserved
+//
+// Licensed under the Apache License, Version 2.0 (the "License"). You may
+// not use this file except in compliance with the License. A copy of the
+// License is located at
+//
+//  http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+// WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+// License for the specific language governing permissions and limitations
+// under the License.
+////////////////////////////////////////////////////////////////////////
+
 // Check that number of memory reads = number of received completions - bmd_read_scoreboard
 //     > will also verify against received cpls CSR
 // Check that number of memory reads = Read DMA TLP Count - bmd_read_scoreboard
@@ -130,6 +146,40 @@ class bmd_read_scoreboard_c extends uvm_scoreboard;
     bit [9:0]    curr_tag_min;
     bit [9:0]    curr_tag_max;
 
+    function bit [63:0] get_addr64(apci_tlp pkt);
+        return pkt.is_flit_mode ? {pkt.u.fm_mem64.addr.dw_addr, 2'b00}
+                                : {pkt.u.mem64.addr.dw_addr, 2'b00};
+    endfunction
+
+    function bit [31:0] get_addr32(apci_tlp pkt);
+        return pkt.is_flit_mode ? {pkt.u.fm_mem32.addr.dw_addr, 2'b00}
+                                : {pkt.u.mem32.addr.dw_addr, 2'b00};
+    endfunction
+
+    function bit [9:0] get_length(apci_tlp pkt);
+        return pkt.is_flit_mode ? pkt.u.fm_mem64.length : pkt.u.mem64.length;
+    endfunction
+
+    function bit [2:0] get_tc(apci_tlp pkt);
+        return pkt.is_flit_mode ? pkt.u.fm_com.tc : pkt.u.com.tc;
+    endfunction
+
+    function bit [13:0] get_tag(apci_tlp pkt);
+        return pkt.is_flit_mode ? pkt.u.fm_mem64.tag : {4'b0, pkt.u.mem64.t9, pkt.u.mem64.t8, pkt.u.mem64.tag};
+    endfunction
+
+    function bit [11:0] get_cpl_byte_cnt(apci_tlp pkt);
+        return pkt.is_flit_mode ? pkt.u.fm_cpl.byte_cnt : pkt.u.cpl.byte_cnt;
+    endfunction
+
+    function bit [9:0] get_cpl_length(apci_tlp pkt);
+        return pkt.is_flit_mode ? pkt.u.fm_cpl.length : pkt.u.cpl.length;
+    endfunction
+
+    function bit [13:0] get_cpl_tag(apci_tlp pkt);
+        return pkt.is_flit_mode ? pkt.u.fm_cpl.tag : {4'b0, pkt.u.cpl.t9, pkt.u.cpl.t8, pkt.u.cpl.tag};
+    endfunction
+
     // Report phase
     virtual function void call_report();
         prev_dma_err = 0;
@@ -142,36 +192,36 @@ class bmd_read_scoreboard_c extends uvm_scoreboard;
                 if (rx_packets[i].kind == APCI_TLP_mrd) begin
                     // Check all read addresses against base address (CSR) + size increments
                     if (rd_csr_vif.monitor_cb.read_64b_en) begin
-                        if (({rx_packets[i].u.fm_mem64.addr.dw_addr, 2'b00} -
+                        if ((get_addr64(rx_packets[i]) -
                             {rd_csr_vif.monitor_cb.read_up_address, rd_csr_vif.monitor_cb.read_address}) !=
                                 (number_of_memory_reads * (rd_csr_vif.monitor_cb.read_size << 2)))
                             `uvm_error(get_type_name(), $sformatf("Address [0x%x] not equal to address [0x%x]",
-                                {rx_packets[i].u.fm_mem64.addr.dw_addr, 2'b00} -
+                                get_addr64(rx_packets[i]) -
                                     {rd_csr_vif.monitor_cb.read_up_address, rd_csr_vif.monitor_cb.read_address},
                                 (number_of_memory_reads * (rd_csr_vif.monitor_cb.read_size << 2))))
                     end else begin
-                        if (({rx_packets[i].u.fm_mem32.addr.dw_addr, 2'b00} - rd_csr_vif.monitor_cb.read_address) !=
+                        if ((get_addr32(rx_packets[i]) - rd_csr_vif.monitor_cb.read_address) !=
                                 (number_of_memory_reads * (rd_csr_vif.monitor_cb.read_size << 2)))
                             `uvm_error(get_type_name(), $sformatf("Address [0x%x] not equal to address [0x%x]",
-                                {rx_packets[i].u.fm_mem32.addr.dw_addr, 2'b00} - rd_csr_vif.monitor_cb.read_address,
+                                get_addr32(rx_packets[i]) - rd_csr_vif.monitor_cb.read_address,
                                 (number_of_memory_reads * (rd_csr_vif.monitor_cb.read_size << 2))))
                     end
                     number_of_memory_reads++;
                     // Check traffic class
-                    if (rx_packets[i].u.fm_com.tc != rd_tc)
+                    if (get_tc(rx_packets[i]) != rd_tc)
                         `uvm_error(get_type_name(), $sformatf("TC Actual (%x) != Expected (%x)",
-                            rx_packets[i].u.fm_com.tc, rd_tc))
+                            get_tc(rx_packets[i]), rd_tc))
                 end
             end
             foreach (tx_packets[i]) begin // RX from device perspective
                 if (tx_packets[i].kind == APCI_TLP_cpld) begin
-                    if (tx_packets[i].u.fm_cpl.byte_cnt <= (tx_packets[i].u.fm_cpl.length << 2)) begin
+                    if (get_cpl_byte_cnt(tx_packets[i]) <= (get_cpl_length(tx_packets[i]) << 2)) begin
                         number_of_received_completions++;
                     end
 
-                    number_of_dw_received += tx_packets[i].u.fm_cpl.length;
+                    number_of_dw_received += get_cpl_length(tx_packets[i]);
 
-                    for (int k = 0; k < tx_packets[i].u.fm_cpl.length; k++) begin
+                    for (int k = 0; k < get_cpl_length(tx_packets[i]); k++) begin
                         if (k == 0) begin // first byte enables
                             // Check that received read data = Read DMA Expected Data Pattern - Byte 0
                             if (tx_packets[i].payload[k][7:0] != rd_csr_vif.monitor_cb.read_pattern[7:0]
@@ -213,7 +263,7 @@ class bmd_read_scoreboard_c extends uvm_scoreboard;
                                 prev_dma_err = 1;
                                 break;
                             end
-                        end else if (k == tx_packets[i].u.fm_cpl.length - 1) begin
+                        end else if (k == get_cpl_length(tx_packets[i]) - 1) begin
                             // Check that received read data = Read DMA Expected Data Pattern - Byte 0
                             if (tx_packets[i].payload[k][7:0] != rd_csr_vif.monitor_cb.read_pattern[7:0]
                                     && !inject_bad_data
@@ -288,18 +338,18 @@ class bmd_read_scoreboard_c extends uvm_scoreboard;
             curr_tag_max = cfg_10b_tag_req_en ? 10'd1023 : cfg_ext_tag_en ? 10'd255 : 10'd31;
             foreach (all_packets[i]) begin
                 if (all_packets[i].kind == APCI_TLP_mrd && all_packets[i] inside {rx_packets}) begin
-                    if (tags_used[all_packets[i].u.fm_mem64.tag]) begin
+                    if (tags_used[get_tag(all_packets[i])]) begin
                         `uvm_error(get_type_name(), $sformatf(
                             "Tag 0x%x was used before it was released",
-                            all_packets[i].u.fm_mem64.tag))
+                            get_tag(all_packets[i])))
                     end
-                    tags_used[all_packets[i].u.fm_mem64.tag] = 1'b1;
-                    if (all_packets[i].u.fm_mem64.tag < curr_tag_min || all_packets[i].u.fm_mem64.tag > curr_tag_max)
+                    tags_used[get_tag(all_packets[i])] = 1'b1;
+                    if (get_tag(all_packets[i]) < curr_tag_min || get_tag(all_packets[i]) > curr_tag_max)
                         `uvm_error(get_type_name(), $sformatf(
                             "Tag 0x%x out of expected range of 0x%x-0x%x",
-                            all_packets[i].u.fm_mem64.tag, curr_tag_min, curr_tag_max))
+                            get_tag(all_packets[i]), curr_tag_min, curr_tag_max))
                 end else if (all_packets[i].kind == APCI_TLP_cpld && all_packets[i] inside {tx_packets}) begin
-                    tags_used[all_packets[i].u.fm_cpl.tag] = 1'b0;
+                    tags_used[get_cpl_tag(all_packets[i])] = 1'b0;
                 end
             end
 

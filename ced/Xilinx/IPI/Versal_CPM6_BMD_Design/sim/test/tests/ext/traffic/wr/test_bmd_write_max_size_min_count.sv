@@ -1,3 +1,19 @@
+////////////////////////////////////////////////////////////////////////
+// Copyright (C) 2026, Advanced Micro Devices, Inc. All rights reserved
+//
+// Licensed under the Apache License, Version 2.0 (the "License"). You may
+// not use this file except in compliance with the License. A copy of the
+// License is located at
+//
+//  http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+// WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+// License for the specific language governing permissions and limitations
+// under the License.
+////////////////////////////////////////////////////////////////////////
+
 //==============================================================================
 // test_bmd_write_max_size_min_count.sv - Write Traffic BMD Tests
 //==============================================================================
@@ -40,8 +56,6 @@ class test_bmd_write_max_size_min_count extends test_bmd;
             csr_cfg.wr_lower_be = 4'b1111;
         end
 
-        csr_cfg.wr_tc_en = 1'b0;
-        csr_cfg.wr_tc    = 3'b000;
     endtask
 
 endclass : test_bmd_write_max_size_min_count

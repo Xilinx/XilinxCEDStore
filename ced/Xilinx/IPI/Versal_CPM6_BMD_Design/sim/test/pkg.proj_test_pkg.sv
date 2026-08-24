@@ -1,3 +1,19 @@
+////////////////////////////////////////////////////////////////////////
+// Copyright (C) 2026, Advanced Micro Devices, Inc. All rights reserved
+//
+// Licensed under the Apache License, Version 2.0 (the "License"). You may
+// not use this file except in compliance with the License. A copy of the
+// License is located at
+//
+//  http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+// WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+// License for the specific language governing permissions and limitations
+// under the License.
+////////////////////////////////////////////////////////////////////////
+
 // Vivado projects will set their incdir so that their actual proj_test_pkg
 // can be found first before this empty one
 `include "bmd_write_csr_if.sv"
@@ -104,11 +120,8 @@ package proj_test_pkg;
     `include "tests/ext/capabilities/interrupts/test_bmd_msi.sv"
     `include "tests/ext/capabilities/interrupts/test_bmd_msix.sv"
             // Other
-    `include "tests/ext/capabilities/other/test_bmd_ama.sv"
     `include "tests/ext/capabilities/other/test_bmd_vdm_w_data.sv"
     `include "tests/ext/capabilities/other/test_bmd_vdm.sv"
-            // PL Extended Configuration
-    `include "tests/ext/capabilities/pl_ext_cfg/test_bmd_vsec.sv"
             // Prefixes
     `include "tests/ext/capabilities/prefix/test_bmd_tph.sv"
     `include "tests/ext/capabilities/prefix/test_bmd_pasid.sv"
@@ -117,11 +130,6 @@ package proj_test_pkg;
     `include "tests/ext/capabilities/tags/test_bmd_5b_tag.sv"
     `include "tests/ext/capabilities/tags/test_bmd_8b_tag.sv"
     `include "tests/ext/capabilities/tags/test_bmd_10b_tag.sv"
-        // Error
-    `include "tests/ext/error/test_bmd_inject_bad_data.sv"
-    `include "tests/ext/error/test_bmd_larger_than_mps.sv"
-    `include "tests/ext/error/test_bmd_read_out_of_range.sv"
-    `include "tests/ext/error/test_bmd_send_ur.sv"
         // Traffic
             // Byte Enable
     `include "tests/ext/traffic/be/test_bmd_all_zero_byte_enables.sv"

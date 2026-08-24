@@ -1,3 +1,19 @@
+////////////////////////////////////////////////////////////////////////
+// Copyright (C) 2026, Advanced Micro Devices, Inc. All rights reserved
+//
+// Licensed under the Apache License, Version 2.0 (the "License"). You may
+// not use this file except in compliance with the License. A copy of the
+// License is located at
+//
+//  http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+// WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+// License for the specific language governing permissions and limitations
+// under the License.
+////////////////////////////////////////////////////////////////////////
+
 //==============================================================================
 // bmd_10b_tag_config_seq.sv - BMD 10-bit Tag Configuration Sequence
 //==============================================================================
@@ -23,10 +39,31 @@ class bmd_10b_tag_config_seq_c extends bmd_base_sequence_c;
     virtual task body();
         apci_cap_pcie pcie_cap;
         int err;
+        bit ctrlr0_fm;
 
         // Create and configure PCIe capability structure
         pcie_cap = new();
         pcie_cap.configure();
+
+        ///////////////////////////////////////////////////////////////////
+        // [Check] Non-flit mode cannot use 10-bit tags (header format too narrow)
+        if (!$value$plusargs("CTRLR0_FM=%b", ctrlr0_fm))
+            ctrlr0_fm = 0;
+        if (!ctrlr0_fm && cap_cfg.cfg_10b_tag_req_en) begin
+            `uvm_info(get_name(), " [CFG] Non-flit mode: overriding cfg_10b_tag_req_en to 0", UVM_MEDIUM)
+            cap_cfg.cfg_10b_tag_req_en = 0;
+        end
+
+        // [Check] Read Device Capabilities 2 to see if 10-bit tags are supported
+        env.shim.vip.read_capability(pdev_ep.bdf, pcie_cap,
+            pcie_cap.ten_bit_tag_requester_sup.get_offset_dw, err);
+        if (err)
+            `uvm_error(get_name(), " [CFG] Error reading Device Capabilities 2")
+
+        if (!pcie_cap.ten_bit_tag_requester_sup.v && cap_cfg.cfg_10b_tag_req_en) begin
+            `uvm_info(get_name(), " [CFG] EP does not support 10-bit tags - overriding cfg_10b_tag_req_en to 0", UVM_MEDIUM)
+            cap_cfg.cfg_10b_tag_req_en = 0;
+        end
 
         ///////////////////////////////////////////////////////////////////
         // [Read] 10-bit tag requester enable

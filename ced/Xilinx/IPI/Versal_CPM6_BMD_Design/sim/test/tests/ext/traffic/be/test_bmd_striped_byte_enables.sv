@@ -1,3 +1,19 @@
+////////////////////////////////////////////////////////////////////////
+// Copyright (C) 2026, Advanced Micro Devices, Inc. All rights reserved
+//
+// Licensed under the Apache License, Version 2.0 (the "License"). You may
+// not use this file except in compliance with the License. A copy of the
+// License is located at
+//
+//  http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+// WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+// License for the specific language governing permissions and limitations
+// under the License.
+////////////////////////////////////////////////////////////////////////
+
 //==============================================================================
 // test_bmd_striped_byte_enables.sv - Byte Enable Traffic BMD Tests
 //==============================================================================
@@ -39,11 +55,6 @@ class test_bmd_striped_byte_enables extends test_bmd;
         std::randomize(csr_cfg.wr_lower_be) with {
             csr_cfg.wr_lower_be inside {4'b0001, 4'b0010, 4'b0100, 4'b1000};
         };
-
-        csr_cfg.wr_tc_en = 1'b0;
-        csr_cfg.wr_tc    = 3'b000;
-        csr_cfg.rd_tc_en = 1'b0;
-        csr_cfg.rd_tc    = 3'b000;
 
     endtask
 

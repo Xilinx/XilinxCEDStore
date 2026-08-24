@@ -1,3 +1,19 @@
+////////////////////////////////////////////////////////////////////////
+// Copyright (C) 2026, Advanced Micro Devices, Inc. All rights reserved
+//
+// Licensed under the Apache License, Version 2.0 (the "License"). You may
+// not use this file except in compliance with the License. A copy of the
+// License is located at
+//
+//  http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+// WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+// License for the specific language governing permissions and limitations
+// under the License.
+////////////////////////////////////////////////////////////////////////
+
 // Check that number of memory writes = Write DMA TLP Count
 //       > will also verify against tb programmed value
 // Check that write done is asserted if writes == count
@@ -88,6 +104,24 @@ class bmd_write_scoreboard_c extends uvm_scoreboard;
     int number_of_memory_writes;
     int number_of_dw_sent;
 
+    function bit [63:0] get_addr64(apci_tlp pkt);
+        return pkt.is_flit_mode ? {pkt.u.fm_mem64.addr.dw_addr, 2'b00}
+                                : {pkt.u.mem64.addr.dw_addr, 2'b00};
+    endfunction
+
+    function bit [31:0] get_addr32(apci_tlp pkt);
+        return pkt.is_flit_mode ? {pkt.u.fm_mem32.addr.dw_addr, 2'b00}
+                                : {pkt.u.mem32.addr.dw_addr, 2'b00};
+    endfunction
+
+    function bit [9:0] get_length(apci_tlp pkt);
+        return pkt.is_flit_mode ? pkt.u.fm_mem64.length : pkt.u.mem64.length;
+    endfunction
+
+    function bit [2:0] get_tc(apci_tlp pkt);
+        return pkt.is_flit_mode ? pkt.u.fm_com.tc : pkt.u.com.tc;
+    endfunction
+
     // Report phase
     virtual function void call_report();
         number_of_memory_writes = 0;
@@ -96,36 +130,34 @@ class bmd_write_scoreboard_c extends uvm_scoreboard;
         if (wr_csr_vif.monitor_cb.write_start) begin
             foreach (rx_packets[i]) begin // TX from device perspective
                 if (rx_packets[i].kind == APCI_TLP_mwr) begin
-                    if ({rx_packets[i].u.fm_mem64.addr.dw_addr, 2'b00} != msi_addr &&
-                        {rx_packets[i].u.fm_mem64.addr.dw_addr, 2'b00} != msix_addr) begin
-                        //`uvm_info(get_type_name(), $sformatf("Checking write at address 0x%x with msi address 0x%x",
-                        //    {rx_packets[i].u.fm_mem64.addr.dw_addr, 2'b00}, msi_addr), UVM_LOW)
+                    if (get_addr64(rx_packets[i]) != msi_addr &&
+                        get_addr64(rx_packets[i]) != msix_addr) begin
                         // Check all write addresses against base address (CSR) + size increments
                         if (wr_csr_vif.monitor_cb.write_64b_en) begin
-                            if (({rx_packets[i].u.fm_mem64.addr.dw_addr, 2'b00} -
+                            if ((get_addr64(rx_packets[i]) -
                                     {wr_csr_vif.monitor_cb.write_up_address,
                                     wr_csr_vif.monitor_cb.write_address}) !=
                                         (number_of_memory_writes * (wr_csr_vif.monitor_cb.write_size << 2)))
                                 `uvm_error(get_type_name(), $sformatf(
                                     "Address offset [0x%x] not equal to address offset [0x%x]",
-                                    {rx_packets[i].u.fm_mem64.addr.dw_addr, 2'b00} -
+                                    get_addr64(rx_packets[i]) -
                                         {wr_csr_vif.monitor_cb.write_up_address,
                                         wr_csr_vif.monitor_cb.write_address},
                                     (number_of_memory_writes * (wr_csr_vif.monitor_cb.write_size << 2))))
                         end else begin
-                            if (({rx_packets[i].u.fm_mem32.addr.dw_addr, 2'b00} -
+                            if ((get_addr32(rx_packets[i]) -
                                     wr_csr_vif.monitor_cb.write_address) !=
                                         (number_of_memory_writes * (wr_csr_vif.monitor_cb.write_size << 2)))
                                 `uvm_error(get_type_name(), $sformatf(
                                     "Address offset [0x%x] not equal to address offset [0x%x]",
-                                    {rx_packets[i].u.fm_mem32.addr.dw_addr, 2'b00} -
+                                    get_addr32(rx_packets[i]) -
                                         wr_csr_vif.monitor_cb.write_address,
                                     (number_of_memory_writes * (wr_csr_vif.monitor_cb.write_size << 2))))
                         end
                         number_of_memory_writes++;
-                        number_of_dw_sent += rx_packets[i].u.fm_mem64.length;
+                        number_of_dw_sent += get_length(rx_packets[i]);
 
-                        for (int k = 0; k < rx_packets[i].u.fm_mem64.length; k++) begin
+                        for (int k = 0; k < get_length(rx_packets[i]); k++) begin
                             // Check that received write data = Write DMA TLP Data Pattern
                             if (rx_packets[i].payload[k] != wr_csr_vif.monitor_cb.write_pattern) begin
                                 `uvm_error(get_type_name(), $sformatf(
@@ -135,8 +167,8 @@ class bmd_write_scoreboard_c extends uvm_scoreboard;
                         end
 
                         // Check TC
-                        if (rx_packets[i].u.fm_com.tc != wr_tc) `uvm_error(get_type_name(), $sformatf(
-                                "TC Actual (%x) != Expected (%x)", rx_packets[i].u.fm_com.tc, wr_tc))
+                        if (get_tc(rx_packets[i]) != wr_tc) `uvm_error(get_type_name(), $sformatf(
+                                "TC Actual (%x) != Expected (%x)", get_tc(rx_packets[i]), wr_tc))
                     end
                 end
             end
