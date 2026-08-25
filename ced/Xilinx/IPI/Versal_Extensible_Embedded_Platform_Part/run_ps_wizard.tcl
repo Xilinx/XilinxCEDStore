@@ -743,6 +743,7 @@ foreach io_prop $fpga_part_prop {
 }
 
 if {( $ddrmc_flag == 0 ) || ($io_flag == 0) } {
+	puts "INFO: LPDDR5 is disabled for $fpga_part due to IO / DDRMC constraints, DDR5 will be used"
 	set use_lpddr 0
 } else {
 	set use_lpddr 1
@@ -754,9 +755,10 @@ if { ([regexp "xc2vp" $fpga_part]) } {
 }
 
 
-# Limit MC usage to only DDR5 for L40, L60, L75, V95 and V95N devices due to IO constraints
-if { [regexp "xc2vp(3202|3402|3502|3102)|xc2v95" $fpga_part] } {
+# Limit MC usage to only DDR5 for L40, L60, L75 devices due to IO constraints
+if { [regexp "xc2vp(3202|3402|3502|3102)" $fpga_part] } {
 	set use_lpddr 0
+	puts "INFO: LPDDR5 is disabled for $fpga_part due to IO constraints, DDR5 will be used"
 }
 
 #Force disable NOC2 lpddr5 instantiation as already noc2_ddr5 configured as lpddr5 in 2023.2.1
