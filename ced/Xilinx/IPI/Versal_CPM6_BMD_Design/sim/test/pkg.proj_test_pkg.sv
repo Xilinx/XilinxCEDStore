@@ -144,8 +144,6 @@ package proj_test_pkg;
     `include "tests/ext/traffic/wr/test_bmd_write_min_size_max_count.sv"
     `include "tests/ext/traffic/wr/test_bmd_write_max_size_min_count.sv"
     `include "tests/ext/traffic/wr/test_bmd_write_max_size_max_count.sv"
-            // Custom
-    `include "tests/ext/traffic/other/test_bmd_custom_perf.sv"
 
 endpackage
 

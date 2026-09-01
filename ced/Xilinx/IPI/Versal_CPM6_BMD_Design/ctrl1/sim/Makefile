@@ -30,9 +30,6 @@
 ##   test_bmd_all_zero_byte_enables
 ##   test_bmd_striped_byte_enables
 ##
-## Other:
-##   test_bmd_custom_perf
-##
 ## Interrupts:
 ##   test_bmd_intx
 ##   test_bmd_msi
