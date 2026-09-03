@@ -1,0 +1,4 @@
+Notes: 
+1. Need to add capability to select in the CED (which also changes run.tcl):
+  a. DDR (with UART) vs no DDR (for Linux boot)
+2. Timing improvements in CXL TL IP and custom_axi_tg
