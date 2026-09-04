@@ -89,16 +89,16 @@ Steps to run CPM6 DMA+DDR (CTRL1) simulation
 --------------------------------------------------------------------------------
 AVAILABLE TESTS
 --------------------------------------------------------------------------------
-Real DMA-specific UVM tests are compiled in via sim/tb/test/hdma/ (ported
-verbatim from uvma-pcie-sim-framework/cpm6/common/test/hdma/, the same
+Real DMA-specific UVM tests are compiled in via sim/tb/test/dma/ (ported
+verbatim from uvma-pcie-sim-framework/cpm6/common/test/dma/, the same
 source used by the verified-passing regression at
-cpm6/ctrl1ep_g6x8_hdma_1pf). This variant (dma_ddr, LPDDR5-backed) should
+cpm6/ctrl1ep_g6x8_dma_1pf). This variant (dma_ddr, LPDDR5-backed) should
 use the "ddr" flavored tests:
 
   hello_world                       (generic framework smoke test, default)
-  test_s_hdma_ddr_ctrlr1
-  test_s_hdma_ddr_ctrlr1_msix
-  test_s_hdma_ddr_ctrlr1_multipf
+  test_s_dma_ddr_ctrlr1
+  test_s_dma_ddr_ctrlr1_msix
+  test_s_dma_ddr_ctrlr1_multipf
   test_M_bridge_ddr_ctrlr1
   test_M_bridge_ddr_ctrlr1_4pf
   test_M_bridge_ddr_ctrlr1_bar24_1pf
