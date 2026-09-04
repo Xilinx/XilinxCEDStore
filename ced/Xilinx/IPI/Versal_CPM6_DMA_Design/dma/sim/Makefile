@@ -16,19 +16,19 @@
 ## ----------------------------------------------------------------------------
 ## TEST -- change to run a different test
 ## ----------------------------------------------------------------------------
-## Real DMA tests (ported from uvma-pcie-sim-framework/cpm6/common/test/hdma/,
-## same source as the verified-passing cpm6/ctrl1ep_g6x8_hdma_1pf regression)
-## are compiled in via sim/tb/test/hdma/. This variant (dma, non-DDR/PL-AXI)
+## Real DMA tests (ported from uvma-pcie-sim-framework/cpm6/common/test/dma/,
+## same source as the verified-passing cpm6/ctrl1ep_g6x8_dma_1pf regression)
+## are compiled in via sim/tb/test/dma/. This variant (dma, non-DDR/PL-AXI)
 ## should use the "plaxi" flavored tests -- see sim/testlist_full.txt:
 ##   hello_world                       (default -- generic framework smoke test)
-##   test_s_hdma_plaxi_ctrlr1
+##   test_s_dma_plaxi_ctrlr1
 ##   test_M_bridge_plaxi_ctrlr1
 ##   test_M_bridge_plaxi_ctrlr1_4pf
 ##   test_M_bridge_plaxi_ctrlr1_4pf_axildecode
 ## NOTE: plaxi/ddr variant assignment is by naming convention, not
 ## independently re-verified against this CED-generated project.
 ## ----------------------------------------------------------------------------
-TEST  ?= test_s_hdma_plaxi_ctrlr1
+TEST  ?= test_s_dma_plaxi_ctrlr1
 DUMP  ?= 0
 SEED  ?=
 REGR_TIMEOUT ?= 3600

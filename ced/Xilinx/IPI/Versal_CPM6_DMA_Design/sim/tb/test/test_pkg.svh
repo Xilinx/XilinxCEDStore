@@ -99,21 +99,33 @@ package test_pkg;
   `include "examples/test_mem_ide_tlps.sv"
   `include "examples/test_ide_tlps_spdm.sv"
 
-  // HDMA Tests
-  // Ported from uvma-pcie-sim-framework/cpm6/common/test/hdma/ (same file
+  // DMA Tests
+  // Ported from uvma-pcie-sim-framework/cpm6/common/test/dma/ (same file
   // set and order as the verified-passing RDI regression at
-  // cpm6/ctrl1ep_g6x8_hdma_1pf) -- see sim/tb/test/hdma/ for sources.
-  `include "hdma/rc_mem_callback.sv"
-  `include "hdma/test_hdma_tasks.sv"
-  `include "hdma/test_M_bridge_plaxi_ctrlr1.sv"
-  `include "hdma/test_M_bridge_plaxi_ctrlr1_4pf.sv"
-  `include "hdma/test_M_bridge_plaxi_ctrlr1_4pf_axildecode.sv"
-  `include "hdma/test_M_bridge_ddr_ctrlr1.sv"
-  `include "hdma/test_M_bridge_ddr_ctrlr1_4pf.sv"
-  `include "hdma/test_M_bridge_ddr_ctrlr1_bar24_1pf.sv"
-  `include "hdma/test_s_hdma_plaxi_ctrlr1.sv"
-  `include "hdma/test_s_hdma_ddr_ctrlr1.sv"
-  `include "hdma/test_s_hdma_ddr_ctrlr1_msix.sv"
-  `include "hdma/test_s_hdma_ddr_ctrlr1_multipf.sv"
+  // cpm6/ctrl1ep_g6x8_dma_1pf) -- see sim/tb/test/dma/ for sources.
+  `include "dma/rc_mem_callback.sv"
+  `include "dma/test_dma_tasks.sv"
+  // Controller-0 (plaxi, non-DDR) variant tests -- ported from the
+  // same verified-passing source, see dma_ctrl0/sim/README.txt.
+  `include "dma/test_s_dma_plaxi_ctrlr0.sv"
+  `include "dma/test_M_bridge_plaxi_ctrlr0.sv"
+  `include "dma/test_M_bridge_plaxi_ctrlr0_4pf.sv"
+  `include "dma/test_M_bridge_plaxi_ctrlr0_4pf_axildecode.sv"
+  `include "dma/test_M_bridge_plaxi_ctrlr1.sv"
+  `include "dma/test_M_bridge_plaxi_ctrlr1_4pf.sv"
+  `include "dma/test_M_bridge_plaxi_ctrlr1_4pf_axildecode.sv"
+  `include "dma/test_M_bridge_ddr_ctrlr0.sv"
+  `include "dma/test_M_bridge_ddr_ctrlr0_4pf.sv"
+  `include "dma/test_M_bridge_ddr_ctrlr0_bar24_1pf.sv"
+  `include "dma/test_M_bridge_ddr_ctrlr1.sv"
+  `include "dma/test_M_bridge_ddr_ctrlr1_4pf.sv"
+  `include "dma/test_M_bridge_ddr_ctrlr1_bar24_1pf.sv"
+  `include "dma/test_s_dma_plaxi_ctrlr1.sv"
+  `include "dma/test_s_dma_ddr_ctrlr0.sv"
+  `include "dma/test_s_dma_ddr_ctrlr0_msix.sv"
+  `include "dma/test_s_dma_ddr_ctrlr0_multipf.sv"
+  `include "dma/test_s_dma_ddr_ctrlr1.sv"
+  `include "dma/test_s_dma_ddr_ctrlr1_msix.sv"
+  `include "dma/test_s_dma_ddr_ctrlr1_multipf.sv"
 
 endpackage

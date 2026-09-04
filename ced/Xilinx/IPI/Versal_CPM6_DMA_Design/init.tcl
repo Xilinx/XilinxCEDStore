@@ -23,7 +23,7 @@ proc addOptions {DESIGNOBJ PROJECT_PARAM.BOARD_PART} {
         enabled true]
     lappend x [dict create name "NUM_PFS" type "string" \
         value "1" \
-        value_list {1 8} \
+        value_list {1} \
         enabled true]
     lappend x [dict create name "CTRL_LANE_RATE" type "string" \
         value "64.0_GT/s" \

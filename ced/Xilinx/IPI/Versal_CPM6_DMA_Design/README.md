@@ -35,7 +35,7 @@ By working through this example design, you will learn how to:
 - **C2H DMA** — descriptor-based card-to-host transfers from BRAM or LPDDR5-backed apertures
 - **MSI-X interrupt generation** — round-robin arbitration of a 128-channel (64 C2H + 64 H2C) DMA interrupt bus into MSI-X vectors
 - **Selectable memory backend** — BRAM-only (non-DDR variant) or single-channel LPDDR5 (DDR variant)
-- **Multi-PF support** — up to 8 physical functions (DDR variant only; non-DDR variant is fixed at 1 PF)
+
 
 ## Features
 
@@ -45,7 +45,7 @@ By working through this example design, you will learn how to:
 - 128-channel DMA interrupt bus (64 C2H + 64 H2C) arbitrated into MSI-X requests by an example PL round-robin arbiter.
 - Two selectable memory backends: 5×/4× on-chip BRAM apertures (non-DDR), or BRAM + single-channel LPDDR5 (DDR variant).
 - Four dedicated `CPM_AXI_PL0..PL3` PL-AXI interfaces plus one or two NoC-routed PCIe DMA apertures, enabled in both variants.
-- VCS/UVM + Avery PCIe VIP simulation environment with a smoke test and a set of DMA/HDMA-flavored regression tests per variant.
+- VCS/UVM + Avery PCIe VIP simulation environment with a smoke test and a set of DMA/DMA-flavored regression tests per variant.
 - CED GUI (`init.tcl`) driving a single parameterized `run.tcl` build flow that assembles the correct sub-design, regenerates link parameters, and stages simulation files automatically.
 
 ## Design Architecture
@@ -153,23 +153,6 @@ sequenceDiagram
 CPM6 Controller 1 is configured as a PCIe Gen6 DMA Bridge endpoint in both variants; Controller 0 is unused.
 ![alt text](Design.png)
 
-| Property | Non-DDR variant (`dma`) | DDR variant (`dma_ddr`) |
-|---|---|---|
-| `CPM6_CTRL1_MODE` | `DMA_BRIDGE` | `DMA_BRIDGE` |
-| `CPM6_CTRL1_PROTOCOL` | `PCIE_6_1` | `PCIE_6_1` |
-| `CPM6_CTRL1_LANE_RATE` / `LINK_WIDTH` | user-selected, default `64.0_GT/s` / `X8` | user-selected, default `64.0_GT/s` / `X8` |
-| `CPM6_CTRL1_NUM_PFS` | fixed at `1` | user-selected, `1` or `8` |
-| `CPM6_CTRL1_NUM_DMA_APERTURES` | `5` | `7` |
-| `CPM6_CTRL1_NUM_MMIO_APERTURES` | `5` | `7` |
-| `CPM6_CTRL1_NUM_INBOUND_REGIONS` | `5` | `5` |
-| PF0 BAR size (`PF0_BARn_SIZE`) | `256` KB per BAR (`BAR_1..BAR_5`) | `128` KB per BAR (`BAR_1..BAR_5`) |
-| MSI-X | not configured at the `ps_wizard` level | `CPM6_CTRL1_PF0_MSIX_EN=1`, 256 vectors, table/PBA offsets `0x10000`/`0x14000`; `CPM6_CTRL1_PF0_MSI_EN=1` |
-| `CPM6_AXI_PL0..PL3_IF` | all `1` (enabled) | all `1` (enabled) |
-| PCIe reset | `PMC_MIO_39` | `PMC_MIO_39` |
-| Controller 0 | not configured (`CPM6_CTRL0_MODE=None`, `CPM6_CTRL0_PROTOCOL=Disabled`) | same |
-
-All values above are read directly from each variant's `design_1_bd.tcl` (`CONFIG.CPM6_CONFIG(...)` property list), not inferred.
-
 ## DMA Subsystem
 
 CPM6's **DMA Bridge** mode implements a descriptor-ring-based H2C/C2H DMA engine (distinct from CPM6's alternative QDMA mode, which is not used in this CED). Each configured DMA aperture is an independent address window that the host can target; CPM6 internally routes it to one of the enabled PL-AXI/NoC destinations.
@@ -250,36 +233,7 @@ Four to five `axi_bram_ctrl` (v4.1, 512-bit, single-port) + `emb_mem_gen` pairs 
 
 Top-level ports added for the DDR variant: `CH0_LPDDR5_0` (LPDDR5 PHY interface: `ca[6:0]`, `ck_c/t`, `cs[1:0]`, `dmi[3:0]`, `dq[31:0]`, `rdqs_c/t[3:0]`, `reset_n`, `wck_c/t[3:0]`), `sys_clk0_0` (DDR reference clock), `pcie1_msix_0` (MSI-X interface, routed to `pl_example`), `pcie1_rstn_0`, `aclk`. Pin placement/electrical constraints for the LPDDR5 PHY are in `constrs/noc_ddr5_phy_phy.xdc` (per-pin `IOSTANDARD` (`LVSTL05_10`), `ODT`/`CTLE_EQ`/`SLEW`/`PACKAGE_PIN` properties for a single LPDDR5 channel; no timing constraints are included there — DDR PHY timing is closed internally by the `ddrmc5_responder` IP).
 
-## DDR Mode Operation
-
-In the DDR variant (`dma_ddr/`, top module `dma_ddr_top`):
-
-- Two of the DMA Bridge's apertures (4 and 5) are routed through both PCIe NoC master ports (`PCIE_AXI_NOC0`/`PCIE_AXI_NOC1`) into a single shared 1 GB LPDDR5 window (`axi_noc2_0/DDR_MC_PORTS/DDR_CH1`), giving the host two independent AXI paths into the same DDR address space.
-- Up to 8 physical functions can be configured (`NUM_PFS` = `1` or `8`), and MSI-X is fully configured at the CPM6 level (256 vectors/PF0).
-- `pl_example` and `rr_arbiter_128` are instantiated in the DDR variant's top-level wrapper (`hdma_ddr_top`/`dma_ddr_top`) to convert `dma1_irq_0` into MSI-X requests — this logic is **only present in the DDR variant's top-level RTL**, not in the non-DDR `dma_top`.
-- BRAM apertures (`CPM_AXI_PL0..PL3`) are still present and decode their full 128 KB aperture window (vs. 64 KB of a 256 KB window in the non-DDR variant).
-- Requires the `constrs/noc_ddr5_phy_phy.xdc` pin/electrical constraints, added automatically by `run.tcl` when `DDR_EN=true`.
-
-## Non-DDR Mode Operation
-
-In the non-DDR variant (`dma/`, top module `dma_top`):
-
-- All five DMA apertures terminate in on-chip BRAM — four behind dedicated `CPM_AXI_PLn` interfaces and one routed through the NoC to a fifth BRAM pair, with no external memory controller in the design.
-- Only 1 PF is supported (`NUM_PFS` fixed at `1`).
-- MSI-X is not configured at the `ps_wizard`/CPM6 level in this variant, and the top-level RTL wrapper (`dma_top`) does not instantiate `pl_example`/`rr_arbiter_128` — only the raw `dma1_irq_0` bus and GT/refclk ports are exposed.
-- Each 256 KB PCIe BAR aperture is backed by only 64 KB of addressable BRAM — the remainder of the BAR window is unmapped.
-- Simplest variant to bring up in simulation: no DDR PHY constraints, no DDR controller timing/calibration behavior to model.
-
 ## Build Instructions
-
-### Prerequisites
-
-- Vivado 2026.1 (validated with build v2026.1.1), with the CPM6 IP available.
-- VCS / Verdi — X-2025.06
-- UVM Library — 1.1
-- Avery PLI — 2025.3_1
-- Avery apci-xactor (PCIe VIP) — 2025.3_1
-- CPM6 Secure IP package (obtained separately from AMD: https://account.amd.com/en/member/cpm6-simulation.html)
 
 ### Project Generation Steps
 
@@ -310,14 +264,14 @@ In the non-DDR variant (`dma/`, top module `dma_top`):
 The generation flow then:
 
 1. Sources the matching sub-design's `design_1_bd.tcl` to build the block design and import its `src/` RTL, along with the CED's top-level `src/`.
-2. Regenerates `defines.sv` (`dma_link_pkg`/`hdma_link_pkg`) in the **project** directory with the selected `LINK_WIDTH`/`LANE_RATE`/`NUM_PFS`.
+2. Regenerates `defines.sv` (`dma_link_pkg`/`dma_link_pkg`) in the **project** directory with the selected `LINK_WIDTH`/`LANE_RATE`/`NUM_PFS`.
 3. Adds `constrs/noc_ddr5_phy_phy.xdc` to the constraints fileset when `DDR_EN` is enabled.
 4. Copies the shared `sim/` testbench tree into the project directory and overlays the selected variant's `sim/verif` DUT-instantiation on top of it.
 5. Configures the `sim_1` fileset for VCS (`generate_scripts_only`), targeting the variant's top module.
 
 ### Expected Outputs
 
-- A Vivado project containing the generated block design (`cpm6_dma`/`cpm6_hdma` equivalent), imported RTL, and constraints.
+- A Vivado project containing the generated block design (`cpm6_dma`/`cpm6_dma` equivalent), imported RTL, and constraints.
 - A `sim/` directory in the generated project, staged for VCS/UVM simulation (no bitstream/hardware build target is exercised by this CED's intended flow).
 
 ## Performance Considerations
@@ -394,12 +348,10 @@ From `<generated_project>/sim`:
 
 ### Available Tests
 
-Real DMA-specific UVM tests are ported from `uvma-pcie-sim-framework/cpm6/common/test/hdma/` and compiled in via `sim/tb/test/hdma/` (shared across both variants). Representative tests:
-
 | Variant | Flavor | Tests |
 |---|---|---|
-| Non-DDR (`dma/`) | `plaxi` | `test_s_hdma_plaxi_ctrlr1`, `test_M_bridge_plaxi_ctrlr1`, `test_M_bridge_plaxi_ctrlr1_4pf`, `test_M_bridge_plaxi_ctrlr1_4pf_axildecode` |
-| DDR (`dma_ddr/`) | `ddr` | `test_s_hdma_ddr_ctrlr1`, `test_M_bridge_ddr_ctrlr1`, `test_M_bridge_ddr_ctrlr1_4pf`, `test_M_bridge_ddr_ctrlr1_bar24_1pf` |
+| Non-DDR (`dma/`) | `plaxi` | `test_s_dma_plaxi_ctrlr1`, `test_M_bridge_plaxi_ctrlr1`, `test_M_bridge_plaxi_ctrlr1_4pf`, `test_M_bridge_plaxi_ctrlr1_4pf_axildecode` |
+| DDR (`dma_ddr/`) | `ddr` | `test_s_dma_ddr_ctrlr1`, `test_M_bridge_ddr_ctrlr1`, `test_M_bridge_ddr_ctrlr1_4pf`, `test_M_bridge_ddr_ctrlr1_bar24_1pf` |
 
 A handful of generic framework tests (`test_init`, `test_enum`, `test_base`, `base_ep_test`, ...) are also compiled in via `sim/tb/test/test_pkg.svh`.
 
@@ -407,7 +359,7 @@ A handful of generic framework tests (`test_init`, `test_enum`, `test_base`, `ba
 
 | Testcase Name | Function |
 |---|---|
-| `test_s_hdma_plaxi_ctrlr1` | Slave HDMA PL-AXI controller 1 verification |
+| `test_s_dma_plaxi_ctrlr1` | Slave DMA PL-AXI controller 1 verification |
 | `test_M_bridge_plaxi_ctrlr1` | Master bridge PL-AXI controller 1 verification |
 | `test_M_bridge_plaxi_ctrlr1_4pf` | Master bridge PL-AXI controller 1 with 4 physical functions (4PF) |
 | `test_M_bridge_plaxi_ctrlr1_4pf_axildecode` | Master bridge PL-AXI controller 1, 4PF, with AXI-Lite address decode check |
@@ -416,35 +368,7 @@ A handful of generic framework tests (`test_init`, `test_enum`, `test_base`, `ba
 
 | Testcase Name | Function |
 |---|---|
-| `test_s_hdma_ddr_ctrlr1` | Simple H2C HDMA transfer to PL-AXI0, 20 iterations, MSI interrupts |
+| `test_s_dma_ddr_ctrlr1` | Simple H2C DMA transfer to PL-AXI0, 20 iterations, MSI interrupts |
 | `test_M_bridge_ddr_ctrlr1` | Randomized write/read-check loop (100x) across BAR1–5, incl. DDR-routed BAR4/5, Ctrl1 PF0 |
 | `test_M_bridge_ddr_ctrlr1_4pf` | Same BAR1–5 randomized DDR-bridge test, iterated across all discovered PFs |
 | `test_M_bridge_ddr_ctrlr1_bar24_1pf` | Narrower variant: only BAR2 (PL-AXI0) + BAR4 (NOC-DDR0), iterated per PF |
-
-**Verification status**: only the `hello_world` generic framework smoke test is independently verified per variant. The plaxi/ddr-flavored DMA tests above are ported/named by convention from a verified-passing regression (`cpm6/ctrl1ep_g6x8_hdma_1pf`) but have **not** been independently re-verified against this CED-generated project — treat them as a strong starting point, not confirmed sign-off.
-
-## Limitations
-
-- **`Controller_0` is not buildable.** It is exposed in the CED GUI, but its sub-designs (`dma_ctrl0/`, `dma_ddr_ctrl0/`) are not present in this repository; selecting it fails at `import_files` in `run.tcl`.
-- **No hardware flow.** No board is registered for this CED (part-only); there is no JTAG/PCIe-host bring-up flow — this design targets PIPE simulation only.
-- **AXI-Lite debug interface disabled.** `pl_example`'s `m_pl_axil_*` interface exists in the RTL but is commented out/unused.
-- **DMA-specific tests not independently re-verified** against the CED-generated project (naming-convention-based mapping only) — see [Validation Flow](#validation-flow).
-- **MSI-X arbitration example logic drives only PF0** — no SR-IOV/virtual-function support.
-- **Non-DDR variant apertures under-decode their BAR window** (64 KB of BRAM behind a 256 KB BAR) — accesses beyond the decoded window are unmapped, not an error condition to be confused with a hardware fault.
-- **`reference/bmd_test_example/` is not part of the active compile path** — it is retained purely as a structural reference for writing further DMA-specific verification content (see `reference/README.txt`).
-- Design assumes a single LPDDR5 channel/rank in the DDR variant; no multi-channel or multi-rank DDR configuration is provided.
-
-## References
-
-- AMD Versal Adaptive SoC CPM6 documentation (DMA Bridge mode, MSI-X, NoC/DDR configuration) — see the Documentation tab of the CPM6/`ps_wizard` IP customization GUI in Vivado, or [docs.amd.com](https://docs.amd.com).
-- `dma/sim/README.txt`, `dma_ddr/sim/README.txt` — customer-facing simulation setup for each variant.
-- `reference/bmd_test_example/` — original BMD (Bus Master DMA) UVM verification package this design's `sim/` tree was bootstrapped from.
-
----
-
-### Revision Notes
-
-This README was generated by analyzing the CED source (`init.tcl`, `run.tcl`, `design.xml`, `xitem.json`, `dma/design_1_bd.tcl`, `dma_ddr/design_1_bd.tcl`, top-level RTL, constraints, and both variants' `sim/README.txt`) together with the corresponding generated Vivado projects (`project_dma_t2_26_1`, `project_hdma_ddr_T1`). All configuration values, address-map entries, and IP parameters quoted above were cross-checked directly against `CONFIG.CPM6_CONFIG(...)`/`CONFIG.DDRMC5_CONFIG(...)` property lists in the `design_1_bd.tcl` scripts and against the constraint files, not inferred from the block diagram alone. Two areas are explicitly **assumptions carried over from the CED's own documentation**, not independently re-derived by this analysis:
-
-- The claim that the ported `plaxi`/`ddr`-flavored DMA tests correspond to a previously verified-passing regression (`cpm6/ctrl1ep_g6x8_hdma_1pf`) is taken from each variant's `sim/README.txt` and has not been independently re-run.
-- Performance figures in [Performance Considerations](#performance-considerations) are structural bounds derived from IP configuration (link rate, DDR speed grade, aperture decode size), not measured benchmark results — no benchmarking methodology ships with this CED.
