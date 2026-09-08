@@ -974,17 +974,17 @@
         "name": "Versal_CPM6_CXL_RP",
         "display": "Versal CPM6 Compute Express Link (CXL) Root Port (RP)",
         "latest_revision": "1.0",
-        "commit_id": "9f04e7ed3c0a125cdafc995d4882f20464be7115",
+        "commit_id": "f975fac9e09a77af5b722ae349f7ca5a6a38a497",
         "revisions": [
           {
             "revision": "1.0",
-            "commit_id": "9f04e7ed3c0a125cdafc995d4882f20464be7115",
-            "date": "04-09-2026:18:34:37",
+            "commit_id": "f975fac9e09a77af5b722ae349f7ca5a6a38a497",
+            "date": "08-09-2026:17:37:30",
             "history": "Added board Versal CPM6 Compute Express Link (CXL) Root Port (RP) v1.0"
           }
         ],
         "config": {
-          "root": "Versal_CPM6_CXL_RP",
+          "root": "ced/Xilinx/IPI/Versal_CPM6_CXL_RP",
           "metadata_file": "xitem.json"
         },
         "company": "xilinx.com"
