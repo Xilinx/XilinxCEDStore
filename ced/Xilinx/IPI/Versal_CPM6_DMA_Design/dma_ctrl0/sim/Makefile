@@ -1,5 +1,5 @@
 ## =============================================================================
-## Makefile - CPM6 DMA Gen6 PIPE Simulation (CTRL1 EP)
+## Makefile - CPM6 DMA Gen6 PIPE Simulation (CTRL0 EP)
 ## =============================================================================
 ## Usage:
 ##   make cos                     -- compile + optimize + simulate
@@ -16,19 +16,19 @@
 ## ----------------------------------------------------------------------------
 ## TEST -- change to run a different test
 ## ----------------------------------------------------------------------------
-## Real DMA tests (ported from uvma-pcie-sim-framework/cpm6/common/test/dma/,
-## same source as the verified-passing cpm6/ctrl1ep_g6x8_dma_1pf regression)
+## Real DMA tests (ported from uvma-pcie-sim-framework/cpm6/common/test/hdma/,
+## same source as the verified-passing cpm6/ctrl1ep_g6x8_hdma_1pf regression)
 ## are compiled in via sim/tb/test/dma/. This variant (dma, non-DDR/PL-AXI)
 ## should use the "plaxi" flavored tests -- see sim/testlist_full.txt:
 ##   hello_world                       (default -- generic framework smoke test)
-##   test_s_dma_plaxi_ctrlr1
-##   test_M_bridge_plaxi_ctrlr1
-##   test_M_bridge_plaxi_ctrlr1_4pf
-##   test_M_bridge_plaxi_ctrlr1_4pf_axildecode
+##   test_s_dma_plaxi_ctrlr0
+##   test_M_bridge_plaxi_ctrlr0
+##   test_M_bridge_plaxi_ctrlr0_4pf
+##   test_M_bridge_plaxi_ctrlr0_4pf_axildecode
 ## NOTE: plaxi/ddr variant assignment is by naming convention, not
 ## independently re-verified against this CED-generated project.
 ## ----------------------------------------------------------------------------
-TEST  ?= test_s_dma_plaxi_ctrlr1
+TEST  ?= test_s_dma_plaxi_ctrlr0
 DUMP  ?= 0
 SEED  ?=
 REGR_TIMEOUT ?= 3600
@@ -53,14 +53,14 @@ endif
 LANE_RATE    := $(shell grep -o 'LANE_RATE.*"[^"]*"' "$(DEFINES_FILE)" 2>/dev/null | grep -o '"[^"]*"' | tr -d '"')
 
 ifeq ($(LANE_RATE),64.0_GT/s)
-  CTRLR1_SPEED := 6
-  CTRLR1_FM    := 1
+  CTRLR0_SPEED := 6
+  CTRLR0_FM    := 1
 else ifeq ($(LANE_RATE),32.0_GT/s)
-  CTRLR1_SPEED := 5
-  CTRLR1_FM    := 0
+  CTRLR0_SPEED := 5
+  CTRLR0_FM    := 0
 else
-  CTRLR1_SPEED := 4
-  CTRLR1_FM    := 0
+  CTRLR0_SPEED := 4
+  CTRLR0_FM    := 0
 endif
 
 ## ----------------------------------------------------------------------------
@@ -84,12 +84,10 @@ CDEF := +define+CPM6_VIVADO         \
 ## ----------------------------------------------------------------------------
 ## Simulation plusargs
 ## ----------------------------------------------------------------------------
-PARG  := +CTRLR0_EN=0
-PARG  += +CTRLR1_EN=1
-PARG  += +CTRLR0_SPEED=$(CTRLR1_SPEED)
-PARG  += +CTRLR0_FM=$(CTRLR1_FM)
-PARG  += +CTRLR1_SPEED=$(CTRLR1_SPEED)
-PARG  += +CTRLR1_FM=$(CTRLR1_FM)
+PARG  := +CTRLR0_EN=1
+PARG  += +CTRLR1_EN=0
+PARG  += +CTRLR0_SPEED=$(CTRLR0_SPEED)
+PARG  += +CTRLR0_FM=$(CTRLR0_FM)
 PARG  += +SIM_TIMEOUT=5000us
 PARG  += +CPM6_VIVADO
 PARG  += +PCIE_LINK_PIPE
@@ -120,7 +118,7 @@ SIM_SO := -sv_lib ../lib/date -sv_lib ../lib/socket_dpi
 
 h help:
 	@echo "======================================================="
-	@echo " CPM6 DMA Gen6 PIPE Simulation (CTRL1 EP)"
+	@echo " CPM6 DMA Gen6 PIPE Simulation (CTRL0 EP)"
 	@echo "======================================================="
 	@echo ""
 	@echo " Prerequisites:"
@@ -155,8 +153,8 @@ h help:
 	@echo "   Project    : $(PROJ_ROOT)"
 	@echo "   Width      : $(WIDTH)"
 	@echo "   Lane Rate  : $(LANE_RATE)"
-	@echo "   Speed      : $(CTRLR1_SPEED)"
-	@echo "   Flit Mode  : $(CTRLR1_FM)"
+	@echo "   Speed      : $(CTRLR0_SPEED)"
+	@echo "   Flit Mode  : $(CTRLR0_FM)"
 	@echo "   PL0_CLK    : $(PL0_CLK)"
 
 cos: c o s
@@ -277,8 +275,8 @@ o opt: _check_env _check_setup
 	    $(AVERY_PLI)/lib.linux/libtb_vcs64.a \
 	    -P $(AVERY_PLI)/tb_vcs64.tab +vpi \
 	    +warn=noUII-L -reportstats \
-	    -pvalue tb_top.LINK0_WIDTH=0 \
-	    -pvalue tb_top.LINK1_WIDTH=$(WIDTH)
+	    -pvalue tb_top.LINK0_WIDTH=$(WIDTH) \
+	    -pvalue tb_top.LINK1_WIDTH=0
 	@echo "    Optimization complete -- simv created"
 
 ## ---------------------------------------------------------------------------

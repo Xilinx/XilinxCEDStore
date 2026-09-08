@@ -1,10 +1,10 @@
 ================================================================================
-  Versal CPM6 DMA+DDR Gen6 PIPE Simulation -- CTRL1 EP
-  Controller: CTRL1 only (Endpoint)
+  Versal CPM6 DMA+DDR Gen6 PIPE Simulation -- CTRL0 EP
+  Controller: CTRL0 only (Endpoint)
   Mode      : PIPE Simulation
 ================================================================================
 
-Steps to run CPM6 DMA+DDR (CTRL1) simulation
+Steps to run CPM6 DMA+DDR (CTRL0) simulation
 
 1.  The following tool versions are needed for running the CPM6 DMA simulation. Add these tools to
     your PATH environment variable so that they can be accessed from CED Simulation scripts and add
@@ -92,23 +92,23 @@ AVAILABLE TESTS
 Real DMA-specific UVM tests are compiled in via sim/tb/test/dma/ (ported
 verbatim from uvma-pcie-sim-framework/cpm6/common/test/dma/, the same
 source used by the verified-passing regression at
-cpm6/ctrl1ep_g6x8_dma_1pf). This variant (dma_ddr, LPDDR5-backed) should
-use the "ddr" flavored tests:
+cpm6/ctrl1ep_g6x8_dma_1pf). This variant (dma_ddr_ctrl0, LPDDR5-backed)
+should use the "ddr" flavored tests:
 
   hello_world                       (generic framework smoke test, default)
-  test_s_dma_ddr_ctrlr1
-  test_s_dma_ddr_ctrlr1_msix
-  test_s_dma_ddr_ctrlr1_multipf
-  test_M_bridge_ddr_ctrlr1
-  test_M_bridge_ddr_ctrlr1_4pf
-  test_M_bridge_ddr_ctrlr1_bar24_1pf
+  test_s_dma_ddr_ctrlr0
+  test_s_dma_ddr_ctrlr0_msix
+  test_s_dma_ddr_ctrlr0_multipf
+  test_M_bridge_ddr_ctrlr0
+  test_M_bridge_ddr_ctrlr0_4pf
+  test_M_bridge_ddr_ctrlr0_bar24_1pf
 
 See sim/testlist_full.txt. NOTE: the ddr/plaxi variant split above is based
 on test naming convention, not independently re-verified against this
 CED-generated project -- treat as a strong starting point, not confirmed
-sign-off. The "plaxi" flavored tests (for the non-DDR dma/ variant) are
+sign-off. The "plaxi" flavored tests (for the non-DDR dma_ctrl0/ variant) are
 also compiled in (all DMA tests share one test_pkg.svh) but are expected
-to target dma/'s BRAM-backed hardware, not this DDR variant.
+to target dma_ctrl0/'s BRAM-backed hardware, not this DDR variant.
 
 A handful of other generic framework tests (test_init, test_enum, test_base,
 base_ep_test, ...) are also compiled in via sim/tb/test/test_pkg.svh.
