@@ -239,6 +239,8 @@ proc create_root_design { parentCell link_width lane_rate } {
     CONFIG.CPM6_CONFIG(CPM6_CTRL1_NUM_INBOUND_REGIONS) {5} \
     CONFIG.CPM6_CONFIG(CPM6_CTRL1_NUM_MMIO_APERTURES) {5} \
     CONFIG.CPM6_CONFIG(CPM6_CTRL1_PF0_BAR0_SCALE) {Kilobytes} \
+	CONFIG.CPM6_CONFIG(CPM6_CTRL1_PERST) {PS_MIO_19} \
+    CONFIG.CPM6_CONFIG(CPM6_BOARD) {VPK360} \
     CONFIG.CPM6_CONFIG(CPM6_CTRL1_PF0_BAR0_SIZE) {256} \
     CONFIG.CPM6_CONFIG(CPM6_CTRL1_PF0_BAR1_EN) {1} \
     CONFIG.CPM6_CONFIG(CPM6_CTRL1_PF0_BAR1_SIZE) {256} \
@@ -261,6 +263,7 @@ proc create_root_design { parentCell link_width lane_rate } {
     CONFIG.PS_PMC_CONFIG(CPM6_AXI_PL3_IF) {1} \
     CONFIG.PS_PMC_CONFIG(CPM6_CTRL1_LINK_WIDTH) $link_width \
     CONFIG.PS_PMC_CONFIG(CPM6_CTRL1_MODE) {DMA_BRIDGE} \
+	CONFIG.PS_PMC_CONFIG(CPM6_CTRL1_PERST) {PS_MIO_19} \
     CONFIG.PS_PMC_CONFIG(CPM6_CTRL1_PROTOCOL) {PCIE_6_1} \
     CONFIG.PS_PMC_CONFIG(PMC_CRP_PL0_REF_CTRL_FREQMHZ) {250} \
     CONFIG.PS_PMC_CONFIG(PMC_CRP_PL1_REF_CTRL_FREQMHZ) {250} \
@@ -430,7 +433,7 @@ proc create_root_design { parentCell link_width lane_rate } {
   assign_bd_address -offset 0x00000000 -range 0x00010000 -target_address_space [get_bd_addr_spaces ps_wizard_0/pmcps_0_psv_cpm_0] [get_bd_addr_segs axi_bram_ctrl_2/S_AXI/Mem0] -force
   assign_bd_address -offset 0x0001000002000000 -range 0x00010000 -target_address_space [get_bd_addr_spaces ps_wizard_0/pmcps_0_psv_cpm_0] [get_bd_addr_segs axi_bram_ctrl_3/S_AXI/Mem0] -force
   assign_bd_address -offset 0x020100000000 -range 0x00010000 -target_address_space [get_bd_addr_spaces ps_wizard_0/pmcps_0_psv_cpm_0] [get_bd_addr_segs axi_bram_ctrl_4/S_AXI/Mem0] -force
-
+  assign_bd_address -target_address_space /ps_wizard_0/pmcps_0_psv_dpc_0 [get_bd_addr_segs axi_bram_ctrl_4/S_AXI/Mem0] -force
 
   # Restore current instance
   current_bd_instance $oldCurInst

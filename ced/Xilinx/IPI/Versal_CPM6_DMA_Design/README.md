@@ -5,7 +5,7 @@
 | Item | Summary |
 |---|---|
 | **Primary Purpose** | Demonstrates DMA Bridge (H2C/C2H) capability of the Versal CPM6 hard IP, plus PL-side arbitration of DMA completion interrupts into MSI-X |
-| **Configurations** | Non-DDR, all-BRAM memory backend (`dma`) or DDR/LPDDR5-backed memory backend (`dma_ddr`), both on CPM6 Controller 1 |
+| **Configurations** | Non-DDR, all-BRAM memory backend (`dma`) or DDR/LPDDR5-backed memory backend (`dma_ddr`), selectable on either CPM6 controller |
 | **Example Type** | IP Example Design (CED) |
 | **Target Audience** | Verification/FPGA engineers validating the CPM6 DMA Bridge datapath |
 | **Devices Supported** | Versal devices with CPM6 hard IP (`vsvc3340` package family) — `xc2vp3602-vsvc3340-3HP-e-S`, `xc2vp3602-vsvc3340-2LHP-e-S` |
@@ -14,17 +14,17 @@
 | **Boards Validated** | N/A — no board is registered; this CED is part-only |
 | **Pre-Built Images** | Not available |
 | **Key Features Shown** | H2C/C2H DMA Bridge transfers, 128-channel (64 C2H + 64 H2C) DMA interrupt bus, MSI-X generation via round-robin arbitration (`pl_example`/`rr_arbiter_128`), selectable BRAM-only or LPDDR5-backed memory apertures, up to 8 PFs (DDR variant), PCIe Gen6 X8 link |
-| **Not Intended For** | Production deployment, performance benchmarking, hardware bring-up (no board/JTAG/PCIe-host flow — see [Limitations](#limitations)) |
+| **Not Intended For** | Production deployment, performance benchmarking, hardware bring-up (no board/JTAG/PCIe-host flow) |
 | **Time to First Success** | ~20–25 minutes (compile + optimize + simulate, order of magnitude) — not independently measured for this CED; based on the same VCS/UVM/Avery tool stack as comparable CPM6 CEDs |
 
 ---
 
 ## Overview
 
-This example design demonstrates the DMA Bridge capability of the Versal CPM6 hard IP as a PCIe Gen6 Endpoint. It supports two selectable PL-side memory backends — an all-BRAM non-DDR variant (`dma`) and an LPDDR5-backed DDR variant (`dma_ddr`) — chosen via the CED GUI (`init.tcl`/`run.tcl`) alongside PCIe lane rate, link width, and physical function count, all on CPM6 Controller 1.
+This example design demonstrates the DMA Bridge capability of the Versal CPM6 hard IP as a PCIe Gen6 Endpoint. It supports two selectable PL-side memory backends — an all-BRAM non-DDR variant and an LPDDR5-backed DDR variant — chosen via the CED GUI alongside the CPM6 controller, PCIe lane rate, link width, and physical function count.
 
 By working through this example design, you will learn how to:
-- Configure CPM6 Controller 1's DMA Bridge lane rate (`16.0`/`32.0`/`64.0_GT/s`) and link width (`X1`/`X2`/`X4`/`X8`)
+- Configure the CPM6 DMA Bridge lane rate (`16.0`/`32.0`/`64.0_GT/s`) and link width (`X1`/`X2`/`X4`/`X8`)
 - Choose between an all-BRAM memory backend and an LPDDR5-backed memory backend for the CPM6 DMA/MMIO apertures
 - Drive H2C/C2H DMA traffic against the CPM6 hard IP through a UVM testbench, and observe how DMA completion interrupts are arbitrated into MSI-X vectors by the `pl_example`/`rr_arbiter_128` PL logic
 - Build and run the simulation using VCS, with optional Verdi/DVE waveform viewing
@@ -39,18 +39,18 @@ By working through this example design, you will learn how to:
 
 ## Features
 
-- CPM6 hard IP, Controller 1, configured as a **DMA Bridge** PCIe Gen6 endpoint (`CPM6_CTRL1_MODE=DMA_BRIDGE`, `CPM6_CTRL1_PROTOCOL=PCIE_6_1`).
+- CPM6 hard IP, selected controller, configured as a **DMA Bridge** PCIe Gen6 endpoint (`CPM6_CTRL<n>_MODE=DMA_BRIDGE`, `CPM6_CTRL<n>_PROTOCOL=PCIE_6_1`).
 - User-selectable PCIe lane rate (`16.0_GT/s` / `32.0_GT/s` / `64.0_GT/s`) and link width (`X1`/`X2`/`X4`/`X8`) via the CED GUI.
 - User-selectable physical function count: 1 PF (both variants) or 8 PFs (DDR variant only).
 - 128-channel DMA interrupt bus (64 C2H + 64 H2C) arbitrated into MSI-X requests by an example PL round-robin arbiter.
 - Two selectable memory backends: 5×/4× on-chip BRAM apertures (non-DDR), or BRAM + single-channel LPDDR5 (DDR variant).
 - Four dedicated `CPM_AXI_PL0..PL3` PL-AXI interfaces plus one or two NoC-routed PCIe DMA apertures, enabled in both variants.
 - VCS/UVM + Avery PCIe VIP simulation environment with a smoke test and a set of DMA/DMA-flavored regression tests per variant.
-- CED GUI (`init.tcl`) driving a single parameterized `run.tcl` build flow that assembles the correct sub-design, regenerates link parameters, and stages simulation files automatically.
+- CED GUI  driving a single parameterized build flow that assembles the correct sub-design, regenerates link parameters, and stages simulation files automatically.
 
 ## Design Architecture
 
-At a high level, the design provides a single PCIe Gen6 endpoint (CPM6 Controller 1) whose DMA Bridge engine exposes multiple independent apertures to the host. Each aperture is independently routed in the PL/NoC fabric to either local Block RAM or (DDR variant only) external LPDDR5 memory. A single example PL logic block observes DMA completion status and drives MSI-X interrupts back to the host.
+At a high level, the design provides a single PCIe Gen6 endpoint (either CPM6 controller) whose DMA Bridge engine exposes multiple independent apertures to the host. Each aperture is independently routed in the PL/NoC fabric to either local Block RAM or (DDR variant only) external LPDDR5 memory. A single example PL logic block observes DMA completion status and drives MSI-X interrupts back to the host.
 
 ```mermaid
 flowchart LR
@@ -59,7 +59,7 @@ flowchart LR
     end
 
     subgraph VERSAL["Versal Device (CPM6-equipped)"]
-        subgraph CPM6["CPM6 Hard IP - Controller 1"]
+        subgraph CPM6["CPM6 Hard IP - Selected Controller"]
             PCIeCore["PCIe Gen6 Core<br/>(X8, 64.0 GT/s)"]
             DMABridge["DMA Bridge Engine<br/>64 H2C + 64 C2H channels"]
             MSIXHw["MSI-X Generation HW"]
@@ -133,13 +133,13 @@ sequenceDiagram
 
 ![Versal CPM6 DMA block diagram](cpm6_dma.PNG)
 
-*The diagram shown is the DDR-enabled block design: `ps_wizard_0` hosts the CPM6 CTRL1 DMA-Bridge endpoint plus PS/PMC configuration; `axi_noc2_0` + `ddrmc5_responder_0` implement the LPDDR5 path; `axi_bram_ctrl_*` / `emb_mem_gen_*` implement the PL-AXI local-memory apertures; `proc_sys_reset_*` provide PS/PL reset synchronization. The non-DDR variant (`dma/`) omits `ddrmc5_responder_0` and adds a fifth BRAM pair in its place.*
+*The diagram shown is the DDR-enabled block design: `ps_wizard_0` hosts the selected controller's DMA-Bridge endpoint plus PS/PMC configuration; `axi_noc2_0` + `ddrmc5_responder_0` implement the LPDDR5 path; `axi_bram_ctrl_*` / `emb_mem_gen_*` implement the PL-AXI local-memory apertures; `proc_sys_reset_*` provide PS/PL reset synchronization. The non-DDR variant (`dma/`) omits `ddrmc5_responder_0` and adds a fifth BRAM pair in its place.*
 
 ## Design Components
 
 | Block design cell | IP | Role |
 |---|---|---|
-| `ps_wizard_0` | Processing System Wizard (CIPS) | Hosts the CPM6 hard-IP configuration (`CPM6_CONFIG`) for Controller 1 (PCIe Gen6 DMA-Bridge endpoint) plus PMC/PS configuration. Controller 0 is left `Disabled`/`None` in this CED. |
+| `ps_wizard_0` | Processing System Wizard (CIPS) | Hosts the CPM6 hard-IP configuration (`CPM6_CONFIG`) for the selected controller (PCIe Gen6 DMA-Bridge endpoint) plus PMC/PS configuration. The unselected controller is left `Disabled`/`None` in this CED. |
 | `axi_noc2_0` | AXI NoC | Routes the `PCIE_AXI_NOC0`/`PCIE_AXI_NOC1` master interfaces from CPM6 to either a BRAM destination (non-DDR variant) or the LPDDR5 memory controller (DDR variant). |
 | `ddrmc5_responder_0` | LPDDR5 memory controller/PHY responder | **DDR variant only.** Single-channel, single-rank LPDDR5 SDRAM controller. |
 | `axi_bram_ctrl_0..3` (both variants) / `axi_bram_ctrl_4` (non-DDR only) | AXI BRAM Controller (v4.1) | 512-bit, single-port AXI-to-BRAM bridge behind each `CPM_AXI_PLn` interface (and the NoC-routed 5th aperture in the non-DDR variant). |
@@ -150,7 +150,7 @@ sequenceDiagram
 | `dma_top` / `dma_ddr_top` (RTL) | Top-level wrapper | Instantiates the block design plus (DDR variant) `pl_example`, exposing GT, refclk, LPDDR5, and `sys_clk0` ports at the top level. |
 
 ## CPM6 Configuration
-CPM6 Controller 1 is configured as a PCIe Gen6 DMA Bridge endpoint in both variants; Controller 0 is unused.
+The selected CPM6 controller is configured as a PCIe Gen6 DMA Bridge endpoint in both variants; the unselected controller is unused.
 ![alt text](Design.png)
 
 ## DMA Subsystem
@@ -242,7 +242,7 @@ Top-level ports added for the DDR variant: `CH0_LPDDR5_0` (LPDDR5 PHY interface:
 3. Choose the project name and location.
 4. Select one of the two supported parts (`xc2vp3602-vsvc3340-3HP-e-S` or `xc2vp3602-vsvc3340-2LHP-e-S`) — no board selection is offered for this CED.
 5. On the **CPM6 DMA Configuration** page, choose:
-   - **Controller selection** (`CTRL_CONFIG`): use `Controller_1` (see [Limitations](#limitations) regarding `Controller_0`).
+   - **Controller selection** (`CTRL_CONFIG`): `Controller_0` or `Controller_1`.
    - **DDR Mode** (`DDR_EN`): enable for the LPDDR5-backed variant.
    - **Num of PFs** (`NUM_PFS`): `1` or `8` (DDR variant only allows `8`).
    - **Link Speed** (`CTRL_LANE_RATE`) and **Link Width** (`CTRL_LINK_WIDTH`).
@@ -256,10 +256,8 @@ Top-level ports added for the DDR variant: `CH0_LPDDR5_0` (LPDDR5 PHY interface:
 |---|---|---|---|
 | `Controller_1` | `false` | `dma/` | `dma_top` |
 | `Controller_1` | `true` | `dma_ddr/` | `dma_ddr_top` |
-| `Controller_0` | `false` | `dma_ctrl0/` | `design_1_wrapper` |
+| `Controller_0` | `false` | `dma_ctrl0/` | `dma_top` |
 | `Controller_0` | `true` | `dma_ddr_ctrl0/` | `dma_ddr_top` |
-
-> **Note:** Only the `Controller_1` sub-designs (`dma/`, `dma_ddr/`) exist in this repository. Selecting `Controller_0` in the GUI is currently exposed but will fail at the `import_files` step, since `dma_ctrl0/` and `dma_ddr_ctrl0/` are not present.
 
 The generation flow then:
 
@@ -324,8 +322,10 @@ This CED provides a **simulation-only** validation flow; there is no hardware te
    create_project <project_name> <output_dir>/<project_name> -part <supported_part>
    create_bd_design "cpm6_dma" -mode batch
    instantiate_example_design -template xilinx.com:design:cpm6_dma:1.0 \
-       -design cpm6_dma -options { CTRL_CONFIG.VALUE Controller_1 DDR_EN.VALUE false }
+       -design cpm6_dma -options { CTRL_CONFIG.VALUE Controller_0 DDR_EN.VALUE false }
    ```
+   (substitute `Controller_1` for `Controller_0` to target the other CPM6 controller)
+
    Or, via the GUI: File → Project → New (or IP Catalog → Example Designs) and select "Versal CPM6 DMA Design".
 4. This single step also generates the VCS simulation scripts and copies the `sim/` directory alongside the Vivado project — no separate `launch_simulation` step is needed.
 
@@ -342,7 +342,6 @@ From `<generated_project>/sim`:
 | `make cos` | Compile + optimize + simulate |
 | `make cos DUMP=1` | Same, with waveform dump |
 | `make s TEST=<name> SEED=<n>` | Re-simulate a specific test with a specific seed |
-| `make smoke` | Run only the `hello_world` smoke test |
 | `make distclean` | Wipe all compiled libs and start completely fresh |
 | `make h` | Show all Makefile options |
 
@@ -350,8 +349,8 @@ From `<generated_project>/sim`:
 
 | Variant | Flavor | Tests |
 |---|---|---|
-| Non-DDR (`dma/`) | `plaxi` | `test_s_dma_plaxi_ctrlr1`, `test_M_bridge_plaxi_ctrlr1`, `test_M_bridge_plaxi_ctrlr1_4pf`, `test_M_bridge_plaxi_ctrlr1_4pf_axildecode` |
-| DDR (`dma_ddr/`) | `ddr` | `test_s_dma_ddr_ctrlr1`, `test_M_bridge_ddr_ctrlr1`, `test_M_bridge_ddr_ctrlr1_4pf`, `test_M_bridge_ddr_ctrlr1_bar24_1pf` |
+| Non-DDR (`dma/` – Controller_1, `dma_ctrl0/` – Controller_0) | `plaxi` | `test_s_dma_plaxi_ctrlr1`, `test_M_bridge_plaxi_ctrlr1`, `test_M_bridge_plaxi_ctrlr1_4pf`, `test_M_bridge_plaxi_ctrlr1_4pf_axildecode`, `test_s_dma_plaxi_ctrlr0`, `test_M_bridge_plaxi_ctrlr0`, `test_M_bridge_plaxi_ctrlr0_4pf`, `test_M_bridge_plaxi_ctrlr0_4pf_axildecode` |
+| DDR (`dma_ddr/` – Controller_1, `dma_ddr_ctrl0/` – Controller_0) | `ddr` | `test_s_dma_ddr_ctrlr1`, `test_M_bridge_ddr_ctrlr1`, `test_M_bridge_ddr_ctrlr1_4pf`, `test_M_bridge_ddr_ctrlr1_bar24_1pf`, `test_s_dma_ddr_ctrlr0`, `test_M_bridge_ddr_ctrlr0`, `test_M_bridge_ddr_ctrlr0_4pf`, `test_M_bridge_ddr_ctrlr0_bar24_1pf` |
 
 A handful of generic framework tests (`test_init`, `test_enum`, `test_base`, `base_ep_test`, ...) are also compiled in via `sim/tb/test/test_pkg.svh`.
 
@@ -363,6 +362,10 @@ A handful of generic framework tests (`test_init`, `test_enum`, `test_base`, `ba
 | `test_M_bridge_plaxi_ctrlr1` | Master bridge PL-AXI controller 1 verification |
 | `test_M_bridge_plaxi_ctrlr1_4pf` | Master bridge PL-AXI controller 1 with 4 physical functions (4PF) |
 | `test_M_bridge_plaxi_ctrlr1_4pf_axildecode` | Master bridge PL-AXI controller 1, 4PF, with AXI-Lite address decode check |
+| `test_s_dma_plaxi_ctrlr0` | Slave DMA PL-AXI controller 0 verification |
+| `test_M_bridge_plaxi_ctrlr0` | Master bridge PL-AXI controller 0 verification |
+| `test_M_bridge_plaxi_ctrlr0_4pf` | Master bridge PL-AXI controller 0 with 4 physical functions (4PF) |
+| `test_M_bridge_plaxi_ctrlr0_4pf_axildecode` | Master bridge PL-AXI controller 0, 4PF, with AXI-Lite address decode check |
 
 #### DMA DDR MODE
 
@@ -372,3 +375,7 @@ A handful of generic framework tests (`test_init`, `test_enum`, `test_base`, `ba
 | `test_M_bridge_ddr_ctrlr1` | Randomized write/read-check loop (100x) across BAR1–5, incl. DDR-routed BAR4/5, Ctrl1 PF0 |
 | `test_M_bridge_ddr_ctrlr1_4pf` | Same BAR1–5 randomized DDR-bridge test, iterated across all discovered PFs |
 | `test_M_bridge_ddr_ctrlr1_bar24_1pf` | Narrower variant: only BAR2 (PL-AXI0) + BAR4 (NOC-DDR0), iterated per PF |
+| `test_s_dma_ddr_ctrlr0` | Simple H2C DMA transfer to PL-AXI0, 20 iterations, MSI interrupts |
+| `test_M_bridge_ddr_ctrlr0` | Randomized write/read-check loop (100x) across BAR1–5, incl. DDR-routed BAR4/5, Ctrl0 PF0 |
+| `test_M_bridge_ddr_ctrlr0_4pf` | Same BAR1–5 randomized DDR-bridge test, iterated across all discovered PFs |
+| `test_M_bridge_ddr_ctrlr0_bar24_1pf` | Narrower variant: only BAR2 (PL-AXI0) + BAR4 (NOC-DDR0), iterated per PF |

@@ -30,15 +30,15 @@ import dma_link_pkg::*;
     CTRL0_GT_0_gtx_n,
     CTRL0_GT_0_gtx_p,
     ctrl0_gt_refclk_0_clk_n,
-    ctrl0_gt_refclk_0_clk_p,
-    dma0_irq_0);
+    ctrl0_gt_refclk_0_clk_p
+);
   input [LINK_WIDTH-1:0] CTRL0_GT_0_grx_n;
   input [LINK_WIDTH-1:0] CTRL0_GT_0_grx_p;
   output [LINK_WIDTH-1:0] CTRL0_GT_0_gtx_n;
   output [LINK_WIDTH-1:0] CTRL0_GT_0_gtx_p;
   input ctrl0_gt_refclk_0_clk_n;
   input ctrl0_gt_refclk_0_clk_p;
-  output [127:0]dma0_irq_0;
+
 
   wire [LINK_WIDTH-1:0] CTRL0_GT_0_grx_n;
   wire [LINK_WIDTH-1:0] CTRL0_GT_0_grx_p;
