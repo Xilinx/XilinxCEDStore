@@ -243,6 +243,8 @@ proc create_root_design { parentCell link_width lane_rate } {
     CONFIG.CPM6_CONFIG(CPM6_CTRL0_NUM_INBOUND_REGIONS) {5} \
     CONFIG.CPM6_CONFIG(CPM6_CTRL0_NUM_MMIO_APERTURES) {5} \
     CONFIG.CPM6_CONFIG(CPM6_CTRL0_PF0_BAR0_SCALE) {Kilobytes} \
+	CONFIG.CPM6_CONFIG(CPM6_CTRL0_PERST) {PS_MIO_18} \
+    CONFIG.CPM6_CONFIG(CPM6_BOARD) {VPK360} \
     CONFIG.CPM6_CONFIG(CPM6_CTRL0_PF0_BAR0_SIZE) {256} \
     CONFIG.CPM6_CONFIG(CPM6_CTRL0_PF0_BAR1_EN) {1} \
     CONFIG.CPM6_CONFIG(CPM6_CTRL0_PF0_BAR1_SIZE) {256} \
@@ -270,6 +272,7 @@ proc create_root_design { parentCell link_width lane_rate } {
     CONFIG.PS_PMC_CONFIG(CPM6_AXI_PL3_IF) {1} \
     CONFIG.PS_PMC_CONFIG(CPM6_CTRL0_LINK_WIDTH) $link_width \
     CONFIG.PS_PMC_CONFIG(CPM6_CTRL0_MODE) {DMA_BRIDGE} \
+	CONFIG.PS_PMC_CONFIG(CPM6_CTRL0_PERST) {PS_MIO_18} \
     CONFIG.PS_PMC_CONFIG(CPM6_CTRL0_PROTOCOL) {PCIE_6_1} \
     CONFIG.PS_PMC_CONFIG(PMC_CRP_PL0_REF_CTRL_FREQMHZ) {250} \
     CONFIG.PS_PMC_CONFIG(PMC_CRP_PL1_REF_CTRL_FREQMHZ) {250} \
@@ -293,7 +296,6 @@ proc create_root_design { parentCell link_width lane_rate } {
   # Create instance: emb_mem_gen_0, and set properties
   set emb_mem_gen_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:emb_mem_gen:1.0 emb_mem_gen_0 ]
 
-
   # Create instance: axi_bram_ctrl_1, and set properties
   set axi_bram_ctrl_1 [ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_bram_ctrl:4.1 axi_bram_ctrl_1 ]
   set_property -dict [list \
@@ -304,7 +306,6 @@ proc create_root_design { parentCell link_width lane_rate } {
 
   # Create instance: emb_mem_gen_1, and set properties
   set emb_mem_gen_1 [ create_bd_cell -type ip -vlnv xilinx.com:ip:emb_mem_gen:1.0 emb_mem_gen_1 ]
-
 
   # Create instance: axi_bram_ctrl_2, and set properties
   set axi_bram_ctrl_2 [ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_bram_ctrl:4.1 axi_bram_ctrl_2 ]
@@ -317,7 +318,6 @@ proc create_root_design { parentCell link_width lane_rate } {
   # Create instance: emb_mem_gen_2, and set properties
   set emb_mem_gen_2 [ create_bd_cell -type ip -vlnv xilinx.com:ip:emb_mem_gen:1.0 emb_mem_gen_2 ]
 
-
   # Create instance: axi_bram_ctrl_3, and set properties
   set axi_bram_ctrl_3 [ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_bram_ctrl:4.1 axi_bram_ctrl_3 ]
   set_property -dict [list \
@@ -328,7 +328,6 @@ proc create_root_design { parentCell link_width lane_rate } {
 
   # Create instance: emb_mem_gen_3, and set properties
   set emb_mem_gen_3 [ create_bd_cell -type ip -vlnv xilinx.com:ip:emb_mem_gen:1.0 emb_mem_gen_3 ]
-
 
   # Create instance: proc_sys_reset_0, and set properties
   set proc_sys_reset_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:proc_sys_reset:5.0 proc_sys_reset_0 ]
@@ -454,7 +453,7 @@ proc create_root_design { parentCell link_width lane_rate } {
   assign_bd_address -offset 0x00000000 -range 0x00010000 -target_address_space [get_bd_addr_spaces ps_wizard_0/pmcps_0_psv_cpm_0] [get_bd_addr_segs axi_bram_ctrl_2/S_AXI/Mem0] -force
   assign_bd_address -offset 0x0001000002000000 -range 0x00010000 -target_address_space [get_bd_addr_spaces ps_wizard_0/pmcps_0_psv_cpm_0] [get_bd_addr_segs axi_bram_ctrl_3/S_AXI/Mem0] -force
   assign_bd_address -offset 0x020100000000 -range 0x00010000 -target_address_space [get_bd_addr_spaces ps_wizard_0/pmcps_0_psv_cpm_0] [get_bd_addr_segs axi_bram_ctrl_4/S_AXI/Mem0] -force
-
+  assign_bd_address -target_address_space /ps_wizard_0/pmcps_0_psv_dpc_0 [get_bd_addr_segs axi_bram_ctrl_4/S_AXI/Mem0] -force
 
   # Restore current instance
   current_bd_instance $oldCurInst
