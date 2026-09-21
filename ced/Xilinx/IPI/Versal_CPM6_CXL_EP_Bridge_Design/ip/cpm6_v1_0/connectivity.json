@@ -1,0 +1,279 @@
+{
+	"metadata": {
+		"slaves": [
+			{
+				"CPM": {
+					"METAPARAM": "M_CPM",
+					"SDKNAME": "psv_cpm6",
+					"HWVERSION": "",
+					"ENPARAM": "CPM6_PERIPHERAL_ENABLE",
+					"IP_TYPE": "PERIPHERAL",
+					"MODCLASS": "PERIPHERAL",
+					"MODTYPE": "psv_cpm6",
+					"MULTISOCKETSMP": "MULTI_SOCKET_MODE",
+					"SLR_NUMBER": "0",
+					"BASE_ADDR": "0xFC000000",
+					"HIGH_ADDR": "0xFCFFFFFF",
+					"IS_DATA": "TRUE",
+					"IS_INSTRUCTION": "FALSE",
+					"MEMTYPE": "REGISTER",
+					"SIZE": "16MB",
+					"MASTER_BUS_INTERFACE": "M_AXI_DP",
+					"SLAVE_BUS_INTERFACE": "S_AXI",
+					"PARAMETERS": {
+						"C_S_AXI_BASEADDR": "0xFC000000",
+						"C_S_AXI_HIGHADDR": "0xFCFFFFFF",
+						"C_CTRL0_EN": "CPM6_CTRL0_EN",
+						"C_CTRL1_EN": "CPM6_CTRL1_EN",
+						"C_CTRL0_PERST": "CPM6_CTRL0_PERST",
+						"C_CTRL1_PERST": "CPM6_CTRL1_PERST",
+						"C_CTRL0_NUM_PFS": "CPM6_CTRL0_NUM_PFS",
+						"C_CTRL1_NUM_PFS": "CPM6_CTRL1_NUM_PFS",
+						"C_CTRL0_PROTOCOL": "CPM6_CTRL0_PROTOCOL",
+						"C_CTRL1_PROTOCOL": "CPM6_CTRL1_PROTOCOL",
+						"C_CTRL0_PORT_TYPE": "CPM6_CTRL0_PORT_TYPE",
+						"C_CTRL1_PORT_TYPE": "CPM6_CTRL1_PORT_TYPE"
+					}
+				}
+			},
+			{
+				"PL_CPM": {
+					"METAPARAM": "M_PL_CPM",
+					"SDKNAME": "pl_cpm",
+					"HWVERSION": "",
+					"ENPARAM": "CPM6_PL_AXI_CPM_IF",
+					"IP_TYPE": "PERIPHERAL",
+					"MODCLASS": "PERIPHERAL",
+					"MODTYPE": "pl_cpm",
+					"MULTISOCKETSMP": "MULTI_SOCKET_MODE",
+					"SLR_NUMBER": "0",
+					"BASE_ADDR": "0",
+					"HIGH_ADDR": "0x3FFFFFFFFFFFF",
+					"IS_DATA": "TRUE",
+					"IS_INSTRUCTION": "FALSE",
+					"MEMTYPE": "REGISTER",
+					"SIZE": "1PB",
+					"MASTER_BUS_INTERFACE": "M_AXI_DP",
+					"SLAVE_BUS_INTERFACE": "S_AXI",
+					"PARAMETERS": {
+						"C_S_AXI_BASEADDR": "0",
+						"C_S_AXI_HIGHADDR": "0x3FFFFFFFFFFFF"
+					}
+				}
+			},			
+			{
+				"DBI0": {
+					"METAPARAM": "M_DBI0",
+					"SDKNAME": "psv_dbi0",
+					"HWVERSION": "",
+					"ENPARAM": "CPM6_PL_AXIL_DBI0_IF",
+					"IP_TYPE": "PERIPHERAL",
+					"MODCLASS": "PERIPHERAL",
+					"MODTYPE": "psv_dbi",
+					"MULTISOCKETSMP": "MULTI_SOCKET_MODE",
+					"SLR_NUMBER": "0",
+					"BASE_ADDR": "0",
+					"HIGH_ADDR": "0xFFFFFFFF",
+					"IS_DATA": "TRUE",
+					"IS_INSTRUCTION": "FALSE",
+					"MEMTYPE": "REGISTER",
+					"SIZE": "4GB",
+					"MASTER_BUS_INTERFACE": "M_AXI_DP",
+					"SLAVE_BUS_INTERFACE": "S_AXI",
+					"PARAMETERS": {
+						"C_S_AXI_BASEADDR": "0",
+						"C_S_AXI_HIGHADDR": "0xFFFFFFFF"
+					}
+				}
+			},
+			{
+				"DBI1": {
+					"METAPARAM": "M_DBI1",
+					"SDKNAME": "psv_dbi1",
+					"HWVERSION": "",
+					"ENPARAM": "CPM6_PL_AXIL_DBI1_IF",
+					"IP_TYPE": "PERIPHERAL",
+					"MODCLASS": "PERIPHERAL",
+					"MODTYPE": "psv_dbi",
+					"MULTISOCKETSMP": "MULTI_SOCKET_MODE",
+					"SLR_NUMBER": "0",
+					"BASE_ADDR": "0",
+					"HIGH_ADDR": "0xFFFFFFFF",
+					"IS_DATA": "TRUE",
+					"IS_INSTRUCTION": "FALSE",
+					"MEMTYPE": "REGISTER",
+					"SIZE": "4GB",
+					"MASTER_BUS_INTERFACE": "M_AXI_DP",
+					"SLAVE_BUS_INTERFACE": "S_AXI",
+					"PARAMETERS": {
+						"C_S_AXI_BASEADDR": "0",
+						"C_S_AXI_HIGHADDR": "0xFFFFFFFF"
+					}
+				}
+			}
+		],
+		"masters": [
+			{
+				"pl_axi_cpm": {
+					"SDKNAME": "pl_axi_cpm",
+					"CLASSIFICATION": "INTERFACE",
+					"VISIBLE": "TRUE",
+					"TZ_DEFAULT": "secure",
+					"ENPARAM": "CPM6_PL_AXI_CPM_IF",
+					"METAPARAM": "",
+					"IP_TYPE": "",
+					"MODCLASS": "",
+					"MODTYPE": "psv_pl_axi_cpm",
+					"WIDTH": "50",
+					"MID": "",
+					"RANGE": "1PB",
+					"excluded_slaves": [
+						"DBI0",
+						"DBI1",
+						"CPM"
+					],
+					"EXCLUDED_INTERFACES": []
+				}
+			},
+			{
+				"pl_axil_dbi0": {
+					"SDKNAME": "pl_axil_dbi0",
+					"CLASSIFICATION": "INTERFACE",
+					"VISIBLE": "TRUE",
+					"TZ_DEFAULT": "secure",
+					"ENPARAM": "CPM6_PL_AXIL_DBI0_IF",
+					"METAPARAM": "",
+					"IP_TYPE": "",
+					"MODCLASS": "",
+					"MODTYPE": "psv_pl_axil_dbi",
+					"WIDTH": "32",
+					"MID": "",
+					"RANGE": "4GB",
+					"excluded_slaves": [
+						"CPM",
+						"PL_CPM",
+						"DBI1"
+					],
+					"EXCLUDED_INTERFACES": []
+				}
+			},
+			{
+				"pl_axil_dbi1": {
+					"SDKNAME": "pl_axil_dbi1",
+					"CLASSIFICATION": "INTERFACE",
+					"VISIBLE": "TRUE",
+					"TZ_DEFAULT": "secure",
+					"ENPARAM": "CPM6_PL_AXIL_DBI1_IF",
+					"METAPARAM": "",
+					"IP_TYPE": "",
+					"MODCLASS": "",
+					"MODTYPE": "psv_pl_axil_dbi",
+					"WIDTH": "32",
+					"MID": "",
+					"RANGE": "4GB",
+					"excluded_slaves": [
+						"CPM",
+						"PL_CPM",
+						"DBI0"
+					],
+					"EXCLUDED_INTERFACES": []
+				}
+			}
+		],
+		"external_addressing": [
+			{
+				"cpm_axi_pl0": {
+					"ENPARAM": "CPM6_AXI_PL0_IF",
+					"VLNV": "xilinx.com:interface:aximm_rtl:1.0",
+					"MODE": "Master",
+					"ADDRESS_SPACE": [
+						{
+							"cpm_axi_pl0": {
+								"BASE_ADDR": "0x0",
+								"DISPLAY_NAME": "cpm_axi_pl0",
+								"SIZE": "256T",
+								"WIDTH": "50",
+								"USAGE": "ALL"
+							}
+						}
+					]
+				}
+			},
+			{
+				"cpm_axi_pl1": {
+					"ENPARAM": "CPM6_AXI_PL1_IF",
+					"VLNV": "xilinx.com:interface:aximm_rtl:1.0",
+					"MODE": "Master",
+					"ADDRESS_SPACE": [
+						{
+							"cpm_axi_pl1": {
+								"BASE_ADDR": "0x1000000000000",
+								"DISPLAY_NAME": "cpm_axi_pl1",
+								"SIZE": "256T",
+								"WIDTH": "50",
+								"USAGE": "ALL"
+							}
+						}
+					]
+				}
+			},
+			{
+				"cpm_axi_pl2": {
+					"ENPARAM": "CPM6_AXI_PL2_IF",
+					"VLNV": "xilinx.com:interface:aximm_rtl:1.0",
+					"MODE": "Master",
+					"ADDRESS_SPACE": [
+						{
+							"cpm_axi_pl2": {
+								"BASE_ADDR": "0x0",
+								"DISPLAY_NAME": "cpm_axi_pl2",
+								"SIZE": "256T",
+								"WIDTH": "50",
+								"USAGE": "ALL"
+							}
+						}
+					]
+				}
+			},
+			{
+				"cpm_axi_pl3": {
+					"ENPARAM": "CPM6_AXI_PL3_IF",
+					"VLNV": "xilinx.com:interface:aximm_rtl:1.0",
+					"MODE": "Master",
+					"ADDRESS_SPACE": [
+						{
+							"cpm_axi_pl3": {
+								"BASE_ADDR": "0x1000000000000",
+								"DISPLAY_NAME": "cpm_axi_pl3",
+								"SIZE": "256T",
+								"WIDTH": "50",
+								"USAGE": "ALL"
+							}
+						}
+					]
+				}
+			},
+			{
+				"pl_axi_cpm": {
+					"ENPARAM": "CPM6_PL_AXI_CPM_IF",
+					"VLNV": "xilinx.com:interface:aximm_rtl:1.0",
+					"MODE": "Slave"
+				}
+			},
+			{
+				"pl_axil_dbi0": {
+					"ENPARAM": "CPM6_PL_AXIL_DBI0_IF",
+					"VLNV": "xilinx.com:interface:aximm_rtl:1.0",
+					"MODE": "Slave"
+				}
+			},
+			{
+				"pl_axil_dbi1": {
+					"ENPARAM": "CPM6_PL_AXIL_DBI1_IF",
+					"VLNV": "xilinx.com:interface:aximm_rtl:1.0",
+					"MODE": "Slave"
+				}
+			}
+		]
+	}
+}
