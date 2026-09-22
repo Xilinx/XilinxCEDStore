@@ -94,6 +94,19 @@ class test_ide_basic extends base_ep_test;
   apci_ide_key_iv_t ide_key[24];
 
   //===========================================================================
+  // Build Phase
+  //===========================================================================
+  virtual function void build_phase(uvm_phase phase);
+    super.build_phase(phase);
+    if (env_cfg == null) begin
+      env_cfg = tb_env_cfg::type_id::create("env_cfg");
+    end
+
+    env_cfg.ps_isr_agnt = ACTIVE_AGNT;
+    uvm_config_db#(tb_env_cfg)::set(this, "env", "env_cfg", env_cfg);
+  endfunction
+
+  //===========================================================================
   // Constructor
   //===========================================================================
   function new(string name, uvm_component parent);
@@ -167,10 +180,19 @@ class test_ide_basic extends base_ep_test;
   // Post CDO Load Phase
   //===========================================================================
   virtual task post_cdo_load();
+    seq_disable_crs crs_seq = seq_disable_crs::type_id::create("crs_seq");
     super.post_cdo_load();
 
     if (!fw_available) begin
       setup_doe_interrupt_handlers();
+      env.ps_sem.get(1);
+      for (int i = 0; i < 2; i++) begin
+        if (dut_ctrlr_en[i]) begin
+          crs_seq.index = i;
+          crs_seq.start(env.ps_vip_vsqr);
+        end
+      end
+      env.ps_sem.put(1);
     end
 
     env.shim.vip.cfg_info.bypass_spdm_flow = bypass_spdm_flow;
@@ -399,7 +421,14 @@ class test_ide_basic extends base_ep_test;
   // Program IDE keys via sequence
   task prg_ide_keys(int idx_offset, int key_start, int key_end);
     seq_program_ide_key ide_seq = seq_program_ide_key::type_id::create("ide_prg_seq");
-    
+    int active_ctrlr = 0;
+
+    // dut_ctrlr_en has exactly one bit set for these single-controller IDE tests -
+    // pick whichever controller is actually enabled so keys land in its register window
+    for (int i = 0; i < 2; i++) begin
+      if (dut_ctrlr_en[i]) active_ctrlr = i;
+    end
+
     env.ps_sem.get(1);
     for (int i = key_start; i < key_end; i++) begin
       bit rp_rx_key = (i / 3) % 2;     // First 3 keys are one direction, next 3 are the other
@@ -412,13 +441,14 @@ class test_ide_basic extends base_ep_test;
       int idx       = (i % 3) + idx_offset + (is_k * 6);
 
       `uvm_info(get_type_name,
-                $sformatf("DUT IDE key index=%0d substream=%s dir=%s k=%0d hw_idx=%0d %s",
+                $sformatf("DUT IDE key index=%0d substream=%s dir=%s k=%0d hw_idx=%0d ctrlr=%0d %s",
                           i, ide_substream_name_from_idx(i), ide_dir_name(rp_rx_key),
-                          is_k, idx, ide_key_summary(ide_key[i])),
+                          is_k, idx, active_ctrlr, ide_key_summary(ide_key[i])),
                 UVM_NONE)
       ide_seq.index   = idx;
       ide_seq.tx      = rp_rx_key;
       ide_seq.ide_key = ide_key[i];
+      ide_seq.ctrlr   = active_ctrlr;
       ide_seq.start(env.ps_vip_vsqr);
     end
     env.ps_sem.put(1);
