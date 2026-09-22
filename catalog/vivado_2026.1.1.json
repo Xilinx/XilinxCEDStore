@@ -936,11 +936,11 @@
         "name": "cpm6_dma",
         "display": "Versal CPM6 DMA Design",
         "latest_revision": "1.0",
-        "commit_id": "039d8023ccae7521fb77aacc8a3340b82503f0b6",
+        "commit_id": "128f920dc769233e751c352adc4f9d369c8b234a",
         "revisions": [
           {
             "revision": "1.0",
-            "commit_id": "039d8023ccae7521fb77aacc8a3340b82503f0b6",
+            "commit_id": "128f920dc769233e751c352adc4f9d369c8b234a",
             "date": "25-08-2026:05:47:27",
             "history": "Added board Versal CPM6 DMA Design v1.0"
           }
@@ -993,11 +993,11 @@
         "name": "cpm6_cxl_ep_brg",
         "display": "Versal CPM6 CXL EP Bridge Design",
         "latest_revision": "1.0",
-        "commit_id": "e6439a72ac658a1fbb83c62324fd52ec90c1508a",
+        "commit_id": "128f920dc769233e751c352adc4f9d369c8b234a",
         "revisions": [
           {
             "revision": "1.0",
-            "commit_id": "e6439a72ac658a1fbb83c62324fd52ec90c1508a",
+            "commit_id": "128f920dc769233e751c352adc4f9d369c8b234a",
             "date": "22-09-2026:04:25:34",
             "history": "Added board Versal CPM6 CXL EP Bridge Design v1.0"
           }
