@@ -54,6 +54,7 @@ package test_pkg;
   `include "seq/cseq_core_doe_discovery_cfg_mb.sv"
   `include "seq/cseq_core_doe_emu_cfg_mb.sv"
   `include "seq/seq_program_ide_key.sv"
+  `include "seq/seq_disable_crs.sv"
 
   // Base Tests
   `include "test_base.sv"

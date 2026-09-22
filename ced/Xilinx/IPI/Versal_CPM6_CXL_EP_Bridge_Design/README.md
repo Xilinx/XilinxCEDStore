@@ -2,7 +2,7 @@
 Please refer [PG463](https://account.amd.com/content/dam/account/en/member/cpm6-simulation/pg463-versal-cpm6-pcie-cxl_WtMkX.pdf) and [PG464](https://account.amd.com/content/dam/account/en/member/cpm6-simulation/pg464-cxl-transaction-ip_WtMkX.pdf) for detailed understanding of the Versal CPM6 CXL capabilities and some of the features and acronyms being discussed here.
 This CED already applies the AR000040791 required for CXL EP Designs out of the 2026.1.1 Vivado release.
 
-### Introduction
+## Introduction
 
 | Item | Summary |
 |---|---|
@@ -21,7 +21,7 @@ This CED already applies the AR000040791 required for CXL EP Designs out of the 
 
 ---
 
-### Overview
+## Overview
 
 This example design demonstrates the CXL Type-3 Endpoint capability of the Versal CPM6 hard IP. It supports selectable link width and CXL mode (68B or 256B HBR flit mode) connected to LPDDR5-backed DDR variant — chosen via the CED GUI alongside the CPM6 controller.
 
@@ -32,20 +32,20 @@ By working through this example design, you will learn how to:
 - Drive CXL Type-3 traffic against the CPM6 hard IP through a UVM testbench, and observe the responses from the PL logic which also includes a DDR responder for simulation needs.
 - Build and run the simulation using VCS, with optional Verdi/DVE waveform viewing
 
-#### Included Features
+### Included Features
 
 - **CXL Type-3** — M2S transactions targetted to LPDDR5-backed apertures and responses on S2M interface.
 - **Selectable CXL configuration** — CXL2 68B flit or CXL3 256B flit; design automatically switches to use the correct mode based on link negotiation. For example, a CXL3 x8 Gen6 design when connected to a host with CXL2 capability only, switches to 68B flit encode/decode automatically.
 
 
-### Features
+## Features
 
 - CPM6 hard IP, selected controller, configured as a **CXL Type-3** endpoint.
 - User-selectable CXL Protocol Mode (`68B` / `256B` Flit Mode) and link width (`X4`/`X8`) via the CED GUI.
 - VCS/UVM + Avery PCIe VIP simulation environment with a smoke test and a set of DMA/DMA-flavored regression tests per variant.
 - CED GUI driving a single parameterized build flow that assembles the correct sub-design, regenerates link parameters, and stages simulation files automatically.
 
-### Design Architecture
+## Design Architecture
 
 At a high level, the design provides a single CXL Type-3 endpoint (either CPM6 controller) advetizing a total of 16GB HDM to host. Inbound M2S requests are striped across 4 CPI interfaces. Each CPI interface connects to independent protocol agents each with a dedicated 4G memory bank. 
 
@@ -68,25 +68,25 @@ sequenceDiagram
     FED-->>CPM6: NFI
     CPM6-->>Host: S2M DRS
 ```
-#### Cxl.mem M2S Request Path
+### Cxl.mem M2S Request Path
 
 1. Host sends supported CXL Type-3 M2S request opcodes to device.
 2. The CXL raw flit is made available from CPM6 hard IP to Flit Encode-Decode engine (included as part of Vivado CPM6 PS Wizard IP).
 3. The CPI interface carries this request which is converted to AXI transaction by protocol agent.
 4. The AXI interface is connected to memory via NoC.
 
-#### Cxl.mem S2M Path
+### Cxl.mem S2M Path
 
 1. The AXI response from memory is converted to response on CPI channel by protocol agent.
 2. The Flit encode engine creates the CXL flit with appropriate packing per specification.
 3. This flit is then sent upstream to host via CPM6 CXL controller.
 
 
-### Block Diagram
+## Block Diagram
 
 ![Versal CPM6 CXL Type-3 Endpoint block diagram](cpm6_cxl_ep_brg.PNG)
 
-### Design Components
+## Design Components
 
 | Block design cell | IP | Role |
 |---|---|---|
@@ -98,7 +98,7 @@ sequenceDiagram
 | `proc_sys_reset_0` | Processor System Reset | Synchronizes resets for the design's clock domains. |
 | `cpa` (Encrypted RTL currently) | Custom PL logic | Consumes the CPI interface and converts to AXI. |
 
-### Device Firmware
+## Device Firmware
 The device side firmware (elf files available under `fw` directory) executes on RPU (R5 core) on Processing Subsystem. This firmware is responsible for the following-
 1. Managing CXL component space registers
 2. Managing the CXL Device status registers (including the basic required commands via the primary mailbox)
@@ -115,9 +115,9 @@ The prebuilt elf provided follow the naming convention `zephyr_cX_cxlY.elf` wher
 
 This CED provides a pre-built elf to be used for hardware testing. The source code for device firmware will be released as part of next update.
 
-### Build Instructions
+## Build Instructions
 
-#### Project Generation Steps
+### Project Generation Steps
 
 1. In Vivado, click **Open Example Project**, then **Next** on the launch dialog.
 2. In **Select Project Template**, search for and select **"Versal CPM6 CXL Type-3 Endpoint Design"**, then click **Next**.
@@ -128,7 +128,7 @@ This CED provides a pre-built elf to be used for hardware testing. The source co
    - **Link Width** (`CXL_WIDTH`): `4` or `8` (This with CXL protocol mode derives the NFI interface width).
 5. Review the summary page and click **Finish**.
 
-#### What Happens on Generation
+### What Happens on Generation
 
 `run.tcl`/`init.tcl` maps the GUI selections to one of four sub-designs:
 
@@ -151,21 +151,21 @@ The generation flow then:
 3. Copies the shared `sim/` testbench tree into the project directory and overlays the selected variant's `sim/verif` DUT-instantiation on top of it.
 4. Configures the `sim_1` fileset for VCS (`generate_scripts_only`), targeting the variant's top module.
 
-#### Expected Outputs
+### Expected Outputs
 
 - A Vivado project containing the generated block design, imported RTL, and constraints.
 - A `sim/` directory in the generated project, staged for VCS/UVM simulation (no bitstream/hardware build target is exercised by this CED's intended flow).
 
-### Performance Considerations
+## Performance Considerations
 
 - Performance depends on multiple factors; a few examples are the latency of the device (inlcuding the memory access latency), CXL credits advertized by the device, the slot on the host system, link bandwidth etc. CED advertizes 128 M2S Request and M2S data credits. Increase in number of these credits comes at a cost of increase in buffering and subsequent timing challenges.
 - Standard tools can be used to do a performance benchmark. Notably `memtester` is used for memory integrity and `Memory Latency Checker (MLC)` for latency and bandwidth measurements.
 
-### Validation Flow
+## Validation Flow
 
 This CED provides a **simulation and board level** validation flow.
 
-#### What's in `sim/`
+### What's in `sim/`
 
 ```
 sim/
@@ -181,17 +181,10 @@ sim/
   run.sh                                                        <- convenience wrapper for run.tcl
 ```
 
-**Known limitation - `lib/date.so` / `lib/socket_dpi.so` are not linked in.**
-`standalone/Makefile` never passes `-sv_lib`/`-sv_root` to `vcs`, so DPI
-calls that need them (`date()`, the `test_ide_tlps_spdm` DOE emulator
-socket) aren't backed. Not hit by the default `cxl_ep_brdg_sanity` test;
-expect a runtime failure if you run a test that does exercise them, until
-that wiring is added to the `optimize` target.
-
 Two concrete sub-paths exist for simulation - standalone and self-contained,
 with no external regression-harness dependency:
 
-#### 1. Full-fidelity (Avery VIP + UVM) - `sim/standalone/`
+### 1. Full-fidelity (Avery VIP + UVM) - `sim/standalone/`
 
 1. Download and unzip the CPM6 Secure IP package (provided separately) from https://account.amd.com/en/member/cpm6-simulation.html
 
@@ -205,7 +198,7 @@ with no external regression-harness dependency:
      tcsh: setenv CDOUTIL_PATH <path to your cdoutil install>
      bash: export CDOUTIL_PATH=<path to your cdoutil install>
      ```
-   - `CPM6_SECUREIP` -- directory where the CPM6 Secure IP package was extracted (must contain `2026.1.1/data/secureip/cpm6/{cpm6_001.svp,cpm6_002.svp}` and `2026.1.1/data/verilog/src/unisims/CPM6.v` - the real, non-stub secure-IP netlist; Vivado's own bundled `CPM6.v` is a stub that `$finish`s at time 0)
+   - `CPM6_SECUREIP` -- directory where the CPM6 Secure IP package was extracted
      ```
      tcsh: setenv CPM6_SECUREIP <path to extracted cpm6 secureip>
      bash: export CPM6_SECUREIP=<path to extracted cpm6 secureip>
@@ -220,12 +213,12 @@ with no external regression-harness dependency:
      tcsh: setenv SNPSLMD_LICENSE_FILE <your VCS license server list>
      bash: export SNPSLMD_LICENSE_FILE=<your VCS license server list>
      ```
-   - `VIVADO_CLIBS` -- Vivado's own precompiled simlib dir matching the VCS build above; `build_project.tcl` fails fast with a clear error if unset
+   - `VIVADO_CLIBS` -- Vivado's own precompiled simlib dir matching the VCS build above
      ```
      tcsh: setenv VIVADO_CLIBS <path to your precompiled vcs clibs>
      bash: export VIVADO_CLIBS=<path to your precompiled vcs clibs>
      ```
-   - `SIM_QUICK_MEM_INIT` -- required for tests with real CXL.mem traffic (`cxl_ep_brdg_sanity` does). Read at Vivado BD-generation time, so must be set BEFORE `build_project.tcl` runs, not just before simulate. Without it, `axi_memory_init_N` defaults to a full 4GB init window instead of 1KB, and the sim appears to hang (advances in simulated time but never reaches `$finish`/RESULT) rather than failing with a clear error
+   - `SIM_QUICK_MEM_INIT` -- required for tests with real CXL.mem traffic (`cxl_ep_brdg_sanity` does). Read at Vivado BD-generation time, so must be set BEFORE `build_project.tcl` runs. Without it, `axi_memory_init_N` defaults to a full 4GB init window instead of 1KB.
      ```
      tcsh: setenv SIM_QUICK_MEM_INIT 1
      bash: export SIM_QUICK_MEM_INIT=1
@@ -240,18 +233,18 @@ vivado -mode batch -source <path-to-this-CED-checkout>/sim/standalone/build_proj
   -tclargs <workdir> Controller_1 CXL_3_1
 
 cd <workdir>
-export VIVADO_CLIBS=<path-to-this-site's-precompiled-vcs-clibs>  # same value as above
+tcsh: setenv VIVADO_CLIBS <path-to-this-site's-precompiled-vcs-clibs>
+bash: export VIVADO_CLIBS=<path-to-this-site's-precompiled-vcs-clibs>
 
 # build_project.tcl copies this design's whole sim/ tree into <workdir>/sim
-# first, so every make invocation below runs against that copy - not the
-# original checkout - and never reads it live during compile/elaborate/simulate.
+# first, so every make invocation below runs against that copy.
 
 # One-shot (compile + optimize + simulate in a single command):
 make -f <workdir>/sim/standalone/Makefile cos PROJ_DIR=<workdir> TEST=cxl_ep_brdg_sanity
 
 # ...or step-by-step:
 make -f <workdir>/sim/standalone/Makefile compile  PROJ_DIR=<workdir> TEST=cxl_ep_brdg_sanity
-make -f <workdir>/sim/standalone/Makefile optimize PROJ_DIR=<workdir> TEST=cxl_ep_brdg_sanity   # (`elaborate`/`o` are aliases)
+make -f <workdir>/sim/standalone/Makefile optimize PROJ_DIR=<workdir> TEST=cxl_ep_brdg_sanity
 make -f <workdir>/sim/standalone/Makefile simulate PROJ_DIR=<workdir> TEST=cxl_ep_brdg_sanity
 ```
 `PROJ_DIR` must match the `<workdir>` passed to `build_project.tcl` - these
@@ -267,11 +260,10 @@ vivado -mode batch -source .../build_project.tcl -tclargs <workdir> Controller_1
 cd <workdir>
 make -f <workdir>/sim/standalone/Makefile cos PROJ_DIR=<workdir> TEST=cxl_ep_brdg_sanity SPEED=5
 ```
-Nothing enforces `CXL_PROTOCOL` (build-time) and `SPEED` (sim-time)
-agreeing - a mismatch still runs and prints `RESULT = PASS`, but tests a
-meaningless configuration.
+`CXL_PROTOCOL` (build-time) and `SPEED` (sim-time) are not cross-checked -
+a mismatch between the two still runs.
 
-#### 2. Lightweight, no Avery VIP - `sim/light_tb/`
+### 2. Lightweight, no Avery VIP - `sim/light_tb/`
 
 ```bash
 export VIVADO_CLIBS=<path-to-this-site's-precompiled-vcs-clibs>  # same as path 1 above
@@ -286,127 +278,30 @@ cd proj/design_1.sim/sim_1/behav/vcs
 ./compile.sh && ./elaborate.sh && ./simulate.sh
 ```
 No Avery VIP, no `uvma_agents`, no external framework Makefile - just
-Vivado + a simulator license + `$CPM6_SECUREIP`. **Scope is limited**: this
+Vivado + a simulator license + `$CPM6_SECUREIP`. Scope is limited: this
 proves elaboration, PS-VIP reset sequencing, and `ctrl_reg_ep`'s AXI-Lite
-CSR map - it does **not** generate CXL.mem traffic or train the link.
+CSR map - it does not generate CXL.mem traffic or train the link.
 
-Both standalone sub-paths share an open item: the LPDDR5/DDR5 memory path
-(see `sim/verif/dut_inst.sv` OPEN ITEM 3) has no BRAM-substituted sim variant yet.
-
-#### 3. Via LSF (`bsub`), as one self-contained batch job
-
-Wraps build+compile+optimize+simulate into a single script for `bsub`.
-Works from any login shell (tcsh/csh included) since `bsub` execs the
-script directly and the script carries its own `#!/bin/bash` shebang.
-
-Write a self-contained script (adjust the Vivado path, `$CPM6_SECUREIP`,
-and `WORKDIR` for your site - see path 1 above for what each placeholder
-means):
-
-```bash
-#!/bin/bash
-set -o pipefail
-
-WORKDIR=<your-scratch-or-ref-dir>/sim1
-STATUS_FILE=$WORKDIR/STATUS
-CKPT_STANDALONE=<path-to-this-CED-checkout>/sim/standalone
-mkdir -p $WORKDIR
-echo "RUNNING:vivado" > $STATUS_FILE
-
-source <path-to-your-Vivado-install>/settings64.sh
-export VIVADO_CLIBS=<path-to-precompiled-vcs-clibs-for-that-build>
-export VIVADO_TEMPDIR=<your-scratch-or-ref-dir>/vivado_tmp
-mkdir -p "$VIVADO_TEMPDIR"
-
-# REQUIRED before build_project.tcl runs (see path 1 above):
-export SIM_QUICK_MEM_INIT=1
-
-vivado -mode batch -tempDir "$VIVADO_TEMPDIR" \
-  -source $CKPT_STANDALONE/build_project.tcl -tclargs $WORKDIR Controller_1 CXL_3_1 \
-  > $WORKDIR/vivado_build.log 2>&1
-VIVADO_RC=$?
-if [ $VIVADO_RC -ne 0 ]; then
-  echo "FAILED:vivado:rc=$VIVADO_RC" > $STATUS_FILE
-  exit 1
-fi
-if grep -qE "^ERROR:|^Fatal:" $WORKDIR/vivado_build.log; then
-  echo "FAILED:vivado:ERROR_lines_in_log" > $STATUS_FILE
-  exit 1
-fi
-# build_project.tcl copies this design's whole sim/ tree into $WORKDIR/sim -
-# every make invocation below runs against that copy, not $CKPT_STANDALONE.
-MAKEDIR=$WORKDIR/sim/standalone
-
-echo "RUNNING:compile" > $STATUS_FILE
-# Make sure vcs and the Avery VIP tools are already reachable on
-# $PATH/$LD_LIBRARY_PATH before this point - however your site provides that.
-export CPM6_SECUREIP=<path-to-your-own-cpm6-secureip-extraction>
-export AVERY_PLI=<path-to-avery-pli-install>
-export SNPSLMD_LICENSE_FILE=<your-site's-VCS-license-server-list>
-
-cd $WORKDIR
-
-make -f $MAKEDIR/Makefile compile PROJ_DIR=$WORKDIR > $WORKDIR/make_compile.log 2>&1
-if [ $? -ne 0 ]; then echo "FAILED:compile:rc=$?" > $STATUS_FILE; exit 1; fi
-
-echo "RUNNING:optimize" > $STATUS_FILE
-make -f $MAKEDIR/Makefile optimize PROJ_DIR=$WORKDIR > $WORKDIR/make_optimize.log 2>&1
-if [ $? -ne 0 ]; then echo "FAILED:optimize:rc=$?" > $STATUS_FILE; exit 1; fi
-
-echo "RUNNING:simulate" > $STATUS_FILE
-timeout -s TERM 14400 make -f $MAKEDIR/Makefile simulate PROJ_DIR=$WORKDIR > $WORKDIR/make_simulate.log 2>&1
-SIM_RC=$?
-if [ $SIM_RC -eq 124 ]; then
-  echo "DONE:simulate_timeout_expected" > $STATUS_FILE; exit 0
-elif [ $SIM_RC -ne 0 ]; then
-  echo "FAILED:simulate:rc=$SIM_RC" > $STATUS_FILE; exit 1
-fi
-
-echo "DONE:success" > $STATUS_FILE
-```
-`chmod +x` it, then submit:
-```bash
-bsub -K -q long -R "rusage[mem=16000] select[os==lin && type==X86_64 && osver==ws8]" \
-  /path/to/your_script.sh
-```
-- `-K` blocks and streams output back - drop it (or add `-o <logfile>`) to
-  fire-and-forget and poll with `bjobs`/`bpeek` later.
-- The `select[...]` clause pins a compatible OS/arch (some hosts here can't
-  even exec the pinned VCS build's 32-bit binaries otherwise).
-
-**Check the result - don't trust `STATUS_FILE`/exit code alone.** A
-mid-simulation `$finish`/`Fatal:` from a BFM or protocol checker often
-doesn't flip the shell's exit code. Always also grep the sim log
-(`$WORKDIR/<test_name>.sim.log`) for `UVM_FATAL`/`UVM_ERROR` counts and for
-a bare `Fatal:`/`$finish called from` with no `--- UVM Report Summary ---`
-banner - that combination means the simulator was killed outside the UVM
-reporting path.
-
-#### 4. End-to-end: build → simulate → open the waveform in DVE or Verdi
+### 3. End-to-end: build → simulate → open the waveform in DVE or Verdi
 
 Shown in **tcsh/csh** syntax (`setenv`); substitute `export VAR=value` if
 you're in bash.
 
-Generate a wave dump (opt-in - full-hierarchy dumps run into hundreds of MB
-to multiple GB) by passing a runtime plusarg at `simulate`:
+Generate a wave dump by passing a runtime plusarg at `simulate`:
 ```bash
-make -f $MAKEDIR/Makefile simulate PROJ_DIR=$WORKDIR TEST=cxl_ep_brdg_sanity PLUSARGS=+dump_vcd
+make -f <workdir>/sim/standalone/Makefile simulate PROJ_DIR=<workdir> TEST=cxl_ep_brdg_sanity PLUSARGS=+dump_vcd
 ```
-Produces `<test_name>.vcd` in `$WORKDIR`. Multi-hundred-MB VCDs are normal
-for a ~140us run here. Omit `PLUSARGS=+dump_vcd` for routine runs.
+Produces `<test_name>.vcd` in `<workdir>`.
 
 Open it in DVE (`vcs`/`dve` must already be reachable on your `$PATH`):
 ```tcsh
 # VCS_HOME must point at a full VCS-MX install with the DVE GUI package
-# (some sites split compile/sim-only vs. full/GUI installs) - if `dve`
-# fails with "Unable to find valid DVE installation in $VCS_HOME/gui/dve",
-# point this at your site's full/GUI-capable install instead:
 setenv VCS_HOME <path-to-your-site's-VCS-install-that-includes-the-DVE/gui-package>
 
 # Needed for DVE's VT_Visual feature; same value as compile/elaborate:
 setenv SNPSLMD_LICENSE_FILE "<your-site's-VCS/DVE-license-server-list>"
 
-cd $WORKDIR
+cd <workdir>
 $VCS_HOME/bin/dve -full64 -vcd <test_name>.vcd &
 ```
 
@@ -416,22 +311,16 @@ Or open it in Verdi instead (`verdi` must already be reachable on your
 # Needed for Verdi's own license feature; same value as compile/elaborate:
 setenv SNPSLMD_LICENSE_FILE "<your-site's-VCS/Verdi-license-server-list>"
 
-cd $WORKDIR
+cd <workdir>
 verdi -vcd <test_name>.vcd &
 ```
 
 Finding the signal you want: DUT hierarchy is under
 `tb_top.dut_inst.design_1_i...` (e.g.
 `tb_top.dut_inst.design_1_i.PA_0.cxl_mem_wrapper_0...` for a PA's CXL.mem
-path). Two gotchas:
-- **Zoom level matters for narrow pulses** - a single-cycle handshake can
-  be sub-pixel wide at the default zoomed-out view; zoom in before trusting
-  a signal that looks constant.
-- **A port name can be aliased one level up/down the hierarchy** via a
-  no-logic wire - check the same-named net one level up/down before
-  concluding the RTL is broken.
+path).
 
-##### Hardware Testing
+#### Hardware Testing
 1. Download the boot.pdi and pld.pdi to program the FPGA. Select R5_0 as target and download the appropriate elf and run it. Instructions for OSPI bin file be available in a future release of the CED.
 2. Recommend starting the host system from a cold boot.
 3. Boot up the system and see if the device is detected in `lspci` and `cxl list` for CXL HDM detection and HDM commit status.
