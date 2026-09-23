@@ -351,7 +351,8 @@ module tb_top;
   bit sys_clk_0_p, sys_clk_0_n;
   assign sys_clk_0_n = !sys_clk_0_p;
   // Add some clock phase randomization
-  initial if (LINK1_WIDTH) begin
+ // initial if (LINK1_WIDTH) begin
+ initial if (LINK0_WIDTH || LINK1_WIDTH) begin  
     #($urandom_range(0,9)*1ns);
     #($urandom_range(0,999)*1ps);
     forever sys_clk_0_p = #5ns !sys_clk_0_p;

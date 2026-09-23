@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<ExampleDesign>
+  <Vendor>xilinx.com</Vendor>
+  <Library>design</Library>
+  <Name>cpm6_cxl_ep_brg</Name>
+  <DisplayName>Versal CPM6 CXL EP Bridge Design</DisplayName>
+  <Description>Versal CPM6 CXL EP Bridge Design — CXL Type 3 memory device on Versal Premium VP3602. Selectable CTRL0 or CTRL1 in BRIDGE mode, Gen6 x8 (CXL 3.1) or Gen5 x8 (CXL 2.0), 4 HDM Physical Agents backed by LPDDR5X DDR (channels C0, C1, C4, C5).</Description>
+  <Version>1.0</Version>
+  <Design>init.tcl</Design>
+  <Image>cpm6_cxl_ep_brg.PNG</Image>
+  <DesignType>IPI</DesignType>
+</ExampleDesign>

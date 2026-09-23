@@ -147,10 +147,12 @@ if { $bCheckIPsPassed != 1 } {
 
 # Procedure to create entire design; Provide argument to make
 # procedure reusable. If parentCell is "", will use root.
-proc create_root_design { parentCell link_width lane_rate } {
+proc create_root_design { parentCell link_width lane_rate ide_cap_en } {
 
   variable script_folder
   variable design_name
+
+  set ide_cap_val [expr {$ide_cap_en ? 1 : 0}]
 
   if { $parentCell eq "" } {
      set parentCell [get_bd_cells /]
@@ -223,6 +225,7 @@ proc create_root_design { parentCell link_width lane_rate } {
     CONFIG.CPM6_CONFIG(CPM6_CTRL0_INBOUND_REGION4_BAR_NUM) {BAR_5} \
     CONFIG.CPM6_CONFIG(CPM6_CTRL0_INBOUND_REGION4_TRGTADDR) {0x500_0008_0000} \
     CONFIG.CPM6_CONFIG(CPM6_CTRL0_LANE_RATE) $lane_rate \
+    CONFIG.CPM6_CONFIG(CPM6_CTRL0_IDE_CAP_EN) $ide_cap_val \
     CONFIG.CPM6_CONFIG(CPM6_CTRL0_LINK_WIDTH) $link_width \
     CONFIG.CPM6_CONFIG(CPM6_CTRL0_MMIO_APERTURE0_BASEADDR) {0x0500_0000_0000} \
     CONFIG.CPM6_CONFIG(CPM6_CTRL0_MMIO_APERTURE0_LIMITADDR) {0x0500_0001_ffff} \
@@ -470,6 +473,6 @@ proc create_root_design { parentCell link_width lane_rate } {
 
 common::send_gid_msg -ssname BD::TCL -id 2052 -severity "CRITICAL WARNING" "This Tcl script was generated from a block design that is out-of-date/locked. It is possible that design <$design_name> may result in errors during construction."
 
-create_root_design "" $link_width $lane_rate
+create_root_design "" $link_width $lane_rate $ide_cap_en
 
 
