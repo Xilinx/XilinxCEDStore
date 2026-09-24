@@ -1,16 +1,14 @@
 # write_device_image.post hook
 #
 # Refreshes "boot.pdi" and "pld.pdi" symlinks in the project directory to
-# point at the active implementation run's <top>_boot.pdi / <top>_pld.pdi.
-# Uses project/run properties instead of a hardcoded "p.runs/impl_*" path
-# so it keeps working across project renames and across whichever impl
-# run is currently active. PDI filenames are located by glob rather than
-# by reading TOP off the fileset, since TOP isn't reliably populated on
-# the fileset from within a run's Tcl hook context.
+# point at the last generated PDIs. runme.tcl has already cd'd into the 
+# firing run's own directory by the time this hook is sourced.
 #
 # Attach this to every run you care about, e.g.:
-#   set_property STEPS.WRITE_DEVICE_IMAGE.TCL.POST \
-#     {/path/to/soft_link_pdis.tcl} [get_runs impl_*]
+#   set hook_tcl [get_files -of_objects [get_filesets utils_1] "soft_link_pdis.tcl"]
+#   foreach run [get_runs impl_*] {
+#     set_property STEPS.WRITE_DEVICE_IMAGE.TCL.POST $hook_tcl $run
+#   }
 #
 # With multiple runs generating bitstreams, hooks can fire out of order
 # (a run started earlier may finish later). To make "last one wins" mean
@@ -18,8 +16,10 @@
 # link is only updated if the new source PDI is newer than whatever the
 # link currently points at.
 
-set proj_dir [get_property DIRECTORY [current_project]]
-set run_dir  [get_property DIRECTORY [current_run -implementation]]
+set run_dir  [pwd]
+set proj_dir [file dirname [file dirname $run_dir]]
+
+puts "INFO: write_device_image.post: run_dir=$run_dir and proj_dir=$proj_dir"
 
 foreach suffix {boot pld} {
   set pdi_matches [glob -nocomplain -directory $run_dir "*_${suffix}.pdi"]
