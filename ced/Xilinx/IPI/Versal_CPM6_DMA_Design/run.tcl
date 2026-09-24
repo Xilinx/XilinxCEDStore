@@ -33,20 +33,24 @@ proc createDesign {design_name options} {
   # ----------------------------------------------------------------
   # Parse controller config, lane rate and link width
   # ----------------------------------------------------------------
-  set ctrl_config "Controller_1" ; if {[dict exists $options CTRL_CONFIG]}   { set ctrl_config [dict get $options CTRL_CONFIG] }
+  set ctrl_config "Controller_1" ; if {[dict exists $options CTRL_CONFIG.VALUE]}   { set ctrl_config [dict get $options CTRL_CONFIG.VALUE] }
   set dma_ddr_enabled false
   if {[dict exists $options DDR_EN.VALUE]} { set dma_ddr_enabled [dict get $options DDR_EN.VALUE] }
   set ddr_en [expr {$dma_ddr_enabled ? "DDR_ENABLED" : "DDR_DISABLED"}]
-  set num_pfs 1                 ; if {[dict exists $options NUM_PFS]}   { set num_pfs [dict get $options NUM_PFS] }
-  set lane_rate   "64.0_GT/s"   ; if {[dict exists $options CTRL_LANE_RATE]}  { set lane_rate   [dict get $options CTRL_LANE_RATE] }
-  set link_width  "X8"          ; if {[dict exists $options CTRL_LINK_WIDTH]} { set link_width  [dict get $options CTRL_LINK_WIDTH] }
+  set num_pfs 1                 ; if {[dict exists $options NUM_PFS.VALUE]}   { set num_pfs [dict get $options NUM_PFS.VALUE] }
+  set lane_rate   "64.0_GT/s"   ; if {[dict exists $options CTRL_LANE_RATE.VALUE]}  { set lane_rate   [dict get $options CTRL_LANE_RATE.VALUE] }
+  set link_width  "X8"          ; if {[dict exists $options CTRL_LINK_WIDTH.VALUE]} { set link_width  [dict get $options CTRL_LINK_WIDTH.VALUE] }
   set link_width_int [string index $link_width end]
+  set ide_cap_en false ; if {[dict exists $options IDE_CAP_EN.VALUE]} { set ide_cap_en [dict get $options IDE_CAP_EN.VALUE] }
+  set ide_cap_val [expr {$ide_cap_en ? 1 : 0}]
+
   
   puts "INFO: DMA EN            = $dma_ddr_enabled"
   puts "INFO: Controller Config = $ctrl_config"
   puts "INFO: PCIe Link Width   = $link_width"
   puts "INFO: PCIe Lane Rate    = $lane_rate"
   puts "INFO: DDR Enablament    = $ddr_en"
+  puts "INFO: IDE CAP Enablament = $ide_cap_en"
   puts "INFO: Num of PF's       = $num_pfs"
 
   # ----------------------------------------------------------------
@@ -55,7 +59,7 @@ proc createDesign {design_name options} {
   switch "${ctrl_config}_${ddr_en}" {
     "Controller_0_DDR_ENABLED" { set sub_name "dma_ddr_ctrl0"; set g_top "dma_ddr_top" }
     "Controller_1_DDR_ENABLED" { set sub_name "dma_ddr";       set g_top "dma_ddr_top" }
-    "Controller_0_DDR_DISABLED"  { set sub_name "dma_ctrl0";     set g_top "design_1_wrapper" }
+    "Controller_0_DDR_DISABLED"  { set sub_name "dma_ctrl0";     set g_top "dma_top" }
     "Controller_1_DDR_DISABLED"  { set sub_name "dma";           set g_top "dma_top" }
     default {
       error "Unsupported combination CTRL_CONFIG=$ctrl_config DDR_EN=$ddr_en"
@@ -87,6 +91,7 @@ if { $ddr_en eq "DDR_ENABLED" } {
   puts $fd "    parameter LINK_WIDTH    = $link_width_int;"
   puts $fd "    parameter LANE_RATE = \"$lane_rate\";"
   puts $fd "    parameter NUM_PFS = $num_pfs;"
+  puts $fd "    parameter IDE_CAP_EN = $ide_cap_val;"
   puts $fd "endpackage"
   close $fd
   puts "INFO: defines.sv updated in project with width = $link_width_int"

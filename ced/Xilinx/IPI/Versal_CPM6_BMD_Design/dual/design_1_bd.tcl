@@ -208,6 +208,7 @@ proc create_root_design { parentCell link_width lane_rate } {
   # Create instance: ps_wizard_0, and set properties
   set ps_wizard_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:ps_wizard:1.0 ps_wizard_0 ]
   set_property -dict [list \
+    CONFIG.CPM6_CONFIG(CPM6_BOARD) {VPK_360} \
     CONFIG.CPM6_CONFIG(CPM6_CTRL0_ASPM_L0P_SUPPORT) {0} \
     CONFIG.CPM6_CONFIG(CPM6_CTRL0_ASPM_L1_SUPPORT) {0} \
     CONFIG.CPM6_CONFIG(CPM6_CTRL0_ATS_PRI_CAP_EN) {0} \
@@ -222,6 +223,7 @@ proc create_root_design { parentCell link_width lane_rate } {
     CONFIG.CPM6_CONFIG(CPM6_CTRL0_LINK_WIDTH) $link_width \
     CONFIG.CPM6_CONFIG(CPM6_CTRL0_MCAP_EN) {1} \
     CONFIG.CPM6_CONFIG(CPM6_CTRL0_PASID_CAP_EN) {1} \
+    CONFIG.CPM6_CONFIG(CPM6_CTRL0_PERST) {PS_MIO_18} \
     CONFIG.CPM6_CONFIG(CPM6_CTRL0_PF0_BAR0_SIZE) {64} \
     CONFIG.CPM6_CONFIG(CPM6_CTRL0_PF0_BAR1_EN) {1} \
     CONFIG.CPM6_CONFIG(CPM6_CTRL0_PF0_BAR1_SIZE) {64} \
@@ -257,6 +259,7 @@ proc create_root_design { parentCell link_width lane_rate } {
     CONFIG.CPM6_CONFIG(CPM6_CTRL1_LINK_WIDTH) $link_width \
     CONFIG.CPM6_CONFIG(CPM6_CTRL1_MCAP_EN) {1} \
     CONFIG.CPM6_CONFIG(CPM6_CTRL1_PASID_CAP_EN) {1} \
+    CONFIG.CPM6_CONFIG(CPM6_CTRL1_PERST) {PS_MIO_19} \
     CONFIG.CPM6_CONFIG(CPM6_CTRL1_PF0_BAR0_64BIT) {0} \
     CONFIG.CPM6_CONFIG(CPM6_CTRL1_PF0_BAR0_SIZE) {64} \
     CONFIG.CPM6_CONFIG(CPM6_CTRL1_PF0_BAR1_EN) {1} \

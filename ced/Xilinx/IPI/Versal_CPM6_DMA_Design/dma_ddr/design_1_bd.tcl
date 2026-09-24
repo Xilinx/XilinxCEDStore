@@ -148,10 +148,12 @@ if { $bCheckIPsPassed != 1 } {
 
 # Procedure to create entire design; Provide argument to make
 # procedure reusable. If parentCell is "", will use root.
-proc create_root_design { parentCell link_width lane_rate num_pfs} {
+proc create_root_design { parentCell link_width lane_rate num_pfs ide_cap_en} {
 
   variable script_folder
   variable design_name
+
+  set ide_cap_val [expr {$ide_cap_en ? 1 : 0}]
 
   if { $parentCell eq "" } {
      set parentCell [get_bd_cells /]
@@ -242,6 +244,7 @@ proc create_root_design { parentCell link_width lane_rate num_pfs} {
     CONFIG.CPM6_CONFIG(CPM6_CTRL1_INBOUND_REGION4_FUNC) {PF*} \
     CONFIG.CPM6_CONFIG(CPM6_CTRL1_INBOUND_REGION4_TRGTADDR) {0x500_2000_0000} \
     CONFIG.CPM6_CONFIG(CPM6_CTRL1_LANE_RATE) $lane_rate \
+    CONFIG.CPM6_CONFIG(CPM6_CTRL1_IDE_CAP_EN) $ide_cap_val \
     CONFIG.CPM6_CONFIG(CPM6_CTRL1_LINK_WIDTH) $link_width \
     CONFIG.CPM6_CONFIG(CPM6_CTRL1_MMIO_APERTURE0_BASEADDR) {0x0500_0000_0000} \
     CONFIG.CPM6_CONFIG(CPM6_CTRL1_MMIO_APERTURE0_LIMITADDR) {0x0500_0001_ffff} \
@@ -268,6 +271,8 @@ proc create_root_design { parentCell link_width lane_rate num_pfs} {
     CONFIG.CPM6_CONFIG(CPM6_CTRL1_NUM_MMIO_APERTURES) {7} \
     CONFIG.CPM6_CONFIG(CPM6_CTRL1_NUM_PFS) $num_pfs \
     CONFIG.CPM6_CONFIG(CPM6_CTRL1_PF0_BAR0_SCALE) {Kilobytes} \
+    CONFIG.CPM6_CONFIG(CPM6_CTRL1_PERST) {PS_MIO_19} \
+    CONFIG.CPM6_CONFIG(CPM6_BOARD) {VPK360} \
     CONFIG.CPM6_CONFIG(CPM6_CTRL1_PF0_BAR0_SIZE) {128} \
     CONFIG.CPM6_CONFIG(CPM6_CTRL1_PF0_BAR1_EN) {1} \
     CONFIG.CPM6_CONFIG(CPM6_CTRL1_PF0_BAR1_SIZE) {128} \
@@ -300,14 +305,9 @@ proc create_root_design { parentCell link_width lane_rate num_pfs} {
     CONFIG.PS_PMC_CONFIG(CPM6_AXI_PL1_IF) {1} \
     CONFIG.PS_PMC_CONFIG(CPM6_AXI_PL2_IF) {1} \
     CONFIG.PS_PMC_CONFIG(CPM6_AXI_PL3_IF) {1} \
-    CONFIG.PS_PMC_CONFIG(CPM6_CTRL0_LINK_WIDTH) {X4} \
-    CONFIG.PS_PMC_CONFIG(CPM6_CTRL0_MODE) {None} \
-    CONFIG.PS_PMC_CONFIG(CPM6_CTRL0_PERST_DIR) {in} \
-    CONFIG.PS_PMC_CONFIG(CPM6_CTRL0_PROTOCOL) {Disabled} \
     CONFIG.PS_PMC_CONFIG(CPM6_CTRL1_LINK_WIDTH) {X8} \
     CONFIG.PS_PMC_CONFIG(CPM6_CTRL1_MODE) {DMA_BRIDGE} \
-    CONFIG.PS_PMC_CONFIG(CPM6_CTRL1_PERST) {PMC_MIO_39} \
-    CONFIG.PS_PMC_CONFIG(CPM6_CTRL1_PERST_DIR) {in} \
+    CONFIG.PS_PMC_CONFIG(CPM6_CTRL1_PERST) {PS_MIO_19} \
     CONFIG.PS_PMC_CONFIG(CPM6_CTRL1_PROTOCOL) {PCIE_6_1} \
     CONFIG.PS_PMC_CONFIG(CPM_PCIE0_TANDEM) {None} \
     CONFIG.PS_PMC_CONFIG(DESIGN_MODE) {1} \
@@ -1082,4 +1082,4 @@ MIO} \
 # MAIN FLOW
 ##################################################################
 
-create_root_design "" $link_width $lane_rate $num_pfs
+create_root_design "" $link_width $lane_rate $num_pfs $ide_cap_en

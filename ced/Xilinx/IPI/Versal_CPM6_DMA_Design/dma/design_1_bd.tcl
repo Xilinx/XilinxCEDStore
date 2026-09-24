@@ -147,10 +147,12 @@ if { $bCheckIPsPassed != 1 } {
 
 # Procedure to create entire design; Provide argument to make
 # procedure reusable. If parentCell is "", will use root.
-proc create_root_design { parentCell link_width lane_rate } {
+proc create_root_design { parentCell link_width lane_rate ide_cap_en } {
 
   variable script_folder
   variable design_name
+
+  set ide_cap_val [expr {$ide_cap_en ? 1 : 0}]
 
   if { $parentCell eq "" } {
      set parentCell [get_bd_cells /]
@@ -219,6 +221,7 @@ proc create_root_design { parentCell link_width lane_rate } {
     CONFIG.CPM6_CONFIG(CPM6_CTRL1_INBOUND_REGION4_BAR_NUM) {BAR_5} \
     CONFIG.CPM6_CONFIG(CPM6_CTRL1_INBOUND_REGION4_TRGTADDR) {0x500_0008_0000} \
     CONFIG.CPM6_CONFIG(CPM6_CTRL1_LANE_RATE) $lane_rate \
+    CONFIG.CPM6_CONFIG(CPM6_CTRL1_IDE_CAP_EN) $ide_cap_val \
     CONFIG.CPM6_CONFIG(CPM6_CTRL1_LINK_WIDTH) $link_width \
     CONFIG.CPM6_CONFIG(CPM6_CTRL1_MMIO_APERTURE0_BASEADDR) {0x0500_0000_0000} \
     CONFIG.CPM6_CONFIG(CPM6_CTRL1_MMIO_APERTURE0_LIMITADDR) {0x0500_0001_ffff} \
@@ -239,6 +242,8 @@ proc create_root_design { parentCell link_width lane_rate } {
     CONFIG.CPM6_CONFIG(CPM6_CTRL1_NUM_INBOUND_REGIONS) {5} \
     CONFIG.CPM6_CONFIG(CPM6_CTRL1_NUM_MMIO_APERTURES) {5} \
     CONFIG.CPM6_CONFIG(CPM6_CTRL1_PF0_BAR0_SCALE) {Kilobytes} \
+    CONFIG.CPM6_CONFIG(CPM6_CTRL1_PERST) {PS_MIO_19} \
+    CONFIG.CPM6_CONFIG(CPM6_BOARD) {VPK360} \
     CONFIG.CPM6_CONFIG(CPM6_CTRL1_PF0_BAR0_SIZE) {256} \
     CONFIG.CPM6_CONFIG(CPM6_CTRL1_PF0_BAR1_EN) {1} \
     CONFIG.CPM6_CONFIG(CPM6_CTRL1_PF0_BAR1_SIZE) {256} \
@@ -261,6 +266,7 @@ proc create_root_design { parentCell link_width lane_rate } {
     CONFIG.PS_PMC_CONFIG(CPM6_AXI_PL3_IF) {1} \
     CONFIG.PS_PMC_CONFIG(CPM6_CTRL1_LINK_WIDTH) $link_width \
     CONFIG.PS_PMC_CONFIG(CPM6_CTRL1_MODE) {DMA_BRIDGE} \
+	CONFIG.PS_PMC_CONFIG(CPM6_CTRL1_PERST) {PS_MIO_19} \
     CONFIG.PS_PMC_CONFIG(CPM6_CTRL1_PROTOCOL) {PCIE_6_1} \
     CONFIG.PS_PMC_CONFIG(PMC_CRP_PL0_REF_CTRL_FREQMHZ) {250} \
     CONFIG.PS_PMC_CONFIG(PMC_CRP_PL1_REF_CTRL_FREQMHZ) {250} \
@@ -430,7 +436,7 @@ proc create_root_design { parentCell link_width lane_rate } {
   assign_bd_address -offset 0x00000000 -range 0x00010000 -target_address_space [get_bd_addr_spaces ps_wizard_0/pmcps_0_psv_cpm_0] [get_bd_addr_segs axi_bram_ctrl_2/S_AXI/Mem0] -force
   assign_bd_address -offset 0x0001000002000000 -range 0x00010000 -target_address_space [get_bd_addr_spaces ps_wizard_0/pmcps_0_psv_cpm_0] [get_bd_addr_segs axi_bram_ctrl_3/S_AXI/Mem0] -force
   assign_bd_address -offset 0x020100000000 -range 0x00010000 -target_address_space [get_bd_addr_spaces ps_wizard_0/pmcps_0_psv_cpm_0] [get_bd_addr_segs axi_bram_ctrl_4/S_AXI/Mem0] -force
-
+  assign_bd_address -target_address_space /ps_wizard_0/pmcps_0_psv_dpc_0 [get_bd_addr_segs axi_bram_ctrl_4/S_AXI/Mem0] -force
 
   # Restore current instance
   current_bd_instance $oldCurInst
@@ -448,6 +454,6 @@ proc create_root_design { parentCell link_width lane_rate } {
 
 common::send_gid_msg -ssname BD::TCL -id 2052 -severity "CRITICAL WARNING" "This Tcl script was generated from a block design that is out-of-date/locked. It is possible that design <$design_name> may result in errors during construction."
 
-create_root_design "" $link_width $lane_rate
+create_root_design "" $link_width $lane_rate $ide_cap_en
 
 

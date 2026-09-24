@@ -12,7 +12,6 @@ wire [7:0] ctrl1_gt_grx_n;
 wire [7:0] ctrl1_gt_grx_p;
 wire [7:0] ctrl1_gt_gtx_n;
 wire [7:0] ctrl1_gt_gtx_p;
-wire [127:0] dma1_irq_0;
 
 dma_top_sim_wrapper dma_top_i
 (
@@ -22,5 +21,4 @@ dma_top_sim_wrapper dma_top_i
  ,.CTRL1_GT_0_gtx_p        (ctrl1_gt_gtx_p)
  ,.ctrl1_gt_refclk_0_clk_n (refclk_0_n)
  ,.ctrl1_gt_refclk_0_clk_p (refclk_0_p)
- ,.dma1_irq_0              (dma1_irq_0)
 );

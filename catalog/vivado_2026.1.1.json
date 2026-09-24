@@ -936,11 +936,11 @@
         "name": "cpm6_dma",
         "display": "Versal CPM6 DMA Design",
         "latest_revision": "1.0",
-        "commit_id": "30bdf2d7cac0d6c64a13ea35db450f45f1b4a1a9",
+        "commit_id": "128f920dc769233e751c352adc4f9d369c8b234a",
         "revisions": [
           {
             "revision": "1.0",
-            "commit_id": "30bdf2d7cac0d6c64a13ea35db450f45f1b4a1a9",
+            "commit_id": "128f920dc769233e751c352adc4f9d369c8b234a",
             "date": "25-08-2026:05:47:27",
             "history": "Added board Versal CPM6 DMA Design v1.0"
           }
@@ -955,17 +955,55 @@
         "name": "cpm6_bmd",
         "display": "Versal CPM6 BMD Design",
         "latest_revision": "1.0",
-        "commit_id": "b34168b764c5ec5e923035b057a3edbe6fb060dc",
+        "commit_id": "aa1db6a512cf1a74e6475975fe5e18098c69103f",
         "revisions": [
           {
             "revision": "1.0",
-            "commit_id": "b34168b764c5ec5e923035b057a3edbe6fb060dc",
+            "commit_id": "aa1db6a512cf1a74e6475975fe5e18098c69103f",
             "date": "01-09-2026:10:23:29",
             "history": "Added board Versal CPM6 BMD Design v1.0"
           }
         ],
         "config": {
           "root": "ced/Xilinx/IPI/Versal_CPM6_BMD_Design",
+          "metadata_file": "xitem.json"
+        },
+        "company": "xilinx.com"
+      },
+      {
+        "name": "Versal_CPM6_CXL_RP",
+        "display": "Versal CPM6 Compute Express Link (CXL) Root Port (RP)",
+        "latest_revision": "1.0",
+        "commit_id": "f975fac9e09a77af5b722ae349f7ca5a6a38a497",
+        "revisions": [
+          {
+            "revision": "1.0",
+            "commit_id": "f975fac9e09a77af5b722ae349f7ca5a6a38a497",
+            "date": "08-09-2026:17:37:30",
+            "history": "Added board Versal CPM6 Compute Express Link (CXL) Root Port (RP) v1.0"
+          }
+        ],
+        "config": {
+          "root": "ced/Xilinx/IPI/Versal_CPM6_CXL_RP",
+          "metadata_file": "xitem.json"
+        },
+        "company": "xilinx.com"
+      },
+      {
+        "name": "cpm6_cxl_ep_brg",
+        "display": "Versal CPM6 CXL EP Bridge Design",
+        "latest_revision": "1.0",
+        "commit_id": "128f920dc769233e751c352adc4f9d369c8b234a",
+        "revisions": [
+          {
+            "revision": "1.0",
+            "commit_id": "128f920dc769233e751c352adc4f9d369c8b234a",
+            "date": "22-09-2026:04:25:34",
+            "history": "Added board Versal CPM6 CXL EP Bridge Design v1.0"
+          }
+        ],
+        "config": {
+          "root": "ced/Xilinx/IPI/Versal_CPM6_CXL_EP_Bridge_Design",
           "metadata_file": "xitem.json"
         },
         "company": "xilinx.com"
