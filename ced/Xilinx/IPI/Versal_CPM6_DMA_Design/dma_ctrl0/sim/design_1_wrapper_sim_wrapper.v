@@ -7,28 +7,28 @@
 `timescale 1 ps / 1 ps
 
 module design_1_wrapper_sim_wrapper
-   (CTRL1_GT_0_grx_n,
-    CTRL1_GT_0_grx_p,
-    CTRL1_GT_0_gtx_n,
-    CTRL1_GT_0_gtx_p,
-    ctrl1_gt_refclk_0_clk_n,
-    ctrl1_gt_refclk_0_clk_p,
-    dma1_irq_0);
-  input [7:0]CTRL1_GT_0_grx_n;
-  input [7:0]CTRL1_GT_0_grx_p;
-  output [7:0]CTRL1_GT_0_gtx_n;
-  output [7:0]CTRL1_GT_0_gtx_p;
-  input ctrl1_gt_refclk_0_clk_n;
-  input ctrl1_gt_refclk_0_clk_p;
-  output [127:0]dma1_irq_0;
+   (CTRL0_GT_0_grx_n,
+    CTRL0_GT_0_grx_p,
+    CTRL0_GT_0_gtx_n,
+    CTRL0_GT_0_gtx_p,
+    ctrl0_gt_refclk_0_clk_n,
+    ctrl0_gt_refclk_0_clk_p,
+    dma0_irq_0);
+  input [7:0]CTRL0_GT_0_grx_n;
+  input [7:0]CTRL0_GT_0_grx_p;
+  output [7:0]CTRL0_GT_0_gtx_n;
+  output [7:0]CTRL0_GT_0_gtx_p;
+  input ctrl0_gt_refclk_0_clk_n;
+  input ctrl0_gt_refclk_0_clk_p;
+  output [127:0]dma0_irq_0;
 
-  wire [7:0]ctrl1_gt_0_grx_n_net;
-  wire [7:0]ctrl1_gt_0_grx_p_net;
-  wire [7:0]ctrl1_gt_0_gtx_n_net;
-  wire [7:0]ctrl1_gt_0_gtx_p_net;
-  wire ctrl1_gt_refclk_0_clk_n_net;
-  wire ctrl1_gt_refclk_0_clk_p_net;
-  wire [127:0]dma1_irq_0_net;
+  wire [7:0]ctrl0_gt_0_grx_n_net;
+  wire [7:0]ctrl0_gt_0_grx_p_net;
+  wire [7:0]ctrl0_gt_0_gtx_n_net;
+  wire [7:0]ctrl0_gt_0_gtx_p_net;
+  wire ctrl0_gt_refclk_0_clk_n_net;
+  wire ctrl0_gt_refclk_0_clk_p_net;
+  wire [127:0]dma0_irq_0_net;
   wire [0:0]nps_0_mnpp_s_credit_rdy_net;
   wire [7:0]nps_0_mnpp_s_credit_return_net;
   wire [181:0]nps_0_mnpp_s_flit_net;
@@ -54,21 +54,21 @@ module design_1_wrapper_sim_wrapper
   wire [181:0]nps_3_snpp_w_flit_net;
   wire [7:0]nps_3_snpp_w_valid_net;
 
-  assign CTRL1_GT_0_gtx_n[7:0] = ctrl1_gt_0_gtx_n_net;
-  assign CTRL1_GT_0_gtx_p[7:0] = ctrl1_gt_0_gtx_p_net;
-  assign ctrl1_gt_0_grx_n_net = CTRL1_GT_0_grx_n[7:0];
-  assign ctrl1_gt_0_grx_p_net = CTRL1_GT_0_grx_p[7:0];
-  assign ctrl1_gt_refclk_0_clk_n_net = ctrl1_gt_refclk_0_clk_n;
-  assign ctrl1_gt_refclk_0_clk_p_net = ctrl1_gt_refclk_0_clk_p;
-  assign dma1_irq_0[127:0] = dma1_irq_0_net;
+  assign CTRL0_GT_0_gtx_n[7:0] = ctrl0_gt_0_gtx_n_net;
+  assign CTRL0_GT_0_gtx_p[7:0] = ctrl0_gt_0_gtx_p_net;
+  assign ctrl0_gt_0_grx_n_net = CTRL0_GT_0_grx_n[7:0];
+  assign ctrl0_gt_0_grx_p_net = CTRL0_GT_0_grx_p[7:0];
+  assign ctrl0_gt_refclk_0_clk_n_net = ctrl0_gt_refclk_0_clk_n;
+  assign ctrl0_gt_refclk_0_clk_p_net = ctrl0_gt_refclk_0_clk_p;
+  assign dma0_irq_0[127:0] = dma0_irq_0_net;
   design_1_wrapper design_1_wrapper_i
-       (.CTRL1_GT_0_grx_n(ctrl1_gt_0_grx_n_net),
-        .CTRL1_GT_0_grx_p(ctrl1_gt_0_grx_p_net),
-        .CTRL1_GT_0_gtx_n(ctrl1_gt_0_gtx_n_net),
-        .CTRL1_GT_0_gtx_p(ctrl1_gt_0_gtx_p_net),
-        .ctrl1_gt_refclk_0_clk_n(ctrl1_gt_refclk_0_clk_n_net),
-        .ctrl1_gt_refclk_0_clk_p(ctrl1_gt_refclk_0_clk_p_net),
-        .dma1_irq_0(dma1_irq_0_net));
+       (.CTRL0_GT_0_grx_n(ctrl0_gt_0_grx_n_net),
+        .CTRL0_GT_0_grx_p(ctrl0_gt_0_grx_p_net),
+        .CTRL0_GT_0_gtx_n(ctrl0_gt_0_gtx_n_net),
+        .CTRL0_GT_0_gtx_p(ctrl0_gt_0_gtx_p_net),
+        .ctrl0_gt_refclk_0_clk_n(ctrl0_gt_refclk_0_clk_n_net),
+        .ctrl0_gt_refclk_0_clk_p(ctrl0_gt_refclk_0_clk_p_net),
+        .dma0_irq_0(dma0_irq_0_net));
   xlnoc xlnoc_i
        (.nps_0_MNPP_S_credit_rdy(nps_0_mnpp_s_credit_rdy_net),
         .nps_0_MNPP_S_credit_return(nps_0_mnpp_s_credit_return_net),
