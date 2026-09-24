@@ -8,12 +8,21 @@
 #   source xsdb_scripts/all.tcl
 #   design::discover [pwd]
 #   design::connect
-#   hwtg::load_append 0 "WRITE addr=0x1000 repeat=10 addr_stride=64"
+#   design::program                 ;# brings up the link
+#   ecam::connect
+#   ecam::setup_ep_bars             ;# REQUIRED before any real traffic
+#   ecam::setup_hdm decoder         ;# REQUIRED before any real traffic
+#   hwtg::connect
+#   hwtg::load_append 0 "WRITE addr=0x8000000000 repeat=10 addr_stride=64"
 #   hwtg::load_append 0 "WAIT"
 #   hwtg::start 0
 #   hwtg::wait_done 0
 #   hwtg::status 0
 #   hwtg::parse_errors 0
+#
+# NOTE: the hardware cannot issue transactions to a link partner that hasn't
+# had its BARs sized/placed and its HDM decoder range enabled -- WRITE/READ
+# traffic MUST come after ecam::setup_ep_bars/ecam::setup_hdm, not before.
 
 set hwtg_script_dir [file dirname [file normalize [info script]]]
 

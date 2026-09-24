@@ -75,7 +75,7 @@ module custom_axi_tg_csr
   // Matches custom_axi_tg's CMD_PTR_W: fetch_ptr settles AT done_ptr (which
   // can legally equal MAX_COMMANDS) once a program finishes fetching, so
   // cur_cmd_ptr needs one bit more than IDX_W or that terminal value aliases
-  // to 0. The TG_STATUS field itself stays a fixed 9 bits (see the read mux)
+  // to 0. The TG_STATUS field itself stays a fixed 10 bits (see the read mux)
   // so the CSR map does not move if MAX_COMMANDS changes.
   localparam int CMD_PTR_W         = IDX_W + 1
 )(
@@ -235,8 +235,8 @@ module custom_axi_tg_csr
                         wr_ring_empty,    //18
                         rd_disp_busy,     //17
                         wr_disp_busy,     //16
-                        3'h0,             //15:13
-                        9'(cur_cmd_ptr),  //12: 4 zero-extended; see CMD_PTR_W
+                        2'h0,             //15:14
+                        10'(cur_cmd_ptr), //13: 4 includes terminal value 512
                         1'b0,             //3
                         run_state};       //2: 0
       8'h0C : csr_rd = {7'h0,                                  // TG_BRESP_ERROR
@@ -328,7 +328,7 @@ module custom_axi_tg_csr
         err_any  = 1'b1;
         err_code = 4'(ERR_RSVD_SLICE);
       end
-      else if (a_cmd_idx >= 9'(MAX_COMMANDS)) begin
+      else if ({1'b0, a_cmd_idx} >= 10'(MAX_COMMANDS)) begin
         err_any  = 1'b1;
         err_code = 4'(ERR_IDX_RANGE);
       end
@@ -381,7 +381,7 @@ module custom_axi_tg_csr
     end
     else if (in_stat) begin
       err_idx_val = a_stat_idx;
-      if (a_stat_idx >= 9'(MAX_COMMANDS)) begin
+      if ({1'b0, a_stat_idx} >= 10'(MAX_COMMANDS)) begin
         err_any  = 1'b1;
         err_code = 4'(ERR_IDX_RANGE);
       end

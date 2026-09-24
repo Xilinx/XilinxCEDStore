@@ -179,10 +179,11 @@ module custom_axi_tg_status #(
 
   //--- read / query ports ---------------------------------------------------
   logic in_range_rd, in_range_q, in_range_wq, in_range_rq;
-  assign in_range_rd = (rd_idx   < 9'(MAX_COMMANDS));
-  assign in_range_q  = (q_idx    < 9'(MAX_COMMANDS));
-  assign in_range_wq = (wr_q_idx < 9'(MAX_COMMANDS));
-  assign in_range_rq = (rd_q_idx < 9'(MAX_COMMANDS));
+  // Indices are 0..511, but the exclusive bound can be 512 (ten bits).
+  assign in_range_rd = ({1'b0, rd_idx}   < 10'(MAX_COMMANDS));
+  assign in_range_q  = ({1'b0, q_idx}    < 10'(MAX_COMMANDS));
+  assign in_range_wq = ({1'b0, wr_q_idx} < 10'(MAX_COMMANDS));
+  assign in_range_rq = ({1'b0, rd_q_idx} < 10'(MAX_COMMANDS));
 
   always_comb begin
     rd_data = 21'h0;

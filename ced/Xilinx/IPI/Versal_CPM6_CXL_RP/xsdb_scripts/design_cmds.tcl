@@ -321,9 +321,12 @@ proc design::check_link_status {} {
 #-----------------------------------------------------------------------------
 # Full bring-up: program boot.pdi + pld.pdi (cwd), toggle PERSTN externally
 # (to the EP, MIO 41) and internally (to the RP, MIO 19 workaround), then
-# check the CPM6 Ctrl1 link. Returns the link-up boolean from
-# check_link_status; does NOT raise an error on link-down so the caller can
-# decide how to react.
+# check the CPM6 Ctrl1 link -- up to 3 attempts, exiting as soon as 
+# check_link_status reports link-up (rdlh_link_up only asserts once
+# the LTSSM has reached and stabilized in L0, so this is equivalent to
+# polling for L0 directly). Returns the link-up boolean from the last
+# attempt; does NOT raise an error on link-down so the caller can decide
+# how to react.
 #-----------------------------------------------------------------------------
 proc design::program {} {
   variable TARGET_INDEX
@@ -365,6 +368,12 @@ proc design::program {} {
   drive_mio 41 hi
   after 100
 
-  puts "Check if the link is up..."
-  return [check_link_status]
+  set link_up 0
+  for {set attempt 1} {$attempt <= 3} {incr attempt} {
+    puts "Check if the link is up... (attempt $attempt/3)"
+    set link_up [check_link_status]
+    if {$link_up} { break }
+    if {$attempt < 3} { after 50 }
+  }
+  return $link_up
 }
