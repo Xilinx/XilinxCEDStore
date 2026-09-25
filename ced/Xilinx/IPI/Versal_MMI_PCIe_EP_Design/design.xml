@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<ExampleDesign>
+<Vendor>xilinx.com</Vendor>
+<Library>design</Library>
+<Name>mmi_pcie_ep</Name>
+<DisplayName>Versal MMI PCIe EP Design</DisplayName>
+<Description>
+This is MMI PCIe Endpoint Gen5x4 Example Design.
+</Description>
+<Version>1.0</Version>
+<Design>init.tcl</Design>
+<DesignType>IPI</DesignType>
+<Image>mmi_pcie_ep.png</Image>
+</ExampleDesign>

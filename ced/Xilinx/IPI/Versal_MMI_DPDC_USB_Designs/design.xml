@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<ExampleDesign>
+<Vendor>xilinx.com</Vendor>
+<Library>design</Library>
+<Name>mmi_dpdc_usb</Name>
+<DisplayName>Versal MMI DPDC USB Designs</DisplayName>
+<Description>
+Versal MMI DPDC and USB Example Designs
+
+Summary
+-------
+Primary Purpose       : Demonstrates the Multi-Media Interface (MMI) DisplayPort/Display Controller (DPDC) and USB 3.2 capabilities of the AMD Versal adaptive SoC
+Example Type          : IP Integrator (IPI) Extensible Example Design
+Target Audience       : FPGA developers, Embedded SW engineers
+Devices Supported     : AMD Versal (VEK385 and VMK365 evaluation boards)
+Tools Required        : Vivado 2026.2
+Simulators Validated  : None (no simulation support)
+Boards Validated      : VEK385, VMK365
+Pre-Built Images      : Not available
+Key Features Shown    : DPDC Non-Live / Live (Native and AXI4-Stream) / Mixed / Bypass modes;
+                        AVTPG and DDR video sourcing; MST (2/4 streams); USB 3.2;
+                        Dual Display GPU (HDMI + DP)
+Not Intended For      : Production deployment, performance benchmarking
+Time to First Success : ~1 hour (block design generation + implementation to device image)
+
+Description
+-----------
+This example design offers a PS Wizard subsystem targeted for MMI Display Controller
+and MMI USB designs. The Display Controller is configured with functional and bypass
+operating modes and has options to select the video interface, number of video streams
+(in case of bypass), video stream source (AVTPG or DDR), and different presentation
+modes - Non_Live, Live, Mixed. A Dual Display GPU (HDMI + DP) design is also included.
+USB is configured with USB3.2 enabled.
+
+Refer to the GitHub README for full details. All designs are validated up to
+write_device_image. No simulation support.
+</Description>
+<Version>3.1</Version>
+<Design>init.tcl</Design>
+<DesignType>IPI</DesignType>
+<Image></Image>
+</ExampleDesign>

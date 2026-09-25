@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<ExampleDesign>
+  <Vendor>xilinx.com</Vendor>
+  <Library>design</Library>
+  <Name>cpm6_bmd</Name>
+   <DisplayName>Versal CPM6 BMD Design</DisplayName>
+  <Description>Versal CPM6 BMD Design supporting single and dual controller configurations (Controller0 and Controller1) with link speeds up to PCIe Gen6 and link widths up to X8.</Description>
+   <Version>1.0</Version>
+  <Design>init.tcl</Design>
+  <Image>cpm6_bmd_dual.PNG</Image>
+   <DesignType>IPI</DesignType>
+</ExampleDesign>

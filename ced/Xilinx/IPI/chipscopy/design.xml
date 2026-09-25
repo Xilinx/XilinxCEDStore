@@ -1,0 +1,22 @@
+﻿<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<ExampleDesign>
+
+  <Vendor>xilinx.com</Vendor>
+
+  <Library>design</Library>
+
+  <Name>chipscopy</Name>
+  
+  <DisplayName>ChipScoPy Example Design</DisplayName>
+
+  <Description>This example offers a simple way to create an Versal design with debug cores present.  The design can then be used to explore the ChipScoPy Python APIs</Description>
+  
+  <Version>1.0</Version>
+
+  <Design>init.tcl</Design>
+  <Image>chipscopy_ced_diagram.jpg</Image>
+  
+  <DesignType>IPI</DesignType>
+
+</ExampleDesign>
+

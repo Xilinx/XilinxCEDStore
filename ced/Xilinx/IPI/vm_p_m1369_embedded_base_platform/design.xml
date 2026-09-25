@@ -1,0 +1,28 @@
+﻿<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+
+<ExampleDesign>
+ 
+<Vendor>xilinx.com</Vendor>
+ 
+<Library>design</Library>
+ 
+<Name>vmpm1369_emb_base</Name>
+ 
+<DisplayName>VM-P-M1369 Embedded Common Platform (Part Based)</DisplayName>
+ 
+<Description>The embedded base platform is the foundation for embedded software flows including Vitis Software Acceleration, enablement of Linux and Real time Operating Systems. It is also the starting point for application specific platforms and examples. This example provides the :
+1. CIPS / PS configuration including minimal PS IP
+2. NOC and Memory configuration 
+3. Clocking 
+</Description>
+ 
+<Version>1.0</Version>
+ 
+<Design>init.tcl</Design>
+ 
+<Image>ps_noc2_bd.PNG</Image>
+ 
+<DesignType>IPI</DesignType>
+ 
+</ExampleDesign>
+

@@ -1,0 +1,5 @@
+RTL_DIR?=.
+
+PACKAGES=$(shell find $(RTL_DIR)/ -name "*packages.sv")
+MODULES =$(shell find $(RTL_DIR) -maxdepth 1 -name "*.sv" | grep -Ev "package|_ifs|_if")
+
