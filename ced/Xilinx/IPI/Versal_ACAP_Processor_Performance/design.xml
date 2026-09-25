@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+ 
+<ExampleDesign>
+
+<Vendor>xilinx.com</Vendor>
+
+<Library>design</Library>
+
+<Name>Versal_APU_RPU_perf</Name>
+
+<DisplayName>Versal ACAP Processor Performance</DisplayName>
+
+<Description>
+This example design demonstrates Versal Processor performance on Xilinx VCK190 evaluation kit. Application Processing Unit (APU) and Real-time Processing Unit (RPU) reside within Processing System (PS). 
+
+DDR4/LPDDR4 memory can be selected through GUI. Design connects APU and RPU to LPDDR4/DDR4 memory through Network on Chip (NoC). NoC routing for APU to DDR4/LPDR4 and RPU to DDR4/LPDDR4 paths is optimized.
+
+Design supports JTAG, QSPI boot modes and includes basic peripherals such as GEM, SD, USB, I2C and CAN.
+
+</Description>
+
+<Version>1.0</Version>
+
+<Design>init.tcl</Design>
+
+<Image>System.jpg</Image>
+
+</ExampleDesign>

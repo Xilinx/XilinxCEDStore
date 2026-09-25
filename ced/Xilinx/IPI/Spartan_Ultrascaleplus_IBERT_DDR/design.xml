@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<ExampleDesign>
+<Vendor>xilinx.com</Vendor>
+<Library>design</Library>
+<Name>spartan_ultrascaleplus_ibert_ddr</Name>
+<DisplayName>Spartan Ultrascaleplus IBERT and DDR Example design</DisplayName>
+<Description>
+This is Spartan Ultrascaleplus IBERT and DDR Example design.
+</Description>
+<Version>1.0</Version>
+<Design>init.tcl</Design>
+<DesignType>IPI</DesignType>
+<Image>spartan_ultrascaleplus_ibert_ddr.png</Image>
+</ExampleDesign>

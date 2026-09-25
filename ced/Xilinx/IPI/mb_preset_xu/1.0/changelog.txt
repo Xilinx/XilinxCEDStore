@@ -1,0 +1,4 @@
+######### MicroBlaze Design Presets (Part based) Example design change log ##############
+2026.2
+Initial version (Devcie support for SpartanUS+ and KintexUS+2.)
+

@@ -1,0 +1,51 @@
+﻿<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+
+<ExampleDesign>
+
+<Vendor>xilinx.com</Vendor>
+
+<Library>design</Library>
+
+<Name>design_1</Name>
+
+<DisplayName>Versal CPM5 QDMA Based Acceleration System Design</DisplayName>
+
+<Description>This example design will show-case end user application features to demonstrate system level operation for key features for Versal devices.
+
+This design will cover the following functionalities:
+
+  Segmented Configuration
+  Load PLD image over PCIe to SBI – use QDMA driver.
+  For the QDMA-MM data path - H2C/C2H:
+    - Execution of H2C transfer
+    - Generation of IPI Interrupt
+    - Processing of H2C data
+    - Triggering of an interrupt to the host via the usr_irq interface of CPM5-QDMA from the APU
+    - Completion of C2H transfer
+  The H2C data processing is initiated by an application on the APU (A72).
+  Regarding the QDMA-ST data path - H2C/C2H:
+    - Implementation of H2C transfer
+    - Processing of H2C data
+    - Retrieval of descriptors through the dsc_crdt/dsc_byp interfaces of CPM5-QDMA
+    - Execution of C2H transfer
+  The C2H-ST transfer is supported using:
+    - Internal method
+    - Simple bypass method
+    - Csh bypass method
+  Access to the following memory regions via the PCIe link will be demonstrated
+    - OCM
+    - RTCA
+    - SBI
+    - QSPI
+    - CPM
+    - Inter Processer Interrupt registers
+</Description>
+
+<Version>2.0</Version>
+
+<Design>init.tcl</Design>
+
+<Image>Versal_CPM_QDMA_Accel_Sys_Design_block_diagram.png</Image>
+
+</ExampleDesign>
+

@@ -1,0 +1,33 @@
+{
+    "config": {
+      "items": [
+        {
+          "infra": {
+            "name": "TMR_Microblaze",
+            "display": "TMR Microblaze Example Design",
+            "revision": "1.0",
+            "description": "TMR (Triple Modular Redundancy) MicroBlaze Support for Space DPU Applications.",
+            "company": "xilinx.com",
+            "company_display": "Xilinx",
+            "author": "vanitha",
+            "contributors": [
+              {
+                "group": "Xilinx",
+                "url": "www.xilinx.com"
+              }
+            ],
+            "category": "Soft Processors",
+            "website": "www.xilinx.com",
+            "is_active" : true, 
+            "search-keywords": [
+              "TMR Microblaze Example Design",
+              "xilinx.com",
+              "example"             
+            ]
+          }
+        }
+      ]
+    },
+    "_major" : 1,
+    "_minor" : 0
+}

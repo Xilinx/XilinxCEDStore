@@ -1,0 +1,26 @@
+﻿<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+
+<ExampleDesign>
+
+<Vendor>xilinx.com</Vendor>
+
+<Library>design</Library>
+
+<Name>Versal_CPM_PCIe_Debug</Name>
+
+<DisplayName>Versal CPM Debug-over-PCIe</DisplayName>
+
+<Description>This example design is provided as a reference to display the capability of debugging a design without a JTAG connection by performing debug over the PCIe link using CPM.  The capability to debug over PCIe is referred to as "HSDP-over-PCIe"; see the Appendix of PG346 for more information. CPM is configured to support a Gen4x8 PCIe link, operates in QDMA mode with PCIe BAR0 allocated to the DMA and BAR2 and BAR4 allocated to target the Master Bridge, and has the Slave Bridge enabled.
+  
+The provided design can be used for either management mode or user mode debug. Management mode debug can be used to access the hardened or user debug cores and employs the DPC DMA to request DTPs and issue debug data to the host PC. User mode debug allows for the host to perform memory-mapped reads and writes targeted to a Master Bridge PCIe BAR to access the user debug cores directly.
+
+The associated Linux driver required to employ this feature: https://github.com/Xilinx/hsdp-pcie-driver</Description>
+
+<Version>1.0</Version>
+
+<Design>init.tcl</Design>
+
+<Image>pcie_debug.PNG</Image>
+
+</ExampleDesign>
+

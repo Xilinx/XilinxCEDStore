@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+
+<ExampleDesign>
+
+<Vendor>xilinx.com</Vendor>
+
+<Library>design</Library>
+
+<Name>two_port_switch</Name>
+
+<DisplayName>Versal CPM5 Two Port Switch Design</DisplayName>
+
+<Description>This CED demonstrates the capabilities of the PCI Express Switch Downstream Port and Upstream Port modes in the Versal Premium series of Adaptive SOC. It illustrates how to construct a Two-Port PCI Express Switch.
+
+Two Reference Designs are presented, with different permutations of the Versal PCI Express blocks acting as the Upstream Port and the Downstream Port.
+</Description>
+
+<Version>1.0</Version>
+
+<Design>init.tcl</Design>
+
+<Image>two_port_switch.png</Image>
+
+<DesignType>IPI</DesignType>
+
+</ExampleDesign>
