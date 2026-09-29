@@ -90,6 +90,25 @@ proc createDesign {design_name options} {
    generate_target all [get_files $design_name.bd]      
    open_bd_design [get_bd_files $design_name]   
    regenerate_bd_layout     
+
+    set_property USER_COMMENTS.comment_0 {} [current_bd_design]
+    set_property USER_COMMENTS.comment0 {Next Steps:
+    1. Refer to https://github.com/Xilinx/XilinxCEDStore/tree/2026.2/ced/Xilinx/IPI/Versal_CPM_QDMA_Accel_Sys_Design/README.txt} [current_bd_design]
+
+    regenerate_bd_layout -layout_string {
+   "ActiveEmotionalView":"Default View",
+   "comment_0":"Next Steps:
+    1. Refer to https://github.com/Xilinx/XilinxCEDStore/tree/2026.2/ced/Xilinx/IPI/Versal_CPM_QDMA_Accel_Sys_Design/README.txt",
+   "commentid":"comment_0|",
+   "font_comment_0":"18",
+   "guistr":"# # String gsaved with Nlview 7.0r4  2019-12-20 bk=1.5203 VDI=41 GEI=36 GUI=JA:10.0 TLS
+    #  -string -flagsOSRD
+    preplace cgraphic comment_0 place right -1200 -130 textcolor 4 linecolor 3
+    ",
+   "linktoobj_comment_0":"",
+   "linktotype_comment_0":"bd_design" }
+
+save_bd_design
    puts "INFO: File generation for the IPs in the block design is completed"
    puts "INFO: EP bd generated"
    puts "INFO: design generation completed successfully"
@@ -107,6 +126,25 @@ proc createDesign {design_name options} {
    generate_target all [get_files $design_name.bd]      
    open_bd_design [get_bd_files $design_name]   
    regenerate_bd_layout     
+
+    set_property USER_COMMENTS.comment_0 {} [current_bd_design]
+    set_property USER_COMMENTS.comment0 {Next Steps:
+    1. Refer to https://github.com/Xilinx/XilinxCEDStore/tree/2026.2/ced/Xilinx/IPI/Versal_CPM_QDMA_Accel_Sys_Design/README.txt} [current_bd_design]
+
+    regenerate_bd_layout -layout_string {
+   "ActiveEmotionalView":"Default View",
+   "comment_0":"Next Steps:
+    1. Refer to https://github.com/Xilinx/XilinxCEDStore/tree/2026.2/ced/Xilinx/IPI/Versal_CPM_QDMA_Accel_Sys_Design/README.txt",
+   "commentid":"comment_0|",
+   "font_comment_0":"18",
+   "guistr":"# # String gsaved with Nlview 7.0r4  2019-12-20 bk=1.5203 VDI=41 GEI=36 GUI=JA:10.0 TLS
+    #  -string -flagsOSRD
+    preplace cgraphic comment_0 place right -1200 -130 textcolor 4 linecolor 3
+    ",
+   "linktoobj_comment_0":"",
+   "linktotype_comment_0":"bd_design" }
+
+save_bd_design
    puts "INFO: File generation for the IPs in the block design is completed"
    puts "INFO: EP bd generated"
    puts "INFO: design generation completed successfully"

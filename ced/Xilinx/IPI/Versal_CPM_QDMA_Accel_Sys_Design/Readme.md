@@ -90,8 +90,8 @@ The following flowchart illustrates the data path flow for Stream (ST) mode of t
 
 
 ## Tool Requirements
- - Vivado 2025.1  
- - Vitis 2025.1
+ - Vivado 2026.2  
+ - Vitis 2026.2
 
 ## Design Steps
 
@@ -217,11 +217,11 @@ This script programs host profile registers of QDMA to perform MM transfers to N
 
 The test setup for the CED will include the following components. 
 1. VPK120 board inserted to the PCIe slot of a Gen5/Gen4 server.
-2. Connect the JTAG cable to a machine with Vivado 2025.1 installed.
+2. Connect the JTAG cable to a machine with Vivado 2026.2 installed.
 3. Install TeraTerm (or) similar software to view the PLM log and prints from Baremetal application.
 
 Test steps for this CED require the following components.
-1. Vivado 2025.1 - to program the boot image.
+1. Vivado 2026.2 - to program the boot image.
 2. XSDB - to program SBI_CTRL register.
 3. QDMA driver - to perform DMA transactions.
 4. TeraTerm - to review the PLM log and prints from the Baremetal application. 

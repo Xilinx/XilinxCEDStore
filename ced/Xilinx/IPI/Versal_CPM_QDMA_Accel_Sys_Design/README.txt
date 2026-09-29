@@ -60,8 +60,8 @@ bootgen -arch versal -image ./qdma_accel_sys.bif -o ./boot_with_elf.pdi -w
 
 Tool Requirements:
 
-Vivado 2025.1
-Vitis 2025.1
+Vivado 2026.2
+Vitis 2026.2
 
 Design Steps:
 
@@ -134,11 +134,11 @@ Hardware Test Flow:
 
 The test setup for the CED will include the following components.
  - VPK120 board inserted to the PCIe slot of a Gen5/Gen4 server.
- - Connect the JTAG cable to a machine with Vivado 2025.1 installed.
+ - Connect the JTAG cable to a machine with Vivado 2026.2 installed.
  - Install TeraTerm (or) similar software to view the PLM log and prints from Baremetal application.
 
 Test steps for this CED require the following components.
- - Vivado 2025.1 - to program the boot image.
+ - Vivado 2026.2 - to program the boot image.
  - XSDB - to program SBI_CTRL register.
  - QDMA driver - to perform DMA transactions.
  - TeraTerm - to review the PLM log and prints from the Baremetal application.
