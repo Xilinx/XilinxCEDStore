@@ -38,7 +38,7 @@
 //  - AXI narrow transfers not supported
 //  - AXI unaligned transfers not supported
 //  - AXI max beats per burst is 1
-//  - AXI burst types FIXED and WRAP not supported, only INCR
+//  - AXI burst type WRAP not supported, only INCR/FIXED (identical for 1 beat)
 //  - AXI_IDS_SUPP must be less than or equal to 16; it is assumed AXI_ID ranges 
 //    from {0:AXI_IDS_SUPP-1}
 //

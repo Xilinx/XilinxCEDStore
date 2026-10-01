@@ -18,9 +18,10 @@ DESIGN OVERVIEW
     instantiated (default 4). Each datapath is a hierarchy
     (cxl_datapath_<N>) containing:
       - pl_axi_cpi_bridge_<N>  - bridges CPI f2a_req/f2a_dat and a2f_dat/
-                                  a2f_rsp to a standard AXI interface
+                                 a2f_rsp to a standard AXI interface
       - custom_axi_tg_<N>      - an AXI traffic generator driving that
-                                  bridge, with its own AXI-Lite CSR window
+                                 bridge, with its own AXI-Lite slave port 
+                                 for CSR and instruction RAM access
   * A shared perf_measurement hierarchy taps all 4 CPI signal groups
     (f2a_req, f2a_data, a2f_data, a2f_rsp) on every active datapath and
     snapshots a {counter,tag} pair into a per-(datapath,interface) URAM on
@@ -38,9 +39,9 @@ ADDRESS MAP
 ------------
 CPM6 Ctrl1 outbound regions expose two fixed PCIe/CXL configuration-space
 windows (Local/APU-accessible, independent of other windows used for JTAG 
-JTAG bring-up):
+bring-up):
   RP (PCIe/CXL config space, local access) ......... 0xE000_0000
-  EP (PCIe/CXL config space, remote access) ......... 0xE010_0000
+  EP (PCIe/CXL config space, remote access) ........ 0xE010_0000
 
 CXL Host-managed Device Memory (HDM) on the attached EP is programmed at a
 fixed base of 8 TB (0x800_0000_0000) - safely above the 1 TB an EP typically
@@ -66,7 +67,7 @@ Once the block diagram above has been generated into a project, xsdb_scripts/
   design::  - board bring-up (PDI programming, PERSTN toggling, link-status
               check) and the one-time .hwh address-map/clock discovery every
               other package relies on.
-  control::  - the raw 32-bit register read/write primitives, plus control of
+  control:: - the raw 32-bit register read/write primitives, plus control of
               the RST_PL bits described above.
   hwtg::    - loads and runs traffic-generator command mnemonics (WRITE/READ/
               WAIT) on each CPI's custom_axi_tg, decodes errors.
@@ -82,24 +83,25 @@ QUICK START (from an xsdb prompt connected to the JTAG port after generating the
   xsdb% design::connect
   xsdb% design::program  ;# programs boot.pdi/pld.pdi, brings up link
   xsdb% ecam::connect
-  xsdb% ecam::setup_ep_bars
-  xsdb% ecam::setup_hdm decoder
+  xsdb% ecam::setup_ep_bars ;# required to access CXL.$mem Component Registers
+  xsdb% ecam::setup_hdm decoder ;# set up HDM range(s) via HDM Decoder Cap. structure
   xsdb% hwtg::connect
-  xsdb% hwtg::load_append 0 "WRITE addr=0x8000000000 repeat=7 addr_k=12 addr_stride=64"
-  xsdb% hwtg::load_append 0 "READ  addr=0x8000000000 repeat=7 addr_k=12 addr_stride=64"
+  xsdb% hwtg::load_append 0 "WRITE addr=0x8000000000 repeat=7 addr_k=12 addr_stride=64" ;# 8 CL writes
+  xsdb% hwtg::load_append 0 "READ  addr=0x8000000000 repeat=7 addr_k=12 addr_stride=64" ;# 8 CL reads
   xsdb% hwtg::start 0
   xsdb% hwtg::wait_done 0
   xsdb% perf::connect
-  xsdb% perf::report    ;# real latency/bandwidth numbers from hardware
+  xsdb% perf::report    ;# real latency/bandwidth numbers from hardware CPI interfaces
 
 Every package documents itself: run "<pkg>::help" for a command list, or
 "<pkg>::help <command>" for detailed usage. Full command reference:
-xsdb_scripts/README.md.
+xsdb_scripts/README.md. There are several TCL scripts inside xsdb_scripts/hwtg_ref 
+that can be sourced for common data pattern loading.
 
 REQUIREMENTS
 ------------
   * Vivado (matching this CED's supported release) with CPM6 + CXL RP TL IP
     license.
-  * A Versal Premium Gen2 board with CPM6, JTAG-accessible via hw_server/xsdb.
+  * A Versal Premium Gen2 board (VPK360) with CPM6, JTAG-accessible via hw_server/xsdb.
   * A downstream CXL Type 3 device attached to the link for full hardware
     exercise (traffic generation, performance measurement, HDM setup).

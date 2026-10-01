@@ -23,11 +23,11 @@
 //    BOUNDARIES, for any program whose commands all have repeat_count >= 1 -
 //    64 B/cycle = 21.3 GB/s at 333 MHz.
 //  - A returning BID/RID names only an AXI ID, not a command, so each
-//    dispatcher owns an 8-deep outstanding-command ring of per-ID counters that
-//    attributes each response to the oldest resident command with a nonzero
-//    count for that ID.  The ring materialises that attribution as a
-//    REGISTERED per-ID owner one-hot, which is what closes 333 MHz at every
-//    AXI_ID_WIDTH; see the header of custom_axi_tg_ring.sv.
+//    dispatcher uses independent per-ID command FIFOs. A response belongs to
+//    its ID's FIFO head; local ISSUING_DONE bits prevent temporary zero counts
+//    from advancing that head. A shared eight-command completion ring retains
+//    in-order retirement and the command concurrency limit. See
+//    custom_axi_tg_ring.sv for the queue and accounting contracts.
 //  - DRAIN ON STOP.  Writing TG_CTRL.START = 0 moves the state to STOPPING, not
 //    IDLE: no further command is loaded, but the transaction currently being
 //    offered is ridden out and every outstanding response is still counted and
@@ -107,8 +107,8 @@ module custom_axi_tg
   // absolute maximum is 512 because that is the depth of a Versal 36Kb BRAM
   // configured 512x72, which is the shape this iRAM uses.  It is set to 32 for
   // now to keep the status flop array and the per-command AXI-Lite status
-  // window small.  Raising it to 512 requires no other change.
-  localparam int MAX_COMMANDS   = 32,           // absolute maximum 512
+  // window small. The wrapper exposes the same configurable limit.
+  parameter int MAX_COMMANDS   = 32,           // supported range 2..512
   localparam int TG_IRAM_WIDTH  = IRAM_WIDTH,   // 192 - 6 x 32b AXI-Lite slices
   localparam int TG_IRAM_DEPTH  = IRAM_DEPTH,   // 512
   localparam int RING_DEPTH     = 8,            // see custom_axi_tg_ring.sv
@@ -326,6 +326,7 @@ module custom_axi_tg
   logic                  wr_ring_alloc, rd_ring_alloc;
   logic [8:0]            wr_ring_alloc_idx, rd_ring_alloc_idx;
   logic                  wr_ring_inc, rd_ring_inc;
+  logic                  wr_ring_issuing_done, rd_ring_issuing_done;
   logic [NUM_IDS-1:0]    wr_ring_inc_oh, rd_ring_inc_oh;
   logic                  wr_ring_dec, rd_ring_dec;
   logic [NUM_IDS-1:0]    wr_ring_dec_oh, rd_ring_dec_oh;
@@ -336,8 +337,6 @@ module custom_axi_tg
   logic [8:0]            wr_ring_dec_cmd_idx, rd_ring_dec_cmd_idx;
   logic [11:0]           wr_ring_dec_rsp_ord, rd_ring_dec_rsp_ord;
   logic [3:0]            wr_ring_dec_axiid, rd_ring_dec_axiid;
-  logic [8:0]            wr_q_idx, rd_q_idx;
-  logic                  wr_q_fully_requested, rd_q_fully_requested;
   logic                  wr_ring_retire, rd_ring_retire;
   logic [8:0]            wr_ring_retire_idx, rd_ring_retire_idx;
   logic [RING_DEPTH-1:0] wr_ring_vld_vec, rd_ring_vld_vec;
@@ -521,10 +520,10 @@ module custom_axi_tg
     .prog_valid_clr_all   (prog_valid_clr_all),
     .rd_idx               (stat_rd_idx),
     .rd_data              (stat_rd_data),
-    .wr_q_idx             (wr_q_idx),
-    .wr_q_fully_requested (wr_q_fully_requested),
-    .rd_q_idx             (rd_q_idx),
-    .rd_q_fully_requested (rd_q_fully_requested),
+    .wr_q_idx             (9'b0),
+    .wr_q_fully_requested (),
+    .rd_q_idx             (9'b0),
+    .rd_q_fully_requested (),
     .q_idx                (q_idx),
     .q_programmed_valid   (q_programmed_valid),
     .prog_valid_vec       (prog_valid_vec),
@@ -600,6 +599,7 @@ module custom_axi_tg
     .ring_alloc          (wr_ring_alloc),
     .ring_alloc_idx      (wr_ring_alloc_idx),
     .ring_inc            (wr_ring_inc),
+    .ring_issuing_done   (wr_ring_issuing_done),
     .ring_inc_oh         (wr_ring_inc_oh),
     .ring_dec            (wr_ring_dec),
     .ring_dec_oh         (wr_ring_dec_oh),
@@ -655,6 +655,7 @@ module custom_axi_tg
     .full           (wr_ring_full),
     .empty          (wr_ring_empty),
     .inc            (wr_ring_inc),
+    .issuing_done   (wr_ring_issuing_done),
     .inc_oh         (wr_ring_inc_oh),
     .dec            (wr_ring_dec),
     .dec_oh         (wr_ring_dec_oh),
@@ -663,8 +664,6 @@ module custom_axi_tg
     .dec_cmd_idx    (wr_ring_dec_cmd_idx),
     .dec_rsp_ord    (wr_ring_dec_rsp_ord),
     .dec_axiid      (wr_ring_dec_axiid),
-    .freq_query_idx (wr_q_idx),
-    .head_cmd_freq  (wr_q_fully_requested),
     .req_quiesced   (stop_req && wr_stop_done),
     .retire         (wr_ring_retire),
     .retire_cmd_idx (wr_ring_retire_idx),
@@ -704,6 +703,7 @@ module custom_axi_tg
     .ring_alloc          (rd_ring_alloc),
     .ring_alloc_idx      (rd_ring_alloc_idx),
     .ring_inc            (rd_ring_inc),
+    .ring_issuing_done   (rd_ring_issuing_done),
     .ring_inc_oh         (rd_ring_inc_oh),
     .ring_dec            (rd_ring_dec),
     .ring_dec_oh         (rd_ring_dec_oh),
@@ -750,6 +750,7 @@ module custom_axi_tg
     .full           (rd_ring_full),
     .empty          (rd_ring_empty),
     .inc            (rd_ring_inc),
+    .issuing_done   (rd_ring_issuing_done),
     .inc_oh         (rd_ring_inc_oh),
     .dec            (rd_ring_dec),
     .dec_oh         (rd_ring_dec_oh),
@@ -758,8 +759,6 @@ module custom_axi_tg
     .dec_cmd_idx    (rd_ring_dec_cmd_idx),
     .dec_rsp_ord    (rd_ring_dec_rsp_ord),
     .dec_axiid      (rd_ring_dec_axiid),
-    .freq_query_idx (rd_q_idx),
-    .head_cmd_freq  (rd_q_fully_requested),
     .req_quiesced   (stop_req && rd_stop_done),
     .retire         (rd_ring_retire),
     .retire_cmd_idx (rd_ring_retire_idx),
@@ -781,9 +780,9 @@ module custom_axi_tg
     if (AXI_ID_WIDTH > 4)
       $fatal(1, $sformatf("AXI_ID_WIDTH=%0d is invalid; maximum is 4",
                           AXI_ID_WIDTH));
-    if (MAX_COMMANDS > 512)
+    if (MAX_COMMANDS < 2 || MAX_COMMANDS > 512)
       $fatal(1, $sformatf({"MAX_COMMANDS=%0d is invalid; maximum is 512 ",
-                           "(BRAM depth)"}, MAX_COMMANDS));
+                           "(BRAM depth), minimum is 2"}, MAX_COMMANDS));
     if (|(RING_DEPTH & (RING_DEPTH-1)))
       $fatal(1, $sformatf("RING_DEPTH=%0d is invalid; must be a power of 2",
                           RING_DEPTH));
