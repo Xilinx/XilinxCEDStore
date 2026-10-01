@@ -936,11 +936,11 @@
         "name": "cpm6_dma",
         "display": "Versal CPM6 DMA Design",
         "latest_revision": "1.0",
-        "commit_id": "4b3b9a7226623d5325b700252556731fb33aa7ba",
+        "commit_id": "69d6d687c0724681b84e1ef53457343057abcb30",
         "revisions": [
           {
             "revision": "1.0",
-            "commit_id": "4b3b9a7226623d5325b700252556731fb33aa7ba",
+            "commit_id": "69d6d687c0724681b84e1ef53457343057abcb30",
             "date": "25-08-2026:05:47:27",
             "history": "Added board Versal CPM6 DMA Design v1.0"
           }
@@ -1012,11 +1012,11 @@
         "name": "cpm6_soc_platform",
         "display": "Versal CPM6 SoC Platform Design",
         "latest_revision": "1.0",
-        "commit_id": "4b3b9a7226623d5325b700252556731fb33aa7ba",
+        "commit_id": "69d6d687c0724681b84e1ef53457343057abcb30",
         "revisions": [
           {
             "revision": "1.0",
-            "commit_id": "4b3b9a7226623d5325b700252556731fb33aa7ba",
+            "commit_id": "69d6d687c0724681b84e1ef53457343057abcb30",
             "date": "01-10-2026:17:35:33",
             "history": "Added board Versal CPM6 SoC Platform Design v1.0"
           }
