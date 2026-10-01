@@ -936,11 +936,11 @@
         "name": "cpm6_dma",
         "display": "Versal CPM6 DMA Design",
         "latest_revision": "1.0",
-        "commit_id": "128f920dc769233e751c352adc4f9d369c8b234a",
+        "commit_id": "4b3b9a7226623d5325b700252556731fb33aa7ba",
         "revisions": [
           {
             "revision": "1.0",
-            "commit_id": "128f920dc769233e751c352adc4f9d369c8b234a",
+            "commit_id": "4b3b9a7226623d5325b700252556731fb33aa7ba",
             "date": "25-08-2026:05:47:27",
             "history": "Added board Versal CPM6 DMA Design v1.0"
           }
@@ -1004,6 +1004,25 @@
         ],
         "config": {
           "root": "ced/Xilinx/IPI/Versal_CPM6_CXL_EP_Bridge_Design",
+          "metadata_file": "xitem.json"
+        },
+        "company": "xilinx.com"
+      },
+      {
+        "name": "cpm6_soc_platform",
+        "display": "Versal CPM6 SoC Platform Design",
+        "latest_revision": "1.0",
+        "commit_id": "4b3b9a7226623d5325b700252556731fb33aa7ba",
+        "revisions": [
+          {
+            "revision": "1.0",
+            "commit_id": "4b3b9a7226623d5325b700252556731fb33aa7ba",
+            "date": "01-10-2026:17:35:33",
+            "history": "Added board Versal CPM6 SoC Platform Design v1.0"
+          }
+        ],
+        "config": {
+          "root": "ced/Xilinx/IPI/Versal_CPM6_SoC_Platform_Design",
           "metadata_file": "xitem.json"
         },
         "company": "xilinx.com"
