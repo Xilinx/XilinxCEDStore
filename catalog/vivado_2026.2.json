@@ -727,11 +727,11 @@
         "name": "edf_base",
         "display": "Versal Embedded Common Platform - No PL",
         "latest_revision": "3.0",
-        "commit_id": "b8f01fe9e2b4de407b6aa572f6ecc2f3b4adbd92",
+        "commit_id": "dfa7147112e167956724d1e7d7f79747c59d1e94",
         "revisions": [
           {
             "revision": "3.0",
-            "commit_id": "b8f01fe9e2b4de407b6aa572f6ecc2f3b4adbd92",
+            "commit_id": "dfa7147112e167956724d1e7d7f79747c59d1e94",
             "date": "25-09-2026:04:51:43",
             "history": "Added board Versal Embedded Common Platform - No PL v3.0"
           }
