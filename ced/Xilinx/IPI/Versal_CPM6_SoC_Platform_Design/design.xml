@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+
+<ExampleDesign>
+
+<Vendor>xilinx.com</Vendor>
+
+<Library>design</Library>
+
+<Name>versal_cpm6_soc_platform</Name>
+
+<DisplayName>Versal CPM6 SoC Platform Design</DisplayName>
+
+<Description>Reference SoC platform for embedded RPU bare-metal firmware managing CPM6-based PCIe designs.
+Provides a reusable baseline (NoC, DDRMC, RPUs, TCM, debug UART, Tandem-appropriate boot flash) with
+CPM6 configurable per-controller as Endpoint or Root Port, so downstream teams do not need to rebuild
+this foundation for every CPM6-based design.
+
+Current version implements CTRL0 and CTRL1, each independently selectable as Disabled, PCIe Root
+Port, or Endpoint (Gen6 x8, Bridge mode), with DDR optional for any combination, including both
+controllers active simultaneously and independent of each other (no cross-wiring between them) in
+any Root Port / Endpoint combination. Link speed and link width are also independently selectable
+per controller.
+</Description>
+
+<Version>1.0</Version>
+
+<Design>init.tcl</Design>
+
+<Image>versal_cpm6_soc_platform.PNG</Image>
+
+<DesignType>IPI</DesignType>
+
+</ExampleDesign>
