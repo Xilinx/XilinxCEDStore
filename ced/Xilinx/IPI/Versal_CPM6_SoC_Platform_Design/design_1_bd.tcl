@@ -627,7 +627,7 @@ proc create_root_design { parentCell ctrl0_config ctrl1_config ddr_enabled ctrl0
   # Create instance: ps_wizard_0, and set properties
   set ps_wizard_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:ps_wizard:1.0 ps_wizard_0 ]
   set ps_wizard_props [list \
-    CONFIG.CPM6_CONFIG(CPM6_BOARD) {VPK_360} \
+    CONFIG.CPM6_CONFIG(CPM6_BOARD) {VPK360} \
     CONFIG.CPM6_CONFIG(CPM6_PERIPHERAL_EN) {1} \
     CONFIG.CPM6_CONFIG(PMC_REFCLK_FREQ) {33.333} \
     CONFIG.CPM6_CONFIG(PS_HSDP_PROTOCOL) {JTAG} \
