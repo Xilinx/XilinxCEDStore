@@ -30,7 +30,7 @@ open_bd_design [get_bd_files $design_name]
 
 set board_name [get_property BOARD_NAME [current_board]]
 
-if {[regexp "vek385" $board_name]||[regexp "vek386" $board_name]||[regexp "vpk360" $board_name]||[regexp "rave2" $board_name]||[regexp "vmk365" $board_name]} {
+if {[regexp "vek385" $board_name]||[regexp "vek386" $board_name]||[regexp "vpk360" $board_name]||[regexp "vmk365" $board_name]} {
 source "$currentDir/vek38_pl.tcl" 
 } elseif {[regexp "vrk160" $board_name]||[regexp "vrk165" $board_name]} {
 source "$currentDir/vrk16_pl.tcl"
