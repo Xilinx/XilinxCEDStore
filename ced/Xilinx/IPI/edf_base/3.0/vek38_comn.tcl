@@ -52,37 +52,6 @@ set_property -dict [list \
   CONFIG.PS11_CONFIG(PS_USE_PMCPL_CLK2) {1} \
 ] [get_bd_cells ps_wizard_0]  
 
-if {[regexp "rave" $board_name]} {
-  set_property -dict [list \
-  CONFIG.PS11_CONFIG(PS_GEN_IPI1_NOBUF_ENABLE) {1} \
-  CONFIG.PS11_CONFIG(PS_GEN_IPI2_ENABLE) {1} \
-  CONFIG.PS11_CONFIG(PS_GEN_IPI2_MASTER) {R52_1} \
-  CONFIG.PS11_CONFIG(PS_GEN_IPI2_NOBUF_ENABLE) {1} \
-  CONFIG.PS11_CONFIG(PS_GEN_IPI2_NOBUF_MASTER) {R52_0} \
-  CONFIG.PS11_CONFIG(PS_GEN_IPI3_ENABLE) {1} \
-  CONFIG.PS11_CONFIG(PS_GEN_IPI3_NOBUF_ENABLE) {1} \
-  CONFIG.PS11_CONFIG(PS_GEN_IPI3_NOBUF_MASTER) {R52_6} \
-  CONFIG.PS11_CONFIG(PS_GEN_IPI4_ENABLE) {1} \
-  CONFIG.PS11_CONFIG(PS_GEN_IPI4_NOBUF_ENABLE) {1} \
-  CONFIG.PS11_CONFIG(PS_GEN_IPI4_NOBUF_MASTER) {R52_7} \
-  CONFIG.PS11_CONFIG(PS_GEN_IPI5_ENABLE) {1} \
-  CONFIG.PS11_CONFIG(PS_GEN_IPI5_NOBUF_ENABLE) {1} \
-  CONFIG.PS11_CONFIG(PS_GEN_IPI5_NOBUF_MASTER) {R52_8} \
-  CONFIG.PS11_CONFIG(PS_GEN_IPI6_ENABLE) {1} \
-  CONFIG.PS11_CONFIG(PS_GEN_IPI6_NOBUF_ENABLE) {1} \
-  CONFIG.PS11_CONFIG(PS_GEN_IPI6_NOBUF_MASTER) {R52_9} \
-  CONFIG.PS11_CONFIG(SMON_MEAS12) {ENABLE 1 MODE 2V_unipolar NAME VCCAUX AVERAGE_EN 0 ALARM_ENABLE 0 ALARM_LOWER 0.00 ALARM_UPPER 2.00 SUPPLY_NUM 32} \
-  CONFIG.PS11_CONFIG(SMON_MEAS13) {ENABLE 1 MODE 2V_unipolar NAME VCCAUX_LPD AVERAGE_EN 0 ALARM_ENABLE 0 ALARM_LOWER 0.00 ALARM_UPPER 2.00 SUPPLY_NUM 33} \
-  CONFIG.PS11_CONFIG(SMON_MEAS15) {ENABLE 1 MODE 2V_unipolar NAME VCCINT AVERAGE_EN 0 ALARM_ENABLE 0 ALARM_LOWER 0.00 ALARM_UPPER 2.00 SUPPLY_NUM 34} \
-  CONFIG.PS11_CONFIG(SMON_MEAS16) {ENABLE 1 MODE 2V_unipolar NAME VCCINT_MMI_MMI AVERAGE_EN 0 ALARM_ENABLE 0 ALARM_LOWER 0.00 ALARM_UPPER 2.00 SUPPLY_NUM 35} \
-  CONFIG.PS11_CONFIG(SMON_MEAS32) {ENABLE 1 MODE 2V_unipolar NAME VCC_PMC AVERAGE_EN 0 ALARM_ENABLE 0 ALARM_LOWER 0.00 ALARM_UPPER 2.00 SUPPLY_NUM 36} \
-  CONFIG.PS11_CONFIG(SMON_MEAS33) {ENABLE 1 MODE 2V_unipolar NAME VCC_PSFP AVERAGE_EN 0 ALARM_ENABLE 0 ALARM_LOWER 0.00 ALARM_UPPER 2.00 SUPPLY_NUM 37} \
-  CONFIG.PS11_CONFIG(SMON_MEAS34) {ENABLE 1 MODE 2V_unipolar NAME VCC_PSLP AVERAGE_EN 0 ALARM_ENABLE 0 ALARM_LOWER 0.00 ALARM_UPPER 2.00 SUPPLY_NUM 38} \
-  CONFIG.PS11_CONFIG(SMON_MEAS35) {ENABLE 1 MODE 2V_unipolar NAME VCC_RAM AVERAGE_EN 0 ALARM_ENABLE 0 ALARM_LOWER 0.00 ALARM_UPPER 2.00 SUPPLY_NUM 39} \
-  CONFIG.PS11_CONFIG(SMON_MEAS36) {ENABLE 1 MODE 2V_unipolar NAME VCC_SOC AVERAGE_EN 0 ALARM_ENABLE 0 ALARM_LOWER 0.00 ALARM_UPPER 2.00 SUPPLY_NUM 40} \
-  CONFIG.PS11_CONFIG(SMON_MEAS37) {ENABLE 1 MODE 1V_unipolar NAME VP_VN AVERAGE_EN 0 ALARM_ENABLE 0 ALARM_LOWER 0.00 ALARM_UPPER 1.00 SUPPLY_NUM 41} \
-] [get_bd_cells ps_wizard_0] }
-
 if {[regexp "vmk365" $board_name]} {
 set_property -dict [list \
   CONFIG.PS11_CONFIG(PS_GEN_IPI1_NOBUF_ENABLE) {1} \
@@ -161,15 +130,6 @@ set lpd 8
 set pmc 9
 set mmi [set s_mmi 10]
 
-} elseif {[regexp "rave2" $board_name]} {
-
-set_property -dict [list CONFIG.NUM_CLKS {11} CONFIG.NUM_MI {0} CONFIG.NUM_NMI {9} CONFIG.NUM_SI {11} CONFIG.SI_SIDEBAND_PINS {} ] [get_bd_cells Master_NoC]
-set M 8
-set CCI 7
-set lpd 8
-set pmc 9
-set mmi [set s_mmi 10]
-
 } elseif {[regexp "vmk365" $board_name]} {
 
 set_property -dict [list CONFIG.NUM_CLKS {7} CONFIG.NUM_MI {0} CONFIG.NUM_NMI {7} CONFIG.NUM_SI {7} CONFIG.SI_SIDEBAND_PINS {} ] [get_bd_cells Master_NoC]
@@ -215,21 +175,7 @@ set_property -dict [list CONFIG.CONNECTIONS {M06_INI {read_bw {500} write_bw {50
 set_property -dict [list CONFIG.CONNECTIONS {M06_INI {read_bw {500} write_bw {500} initial_boot {true} } M04_INI {read_bw {500} write_bw {500} initial_boot {true} } M05_INI {read_bw {500} write_bw {500} initial_boot {true} } M00_INI {read_bw {500} write_bw {500} initial_boot {true} }}] [get_bd_intf_pins /Master_NoC/S05_AXI]
 set_property -dict [list CONFIG.CONNECTIONS {M06_INI {read_bw {500} write_bw {500} initial_boot {true} } M04_INI {read_bw {500} write_bw {500} initial_boot {true} } M05_INI {read_bw {500} write_bw {500} initial_boot {true} } M00_INI {read_bw {500} write_bw {500} initial_boot {true} }}] [get_bd_intf_pins /Master_NoC/S06_AXI]
 
-} elseif {[regexp "rave2" $board_name]} {
-
-set_property -dict [list CONFIG.CONNECTIONS {M07_INI {read_bw {500} write_bw {100} initial_boot {true} } M08_INI {read_bw {500} write_bw {100} initial_boot {true} } M06_INI {read_bw {500} write_bw {500} initial_boot {true} } M04_INI {read_bw {500} write_bw {500} initial_boot {true} } M05_INI {read_bw {500} write_bw {500} initial_boot {true} } M00_INI {read_bw {500} write_bw {500} initial_boot {true} } }] [get_bd_intf_pins /Master_NoC/S00_AXI]
-set_property -dict [list CONFIG.CONNECTIONS {M07_INI {read_bw {500} write_bw {100} initial_boot {true} } M08_INI {read_bw {500} write_bw {100} initial_boot {true} } M01_INI {read_bw {500} write_bw {500} initial_boot {true} } M06_INI {read_bw {500} write_bw {500} initial_boot {true} } M04_INI {read_bw {500} write_bw {500} initial_boot {true} } M05_INI {read_bw {500} write_bw {500} initial_boot {true} } }] [get_bd_intf_pins /Master_NoC/S01_AXI]
-set_property -dict [list CONFIG.CONNECTIONS {M02_INI {read_bw {500} write_bw {500} initial_boot {true} } M07_INI {read_bw {500} write_bw {100} initial_boot {true} } M08_INI {read_bw {500} write_bw {100} initial_boot {true} } M06_INI {read_bw {500} write_bw {500} initial_boot {true} } M04_INI {read_bw {500} write_bw {500} initial_boot {true} } M05_INI {read_bw {500} write_bw {500} initial_boot {true} } }] [get_bd_intf_pins /Master_NoC/S02_AXI]
-set_property -dict [list CONFIG.CONNECTIONS {M07_INI {read_bw {500} write_bw {100} initial_boot {true} } M08_INI {read_bw {500} write_bw {100} initial_boot {true} } M06_INI {read_bw {500} write_bw {500} initial_boot {true} } M03_INI {read_bw {500} write_bw {500} initial_boot {true} } M04_INI {read_bw {500} write_bw {500} initial_boot {true} } M05_INI {read_bw {500} write_bw {500} initial_boot {true} } }] [get_bd_intf_pins /Master_NoC/S03_AXI]
-set_property -dict [list CONFIG.CONNECTIONS {M07_INI {read_bw {500} write_bw {100} initial_boot {true} } M08_INI {read_bw {500} write_bw {100} initial_boot {true} } M06_INI {read_bw {500} write_bw {500} initial_boot {true} } M04_INI {read_bw {500} write_bw {500} initial_boot {true} } M05_INI {read_bw {500} write_bw {500} initial_boot {true} } M00_INI {read_bw {500} write_bw {500} initial_boot {true} } }] [get_bd_intf_pins /Master_NoC/S04_AXI]
-set_property -dict [list CONFIG.CONNECTIONS {M07_INI {read_bw {500} write_bw {100} initial_boot {true} } M08_INI {read_bw {500} write_bw {100} initial_boot {true} } M01_INI {read_bw {500} write_bw {500} initial_boot {true} } M06_INI {read_bw {500} write_bw {500} initial_boot {true} } M04_INI {read_bw {500} write_bw {500} initial_boot {true} } M05_INI {read_bw {500} write_bw {500} initial_boot {true} } }] [get_bd_intf_pins /Master_NoC/S05_AXI]
-set_property -dict [list CONFIG.CONNECTIONS {M02_INI {read_bw {500} write_bw {500} initial_boot {true} } M07_INI {read_bw {500} write_bw {100} initial_boot {true} } M08_INI {read_bw {500} write_bw {100} initial_boot {true} } M06_INI {read_bw {500} write_bw {500} initial_boot {true} } M04_INI {read_bw {500} write_bw {500} initial_boot {true} } M05_INI {read_bw {500} write_bw {500} initial_boot {true} } }] [get_bd_intf_pins /Master_NoC/S06_AXI]
-set_property -dict [list CONFIG.CONNECTIONS {M07_INI {read_bw {500} write_bw {100} initial_boot {true} } M08_INI {read_bw {500} write_bw {100} initial_boot {true} } M06_INI {read_bw {500} write_bw {500} initial_boot {true} } M03_INI {read_bw {500} write_bw {500} initial_boot {true} } M04_INI {read_bw {500} write_bw {500} initial_boot {true} } M05_INI {read_bw {500} write_bw {500} initial_boot {true} } }] [get_bd_intf_pins /Master_NoC/S07_AXI]
-set_property -dict [list CONFIG.CONNECTIONS {M07_INI {read_bw {500} write_bw {100} initial_boot {true} } M08_INI {read_bw {500} write_bw {100} initial_boot {true} } M06_INI {read_bw {500} write_bw {500} initial_boot {true} } M04_INI {read_bw {500} write_bw {500} initial_boot {true} } M05_INI {read_bw {500} write_bw {500} initial_boot {true} } M00_INI {read_bw {500} write_bw {500} initial_boot {true} } }] [get_bd_intf_pins /Master_NoC/S08_AXI]
-set_property -dict [list CONFIG.CONNECTIONS {M07_INI {read_bw {500} write_bw {100} initial_boot {true} } M08_INI {read_bw {500} write_bw {100} initial_boot {true} } M06_INI {read_bw {500} write_bw {500} initial_boot {true} } M04_INI {read_bw {500} write_bw {500} initial_boot {true} } M05_INI {read_bw {500} write_bw {500} initial_boot {true} } M00_INI {read_bw {500} write_bw {500} initial_boot {true} } }] [get_bd_intf_pins /Master_NoC/S09_AXI]
-set_property -dict [list CONFIG.CONNECTIONS {M07_INI {read_bw {500} write_bw {100} initial_boot {true} } M08_INI {read_bw {500} write_bw {100} initial_boot {true} } M06_INI {read_bw {500} write_bw {500} initial_boot {true} } M04_INI {read_bw {500} write_bw {500} initial_boot {true} } M05_INI {read_bw {500} write_bw {500} initial_boot {true} } M00_INI {read_bw {500} write_bw {500} initial_boot {true} } }] [get_bd_intf_pins /Master_NoC/S10_AXI]
-
-} 
+}
 
 for {set i 0} {$i <= $CCI} {incr i} {
 
@@ -257,9 +203,6 @@ set lppdr_ext_ports {C0_LPDDR5X_bank700_701 C1_LPDDR5X_bank703_704 C2_LPDDR5X_ba
 } elseif {[regexp "vmk365" $board_name]}  {
 set lppdr_interface [ get_board_component_interfaces Lpddr5_Controller_C* ]
 set lppdr_ext_ports {C0_LPDDR5X_bank700_701 C1_LPDDR5X_bank703_704 C2_LPDDR5X_bank705_706 C3_LPDDR5X_bank707_708}
-} elseif {[regexp "rave2" $board_name]} {
-set lppdr_interface [ get_board_component_interfaces Lpddr5_Controller_C* ]
-set lppdr_ext_ports {Lpddr5_Controller_C0_Bank_700_701_702 Lpddr5_Controller_C1_Bank_703_704_705 Lpddr5_Controller_C2_Bank_706_707 Lpddr5_Controller_C3_Bank_710_711}
 }
 
 if {[regexp "vek385" $board_name]||[regexp "vek386" $board_name]||[regexp "vmk365" $board_name]} {
@@ -402,7 +345,7 @@ connect_bd_intf_net [get_bd_intf_ports [lindex $lppdr_ext_ports 2]] [get_bd_intf
 connect_bd_intf_net [get_bd_intf_ports [lindex $lppdr_ext_ports 3]] [get_bd_intf_pins NoC_C0_C1_C2_C3/C3_CH0_LPDDR5]
 }
 
-if {[regexp "vek385" $board_name]||[regexp "vek386" $board_name]||[regexp "rave2" $board_name]} {
+if {[regexp "vek385" $board_name]||[regexp "vek386" $board_name]} {
 # Create instance: ai_engine_0, and set properties
 create_bd_cell -type ip -vlnv xilinx.com:ip:ai_engine ai_engine_0
 
@@ -415,20 +358,16 @@ set_property -dict [list CONFIG.CONNECTIONS {M00_AXI {read_bw {500} write_bw {50
 connect_bd_intf_net [get_bd_intf_pins AIE_ConfigNoc/M00_AXI] [get_bd_intf_pins ai_engine_0/S00_AXI]
 connect_bd_net [get_bd_pins ai_engine_0/s00_axi_aclk] [get_bd_pins AIE_ConfigNoc/aclk0]
 
-if {[regexp "rave2" $board_name]} {
-connect_bd_intf_net [get_bd_intf_pins AIE_ConfigNoc/S00_INI] [get_bd_intf_pins Master_NoC/M04_INI]
-} elseif {[regexp "vek385" $board_name]||[regexp "vek386" $board_name]} {
+if {[regexp "vek385" $board_name]||[regexp "vek386" $board_name]} {
 connect_bd_intf_net [get_bd_intf_pins AIE_ConfigNoc/S00_INI] [get_bd_intf_pins Master_NoC/M06_INI]
 } }
 
-if {[regexp "vek385" $board_name]||[regexp "vek386" $board_name]||[regexp "rave2" $board_name]} {
+if {[regexp "vek385" $board_name]||[regexp "vek386" $board_name]} {
 # Create instance: ilconstant_0, and set properties
 set ilconstant_0 [ create_bd_cell -type inline_hdl -vlnv xilinx.com:inline_hdl:ilconstant ilconstant_0 ]
 set_property -dict [list CONFIG.CONST_VAL {3} CONFIG.CONST_WIDTH {2} ] $ilconstant_0
 if {[regexp "vek385" $board_name]||[regexp "vek386" $board_name]} {
 connect_bd_net [get_bd_pins ilconstant_0/dout] [get_bd_pins ps_wizard_0/gem0_tsu_inc_ctrl]
-} elseif {[regexp "rave2" $board_name]} {
-connect_bd_net [get_bd_pins ilconstant_0/dout] [get_bd_pins ps_wizard_0/gem1_tsu_inc_ctrl]
 } }
 
 # Create instance: vcu2_0, and set properties
@@ -465,7 +404,7 @@ connect_bd_intf_net [get_bd_intf_pins VCU_ConfigNoc/M01_AXI] [get_bd_intf_pins v
 }
 
 # Create instance: ISP_ConfigNoc, and set properties
-if {[regexp "vek385" $board_name]||[regexp "vek386" $board_name]||[regexp "rave2" $board_name]} {
+if {[regexp "vek385" $board_name]||[regexp "vek386" $board_name]} {
 # Create instance: visp_ss_tile0, and set properties
 set visp_ss_tile0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:visp_ss visp_ss_tile0 ]
 
@@ -515,12 +454,7 @@ connect_bd_intf_net [get_bd_intf_pins ISP_Tile0_ConfigNoc/M00_AXI] [get_bd_intf_
 connect_bd_intf_net [get_bd_intf_pins ISP_Tile1_ConfigNoc/M00_AXI] [get_bd_intf_pins visp_ss_tile1/TILE1_ISP_NSU]
 connect_bd_intf_net [get_bd_intf_pins ISP_Tile2_ConfigNoc/M00_AXI] [get_bd_intf_pins visp_ss_tile2/TILE2_ISP_NSU]
 
-if {[regexp "rave2" $board_name]} {
-connect_bd_intf_net [get_bd_intf_pins Master_NoC/M05_INI] [get_bd_intf_pins VCU_ConfigNoc/S00_INI] 
-connect_bd_intf_net [get_bd_intf_pins Master_NoC/M06_INI] [get_bd_intf_pins ISP_Tile0_ConfigNoc/S00_INI]
-connect_bd_intf_net [get_bd_intf_pins Master_NoC/M07_INI] [get_bd_intf_pins ISP_Tile1_ConfigNoc/S00_INI]
-connect_bd_intf_net [get_bd_intf_pins Master_NoC/M08_INI] [get_bd_intf_pins ISP_Tile2_ConfigNoc/S00_INI]
-} elseif {[regexp "vek385" $board_name]||[regexp "vek386" $board_name]} {
+if {[regexp "vek385" $board_name]||[regexp "vek386" $board_name]} {
 connect_bd_intf_net [get_bd_intf_pins Master_NoC/M07_INI] [get_bd_intf_pins VCU_ConfigNoc/S00_INI] 
 connect_bd_intf_net [get_bd_intf_pins Master_NoC/M08_INI] [get_bd_intf_pins ISP_Tile0_ConfigNoc/S00_INI]
 connect_bd_intf_net [get_bd_intf_pins Master_NoC/M09_INI] [get_bd_intf_pins ISP_Tile1_ConfigNoc/S00_INI]
@@ -542,13 +476,13 @@ connect_bd_net [get_bd_pins ilconstant_1/dout] [get_bd_pins ps_wizard_0/lpd_axi_
 connect_bd_net [get_bd_pins ilconstant_1/dout] [get_bd_pins ps_wizard_0/fpd_axi_pl_aclk]
 connect_bd_net [get_bd_pins ilconstant_1/dout] [get_bd_pins ps_wizard_0/pl_mmi_dc_i2s_s0_clk]
 
-if {[regexp "vek385" $board_name]||[regexp "vek386" $board_name]||[regexp "rave2" $board_name]} {
+if {[regexp "vek385" $board_name]||[regexp "vek386" $board_name]} {
 group_bd_cells ISP_hier [get_bd_cells visp_ss_tile0] [get_bd_cells visp_ss_tile1] [get_bd_cells visp_ss_tile2] [get_bd_cells ISP_Tile1_ConfigNoc] [get_bd_cells ISP_Tile0_ConfigNoc] [get_bd_cells ISP_Tile2_ConfigNoc]
 }
 group_bd_cells VCU_hier [get_bd_cells VCU_ConfigNoc] [get_bd_cells vcu2_0]
 
 # Add USER_COMMENTS on $design_name
-if {[regexp "vek385" $board_name]||[regexp "vek386" $board_name]||[regexp "rave2" $board_name]} {
+if {[regexp "vek385" $board_name]||[regexp "vek386" $board_name]} {
 
 set_property USER_COMMENTS.comment0 {\t \t ======================= >>>>>>>>> An Example EDF Base Design <<<<<<<<< =======================
 \t Note:

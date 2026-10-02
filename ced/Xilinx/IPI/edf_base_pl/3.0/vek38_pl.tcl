@@ -62,7 +62,7 @@ set sys_uart [get_board_component_interfaces *pl_uart*]
 
 apply_board_connection -board_interface $sys_uart -ip_intf "axi_uart16550_0/UART" -diagram $design_name 
 
-if {[regexp "vek385" $board_name]||[regexp "vek386" $board_name]||[regexp "rave2" $board_name]||[regexp "vmk365" $board_name]} {
+if {[regexp "vek385" $board_name]||[regexp "vek386" $board_name]||[regexp "vmk365" $board_name]} {
 disconnect_bd_net /ilconstant_1_dout [get_bd_pins ps_wizard_0/fpd_axi_pl_aclk]
 } elseif {[regexp "vpk360" $board_name]} {
 disconnect_bd_net /ilconstant_0_dout [get_bd_pins ps_wizard_0/fpd_axi_pl_aclk]
@@ -95,7 +95,7 @@ connect_bd_intf_net [get_bd_intf_pins ctrl_smc/M04_AXI] [get_bd_intf_pins axi_ua
 #connect_bd_intf_net [get_bd_intf_pins ctrl_smc/M05_AXI] [get_bd_intf_pins pl_mmi_clk_wiz/s_axi_lite]
 }
 
-if {[regexp "rave2" $board_name]||[regexp "vmk365" $board_name] } {
+if {[regexp "vmk365" $board_name] } {
 set_property -dict [list CONFIG.NUM_SI {1} CONFIG.NUM_MI {2}] [get_bd_cells ctrl_smc]
 connect_bd_intf_net [get_bd_intf_pins ctrl_smc/M01_AXI] [get_bd_intf_pins axi_uart16550_0/S_AXI]
 }

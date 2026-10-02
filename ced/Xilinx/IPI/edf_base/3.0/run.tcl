@@ -38,7 +38,7 @@ if {[regexp "vrk160" $board_name]||[regexp "vrk165" $board_name]} {
 
 source "$currentDir/vrk16_comn.tcl"
 
-} elseif {[regexp "vek385" $board_name]||[regexp "vek386" $board_name]||[regexp "rave2" $board_name]||[regexp "vmk365" $board_name]} {
+} elseif {[regexp "vek385" $board_name]||[regexp "vek386" $board_name]||[regexp "vmk365" $board_name]} {
 
 source "$currentDir/vek38_comn.tcl" 
 
@@ -52,7 +52,7 @@ source "$currentDir/gen1_comn.tcl" }
 
 create_root_design $currentDir $design_name
 
-if {[regexp "vek385" $board_name]||[regexp "vek386" $board_name]||[regexp "vpk360" $board_name]||[regexp "rave2" $board_name]||[regexp "vmk365" $board_name]} {
+if {[regexp "vek385" $board_name]||[regexp "vek386" $board_name]||[regexp "vpk360" $board_name]||[regexp "vmk365" $board_name]} {
 
 set dir_path [file join $currentDir golden_ncr]
 set ncr 1
@@ -65,8 +65,6 @@ set filePattern "vek385_reva_*.ncr"
 set filePattern "vpk360_*.ncr"
 } elseif {$board_name == "vek386"} {
 set filePattern "vek386_*.ncr"
-} elseif {$board_name == "rave2"} {
-set filePattern "rave2_*.ncr"
 } elseif {$board_name == "vmk365"} {
 set filePattern "vmk365_*.ncr"
 } else {
