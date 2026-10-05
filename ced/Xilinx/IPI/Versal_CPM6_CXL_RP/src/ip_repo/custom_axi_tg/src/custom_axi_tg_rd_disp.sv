@@ -72,6 +72,7 @@ module custom_axi_tg_rd_disp
   output logic                         ring_alloc,
   output logic [                  8:0] ring_alloc_idx,
   output logic                         ring_inc,
+  output logic                         ring_issuing_done,
   output logic [          NUM_IDS-1:0] ring_inc_oh,
   output logic                         ring_dec,
   output logic [          NUM_IDS-1:0] ring_dec_oh,
@@ -166,6 +167,7 @@ module custom_axi_tg_rd_disp
   assign ring_alloc     = load_new;
   assign ring_alloc_idx = cpq_head_idx;               // registered in the CPQ
   assign ring_inc       = txn_acc;
+  assign ring_issuing_done = roll;
   assign ring_inc_oh    = id_oh_q;                    // REGISTERED one-hot
 
   assign busy           = active || ar_pend;

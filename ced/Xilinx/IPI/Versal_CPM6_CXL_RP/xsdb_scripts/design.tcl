@@ -1,8 +1,10 @@
 # design.tcl - top-level loader for board bring-up (PDI programming,
-# PERSTN/MIO control, link-status checking), the one JTAG target-connect
-# command, and the one .hwh-based address/clock discovery pass every other
-# package reads from. No dependency on any other package -- this is the
-# foundation everything else in xsdb_scripts/ builds on.
+# PERSTN/MIO control, link-status checking), design::connect (one of four
+# independent per-package ::connect commands -- see hwtg::/perf::/
+# ecam::connect, each selecting whichever xsdb target that package's own
+# register accesses need), and the one .hwh-based address/clock discovery
+# pass every other package reads from. No dependency on any other package
+# -- this is the foundation everything else in xsdb_scripts/ builds on.
 #
 #   source xsdb_scripts/all.tcl
 #   design::discover [pwd]
