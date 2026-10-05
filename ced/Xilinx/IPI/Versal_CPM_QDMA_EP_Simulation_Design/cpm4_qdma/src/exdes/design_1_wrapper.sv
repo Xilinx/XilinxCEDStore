@@ -238,7 +238,7 @@ module design_1_wrapper #
      output         CH0_DDR4_0_act_n,
      output [16:0]  CH0_DDR4_0_adr,
      output [1:0]   CH0_DDR4_0_ba,
-     output [0:0]   CH0_DDR4_0_bg,
+     output [1:0]   CH0_DDR4_0_bg,
      output [0:0]   CH0_DDR4_0_ck_c,
      output [0:0]   CH0_DDR4_0_ck_t,
      output [0:0]   CH0_DDR4_0_cke,
