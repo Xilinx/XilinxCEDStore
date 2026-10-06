@@ -1,0 +1,8 @@
+-F uvma_agents/base_agent/base.F
+-F uvma_agents/gpdrv_agent/gpdrv.F
+-F uvma_agents/cxl_nfi_agent/cxl_nfi.F
+-F uvma_agents/cxl_credit_agent/cxl_credit.F
+-F uvma_agents/reset_agent/reset.F
+-F uvma_agents/gpmon_agent/gpmon.F
+-F uvma_agents/elbi_agent/elbi.F
+-F uvma_agents/aximon_agent/aximon.F
