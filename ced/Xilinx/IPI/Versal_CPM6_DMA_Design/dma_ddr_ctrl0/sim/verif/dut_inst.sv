@@ -6,7 +6,7 @@
 // verified-passing regression's dut_inst.sv does not tie them off or
 // connect a DDR5 BFM, and Vivado's -scripts_only simulation-model
 // generation for this configuration completes without them driven
-// (see dma_ddr/sim/README.txt "AVAILABLE TESTS" for what is/isn't
+// (see dma_ddr_ctrl1/sim/README.txt "AVAILABLE TESTS" for what is/isn't
 // independently re-verified beyond BD/sim-script generation).
 wire [7:0] ctrl0_gt_grx_n;
 wire [7:0] ctrl0_gt_grx_p;

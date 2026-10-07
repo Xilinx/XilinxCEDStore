@@ -99,15 +99,15 @@ class cseq_core_doe_discovery_cfg_mb extends cseq_cpm6_pcie_core_isr_src;
         axi_wr('hFC84000C+(ctrlr*'h10_0000), (1'b1<<3));
 
         case (addr)
-          'hD20: begin
+          'hD50: begin
             `uvm_info(get_type_name, "Write to ext cap header", UVM_LOW)
             //No writable bits in this register
           end
-          'hD24: begin
+          'hD54: begin
             `uvm_info(get_type_name, "Write to cap register", UVM_LOW)
             //No writable bits in this register
           end
-          'hD28: begin
+          'hD58: begin
             `uvm_info(get_type_name, "Write to control register", UVM_LOW)
             if (data[0]) begin //DOE Abort issued
               doe_data.delete();
@@ -147,17 +147,17 @@ class cseq_core_doe_discovery_cfg_mb extends cseq_cpm6_pcie_core_isr_src;
               end
             end
           end
-          'hD2C: begin
+          'hD5C: begin
             `uvm_info(get_type_name, "Write to status register", UVM_LOW)
             if (data[1]) begin
               `uvm_info(get_type_name, "DOE Interrupt enabled not supported", UVM_LOW)
             end
           end
-          'hD30: begin
+          'hD60: begin
             `uvm_info(get_type_name, "Write to wr mb register", UVM_LOW)
             doe_data.push_back(data);
           end
-          'hD34: begin
+          'hD64: begin
             `uvm_info(get_type_name, "Write to rd mb register", UVM_LOW)
             if (doe_ready) begin
               doe_rd_ptr++;
@@ -184,33 +184,33 @@ class cseq_core_doe_discovery_cfg_mb extends cseq_cpm6_pcie_core_isr_src;
         axi_wr('hFC84000C+(ctrlr*'h10_0000), (1'b1<<2));
 
         case (addr)
-          'hD20: begin
+          'hD50: begin
             `uvm_info(get_type_name, "read to ext cap header", UVM_LOW)
             // axi_wr('hFC840410, 'h0002002e);
             data = 'h0001002e;
           end
-          'hD24: begin
+          'hD54: begin
             `uvm_info(get_type_name, "read to cap register", UVM_LOW)
             // axi_wr('hFC840414, 'h0);
             data = '0;
           end
-          'hD28: begin
+          'hD58: begin
             `uvm_info(get_type_name, "read to control register", UVM_LOW)
             // axi_wr('hFC840410, 'h0);
             data = '0;
           end
-          'hD2C: begin
+          'hD5C: begin
             `uvm_info(get_type_name, "read to status register", UVM_LOW)
             //Busy, Interrupt Status, Error, Async Status, At Attention, RSVD, Ready 
             // axi_wr('hFC840414, {doe_ready, 26'h0, 1'b0, 1'b0, 1'b0, 1'b0, doe_busy});
             data = {doe_ready, 26'h0, 1'b0, 1'b0, 1'b0, 1'b0, doe_busy};
           end
-          'hD30: begin
+          'hD60: begin
             `uvm_info(get_type_name, "read to wr mb register", UVM_LOW)
             // axi_wr('hFC840410, 'h0);
             data = '0;
           end
-          'hD34: begin
+          'hD64: begin
             `uvm_info(get_type_name, "read to rd mb register", UVM_LOW)
             // axi_wr('hFC840414, doe_data_rd[doe_rd_ptr]);
             data = doe_data_rd[doe_rd_ptr];
