@@ -47,8 +47,8 @@ proc getSupportedBoards {} {
 
 proc addOptions {DESIGNOBJ PROJECT_PARAM.BOARD_PART} {
 
-   if {[regexp -nocase {sp701|scu200} ${PROJECT_PARAM.BOARD_PART}]} {
-    # Linux preset: SP701 and SCU200 board parts (matches installed CED behaviour)
+   if {[regexp -nocase {scu200} ${PROJECT_PARAM.BOARD_PART}]} {
+    # Linux preset: SCU200 board parts (matches installed CED behaviour)
       lappend x [dict create name "Preset" type "string" value "Microcontroller" value_list {"Microcontroller Microcontroller___Suitable_for_running_baremetal_code" "Real-time_Processor Real-time____________Deterministic_real-time_processing_on_RTOS" "Linux_Profile Linux_________Embedded_linux_capable"} enabled true]
       return $x
    } else {
