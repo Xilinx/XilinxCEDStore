@@ -238,7 +238,7 @@ class cfgspc_cb extends apci_callbacks;
 
   // - Unroll generic_config to the config space of the agent
   // - Change a reg field by csp.<capability handle>.<reg_field>, you can find
-  //   the capabilities and fields in $AVERY_PCIE/sip/apci_all_caps.svh
+  //   the capabilities and fields in $AVERY_PCIE/svip/apci_all_caps.svh
   // - To remove a capability structure, set the handle to the cap to null in 
   //   below callback i.e. csp.msi = null;
   // - When we modify a reg field that changes the size of a capability, we
