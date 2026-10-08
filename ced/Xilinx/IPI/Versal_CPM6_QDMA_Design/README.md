@@ -11,7 +11,7 @@
 | **Devices Supported** | Versal devices with CPM6 hard IP (`vsvc3340` package family) -- `xc2vp3602-vsvc3340-2MHP-e-S` |
 | **Tools Required** | Vivado 2026.1.1, VCS/Verdi X-2025.06-SP2 with UVM 1.1, Avery PLI/apci-xactor 2025.3_1, CPM6 Secure IP package |
 | **Simulators Validated** | VCS (waveform viewing via Verdi) |
-| **Board Part** | None selected -- the design targets the supported part directly |
+| **Board Part** | None selected in the Vivado project -- the design targets the supported part directly. The CPM6 configuration is set up for the VPK360 board (`CPM6_BOARD=VPK360`), so GT lanes and PERST are allocated as per the VPK360 schematic -- see [Board Configuration](#board-configuration) |
 | **Key Features Shown** | Multi-queue H2C/C2H MM DMA via `cpm6_qdma_v1_0`'s descriptor-ring engine, SR-IOV (8 VFs behind 1 PF), PCIe Gen6 X2 link, POLL mode |
 | **Not Intended For** | Production deployment, performance benchmarking |
 | **Time to First Success** | ~20-30 minutes (compile + optimize + simulate) |
@@ -39,9 +39,20 @@ By working through this example design, you will learn how to:
 
 - CPM6 hard IP, Controller 1, configured as a **DMA Bridge** endpoint (`CPM6_CTRL1_MODE=DMA_BRIDGE`, `CPM6_CTRL1_PROTOCOL=PCIE_6_1`) -- the QDMA-specific behavior (rings, contexts) is NOT a CPM6 hard-IP mode; it comes entirely from the `cpm6_qdma_v1_0` PL IP core layered on top (see [Design Architecture](#design-architecture)).
 - SR-IOV: 1 PF, 8 VFs, `VFG0_FIRST_VF_OFFSET=4`.
+- Board-aware CPM6 configuration: `CPM6_BOARD=VPK360`, so lane and PERST allocation follow the VPK360 schematic -- see [Board Configuration](#board-configuration).
 - 3 DMA apertures (2 real BRAM-backed PL ports + 1 NoC-routed descriptor (DSC) memory access path) -- see [DMA Subsystem](#dma-subsystem).
 - MSI-X: 8 vectors/function, table/PBA offsets `0x14000`/`0x15000`.
 - VCS/UVM + Avery PCIe VIP simulation environment with a single, parameterized multi-queue H2C/C2H MM DMA test.
+
+## Board Configuration
+
+The CPM6 hard IP is currently configured to allocate PCIe lanes and PERST as per the **VPK360** board schematic. In `ctrl1/design_1_bd.tcl`, `ps_wizard_0` sets:
+
+```
+CONFIG.CPM6_CONFIG(CPM6_BOARD) {VPK360}
+```
+
+With the board selected in the CPM6 configuration, the GT lane assignment and the PERST pin follow the VPK360 board connections for whichever link width is configured -- including widths narrower than the board's full lane count, such as this CED's fixed X2 link. Only the CPM6 configuration is board-aware: no Vivado board part is selected for the project, and the design targets the supported part directly.
 
 ## Choosing a Configuration
 
