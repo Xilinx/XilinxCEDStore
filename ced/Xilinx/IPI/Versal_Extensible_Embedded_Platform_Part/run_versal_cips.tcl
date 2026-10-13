@@ -600,14 +600,10 @@ if { $bdc eq "true" } {
 	#creates main block design
 	source -notrace "$currentDir/main_bd.tcl"
 	
-	#Open BDC BD to Apply PFM properties
-	open_bd_design [get_bd_files ext_bdc]
-
 } else {
 
 	create_root_design $currentDir $design_name $use_lpddr $clk_options $irqs $use_aie
-	open_bd_design [get_bd_files $design_name]
-
+	
 }
 
 set_param project.replaceDontTouchWithKeepHierarchySoft 0
@@ -615,21 +611,32 @@ puts "INFO: Block design generation completed, yet to set PFM properties"
 
 
 if { $bdc eq "true" } {
+	
+	open_bd_design [get_bd_files $design_name]
+	set ps_core [get_bd_cells /CIPS_0]
+	set ps_core_noc [get_bd_cells /cips_noc]
+	
+	#Open BDC BD to Apply PFM properties
+	open_bd_design [get_bd_files ext_bdc]
+	
 	set noc_ddr [get_bd_cells /axi_noc_0]
 	set noc_lpddr [get_bd_cells /axi_noc_1]
 	set pfm_bd_name "ext_bdc"
+		
 } else {
+
+	open_bd_design [get_bd_files $design_name]
+	set ps_core [get_bd_cells /CIPS_0]
+	set ps_core_noc [get_bd_cells /cips_noc]
+	
 	set noc_ddr [get_bd_cells /noc_ddr4]
 	set noc_lpddr [get_bd_cells /noc_lpddr4]
 	set pfm_bd_name $design_name
 }
 
+
 source -notrace "$currentDir/pfm_properties.tcl"
 
-
-set_property preferred_sim_model tlm [current_project]
-set_property SELECTED_SIM_MODEL tlm [get_bd_cells /CIPS_0]
-set_property SELECTED_SIM_MODEL tlm [get_bd_cells /cips_noc]
 
 puts "INFO: Platform creation completed!"
 set_param project.replaceDontTouchWithKeepHierarchySoft 0

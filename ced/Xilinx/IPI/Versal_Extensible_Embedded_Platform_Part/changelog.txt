@@ -2,6 +2,7 @@
 
 2026.2 Changes
 Enabled latest part support
+Updated SELECT_SIM_MODEL property based on AIE usage in the design
 
 
 2026.1.1 Changes

@@ -77,7 +77,6 @@ if { $noc_ddr != 0 } {
 	}
 
 	set_property PFM.AXI_PORT $ddr_axi_ports [get_bd_cells $noc_ddr]
-	set_property SELECTED_SIM_MODEL tlm [get_bd_cells $noc_ddr]
 	
 }
 
@@ -96,7 +95,6 @@ if { $use_lpddr } {
 	}
 
 	set_property PFM.AXI_PORT $lpddr_axi_ports [get_bd_cells $noc_lpddr]
-	set_property SELECTED_SIM_MODEL tlm [get_bd_cells $noc_lpddr]
 
 }
 
@@ -134,12 +132,53 @@ set_property platform.design_intent.datacenter "false" [current_project]
 set_property platform.uses_pr "false" [current_project]
 set_property platform.extensible true [current_project]
 
-puts "INFO: Platform creation completed!"
+puts "INFO: Setting simulation models ...!"
 
+
+# Setting simulation models for the design components -> SELECT_SIM_MODEL = TLM (AIE Devices) and SELECT_SIM_MODEL = RTL (Non - AIE Devices)
 
 if { $bdc eq "true" } {
-	open_bd_design [get_bd_files $design_name] 
+	open_bd_design [get_bd_files $design_name]
 }
+
+if { $use_aie } {
+
+	set_property SELECTED_SIM_MODEL tlm [get_bd_cells $ps_core]
+	set_property SELECTED_SIM_MODEL tlm [get_bd_cells $ps_core_noc]
+	
+	if { $bdc eq "true" } {
+		open_bd_design [get_bd_files $pfm_bd_name]
+	}
+		
+	if { [get_bd_cells $noc_ddr -quiet] != "" } {
+		set_property SELECTED_SIM_MODEL tlm [get_bd_cells $noc_ddr]
+	}
+	if { [get_bd_cells $noc_lpddr -quiet] != "" } {
+		set_property SELECTED_SIM_MODEL tlm [get_bd_cells $noc_lpddr]
+	}
+
+	set_property preferred_sim_model tlm [current_project]
+
+} else {
+
+	set_property SELECTED_SIM_MODEL rtl [get_bd_cells $ps_core]
+	set_property SELECTED_SIM_MODEL rtl [get_bd_cells $ps_core_noc]
+	
+	if { $bdc eq "true" } {
+		open_bd_design [get_bd_files $pfm_bd_name]
+	}
+	
+	if { [get_bd_cells $noc_ddr -quiet] != "" } {
+		set_property SELECTED_SIM_MODEL rtl [get_bd_cells $noc_ddr]
+	}
+	if { [get_bd_cells $noc_lpddr -quiet] != "" } {
+		set_property SELECTED_SIM_MODEL rtl [get_bd_cells $noc_lpddr]
+	}
+
+	set_property preferred_sim_model rtl [current_project]
+
+}
+
 
 # Add USER_COMMENTS on $design_name
 # set_property USER_COMMENTS.comment0 "An Example Versal Extensible Embedded Platform" [get_bd_designs $design_name]

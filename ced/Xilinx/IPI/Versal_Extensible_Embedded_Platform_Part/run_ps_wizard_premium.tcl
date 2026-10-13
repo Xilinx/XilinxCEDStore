@@ -429,49 +429,27 @@ if { [dict exists $options $irqs_param] } {
 	set irqs [dict get $options $irqs_param ]
 }
 
-set bdc_param "Include_BDC.VALUE"
-set bdc false
-if { [dict exists $options $bdc_param] } {
-	set bdc [dict get $options $bdc_param ] }
-	puts "INFO: selected bdc:: $bdc"
 
-if { $bdc eq "true" } {
-	#creates BDC block design
-	source -notrace "$currentDir/bdc_bd.tcl"
-	#creates main block design
-	source -notrace "$currentDir/main_bd.tcl"
-	#Open BDC BD to Apply PFM properties
-	open_bd_design [get_bd_files ext_bdc]
-} else {
+create_root_design $currentDir $design_name $use_lpddr $clk_options $irqs $use_aie
 
-	create_root_design $currentDir $design_name $use_lpddr $clk_options $irqs $use_aie
-
-	open_bd_design [get_bd_files $design_name]
-}
+open_bd_design [get_bd_files $design_name]
 
 set_param project.replaceDontTouchWithKeepHierarchySoft 0
 puts "INFO: Block design generation completed, yet to set PFM properties"
 
-
 # Set PFM properties
+set noc_ddr [get_bd_cells /noc_ddr4]
+set noc_lpddr [get_bd_cells /noc_lpddr4]
+set pfm_bd_name $design_name
 
-if { $bdc eq "true" } {
-	set noc_ddr [get_bd_cells /ps_wiz_noc]
-	set noc_lpddr [get_bd_cells /axi_noc_1]
-	set pfm_bd_name "ext_bdc"
-} else {
-	set noc_ddr [get_bd_cells /noc_ddr4]
-	set noc_lpddr [get_bd_cells /noc_lpddr4]
-	set pfm_bd_name $design_name
-}
+
+set ps_core [get_bd_cells /ps_wizard_0]
+set ps_core_noc [get_bd_cells /ps_wiz_noc]
+
+set bdc false
 
 source -notrace "$currentDir/pfm_properties.tcl"
 
-
-
-set_property preferred_sim_model tlm [current_project]
-set_property SELECTED_SIM_MODEL tlm [get_bd_cells /ps_wizard_0]
-set_property SELECTED_SIM_MODEL tlm [get_bd_cells /ps_wiz_noc]
 
 puts "INFO: Platform creation completed!"
 set_param project.replaceDontTouchWithKeepHierarchySoft 0
@@ -482,11 +460,8 @@ save_bd_design
 
 make_wrapper -files [get_files $design_name.bd] -top -import
 
-if { $bdc eq "true" } {
-	set TB_file [file join $currentDir test_bench bdc_tb.v]
-} else {
-	set TB_file [file join $currentDir test_bench tb.v]
-}
+# Adding tetsbench wrapper
+set TB_file [file join $currentDir test_bench ps_wizard_tb.v]
 
 set_property SOURCE_SET sources_1 [get_filesets sim_1]
 # -flat imports all files into the imports folder without preserving their relative paths

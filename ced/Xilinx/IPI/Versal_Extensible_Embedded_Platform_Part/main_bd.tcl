@@ -74,7 +74,6 @@ if { $slr_cnt > 1 } {
 
 }
 
-
 if {(($use_lpddr)&&(!$use_aie))||((!$use_lpddr)&&($use_aie)) } {
   set_property -dict [list CONFIG.NUM_CLKS {9} CONFIG.NUM_MI {0} CONFIG.NUM_NMI {2} CONFIG.NUM_NSI {0} CONFIG.NUM_SI {8} ] $cips_noc
   set_property -dict [ list CONFIG.CONNECTIONS {M01_INI {read_bw {500} write_bw {500}} M00_INI {read_bw {500} write_bw {500}}} CONFIG.NOC_PARAMS {} CONFIG.CATEGORY {ps_cci} ] [get_bd_intf_pins /cips_noc/S00_AXI]
@@ -216,23 +215,25 @@ connect_bd_net -net CIPS_0_pmc_axi_noc_axi0_clk [get_bd_pins CIPS_0/pmc_axi_noc_
 connect_bd_net -net axi_intc_0_irq [get_bd_pins ext_bdc/irq] [get_bd_pins CIPS_0/pl_ps_irq0]
 
 if { $slr_cnt > 1 } {
-	
+
   set_property -dict [list CONFIG.NUM_CLKS {10} CONFIG.NUM_SI {9} ] [get_bd_cells cips_noc]
-  set_property -dict [list CONFIG.CONNECTIONS {M02_INI {read_bw {500} write_bw {500}} M01_INI {read_bw {128} write_bw {128}} M00_INI {read_bw {128} write_bw {128}}}] [get_bd_intf_pins /cips_noc/S00_AXI]
-  set_property -dict [list CONFIG.CONNECTIONS {M02_INI {read_bw {500} write_bw {500}} M01_INI {read_bw {128} write_bw {128}} M00_INI {read_bw {128} write_bw {128}}}] [get_bd_intf_pins /cips_noc/S01_AXI]
-  set_property -dict [list CONFIG.CONNECTIONS {M02_INI {read_bw {500} write_bw {500}} M01_INI {read_bw {128} write_bw {128}} M00_INI {read_bw {128} write_bw {128}}}] [get_bd_intf_pins /cips_noc/S02_AXI]
-  set_property -dict [list CONFIG.CONNECTIONS {M02_INI {read_bw {500} write_bw {500}} M01_INI {read_bw {128} write_bw {128}} M00_INI {read_bw {128} write_bw {128}}}] [get_bd_intf_pins /cips_noc/S03_AXI]
+
+  set m02 [expr {($use_aie && $use_lpddr) ? "M02_INI {read_bw {500} write_bw {500}}" : ""}]
+  foreach si {S00_AXI S01_AXI S02_AXI S03_AXI S07_AXI} {
+    set_property CONFIG.CONNECTIONS "$m02 M01_INI {read_bw {128} write_bw {128}} M00_INI {read_bw {128} write_bw {128}}" [get_bd_intf_pins /cips_noc/$si]
+  }
+
   set_property -dict [list CONFIG.CONNECTIONS {M01_INI {read_bw {128} write_bw {128}} M00_INI {read_bw {128} write_bw {128}}}] [get_bd_intf_pins /cips_noc/S04_AXI]
   set_property -dict [list CONFIG.CONNECTIONS {M01_INI {read_bw {128} write_bw {128}} M00_INI {read_bw {128} write_bw {128}}}] [get_bd_intf_pins /cips_noc/S05_AXI]
   set_property -dict [list CONFIG.CONNECTIONS {M01_INI {read_bw {128} write_bw {128}} M00_INI {read_bw {128} write_bw {128}}}] [get_bd_intf_pins /cips_noc/S06_AXI]
-  set_property -dict [list CONFIG.CONNECTIONS {M02_INI {read_bw {500} write_bw {500}} M01_INI {read_bw {128} write_bw {128}} M00_INI {read_bw {128} write_bw {128}}}] [get_bd_intf_pins /cips_noc/S07_AXI]
-  set_property -dict [list CONFIG.CATEGORY {ps_pmc} CONFIG.CONNECTIONS {M02_INI {read_bw {500} write_bw {500}} M01_INI {read_bw {500} write_bw {500}} M00_INI {read_bw {500} write_bw {500}}}] [get_bd_intf_pins /cips_noc/S08_AXI]
-      
 
+  set_property -dict [list CONFIG.CATEGORY {ps_pmc} CONFIG.CONNECTIONS "$m02 M01_INI {read_bw {500} write_bw {500}} M00_INI {read_bw {500} write_bw {500}}"] [get_bd_intf_pins /cips_noc/S08_AXI]
+	
   connect_bd_intf_net [get_bd_intf_pins CIPS_0/PMC_NOC_AXI_[format %d [expr $slr_cnt - 1]]] [get_bd_intf_pins cips_noc/S08_AXI]
   connect_bd_net [get_bd_pins CIPS_0/pmc_axi_noc_axi[format %d [expr $slr_cnt - 1]]_clk] [get_bd_pins cips_noc/aclk9]
 
 }
+
 
 if { $use_aie && ($slr_cnt > 1) } {
   set_property -dict [list CONFIG.CONNECTIONS {M01_INI {read_bw {128} write_bw {128} initial_boot {true}} M00_INI {read_bw {500} write_bw {500} initial_boot {true}}}] [get_bd_intf_pins /cips_noc/S07_AXI]

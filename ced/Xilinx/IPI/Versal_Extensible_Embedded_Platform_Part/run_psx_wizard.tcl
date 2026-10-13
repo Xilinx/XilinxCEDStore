@@ -481,17 +481,16 @@ puts "INFO: Block design generation completed, yet to set PFM properties"
 # Set PFM properties
 set noc_ddr [get_bd_cells noc2_ddr5]
 set noc_lpddr [get_bd_cells noc2_lpddr5]
+
+set ps_core [get_bd_cells /psx_wizard_0]
+set ps_core_noc [get_bd_cells /psx_wiz_noc2]
+
+
 set pfm_bd_name $design_name
 set bdc false
 
 source -notrace "$currentDir/pfm_properties.tcl"
 
-
-set_property SELECTED_SIM_MODEL tlm [get_bd_cells /psx_wizard_0]
-set_property SELECTED_SIM_MODEL tlm [get_bd_cells /psx_wiz_noc2]
-#set_property SELECTED_SIM_MODEL tlm [get_bd_cells /noc2_lpddr5]
-set_property SELECTED_SIM_MODEL tlm [get_bd_cells /noc2_ddr5]
-set_property preferred_sim_model tlm [current_project]
 
 set_property -dict [list CONFIG.PRIM_SOURCE {No_buffer}] [get_bd_cells clk_wizard_0]
 
