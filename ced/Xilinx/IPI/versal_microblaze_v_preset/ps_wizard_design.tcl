@@ -129,7 +129,9 @@ apply_bd_automation -rule xilinx.com:bd_rule:ps_wizard -config { board_preset {Y
 
 
 set_property -dict [list CONFIG.PS11_CONFIG(PS_NUM_FABRIC_RESETS) {1} CONFIG.PS11_CONFIG(PS_USE_BSCAN_USER2) {1} CONFIG.PS11_CONFIG(PS_USE_PL_AXI_LPD) {1} CONFIG.PS11_CONFIG(PS_USE_PMCPL_CLK0) {1} ] [get_bd_cells ps_wizard_0]
-  
+
+set_property -dict [list CONFIG.PS11_CONFIG(PS_ASU_ENABLE) {0} ] [get_bd_cells ps_wizard_0]
+ 
 create_bd_cell -type inline_hdl -vlnv xilinx.com:inline_hdl:ilconstant:* ilconstant_0
 
 connect_bd_net [get_bd_pins ps_wizard_0/pl_mmi_dc_2x_clk] [get_bd_pins ilconstant_0/dout]
