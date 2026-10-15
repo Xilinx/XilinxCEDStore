@@ -126,6 +126,15 @@ module BMD_AXIST_RQ_512 #(
    logic [5:0]                       s_axis_rq_tuser_seq_num;
    (*mark_debug*) (*keep*)  logic    seq_num_all_back;
 
+   logic [511:0]                     s_axis_rq_tdata_mx;
+   logic [15:0]                      s_axis_rq_tkeep_mx;
+   logic                             s_axis_rq_tlast_mx;
+   logic                             s_axis_rq_tvalid_mx;
+   logic [183:0]                     s_axis_rq_tuser_mx;
+   logic                             s_axis_rq_tready_mx;
+
+   logic [63:0]                      s_axis_rq_tkeep_64;
+
 
    genvar var_i;
    generate
@@ -300,12 +309,31 @@ module BMD_AXIST_RQ_512 #(
       .s_axis_rq_tready_r                       ( s_axis_rq_tready_r ),
 
       // AXI-S Master Read Request Interface
-      .s_axis_rq_tdata_o                        ( s_axis_rq_tdata ),
-      .s_axis_rq_tkeep_o                        ( s_axis_rq_tkeep ),
-      .s_axis_rq_tlast_o                        ( s_axis_rq_tlast ),
-      .s_axis_rq_tvalid_o                       ( s_axis_rq_tvalid ),
-      .s_axis_rq_tuser_o                        ( s_axis_rq_tuser ),
-      .s_axis_rq_tready_i                       ( s_axis_rq_tready )
+      .s_axis_rq_tdata_o                        ( s_axis_rq_tdata_mx ),
+      .s_axis_rq_tkeep_o                        ( s_axis_rq_tkeep_mx ),
+      .s_axis_rq_tlast_o                        ( s_axis_rq_tlast_mx ),
+      .s_axis_rq_tvalid_o                       ( s_axis_rq_tvalid_mx ),
+      .s_axis_rq_tuser_o                        ( s_axis_rq_tuser_mx ),
+      .s_axis_rq_tready_i                       ( s_axis_rq_tready_mx )
+   );
+
+   assign s_axis_rq_tkeep = s_axis_rq_tkeep_64[15:0];
+
+   axis_register_slice_0 rq_axis_reg_slice_i (
+      .aclk           ( user_clk ),
+      .aresetn        ( reset_n & ~init_rst_i ),
+      .s_axis_tvalid  ( s_axis_rq_tvalid_mx ),
+      .s_axis_tready  ( s_axis_rq_tready_mx ),
+      .s_axis_tdata   ( s_axis_rq_tdata_mx ),
+      .s_axis_tkeep   ( {48'd0, s_axis_rq_tkeep_mx} ),
+      .s_axis_tlast   ( s_axis_rq_tlast_mx ),
+      .s_axis_tuser   ( s_axis_rq_tuser_mx ),
+      .m_axis_tvalid  ( s_axis_rq_tvalid ),
+      .m_axis_tready  ( s_axis_rq_tready ),
+      .m_axis_tdata   ( s_axis_rq_tdata ),
+      .m_axis_tkeep   ( s_axis_rq_tkeep_64 ),
+      .m_axis_tlast   ( s_axis_rq_tlast ),
+      .m_axis_tuser   ( s_axis_rq_tuser )
    );
 
 endmodule // BMD_AXIST_RQ_512
