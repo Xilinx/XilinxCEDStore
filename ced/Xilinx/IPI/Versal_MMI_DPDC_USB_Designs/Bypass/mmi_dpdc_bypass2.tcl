@@ -442,6 +442,10 @@ proc create_hier_cell_rst_module { parentCell nameHier } {
   set rst_proc_pl_ref_clk [ create_bd_cell -type ip -vlnv xilinx.com:ip:proc_sys_reset rst_proc_pl_ref_clk ]
   set_property CONFIG.C_NUM_PERP_ARESETN {1} $rst_proc_pl_ref_clk
 
+  # Create instance: dcm_locked_const, and set properties
+  set dcm_locked_const [ create_bd_cell -type inline_hdl -vlnv xilinx.com:inline_hdl:ilconstant dcm_locked_const ]
+  set_property CONFIG.CONST_VAL {1} $dcm_locked_const
+
 
   # Create port connections
   connect_bd_net -net PS_0_pl0_resetn  [get_bd_pins ext_reset_in] \
@@ -453,7 +457,8 @@ proc create_hier_cell_rst_module { parentCell nameHier } {
   connect_bd_net -net dcm_locked1_1  [get_bd_pins dcm_locked1] \
   [get_bd_pins rst_proc_i2s_clk/dcm_locked]
   connect_bd_net -net dcm_locked_1  [get_bd_pins dcm_locked] \
-  [get_bd_pins rst_proc_vid_clk/dcm_locked] \
+  [get_bd_pins rst_proc_vid_clk/dcm_locked]
+  connect_bd_net -net dcm_locked_const_dout  [get_bd_pins dcm_locked_const/dout] \
   [get_bd_pins rst_proc_pl_ref_clk/dcm_locked]
   connect_bd_net -net rst_proc_i2s_clk_peripheral_aresetn  [get_bd_pins rst_proc_i2s_clk/peripheral_aresetn] \
   [get_bd_pins peripheral_aresetn1]
@@ -663,7 +668,8 @@ proc create_hier_cell_rst_module { parentCell nameHier } {
   connect_bd_net -net ps_wizard_0_pl0_resetn  [get_bd_pins ps_wizard_0/pl0_resetn] \
   [get_bd_pins rst_module/ext_reset_in] \
   [get_bd_pins smartconnect_0/aresetn] \
-  [get_bd_pins smartconnect_gp0/aresetn] \
+  [get_bd_pins smartconnect_gp0/aresetn]
+  connect_bd_net -net rst_module_pl_ref_clk_aresetn  [get_bd_pins rst_module/peripheral_aresetn2] \
   [get_bd_pins mmi_aud_clk_wiz/s_axi_aresetn] \
   [get_bd_pins mmi_vid_clk_wiz/s_axi_aresetn]
   connect_bd_net -net rst_module_peripheral_aresetn  [get_bd_pins rst_module/peripheral_aresetn] \
