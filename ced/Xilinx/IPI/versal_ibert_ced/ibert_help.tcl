@@ -406,6 +406,7 @@ proc createDesign {design_name options} {
         CONFIG.PS11_CONFIG(PMC_CRP_PL0_REF_CTRL_FREQMHZ) {125} \
         CONFIG.PS11_CONFIG(PS_NUM_FABRIC_RESETS) {0} \
         CONFIG.PS11_CONFIG(PS_USE_PMCPL_CLK0) {1} \
+	CONFIG.PS11_CONFIG(PS_ASU_ENABLE) {0} \
       ] [get_bd_cells versal_cips_0]
 
       if {$logStuff} { 
