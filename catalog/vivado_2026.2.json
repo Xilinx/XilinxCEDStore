@@ -309,11 +309,11 @@
         "name": "cpm_bmd_ep",
         "display": "Versal CPM PCIE BMD EP Design",
         "latest_revision": "1.0",
-        "commit_id": "d394a88e8e59263d681c0a06aea44f1403128d9e",
+        "commit_id": "83928664c2547f78c95e222db3122e12b82848bf",
         "revisions": [
           {
             "revision": "1.0",
-            "commit_id": "d394a88e8e59263d681c0a06aea44f1403128d9e",
+            "commit_id": "83928664c2547f78c95e222db3122e12b82848bf",
             "date": "25-09-2026:04:51:43",
             "history": "Added board Versal CPM PCIE BMD EP Design v1.0"
           }
