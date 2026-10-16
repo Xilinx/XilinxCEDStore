@@ -147,10 +147,12 @@ if { $bCheckIPsPassed != 1 } {
 
 # Procedure to create entire design; Provide argument to make
 # procedure reusable. If parentCell is "", will use root.
-proc create_root_design { parentCell link_width lane_rate } {
+proc create_root_design { parentCell link_width lane_rate ide_cap_en } {
 
   variable script_folder
   variable design_name
+
+  set ide_cap_val [expr {$ide_cap_en ? 1 : 0}]
 
   if { $parentCell eq "" } {
      set parentCell [get_bd_cells /]
@@ -207,9 +209,10 @@ proc create_root_design { parentCell link_width lane_rate } {
     CONFIG.CPM6_CONFIG(CPM6_CTRL0_DMA_APERTURE2_LIMITADDR) {0x0500_0005_ffff} \
     CONFIG.CPM6_CONFIG(CPM6_CTRL0_DMA_APERTURE3_BASEADDR) {0x0500_0006_0000} \
     CONFIG.CPM6_CONFIG(CPM6_CTRL0_DMA_APERTURE3_LIMITADDR) {0x0500_0007_ffff} \
-    CONFIG.CPM6_CONFIG(CPM6_CTRL0_DMA_APERTURE4_BASEADDR) {0x0500_0008_0000} \
+    CONFIG.CPM6_CONFIG(CPM6_CTRL0_DMA_APERTURE3_DEST) {CPM_AXI_PL3} \
+    CONFIG.CPM6_CONFIG(CPM6_CTRL0_DMA_APERTURE4_BASEADDR) {0x201_0000_0000} \
     CONFIG.CPM6_CONFIG(CPM6_CTRL0_DMA_APERTURE4_DEST) {PCIE_AXI_NOC0} \
-    CONFIG.CPM6_CONFIG(CPM6_CTRL0_DMA_APERTURE4_LIMITADDR) {0x0500_0009_ffff} \
+    CONFIG.CPM6_CONFIG(CPM6_CTRL0_DMA_APERTURE4_LIMITADDR) {0x201_0001_ffff} \
     CONFIG.CPM6_CONFIG(CPM6_CTRL0_INBOUND_REGION0_BAR_NUM) {BAR_1} \
     CONFIG.CPM6_CONFIG(CPM6_CTRL0_INBOUND_REGION0_FUNC) {PF*} \
     CONFIG.CPM6_CONFIG(CPM6_CTRL0_INBOUND_REGION0_TRGTADDR) {0x500_0000_0000} \
@@ -221,8 +224,9 @@ proc create_root_design { parentCell link_width lane_rate } {
     CONFIG.CPM6_CONFIG(CPM6_CTRL0_INBOUND_REGION3_BAR_NUM) {BAR_4} \
     CONFIG.CPM6_CONFIG(CPM6_CTRL0_INBOUND_REGION3_TRGTADDR) {0x500_0006_0000} \
     CONFIG.CPM6_CONFIG(CPM6_CTRL0_INBOUND_REGION4_BAR_NUM) {BAR_5} \
-    CONFIG.CPM6_CONFIG(CPM6_CTRL0_INBOUND_REGION4_TRGTADDR) {0x500_0008_0000} \
+    CONFIG.CPM6_CONFIG(CPM6_CTRL0_INBOUND_REGION4_TRGTADDR) {0x201_0000_0000} \
     CONFIG.CPM6_CONFIG(CPM6_CTRL0_LANE_RATE) $lane_rate \
+    CONFIG.CPM6_CONFIG(CPM6_CTRL0_IDE_CAP_EN) $ide_cap_val \
     CONFIG.CPM6_CONFIG(CPM6_CTRL0_LINK_WIDTH) $link_width \
     CONFIG.CPM6_CONFIG(CPM6_CTRL0_MMIO_APERTURE0_BASEADDR) {0x0500_0000_0000} \
     CONFIG.CPM6_CONFIG(CPM6_CTRL0_MMIO_APERTURE0_LIMITADDR) {0x0500_0001_ffff} \
@@ -234,10 +238,10 @@ proc create_root_design { parentCell link_width lane_rate } {
     CONFIG.CPM6_CONFIG(CPM6_CTRL0_MMIO_APERTURE2_LIMITADDR) {0x0500_0005_ffff} \
     CONFIG.CPM6_CONFIG(CPM6_CTRL0_MMIO_APERTURE3_BASEADDR) {0x0500_0006_0000} \
     CONFIG.CPM6_CONFIG(CPM6_CTRL0_MMIO_APERTURE3_DEST) {CPM_AXI_PL3} \
-    CONFIG.CPM6_CONFIG(CPM6_CTRL0_MMIO_APERTURE3_LIMITADDR) {0x0500_0006_ffff} \
-    CONFIG.CPM6_CONFIG(CPM6_CTRL0_MMIO_APERTURE4_BASEADDR) {0x0500_0008_0000} \
+    CONFIG.CPM6_CONFIG(CPM6_CTRL0_MMIO_APERTURE3_LIMITADDR) {0x0500_0007_ffff} \
+    CONFIG.CPM6_CONFIG(CPM6_CTRL0_MMIO_APERTURE4_BASEADDR) {0x201_0000_0000} \
     CONFIG.CPM6_CONFIG(CPM6_CTRL0_MMIO_APERTURE4_DEST) {PCIE_AXI_NOC0} \
-    CONFIG.CPM6_CONFIG(CPM6_CTRL0_MMIO_APERTURE4_LIMITADDR) {0x0500_0009_ffff} \
+    CONFIG.CPM6_CONFIG(CPM6_CTRL0_MMIO_APERTURE4_LIMITADDR) {0x201_0001_ffff} \
     CONFIG.CPM6_CONFIG(CPM6_CTRL0_MODE) {DMA_BRIDGE} \
     CONFIG.CPM6_CONFIG(CPM6_CTRL0_NUM_DMA_APERTURES) {5} \
     CONFIG.CPM6_CONFIG(CPM6_CTRL0_NUM_INBOUND_REGIONS) {5} \
@@ -452,7 +456,7 @@ proc create_root_design { parentCell link_width lane_rate } {
   assign_bd_address -offset 0x0001000000000000 -range 0x00010000 -target_address_space [get_bd_addr_spaces ps_wizard_0/pmcps_0_psv_cpm_0] [get_bd_addr_segs axi_bram_ctrl_1/S_AXI/Mem0] -force
   assign_bd_address -offset 0x00000000 -range 0x00010000 -target_address_space [get_bd_addr_spaces ps_wizard_0/pmcps_0_psv_cpm_0] [get_bd_addr_segs axi_bram_ctrl_2/S_AXI/Mem0] -force
   assign_bd_address -offset 0x0001000002000000 -range 0x00010000 -target_address_space [get_bd_addr_spaces ps_wizard_0/pmcps_0_psv_cpm_0] [get_bd_addr_segs axi_bram_ctrl_3/S_AXI/Mem0] -force
-  assign_bd_address -offset 0x020100000000 -range 0x00010000 -target_address_space [get_bd_addr_spaces ps_wizard_0/pmcps_0_psv_cpm_0] [get_bd_addr_segs axi_bram_ctrl_4/S_AXI/Mem0] -force
+  assign_bd_address -offset 0x020100000000 -range 0x00020000 -target_address_space [get_bd_addr_spaces ps_wizard_0/pmcps_0_psv_cpm_0] [get_bd_addr_segs axi_bram_ctrl_4/S_AXI/Mem0] -force
   assign_bd_address -target_address_space /ps_wizard_0/pmcps_0_psv_dpc_0 [get_bd_addr_segs axi_bram_ctrl_4/S_AXI/Mem0] -force
 
   # Restore current instance
@@ -470,6 +474,6 @@ proc create_root_design { parentCell link_width lane_rate } {
 
 common::send_gid_msg -ssname BD::TCL -id 2052 -severity "CRITICAL WARNING" "This Tcl script was generated from a block design that is out-of-date/locked. It is possible that design <$design_name> may result in errors during construction."
 
-create_root_design "" $link_width $lane_rate
+create_root_design "" $link_width $lane_rate $ide_cap_en
 
 

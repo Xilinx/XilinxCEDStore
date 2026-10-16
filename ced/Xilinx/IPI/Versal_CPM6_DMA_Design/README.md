@@ -5,7 +5,7 @@
 | Item | Summary |
 |---|---|
 | **Primary Purpose** | Demonstrates DMA Bridge (H2C/C2H) capability of the Versal CPM6 hard IP, plus PL-side arbitration of DMA completion interrupts into MSI-X |
-| **Configurations** | Non-DDR, all-BRAM memory backend (`dma`) or DDR/LPDDR5-backed memory backend (`dma_ddr`), selectable on either CPM6 controller |
+| **Configurations** | Non-DDR, all-BRAM memory backend (`dma_ctrl1`) or DDR/LPDDR5-backed memory backend (`dma_ddr_ctrl1`), selectable on either CPM6 controller |
 | **Example Type** | IP Example Design (CED) |
 | **Target Audience** | Verification/FPGA engineers validating the CPM6 DMA Bridge datapath |
 | **Devices Supported** | Versal devices with CPM6 hard IP (`vsvc3340` package family) — `xc2vp3602-vsvc3340-3HP-e-S`, `xc2vp3602-vsvc3340-2LHP-e-S` |
@@ -133,7 +133,7 @@ sequenceDiagram
 
 ![Versal CPM6 DMA block diagram](cpm6_dma.PNG)
 
-*The diagram shown is the DDR-enabled block design: `ps_wizard_0` hosts the selected controller's DMA-Bridge endpoint plus PS/PMC configuration; `axi_noc2_0` + `ddrmc5_responder_0` implement the LPDDR5 path; `axi_bram_ctrl_*` / `emb_mem_gen_*` implement the PL-AXI local-memory apertures; `proc_sys_reset_*` provide PS/PL reset synchronization. The non-DDR variant (`dma/`) omits `ddrmc5_responder_0` and adds a fifth BRAM pair in its place.*
+*The diagram shown is the DDR-enabled block design: `ps_wizard_0` hosts the selected controller's DMA-Bridge endpoint plus PS/PMC configuration; `axi_noc2_0` + `ddrmc5_responder_0` implement the LPDDR5 path; `axi_bram_ctrl_*` / `emb_mem_gen_*` implement the PL-AXI local-memory apertures; `proc_sys_reset_*` provide PS/PL reset synchronization. The non-DDR variant (`dma_ctrl1/`) omits `ddrmc5_responder_0` and adds a fifth BRAM pair in its place.*
 
 ## Design Components
 
@@ -254,8 +254,8 @@ Top-level ports added for the DDR variant: `CH0_LPDDR5_0` (LPDDR5 PHY interface:
 
 | `CTRL_CONFIG` | `DDR_EN` | Sub-design dir | Top module |
 |---|---|---|---|
-| `Controller_1` | `false` | `dma/` | `dma_top` |
-| `Controller_1` | `true` | `dma_ddr/` | `dma_ddr_top` |
+| `Controller_1` | `false` | `dma_ctrl1/` | `dma_top` |
+| `Controller_1` | `true` | `dma_ddr_ctrl1/` | `dma_ddr_top` |
 | `Controller_0` | `false` | `dma_ctrl0/` | `dma_top` |
 | `Controller_0` | `true` | `dma_ddr_ctrl0/` | `dma_ddr_top` |
 
@@ -349,8 +349,8 @@ From `<generated_project>/sim`:
 
 | Variant | Flavor | Tests |
 |---|---|---|
-| Non-DDR (`dma/` – Controller_1, `dma_ctrl0/` – Controller_0) | `plaxi` | `test_s_dma_plaxi_ctrlr1`, `test_M_bridge_plaxi_ctrlr1`, `test_M_bridge_plaxi_ctrlr1_4pf`, `test_M_bridge_plaxi_ctrlr1_4pf_axildecode`, `test_s_dma_plaxi_ctrlr0`, `test_M_bridge_plaxi_ctrlr0`, `test_M_bridge_plaxi_ctrlr0_4pf`, `test_M_bridge_plaxi_ctrlr0_4pf_axildecode` |
-| DDR (`dma_ddr/` – Controller_1, `dma_ddr_ctrl0/` – Controller_0) | `ddr` | `test_s_dma_ddr_ctrlr1`, `test_M_bridge_ddr_ctrlr1`, `test_M_bridge_ddr_ctrlr1_4pf`, `test_M_bridge_ddr_ctrlr1_bar24_1pf`, `test_s_dma_ddr_ctrlr0`, `test_M_bridge_ddr_ctrlr0`, `test_M_bridge_ddr_ctrlr0_4pf`, `test_M_bridge_ddr_ctrlr0_bar24_1pf` |
+| Non-DDR (`dma_ctrl1/` – Controller_1, `dma_ctrl0/` – Controller_0) | `plaxi` | `test_s_dma_plaxi_ctrlr1`, `test_M_bridge_plaxi_ctrlr1`, `test_M_bridge_plaxi_ctrlr1_4pf`, `test_M_bridge_plaxi_ctrlr1_4pf_axildecode`, `test_s_dma_plaxi_ctrlr0`, `test_M_bridge_plaxi_ctrlr0`, `test_M_bridge_plaxi_ctrlr0_4pf`, `test_M_bridge_plaxi_ctrlr0_4pf_axildecode` |
+| DDR (`dma_ddr_ctrl1/` – Controller_1, `dma_ddr_ctrl0/` – Controller_0) | `ddr` | `test_s_dma_ddr_ctrlr1`, `test_M_bridge_ddr_ctrlr1`, `test_M_bridge_ddr_ctrlr1_4pf`, `test_M_bridge_ddr_ctrlr1_bar24_1pf`, `test_s_dma_ddr_ctrlr0`, `test_M_bridge_ddr_ctrlr0`, `test_M_bridge_ddr_ctrlr0_4pf`, `test_M_bridge_ddr_ctrlr0_bar24_1pf` |
 
 A handful of generic framework tests (`test_init`, `test_enum`, `test_base`, `base_ep_test`, ...) are also compiled in via `sim/tb/test/test_pkg.svh`.
 

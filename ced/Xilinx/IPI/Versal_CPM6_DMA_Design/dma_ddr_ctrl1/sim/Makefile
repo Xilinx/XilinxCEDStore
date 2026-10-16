@@ -82,6 +82,13 @@ ifeq ($(NUM_PFS),8)
 else
   TEST ?= test_s_dma_ddr_ctrlr1
 endif
+IDE_CAP_EN := $(shell grep -oE "IDE_CAP_EN[[:space:]]*=[[:space:]]*[0-9]+" "$(DEFINES_FILE)" 2>/dev/null | grep -oE "[0-9]+")
+ifeq ($(strip $(IDE_CAP_EN)),)
+  IDE_CAP_EN := 0
+endif
+ifeq ($(IDE_CAP_EN),1)
+  TEST := test_mem_ide_tlps
+endif
 
 ## ----------------------------------------------------------------------------
 ## Auto-detect PL0 clock from Vivado-generated file
@@ -172,6 +179,7 @@ h help:
 	@echo "   SEED=<n>          Random seed (default: automatic)"
 	@echo "   REGR_TIMEOUT=<s>  Per-test timeout in seconds (default: $(REGR_TIMEOUT))"
 	@echo "   DUMP=<0|1>        Waveform dump: 0=off, 1=on (default: $(DUMP))"
+	@echo "   IDE_CAP_EN=<0|1>  1=use test_mem_ide_tlps as TEST (default: $(IDE_CAP_EN))"
 	@echo ""
 	@echo " Auto-detected:"
 	@echo "   Project    : $(PROJ_ROOT)"

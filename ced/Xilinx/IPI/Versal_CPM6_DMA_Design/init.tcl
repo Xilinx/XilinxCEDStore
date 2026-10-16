@@ -21,6 +21,9 @@ proc addOptions {DESIGNOBJ PROJECT_PARAM.BOARD_PART} {
     lappend x [dict create name "DDR_EN" type "boolean" \
         value "false" \
         enabled true]
+    lappend x [dict create name "IDE_CAP_EN" type "boolean" \
+        value "false" \
+        enabled true]
     lappend x [dict create name "NUM_PFS" type "string" \
         value "1" \
         value_list {1} \
@@ -42,7 +45,9 @@ proc addGUILayout {DESIGNOBJ PROJECT_PARAM.BOARD_PART} {
     set page [ced::add_page  -name "Configuration" -display_name "CPM6 DMA Configuration" -designObject $designObj]    
     ced::add_param -name CTRL_CONFIG -display_name "Controller selection" -parent $page -designObject $designObj -widget radioGroup -layout horizontal
     set dma [ced::add_panel -name dma -parent $page -designObject $designObj -layout horizontal]
-    ced::add_param -name DDR_EN -display_name "DDR Mode" -parent $dma -designObject $designObj -widget checkBox
+    ced::add_param -name DDR_EN -display_name "Use DDR (DDR + BRAM)" -parent $dma -designObject $designObj -widget checkBox
+    set panel1 [ced::add_panel -name panel1 -parent $page -designObject $designObj -layout horizontal]
+    ced::add_param -name IDE_CAP_EN -display_name "IDE (Integrity and Data Encryption)" -parent $panel1 -designObject $designObj -widget checkBox
     set panel2 [ced::add_panel -name panel2 -parent $page -designObject $designObj -layout horizontal]
     ced::add_param -name NUM_PFS -display_name "Num of PFs" -parent $panel2 -designObject $designObj -widget comboBox
     set panel3 [ced::add_panel -name panel3 -parent $page -designObject $designObj -layout horizontal]
