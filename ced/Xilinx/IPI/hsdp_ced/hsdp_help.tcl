@@ -203,8 +203,24 @@ set_property -dict [list \
   ] $gtwiz_versal_0
 
   # Create instance: versal_cips_0, and set properties  
-  if {$device eq "xcvp1902" || $device eq "xcvm2152" || $device eq "xcvr1602" || $device eq "xcvr1652" || $device eq "xc10S70" || $device eq "xc2vp3202" || $device eq "xc2vp3402" || $device eq "xc2vp3502" || $device eq "xc2vp3602"} {
+  # Determine the PS type from the IP catalog instead of a hard-coded device list:
+  # if ps_wizard supports this part, instantiate it and detect PS9 vs PS11 from its properties
+  if {[lsearch -inline [split [get_property supported_families [get_ipdefs xilinx.com:ip:ps_wizard:*.*]] ":"] $part*] != ""} {
     set versal_cips_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:ps_wizard versal_cips_0 ]
+    set report [report_property -return_string $versal_cips_0]
+    if {[string match *PS_PMC* $report]} {
+      set has_pswizard_PS9 1
+      set has_pswizard_PS11 0
+    } else {
+      set has_pswizard_PS9 0
+      set has_pswizard_PS11 1
+    }
+  } else {
+    set has_pswizard_PS9 0
+    set has_pswizard_PS11 0
+  }
+
+  if {$has_pswizard_PS9} {
       set_property -dict [list \
         CONFIG.PS_PMC_CONFIG(PMC_CRP_PL0_REF_CTRL_FREQMHZ) {150} \
         CONFIG.PS_PMC_CONFIG(PS_HSDP_INGRESS_TRAFFIC) {PL} \
@@ -223,10 +239,10 @@ set_property -dict [list \
     [get_bd_pins proc_sys_reset_0/slowest_sync_clk] \
     [get_bd_pins versal_cips_0/fpd_axi_pl_aclk] \
     [get_bd_pins gtwiz_versal_0/gtwiz_freerun_clk]
-  } elseif {$device eq "xc2ve3504" || $device eq "xc2ve3558" || $device eq "xc2ve3804" || $device eq "xc2ve3858" || $device eq "xc2vm3558" || $device eq "xc2vm3858" || $device eq "xc2vm3358" || $device eq "xc2ve3304" || $device eq "xc2ve3358" } {
-    set versal_cips_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:ps_wizard versal_cips_0 ]
+  } elseif {$has_pswizard_PS11} {
       set_property -dict [list \
         CONFIG.PS11_CONFIG(PMC_CRP_PL0_REF_CTRL_FREQMHZ) {150} \
+        CONFIG.PS11_CONFIG(PS_ASU_ENABLE) {0} \
         CONFIG.PS11_CONFIG(PS_HSDP_INGRESS_TRAFFIC) {PL} \
         CONFIG.PS11_CONFIG(PS_NUM_FABRIC_RESETS) {1} \
         CONFIG.PS11_CONFIG(PS_SLR_ID) {0} \

@@ -1682,6 +1682,7 @@ proc create_root_design_vek385_reva { parentCell } {
     CONFIG.MMI_CONFIG(MMI_GPU_ENABLE) {1} \
     CONFIG.PS11_CONFIG(MMI_GPU_ENABLE) {1} \
     CONFIG.PS11_CONFIG(PMC_USE_PMC_AXI_NOC0) {1} \
+    CONFIG.PS11_CONFIG(PS_ASU_ENABLE) {0} \
     CONFIG.PS11_CONFIG(PS_NUM_FABRIC_RESETS) {1} \
     CONFIG.PS11_CONFIG(PS_USE_FPD_AXI_NOC) {1} \
     CONFIG.PS11_CONFIG(PS_USE_LPD_AXI_NOC) {1} \
@@ -1770,7 +1771,6 @@ proc create_root_design_vek385_reva { parentCell } {
   # Create address segments
   # Create address segments
   assign_bd_address -offset 0x00000000 -range 0x20000000 -target_address_space [get_bd_addr_spaces ps_wizard_0/mmi_0_mmi_gpu_0] [get_bd_addr_segs axi_noc2_0/DDR_MC_PORTS/DDR_CH0_LEGACY] -force
-  assign_bd_address -offset 0x00000000 -range 0x20000000 -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_asu] [get_bd_addr_segs axi_noc2_0/DDR_MC_PORTS/DDR_CH0_LEGACY] -force
   assign_bd_address -offset 0x00000000 -range 0x20000000 -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_cortexa78_0] [get_bd_addr_segs axi_noc2_0/DDR_MC_PORTS/DDR_CH0_LEGACY] -force
   assign_bd_address -offset 0x00000000 -range 0x20000000 -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_cortexa78_1] [get_bd_addr_segs axi_noc2_0/DDR_MC_PORTS/DDR_CH0_LEGACY] -force
   assign_bd_address -offset 0x00000000 -range 0x20000000 -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_cortexa78_2] [get_bd_addr_segs axi_noc2_0/DDR_MC_PORTS/DDR_CH0_LEGACY] -force
@@ -1806,8 +1806,6 @@ proc create_root_design_vek385_reva { parentCell } {
   assign_bd_address -offset 0x00000000 -range 0x20000000 -target_address_space [get_bd_addr_spaces noc_tg_bc/noc_tg/Data] [get_bd_addr_segs axi_noc2_0/DDR_MC_PORTS/DDR_CH0_LEGACY] -force
 
   # Exclude Address Segments
-  exclude_bd_addr_seg -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_asu] [get_bd_addr_segs noc_tg_bc/axi_dbg_hub_0/S_AXI_DBG_HUB/Mem0]
-  exclude_bd_addr_seg -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_asu] [get_bd_addr_segs noc_tg_bc/noc_bc/S_AXI/Mem0]
   exclude_bd_addr_seg -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_cortexr52_0] [get_bd_addr_segs noc_tg_bc/axi_dbg_hub_0/S_AXI_DBG_HUB/Mem0]
   exclude_bd_addr_seg -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_cortexr52_0] [get_bd_addr_segs noc_tg_bc/noc_bc/S_AXI/Mem0]
   exclude_bd_addr_seg -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_cortexr52_1] [get_bd_addr_segs noc_tg_bc/axi_dbg_hub_0/S_AXI_DBG_HUB/Mem0]
@@ -2219,6 +2217,7 @@ proc create_root_design_vek385_revb { parentCell } {
     CONFIG.MMI_CONFIG(MMI_GPU_ENABLE) {1} \
     CONFIG.PS11_CONFIG(MMI_GPU_ENABLE) {1} \
     CONFIG.PS11_CONFIG(PMC_USE_PMC_AXI_NOC0) {1} \
+    CONFIG.PS11_CONFIG(PS_ASU_ENABLE) {0} \
     CONFIG.PS11_CONFIG(PS_NUM_FABRIC_RESETS) {1} \
     CONFIG.PS11_CONFIG(PS_USE_FPD_AXI_NOC) {1} \
     CONFIG.PS11_CONFIG(PS_USE_LPD_AXI_NOC) {1} \
@@ -2328,7 +2327,6 @@ proc create_root_design_vek385_revb { parentCell } {
 
   # Create address segments
   assign_bd_address -offset 0x00000000 -range 0x20000000 -target_address_space [get_bd_addr_spaces ps_wizard_0/mmi_0_mmi_gpu_0] [get_bd_addr_segs axi_noc2_0/DDR_MC_PORTS/DDR_CH0_LEGACY] -force
-  assign_bd_address -offset 0x00000000 -range 0x20000000 -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_asu] [get_bd_addr_segs axi_noc2_0/DDR_MC_PORTS/DDR_CH0_LEGACY] -force
   assign_bd_address -offset 0x00000000 -range 0x20000000 -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_cortexa78_0] [get_bd_addr_segs axi_noc2_0/DDR_MC_PORTS/DDR_CH0_LEGACY] -force
   assign_bd_address -offset 0x00000000 -range 0x20000000 -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_cortexa78_1] [get_bd_addr_segs axi_noc2_0/DDR_MC_PORTS/DDR_CH0_LEGACY] -force
   assign_bd_address -offset 0x00000000 -range 0x20000000 -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_cortexa78_2] [get_bd_addr_segs axi_noc2_0/DDR_MC_PORTS/DDR_CH0_LEGACY] -force
@@ -2364,8 +2362,6 @@ proc create_root_design_vek385_revb { parentCell } {
   assign_bd_address -offset 0x00000000 -range 0x20000000 -target_address_space [get_bd_addr_spaces noc_tg_bc/noc_tg/Data] [get_bd_addr_segs axi_noc2_0/DDR_MC_PORTS/DDR_CH0_LEGACY] -force
 
   # Exclude Address Segments
-  exclude_bd_addr_seg -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_asu] [get_bd_addr_segs noc_tg_bc/axi_dbg_hub_0/S_AXI_DBG_HUB/Mem0]
-  exclude_bd_addr_seg -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_asu] [get_bd_addr_segs noc_tg_bc/noc_bc/S_AXI/Mem0]
   exclude_bd_addr_seg -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_cortexr52_0] [get_bd_addr_segs noc_tg_bc/axi_dbg_hub_0/S_AXI_DBG_HUB/Mem0]
   exclude_bd_addr_seg -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_cortexr52_0] [get_bd_addr_segs noc_tg_bc/noc_bc/S_AXI/Mem0]
   exclude_bd_addr_seg -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_cortexr52_1] [get_bd_addr_segs noc_tg_bc/axi_dbg_hub_0/S_AXI_DBG_HUB/Mem0]
@@ -3411,6 +3407,7 @@ proc create_root_design_vmk365 { parentCell } {
     CONFIG.MMI_CONFIG(MMI_GPU_ENABLE) {1} \
     CONFIG.PS11_CONFIG(MMI_GPU_ENABLE) {1} \
     CONFIG.PS11_CONFIG(PMC_USE_PMC_AXI_NOC0) {1} \
+    CONFIG.PS11_CONFIG(PS_ASU_ENABLE) {0} \
     CONFIG.PS11_CONFIG(PS_NUM_FABRIC_RESETS) {1} \
     CONFIG.PS11_CONFIG(PS_USE_FPD_AXI_NOC) {1} \
     CONFIG.PS11_CONFIG(PS_USE_LPD_AXI_NOC) {1} \
@@ -3494,7 +3491,6 @@ proc create_root_design_vmk365 { parentCell } {
 
   # Create address segments
   assign_bd_address -offset 0x00000000 -range 0x20000000 -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_mmi_gpu_0] [get_bd_addr_segs axi_noc2_0/DDR_MC_PORTS/DDR_CH0_LEGACY] -force
-  assign_bd_address -offset 0x00000000 -range 0x20000000 -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_asu] [get_bd_addr_segs axi_noc2_0/DDR_MC_PORTS/DDR_CH0_LEGACY] -force
   assign_bd_address -offset 0x00000000 -range 0x20000000 -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_cortexa78_0] [get_bd_addr_segs axi_noc2_0/DDR_MC_PORTS/DDR_CH0_LEGACY] -force
   assign_bd_address -offset 0x00000000 -range 0x20000000 -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_cortexa78_1] [get_bd_addr_segs axi_noc2_0/DDR_MC_PORTS/DDR_CH0_LEGACY] -force
   assign_bd_address -offset 0x00000000 -range 0x20000000 -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_cortexa78_2] [get_bd_addr_segs axi_noc2_0/DDR_MC_PORTS/DDR_CH0_LEGACY] -force
@@ -3522,8 +3518,6 @@ proc create_root_design_vmk365 { parentCell } {
   assign_bd_address -offset 0x00000000 -range 0x20000000 -target_address_space [get_bd_addr_spaces noc_tg_bc/noc_tg/Data] [get_bd_addr_segs axi_noc2_0/DDR_MC_PORTS/DDR_CH0_LEGACY] -force
 
   # Exclude Address Segments
-  exclude_bd_addr_seg -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_asu] [get_bd_addr_segs noc_tg_bc/axi_dbg_hub_0/S_AXI_DBG_HUB/Mem0]
-  exclude_bd_addr_seg -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_asu] [get_bd_addr_segs noc_tg_bc/noc_bc/S_AXI/Mem0]
   exclude_bd_addr_seg -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_cortexr52_0] [get_bd_addr_segs noc_tg_bc/axi_dbg_hub_0/S_AXI_DBG_HUB/Mem0]
   exclude_bd_addr_seg -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_cortexr52_0] [get_bd_addr_segs noc_tg_bc/noc_bc/S_AXI/Mem0]
   exclude_bd_addr_seg -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_cortexr52_1] [get_bd_addr_segs noc_tg_bc/axi_dbg_hub_0/S_AXI_DBG_HUB/Mem0]
