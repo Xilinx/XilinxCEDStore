@@ -108,9 +108,7 @@ proc create_hier_cell_avtpg_s1 { parentCell nameHier } {
     CONFIG.HAS_RGBX10 {1} \
     CONFIG.HAS_RGBX8 {1} \
     CONFIG.HAS_UYVY8 {1} \
-    CONFIG.HAS_Y10_16LE {1} \
     CONFIG.HAS_Y12 {1} \
-    CONFIG.HAS_Y12_16LE {1} \
     CONFIG.HAS_Y8 {1} \
     CONFIG.HAS_YUV8 {1} \
     CONFIG.HAS_YUVX10 {1} \
@@ -118,18 +116,12 @@ proc create_hier_cell_avtpg_s1 { parentCell nameHier } {
     CONFIG.HAS_YUVX8 {1} \
     CONFIG.HAS_YUYV8 {1} \
     CONFIG.HAS_Y_UV10 {1} \
-    CONFIG.HAS_Y_UV10_16LE {1} \
     CONFIG.HAS_Y_UV10_420 {1} \
-    CONFIG.HAS_Y_UV10_420_16LE {1} \
     CONFIG.HAS_Y_UV12 {1} \
-    CONFIG.HAS_Y_UV12_16LE {1} \
     CONFIG.HAS_Y_UV12_420 {1} \
-    CONFIG.HAS_Y_UV12_420_16LE {1} \
     CONFIG.HAS_Y_UV8 {1} \
     CONFIG.HAS_Y_U_V10 {1} \
-    CONFIG.HAS_Y_U_V10_16LE {1} \
     CONFIG.HAS_Y_U_V12 {1} \
-    CONFIG.HAS_Y_U_V12_16LE {1} \
     CONFIG.HAS_Y_U_V8 {1} \
     CONFIG.HAS_Y_U_V8_420 {1} \
     CONFIG.HAS_Y10 {1} \
@@ -430,9 +422,11 @@ proc create_hier_cell_rst_module { parentCell nameHier } {
   create_bd_pin -dir I -type rst ext_reset_in
   create_bd_pin -dir O -from 0 -to 0 -type rst peripheral_aresetn
   create_bd_pin -dir O -from 0 -to 0 -type rst peripheral_aresetn1
+  create_bd_pin -dir O -from 0 -to 0 -type rst peripheral_aresetn2
   create_bd_pin -dir O -from 0 -to 0 -type rst peripheral_reset
   create_bd_pin -dir I -type clk slowest_sync_clk
   create_bd_pin -dir I -type clk slowest_sync_clk2
+  create_bd_pin -dir I -type clk slowest_sync_clk3
   create_bd_pin -dir I dcm_locked
   create_bd_pin -dir I dcm_locked1
 
@@ -445,25 +439,40 @@ proc create_hier_cell_rst_module { parentCell nameHier } {
   set rst_proc_vid_clk [ create_bd_cell -type ip -vlnv xilinx.com:ip:proc_sys_reset rst_proc_vid_clk ]
   set_property CONFIG.C_NUM_PERP_ARESETN {1} $rst_proc_vid_clk
 
+  # Create instance: rst_proc_pl_ref_clk, and set properties
+  set rst_proc_pl_ref_clk [ create_bd_cell -type ip -vlnv xilinx.com:ip:proc_sys_reset rst_proc_pl_ref_clk ]
+  set_property CONFIG.C_NUM_PERP_ARESETN {1} $rst_proc_pl_ref_clk
+
+  # Create instance: dcm_locked_const, and set properties
+  set dcm_locked_const [ create_bd_cell -type inline_hdl -vlnv xilinx.com:inline_hdl:ilconstant dcm_locked_const ]
+  set_property CONFIG.CONST_VAL {1} $dcm_locked_const
+
 
   # Create port connections
   connect_bd_net -net PS_0_pl0_resetn  [get_bd_pins ext_reset_in] \
   [get_bd_pins rst_proc_i2s_clk/ext_reset_in] \
-  [get_bd_pins rst_proc_vid_clk/ext_reset_in]
+  [get_bd_pins rst_proc_vid_clk/ext_reset_in] \
+  [get_bd_pins rst_proc_pl_ref_clk/ext_reset_in]
   connect_bd_net -net clk_wiz_pl_vid_1x_clk  [get_bd_pins slowest_sync_clk] \
   [get_bd_pins rst_proc_vid_clk/slowest_sync_clk]
   connect_bd_net -net dcm_locked1_1  [get_bd_pins dcm_locked1] \
   [get_bd_pins rst_proc_i2s_clk/dcm_locked]
   connect_bd_net -net dcm_locked_1  [get_bd_pins dcm_locked] \
   [get_bd_pins rst_proc_vid_clk/dcm_locked]
+  connect_bd_net -net dcm_locked_const_dout  [get_bd_pins dcm_locked_const/dout] \
+  [get_bd_pins rst_proc_pl_ref_clk/dcm_locked]
   connect_bd_net -net rst_proc_i2s_clk_peripheral_aresetn  [get_bd_pins rst_proc_i2s_clk/peripheral_aresetn] \
   [get_bd_pins peripheral_aresetn1]
   connect_bd_net -net rst_proc_i2s_clk_peripheral_reset  [get_bd_pins rst_proc_i2s_clk/peripheral_reset] \
   [get_bd_pins peripheral_reset]
   connect_bd_net -net rst_proc_vid_clk_peripheral_aresetn  [get_bd_pins rst_proc_vid_clk/peripheral_aresetn] \
   [get_bd_pins peripheral_aresetn]
+  connect_bd_net -net rst_proc_pl_ref_clk_peripheral_aresetn  [get_bd_pins rst_proc_pl_ref_clk/peripheral_aresetn] \
+  [get_bd_pins peripheral_aresetn2]
   connect_bd_net -net slowest_sync_clk2_1  [get_bd_pins slowest_sync_clk2] \
   [get_bd_pins rst_proc_i2s_clk/slowest_sync_clk]
+  connect_bd_net -net slowest_sync_clk3_1  [get_bd_pins slowest_sync_clk3] \
+  [get_bd_pins rst_proc_pl_ref_clk/slowest_sync_clk]
 
   # Restore current instance
   current_bd_instance $oldCurInst
@@ -626,10 +635,12 @@ proc create_hier_cell_rst_module { parentCell nameHier } {
   [get_bd_pins mmi_vid_clk_wiz/s_axi_aclk] \
   [get_bd_pins mmi_vid_clk_wiz/clk_in1] \
   [get_bd_pins ps_wizard_0/fpd_axi_pl_aclk] \
-  [get_bd_pins ps_wizard_0/lpd_axi_pl_aclk]
+  [get_bd_pins ps_wizard_0/lpd_axi_pl_aclk] \
+  [get_bd_pins rst_module/slowest_sync_clk3]
   connect_bd_net -net ps_wizard_0_pl0_resetn  [get_bd_pins ps_wizard_0/pl0_resetn] \
   [get_bd_pins rst_module/ext_reset_in] \
-  [get_bd_pins smartconnect_0/aresetn] \
+  [get_bd_pins smartconnect_0/aresetn]
+  connect_bd_net -net rst_module_pl_ref_clk_aresetn  [get_bd_pins rst_module/peripheral_aresetn2] \
   [get_bd_pins mmi_aud_clk_wiz/s_axi_aresetn] \
   [get_bd_pins mmi_vid_clk_wiz/s_axi_aresetn]
   connect_bd_net -net rst_module_peripheral_aresetn  [get_bd_pins rst_module/peripheral_aresetn] \

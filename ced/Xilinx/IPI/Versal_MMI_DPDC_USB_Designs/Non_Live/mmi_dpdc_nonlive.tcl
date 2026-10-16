@@ -14,6 +14,69 @@ group_bd_cells hier_NOC [get_bd_cells NoC_C0_C1] [get_bd_cells aggr_noc] [get_bd
 set_property USER_COMMENTS.comment_0 {MMI DPDC Functional design with Nonlive as Presentation mode and num of lanes is X4} [current_bd_design]
 #####################################################################
 
+# Hierarchical cell: rst_module
+proc create_hier_cell_rst_module { parentCell nameHier } {
+
+  variable script_folder
+
+  if { $parentCell eq "" || $nameHier eq "" } {
+     catch {common::send_gid_msg -ssname BD::TCL -id 2092 -severity "ERROR" "create_hier_cell_rst_module() - Empty argument(s)!"}
+     return
+  }
+
+  # Get object for parentCell
+  set parentObj [get_bd_cells $parentCell]
+  if { $parentObj == "" } {
+     catch {common::send_gid_msg -ssname BD::TCL -id 2090 -severity "ERROR" "Unable to find parent cell <$parentCell>!"}
+     return
+  }
+
+  # Make sure parentObj is hier blk
+  set parentType [get_property TYPE $parentObj]
+  if { $parentType ne "hier" } {
+     catch {common::send_gid_msg -ssname BD::TCL -id 2091 -severity "ERROR" "Parent <$parentObj> has TYPE = <$parentType>. Expected to be <hier>."}
+     return
+  }
+
+  # Save current instance; Restore later
+  set oldCurInst [current_bd_instance .]
+
+  # Set parent object as current
+  current_bd_instance $parentObj
+
+  # Create cell and set as current instance
+  set hier_obj [create_bd_cell -type hier $nameHier]
+  current_bd_instance $hier_obj
+
+  # Create interface pins
+
+  # Create pins
+  create_bd_pin -dir I -type rst ext_reset_in
+  create_bd_pin -dir O -from 0 -to 0 -type rst peripheral_aresetn
+  create_bd_pin -dir I -type clk slowest_sync_clk
+
+  # Create instance: rst_proc_pl_ref_clk, and set properties
+  set rst_proc_pl_ref_clk [ create_bd_cell -type ip -vlnv xilinx.com:ip:proc_sys_reset rst_proc_pl_ref_clk ]
+  set_property CONFIG.C_NUM_PERP_ARESETN {1} $rst_proc_pl_ref_clk
+
+  # Create instance: dcm_locked_const, and set properties
+  set dcm_locked_const [ create_bd_cell -type inline_hdl -vlnv xilinx.com:inline_hdl:ilconstant dcm_locked_const ]
+  set_property CONFIG.CONST_VAL {1} $dcm_locked_const
+
+  # Create port connections
+  connect_bd_net -net PS_0_pl0_resetn  [get_bd_pins ext_reset_in] \
+  [get_bd_pins rst_proc_pl_ref_clk/ext_reset_in]
+  connect_bd_net -net ps_wizard_0_pl0_ref_clk  [get_bd_pins slowest_sync_clk] \
+  [get_bd_pins rst_proc_pl_ref_clk/slowest_sync_clk]
+  connect_bd_net -net dcm_locked_const_dout  [get_bd_pins dcm_locked_const/dout] \
+  [get_bd_pins rst_proc_pl_ref_clk/dcm_locked]
+  connect_bd_net -net rst_proc_pl_ref_clk_peripheral_aresetn  [get_bd_pins rst_proc_pl_ref_clk/peripheral_aresetn] \
+  [get_bd_pins peripheral_aresetn]
+
+  # Restore current instance
+  current_bd_instance $oldCurInst
+}
+
   # Create ports
 
   # Create instance: ps_wizard_0, and set properties
@@ -29,8 +92,11 @@ set_property USER_COMMENTS.comment_0 {MMI DPDC Functional design with Nonlive as
     CONFIG.NUM_CLKS {2} \
     CONFIG.NUM_MI {2} \
     CONFIG.NUM_SI {1} \
-  ] $smartconnect_0 
- 
+  ] $smartconnect_0
+
+  # Create instance: rst_module
+  create_hier_cell_rst_module [current_bd_instance .] rst_module
+
   # Create instance: mmi_vid_clk_wiz, and set properties
   set mmi_vid_clk_wiz [ create_bd_cell -type ip -vlnv xilinx.com:ip:clkx5_wiz mmi_vid_clk_wiz ]
   set_property -dict [list \
@@ -84,15 +150,18 @@ set_property USER_COMMENTS.comment_0 {MMI DPDC Functional design with Nonlive as
   [get_bd_pins mmi_vid_clk_wiz/clk_in1] \
   [get_bd_pins mmi_aud_clk_wiz/s_axi_aclk] \
   [get_bd_pins mmi_aud_clk_wiz/ref_clk] \
-  [get_bd_pins mmi_aud_clk_wiz/clk_in1]
+  [get_bd_pins mmi_aud_clk_wiz/clk_in1] \
+  [get_bd_pins rst_module/slowest_sync_clk]
   connect_bd_net [get_bd_pins ps_wizard_0/mmi_pl_dc_1x_clk] [get_bd_pins smartconnect_0/aclk1]
   connect_bd_net [get_bd_pins mmi_vid_clk_wiz/pl_vid_2x_clk] [get_bd_pins ps_wizard_0/pl_mmi_dc_2x_clk]
   connect_bd_net -net clkx5_wiz_1_i2s_clk_x1  [get_bd_pins mmi_aud_clk_wiz/i2s_clk_x1] \
   [get_bd_pins ps_wizard_0/pl_mmi_dc_i2s_s0_clk]
   connect_bd_net -net ps_wizard_0_pl0_resetn  [get_bd_pins ps_wizard_0/pl0_resetn] \
+  [get_bd_pins smartconnect_0/aresetn] \
+  [get_bd_pins rst_module/ext_reset_in]
+  connect_bd_net -net rst_module_pl_ref_clk_aresetn  [get_bd_pins rst_module/peripheral_aresetn] \
   [get_bd_pins mmi_aud_clk_wiz/s_axi_aresetn] \
-  [get_bd_pins mmi_vid_clk_wiz/s_axi_aresetn] \
-  [get_bd_pins smartconnect_0/aresetn]
+  [get_bd_pins mmi_vid_clk_wiz/s_axi_aresetn]
     
   # Create address segments
   assign_bd_address -offset 0xB0A00000 -range 0x00010000 -target_address_space [get_bd_addr_spaces ps_wizard_0/ps11_0_cortexa78_0] [get_bd_addr_segs mmi_vid_clk_wiz/s_axi_lite/Reg] -force
