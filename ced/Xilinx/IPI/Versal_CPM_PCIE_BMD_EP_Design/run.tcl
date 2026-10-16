@@ -40,6 +40,18 @@ set files [list \
 
 import_files -norecurse -fileset $obj $files
 
+create_ip -name axis_register_slice -vendor xilinx.com -library ip -module_name axis_register_slice_0
+set_property -dict [list \
+  CONFIG.TDATA_NUM_BYTES {64} \
+  CONFIG.TUSER_WIDTH {184} \
+  CONFIG.HAS_TKEEP {1} \
+  CONFIG.HAS_TLAST {1} \
+  CONFIG.HAS_TREADY {1} \
+  CONFIG.REG_CONFIG {8} \
+] [get_ips axis_register_slice_0]
+
+generate_target all [get_files axis_register_slice_0.xci]
+
 # Set 'sources_1' fileset properties
 set obj [get_filesets sources_1]
 set_property -name "top" -value "design_1_wrapper" -objects $obj

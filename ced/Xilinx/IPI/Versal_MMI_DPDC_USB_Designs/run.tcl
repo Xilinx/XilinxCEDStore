@@ -10,9 +10,6 @@ set board_name [get_property BOARD_NAME [current_board]]
 if {[regexp "vek385" $board_name]} {
 set_param noc.enableRemapForDdrWithInterleaving 1
 
-#set_property ip_repo_paths /home/zakirhus/workspace/lumina_ip/IP3_zakirhus_mmi_mbufg/DEV/hw/mmi/mmi_v1_0/lumina-ip-build/ip_repo/mmi_v1_0 [current_project]
-#update_ip_catalog
-
 }
 ##################################################################
 # DESIGN PROCs

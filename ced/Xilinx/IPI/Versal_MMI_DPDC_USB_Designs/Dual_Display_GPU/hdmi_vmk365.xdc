@@ -6,7 +6,6 @@
 ## Constraints for VERSAL VMK365 HDMI (TX-only)
 ## Version 1.0
 ## Pin data sourced from verified working design:
-## /everest/ps_sival2_nobkup/zakir/mbufg_updates/t40_ced/test/vmk365_4mc_hdmitxrx_single/constrs_1/hdmi_top.xdc
 #####
 
 
