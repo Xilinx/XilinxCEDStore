@@ -1031,11 +1031,11 @@
         "name": "cpm6_qdma",
         "display": "Versal CPM6 QDMA Design",
         "latest_revision": "1.0",
-        "commit_id": "d0f07db2729bb3b4a88adebff1110b2f7a39f3ef",
+        "commit_id": "7c52868ed7a4127ae3d889d9c6d80a58ba8e8fca",
         "revisions": [
           {
             "revision": "1.0",
-            "commit_id": "d0f07db2729bb3b4a88adebff1110b2f7a39f3ef",
+            "commit_id": "7c52868ed7a4127ae3d889d9c6d80a58ba8e8fca",
             "date": "06-10-2026:15:46:43",
             "history": "Added board Versal CPM6 QDMA Design v1.0"
           }
