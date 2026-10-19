@@ -456,5 +456,61 @@ set_property -name "questa.simulate.log_all_signals" -value "1" -objects $obj
 set_property -name "questa.simulate.runtime" -value "all" -objects $obj
 set_property -name "questa.simulate.vsim.more_options" -value "+notimingchecks" -objects $obj
 
+# ----------------------------------------------------------
+# Register pre-compile hook for PIPESIM auto-sync (CPM4 + CPM5)
+# Registers pre_compile_hook.tcl as xsim.compile.tcl.pre and
+# xcelium.compile.tcl.pre on the sim_1 fileset.
+# Vivado calls this hook BEFORE compile.sh runs — for BOTH:
+#   - GUI: Flow → Run Simulation → launch_simulation
+#   - Batch: launch_simulation in Vivado Tcl / vivado -mode batch
+# The hook calls update_pipesim.sh to sync board.v PIPESIM from EP IP.
+# This approach survives compile.sh regeneration because the hook path
+# is stored in the .xpr project file, not in compile.sh itself.
+# Scripts live in the project root (shared by CPM4 + CPM5).
+# ----------------------------------------------------------
+set proj_dir  [get_property DIRECTORY [current_project]]
+set proj_name [get_property NAME [current_project]]
+set hook_src  "$currentDir/pre_compile_hook.tcl"
+set behav_dir "$proj_dir/${proj_name}.sim/sim_1/behav"
+set hook_dst  "$behav_dir/pre_compile_hook.tcl"
+
+# Ensure the behav directory exists (may not exist yet before first compile)
+if {![file exists $behav_dir]} { file mkdir $behav_dir }
+
+# Also deploy update_pipesim.sh (called by pre_compile_hook.tcl PART 1)
+set upd_src  "$currentDir/update_pipesim.sh"
+set upd_dst  "$behav_dir/update_pipesim.sh"
+if {[file exists $upd_src]} {
+  file copy -force $upd_src $upd_dst
+  puts "INFO: Deployed: update_pipesim.sh → $upd_dst"
+} else {
+  puts "WARNING: update_pipesim.sh not found: $upd_src"
 }
 
+if {[file exists $hook_src]} {
+  file copy -force $hook_src $hook_dst
+
+  # Register for ALL simulators supported by Vivado
+  foreach sim_prop {
+    xsim.compile.tcl.pre
+    xcelium.compile.tcl.pre
+    vcs.compile.tcl.pre
+    questa.compile.tcl.pre
+    modelsim.compile.tcl.pre
+    riviera.compile.tcl.pre
+    activehdl.compile.tcl.pre
+  } {
+    if {[catch {set_property -name $sim_prop -value $hook_dst -objects [get_filesets sim_1]}]} {
+      puts "WARNING:   $sim_prop not supported by this Vivado - skipped"
+    } else {
+      puts "INFO:   $sim_prop = $hook_dst"
+    }
+  }
+  puts "INFO: Pre-compile hook registered for ALL simulators in .xpr"
+  puts "INFO:   Hook will auto-run before every compile (GUI + batch)"
+} else {
+  puts "WARNING: pre_compile_hook.tcl not found: $hook_src"
+  puts "WARNING: PIPESIM pre-compile hook NOT registered"
+}
+
+}
