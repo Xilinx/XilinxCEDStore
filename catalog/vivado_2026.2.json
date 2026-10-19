@@ -442,11 +442,11 @@
         "name": "cpm_qdma",
         "display": "Versal CPM QDMA EP Simulation Design",
         "latest_revision": "1.0",
-        "commit_id": "b5c8ce1ea136da024506def7518226306314a214",
+        "commit_id": "8de93eaf478a7676d83401a35678058e1f4b5673",
         "revisions": [
           {
             "revision": "1.0",
-            "commit_id": "b5c8ce1ea136da024506def7518226306314a214",
+            "commit_id": "8de93eaf478a7676d83401a35678058e1f4b5673",
             "date": "25-09-2026:04:51:43",
             "history": "Added board Versal CPM QDMA EP Simulation Design v1.0"
           }
