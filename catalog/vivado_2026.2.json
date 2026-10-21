@@ -195,11 +195,11 @@
         "name": "cpm6_bmd",
         "display": "Versal CPM6 BMD Design",
         "latest_revision": "1.0",
-        "commit_id": "d394a88e8e59263d681c0a06aea44f1403128d9e",
+        "commit_id": "80a1f7a99fa64f3a394304bd70ca93123811c91b",
         "revisions": [
           {
             "revision": "1.0",
-            "commit_id": "d394a88e8e59263d681c0a06aea44f1403128d9e",
+            "commit_id": "80a1f7a99fa64f3a394304bd70ca93123811c91b",
             "date": "25-09-2026:04:51:43",
             "history": "Added board Versal CPM6 BMD Design v1.0"
           }
