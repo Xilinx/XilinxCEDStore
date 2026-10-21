@@ -102,6 +102,7 @@ proc createDesign {design_name options} {
     foreach file [glob -nocomplain ${src_dir}/sim/*] {
       file copy -force $file $sim_dst
     }
+    file copy -force ${currentDir}/README.md $proj_dir
     puts "INFO: Simulation files copied to $sim_dst"
   } else {
     puts "INFO: sim/ already exists at $sim_dst -- skipping copy"

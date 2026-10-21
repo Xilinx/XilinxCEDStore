@@ -31,7 +31,6 @@ By working through this example design, you will learn how to:
 - **Combined Write+Read** -- concurrent, hand-editable traffic test (`test_bmd_write_read_custom`, default test)
 - **Interrupts** -- INTx, MSI, MSI-X
 - **Capabilities** -- TPH, PASID, VSEC, Extended Tag, 10-bit Tag
-- **Error injection** -- bad data injection, Unsupported Request (UR) generation
 
 ---
 
@@ -124,9 +123,7 @@ Simulation completes with `UVM_ERROR : 0` and `UVM_FATAL : 0` in the report summ
 
 **Interrupts:** `test_bmd_intx`, `test_bmd_msi`, `test_bmd_msix`
 
-**Capabilities:** `test_bmd_tph`, `test_bmd_pasid`, `test_bmd_vsec`, `test_bmd_10b_tag`, ...
-
-**Error tests:** `test_bmd_inject_bad_data`, `test_bmd_send_ur`, ...
+**Capabilities:** `test_bmd_tph`, `test_bmd_pasid`, `test_bmd_10b_tag`, ...
 
 **Custom (write + read, concurrent, hand-editable):**
 `test_bmd_write_read_custom` (default) -- runs write and read DMA together. `wr_size`/`wr_count`/`rd_size`/`rd_count` are hardcoded in the test source -- edit `test/tests/ext/traffic/other/test_bmd_write_read_custom.sv` directly to change the traffic shape for a quick one-off run.
