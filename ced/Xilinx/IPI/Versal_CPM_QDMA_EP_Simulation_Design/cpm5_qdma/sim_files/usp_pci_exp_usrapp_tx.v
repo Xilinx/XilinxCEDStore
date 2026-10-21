@@ -447,15 +447,6 @@ end
    wire [15:0] 	cq_addr_fst;
    wire [7:0] 	xfr_len;
    
-   // Cross-language reference fix: module-level Verilog wires buffering the VHDL
-   // axi_bram_ctrl_0 ports, so Verilog event controls do not reference VHDL ports directly
-   wire        bram_s_axi_aclk_buf = board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_aclk;
-   wire        bram_s_axi_awvalid_buf = board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_awvalid;
-   wire [2:0]  bram_s_axi_awsize_buf  = board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_awsize;
-   wire        bram_s_axi_wvalid_buf  = board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_wvalid;
-   wire        bram_s_axi_wready_buf  = board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_wready;
-   wire        bram_s_axi_wlast_buf   = board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_wlast;
-
    always @(posedge user_clk) begin
 	tvalid_d <= board.RP.m_axis_cq_tvalid & board.RP.m_axis_cq_tready;
    end
@@ -8649,8 +8640,6 @@ task COMPARE_DATA_H2C;
 
   reg [511:0] READ_DATA [(DMA_BYTE_CNT/8):0];
   reg [511:0] DATA_STORE_512 [(DMA_BYTE_CNT/8):0];
-  reg [511:0] bram_s_axi_wdata_buf; // Cross-language reference fix - Verilog copy of VHDL port
-  reg [63:0]  bram_s_axi_wstrb_buf; // Cross-language reference fix - Verilog copy of VHDL port
   reg         data_valid; // Asssert as long as no wlast
   reg [7:0]   burst_size; // Burst size in bytes
   reg [11:0]  bof; // Byte Offset
@@ -8688,152 +8677,147 @@ task COMPARE_DATA_H2C;
     data_valid = 1'b1;
     dbc        = 0;
     
-    // Cross-language reference fix: event controls use the Verilog buffer wires (bram_s_axi_*_buf)
-    // instead of referencing the VHDL axi_bram_ctrl_0 ports directly across the mixed-language hierarchy.
     fork
     
     begin // Fork 1
-      @ (posedge bram_s_axi_awvalid_buf) ;
-      burst_size = 2**(bram_s_axi_awsize_buf);
+      @ (posedge board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_awvalid) ;
+      burst_size = 2**(board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_awsize);
     end // Fork 1
     
     begin // Fork 2
-    @ (posedge bram_s_axi_wvalid_buf) ;		  			//valid data comes at wvalid
+    @ (posedge board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_wvalid) ;		  			//valid data comes at wvalid
 //      for (i=0; i<data_beat_count; i=i+1)   begin
       while (data_valid) begin // Get all beats till wlast for Narrow Burst data checking support
-        @ (negedge bram_s_axi_aclk_buf);					//samples data at negedge of user_clk
+        @ (negedge board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_aclk);					//samples data at negedge of user_clk
 
-            if ( bram_s_axi_wvalid_buf &
-                 bram_s_axi_wready_buf ) begin			    //check for wvalid & wready is high before sampling data
-              // Cross-language reference fix
-              bram_s_axi_wdata_buf = board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_wdata;
-              bram_s_axi_wstrb_buf = board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_wstrb;
+            if ( board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_wvalid &
+                 board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_wready ) begin			    //check for wvalid & wready is high before sampling data
               case (board.EP_DATA_WIDTH)
-                64: READ_DATA[dbc] = {((bram_s_axi_wstrb_buf[7] == 1'b1) ? bram_s_axi_wdata_buf[63:56] : 8'h00),
-                                    ((bram_s_axi_wstrb_buf[6] == 1'b1) ? bram_s_axi_wdata_buf[55:48] : 8'h00),
-                                    ((bram_s_axi_wstrb_buf[5] == 1'b1) ? bram_s_axi_wdata_buf[47:40] : 8'h00),
-                                    ((bram_s_axi_wstrb_buf[4] == 1'b1) ? bram_s_axi_wdata_buf[39:32] : 8'h00),
-                                    ((bram_s_axi_wstrb_buf[3] == 1'b1) ? bram_s_axi_wdata_buf[31:24] : 8'h00),
-                                    ((bram_s_axi_wstrb_buf[2] == 1'b1) ? bram_s_axi_wdata_buf[23:16] : 8'h00),
-                                    ((bram_s_axi_wstrb_buf[1] == 1'b1) ? bram_s_axi_wdata_buf[15:8] : 8'h00),
-                                    ((bram_s_axi_wstrb_buf[0] == 1'b1) ? bram_s_axi_wdata_buf[7:0] : 8'h00)};
-                128: READ_DATA[dbc] = {((bram_s_axi_wstrb_buf[15] == 1'b1) ? bram_s_axi_wdata_buf[127:120] : 8'h00),
-                                        ((bram_s_axi_wstrb_buf[14] == 1'b1) ? bram_s_axi_wdata_buf[119:112] : 8'h00),
-                                        ((bram_s_axi_wstrb_buf[13] == 1'b1) ? bram_s_axi_wdata_buf[111:104] : 8'h00),
-                                        ((bram_s_axi_wstrb_buf[12] == 1'b1) ? bram_s_axi_wdata_buf[103:96] : 8'h00),
-                                        ((bram_s_axi_wstrb_buf[11] == 1'b1) ? bram_s_axi_wdata_buf[95:88] : 8'h00),
-                                        ((bram_s_axi_wstrb_buf[10] == 1'b1) ? bram_s_axi_wdata_buf[87:80] : 8'h00),
-                                        ((bram_s_axi_wstrb_buf[9] == 1'b1) ? bram_s_axi_wdata_buf[79:72] : 8'h00),
-                                        ((bram_s_axi_wstrb_buf[8] == 1'b1) ? bram_s_axi_wdata_buf[71:64] : 8'h00),
-                                        ((bram_s_axi_wstrb_buf[7] == 1'b1) ? bram_s_axi_wdata_buf[63:56] : 8'h00),
-                                        ((bram_s_axi_wstrb_buf[6] == 1'b1) ? bram_s_axi_wdata_buf[55:48] : 8'h00),
-                                        ((bram_s_axi_wstrb_buf[5] == 1'b1) ? bram_s_axi_wdata_buf[47:40] : 8'h00),
-                                        ((bram_s_axi_wstrb_buf[4] == 1'b1) ? bram_s_axi_wdata_buf[39:32] : 8'h00),
-                                        ((bram_s_axi_wstrb_buf[3] == 1'b1) ? bram_s_axi_wdata_buf[31:24] : 8'h00),
-                                        ((bram_s_axi_wstrb_buf[2] == 1'b1) ? bram_s_axi_wdata_buf[23:16] : 8'h00),
-                                        ((bram_s_axi_wstrb_buf[1] == 1'b1) ? bram_s_axi_wdata_buf[15:8] : 8'h00),
-                                        ((bram_s_axi_wstrb_buf[0] == 1'b1) ? bram_s_axi_wdata_buf[7:0] : 8'h00)};
-                256: READ_DATA[dbc] = {((bram_s_axi_wstrb_buf[31] == 1'b1) ? bram_s_axi_wdata_buf[255:248] : 8'h00),
-                                        ((bram_s_axi_wstrb_buf[30] == 1'b1) ? bram_s_axi_wdata_buf[247:240] : 8'h00),
-                                        ((bram_s_axi_wstrb_buf[29] == 1'b1) ? bram_s_axi_wdata_buf[239:232] : 8'h00),
-                                        ((bram_s_axi_wstrb_buf[28] == 1'b1) ? bram_s_axi_wdata_buf[231:224] : 8'h00),
-                                        ((bram_s_axi_wstrb_buf[27] == 1'b1) ? bram_s_axi_wdata_buf[223:216] : 8'h00),
-                                        ((bram_s_axi_wstrb_buf[26] == 1'b1) ? bram_s_axi_wdata_buf[215:208] : 8'h00),
-                                        ((bram_s_axi_wstrb_buf[25] == 1'b1) ? bram_s_axi_wdata_buf[207:200] : 8'h00),
-                                        ((bram_s_axi_wstrb_buf[24] == 1'b1) ? bram_s_axi_wdata_buf[199:192] : 8'h00),
-                                        ((bram_s_axi_wstrb_buf[23] == 1'b1) ? bram_s_axi_wdata_buf[191:184] : 8'h00),
-                                        ((bram_s_axi_wstrb_buf[22] == 1'b1) ? bram_s_axi_wdata_buf[183:176] : 8'h00),
-                                        ((bram_s_axi_wstrb_buf[21] == 1'b1) ? bram_s_axi_wdata_buf[175:168] : 8'h00),
-                                        ((bram_s_axi_wstrb_buf[20] == 1'b1) ? bram_s_axi_wdata_buf[167:160] : 8'h00),
-                                        ((bram_s_axi_wstrb_buf[19] == 1'b1) ? bram_s_axi_wdata_buf[159:152] : 8'h00),
-                                        ((bram_s_axi_wstrb_buf[18] == 1'b1) ? bram_s_axi_wdata_buf[151:144] : 8'h00),
-                                        ((bram_s_axi_wstrb_buf[17] == 1'b1) ? bram_s_axi_wdata_buf[143:136] : 8'h00),
-                                        ((bram_s_axi_wstrb_buf[16] == 1'b1) ? bram_s_axi_wdata_buf[135:128] : 8'h00),
-                                        ((bram_s_axi_wstrb_buf[15] == 1'b1) ? bram_s_axi_wdata_buf[127:120] : 8'h00),
-                                        ((bram_s_axi_wstrb_buf[14] == 1'b1) ? bram_s_axi_wdata_buf[119:112] : 8'h00),
-                                        ((bram_s_axi_wstrb_buf[13] == 1'b1) ? bram_s_axi_wdata_buf[111:104] : 8'h00),
-                                        ((bram_s_axi_wstrb_buf[12] == 1'b1) ? bram_s_axi_wdata_buf[103:96] : 8'h00),
-                                        ((bram_s_axi_wstrb_buf[11] == 1'b1) ? bram_s_axi_wdata_buf[95:88] : 8'h00),
-                                        ((bram_s_axi_wstrb_buf[10] == 1'b1) ? bram_s_axi_wdata_buf[87:80] : 8'h00),
-                                        ((bram_s_axi_wstrb_buf[9] == 1'b1) ? bram_s_axi_wdata_buf[79:72] : 8'h00),
-                                        ((bram_s_axi_wstrb_buf[8] == 1'b1) ? bram_s_axi_wdata_buf[71:64] : 8'h00),
-                                        ((bram_s_axi_wstrb_buf[7] == 1'b1) ? bram_s_axi_wdata_buf[63:56] : 8'h00),
-                                        ((bram_s_axi_wstrb_buf[6] == 1'b1) ? bram_s_axi_wdata_buf[55:48] : 8'h00),
-                                        ((bram_s_axi_wstrb_buf[5] == 1'b1) ? bram_s_axi_wdata_buf[47:40] : 8'h00),
-                                        ((bram_s_axi_wstrb_buf[4] == 1'b1) ? bram_s_axi_wdata_buf[39:32] : 8'h00),
-                                        ((bram_s_axi_wstrb_buf[3] == 1'b1) ? bram_s_axi_wdata_buf[31:24] : 8'h00),
-                                        ((bram_s_axi_wstrb_buf[2] == 1'b1) ? bram_s_axi_wdata_buf[23:16] : 8'h00),
-                                        ((bram_s_axi_wstrb_buf[1] == 1'b1) ? bram_s_axi_wdata_buf[15:8] : 8'h00),
-                                        ((bram_s_axi_wstrb_buf[0] == 1'b1) ? bram_s_axi_wdata_buf[7:0] : 8'h00)};
-                512: READ_DATA[dbc] = {((bram_s_axi_wstrb_buf[63] == 1'b1) ? bram_s_axi_wdata_buf[511:504] : 8'h00),
-                                        ((bram_s_axi_wstrb_buf[62] == 1'b1) ? bram_s_axi_wdata_buf[503:496] : 8'h00),
-                                        ((bram_s_axi_wstrb_buf[61] == 1'b1) ? bram_s_axi_wdata_buf[495:488] : 8'h00),
-                                        ((bram_s_axi_wstrb_buf[60] == 1'b1) ? bram_s_axi_wdata_buf[487:480] : 8'h00),
-                                        ((bram_s_axi_wstrb_buf[59] == 1'b1) ? bram_s_axi_wdata_buf[479:472] : 8'h00),
-                                        ((bram_s_axi_wstrb_buf[58] == 1'b1) ? bram_s_axi_wdata_buf[471:464] : 8'h00),
-                                        ((bram_s_axi_wstrb_buf[57] == 1'b1) ? bram_s_axi_wdata_buf[463:456] : 8'h00),
-                                        ((bram_s_axi_wstrb_buf[56] == 1'b1) ? bram_s_axi_wdata_buf[455:448] : 8'h00),
-                                        ((bram_s_axi_wstrb_buf[55] == 1'b1) ? bram_s_axi_wdata_buf[447:440] : 8'h00),
-                                        ((bram_s_axi_wstrb_buf[54] == 1'b1) ? bram_s_axi_wdata_buf[439:432] : 8'h00),
-                                        ((bram_s_axi_wstrb_buf[53] == 1'b1) ? bram_s_axi_wdata_buf[431:424] : 8'h00),
-                                        ((bram_s_axi_wstrb_buf[52] == 1'b1) ? bram_s_axi_wdata_buf[423:416] : 8'h00),
-                                        ((bram_s_axi_wstrb_buf[51] == 1'b1) ? bram_s_axi_wdata_buf[415:408] : 8'h00),
-                                        ((bram_s_axi_wstrb_buf[50] == 1'b1) ? bram_s_axi_wdata_buf[407:400] : 8'h00),
-                                        ((bram_s_axi_wstrb_buf[49] == 1'b1) ? bram_s_axi_wdata_buf[399:392] : 8'h00),
-                                        ((bram_s_axi_wstrb_buf[48] == 1'b1) ? bram_s_axi_wdata_buf[391:384] : 8'h00),
-                                        ((bram_s_axi_wstrb_buf[47] == 1'b1) ? bram_s_axi_wdata_buf[383:376] : 8'h00),
-                                        ((bram_s_axi_wstrb_buf[46] == 1'b1) ? bram_s_axi_wdata_buf[375:368] : 8'h00),
-                                        ((bram_s_axi_wstrb_buf[45] == 1'b1) ? bram_s_axi_wdata_buf[367:360] : 8'h00),
-                                        ((bram_s_axi_wstrb_buf[44] == 1'b1) ? bram_s_axi_wdata_buf[359:352] : 8'h00),
-                                        ((bram_s_axi_wstrb_buf[43] == 1'b1) ? bram_s_axi_wdata_buf[351:344] : 8'h00),
-                                        ((bram_s_axi_wstrb_buf[42] == 1'b1) ? bram_s_axi_wdata_buf[343:336] : 8'h00),
-                                        ((bram_s_axi_wstrb_buf[41] == 1'b1) ? bram_s_axi_wdata_buf[335:328] : 8'h00),
-                                        ((bram_s_axi_wstrb_buf[40] == 1'b1) ? bram_s_axi_wdata_buf[327:320] : 8'h00),
-                                        ((bram_s_axi_wstrb_buf[39] == 1'b1) ? bram_s_axi_wdata_buf[319:312] : 8'h00),
-                                        ((bram_s_axi_wstrb_buf[38] == 1'b1) ? bram_s_axi_wdata_buf[311:304] : 8'h00),
-                                        ((bram_s_axi_wstrb_buf[37] == 1'b1) ? bram_s_axi_wdata_buf[303:296] : 8'h00),
-                                        ((bram_s_axi_wstrb_buf[36] == 1'b1) ? bram_s_axi_wdata_buf[295:288] : 8'h00),
-                                        ((bram_s_axi_wstrb_buf[35] == 1'b1) ? bram_s_axi_wdata_buf[287:280] : 8'h00),
-                                        ((bram_s_axi_wstrb_buf[34] == 1'b1) ? bram_s_axi_wdata_buf[279:272] : 8'h00),
-                                        ((bram_s_axi_wstrb_buf[33] == 1'b1) ? bram_s_axi_wdata_buf[271:264] : 8'h00),
-                                        ((bram_s_axi_wstrb_buf[32] == 1'b1) ? bram_s_axi_wdata_buf[263:256] : 8'h00),
-                                        ((bram_s_axi_wstrb_buf[31] == 1'b1) ? bram_s_axi_wdata_buf[255:248] : 8'h00),
-                                        ((bram_s_axi_wstrb_buf[30] == 1'b1) ? bram_s_axi_wdata_buf[247:240] : 8'h00),
-                                        ((bram_s_axi_wstrb_buf[29] == 1'b1) ? bram_s_axi_wdata_buf[239:232] : 8'h00),
-                                        ((bram_s_axi_wstrb_buf[28] == 1'b1) ? bram_s_axi_wdata_buf[231:224] : 8'h00),
-                                        ((bram_s_axi_wstrb_buf[27] == 1'b1) ? bram_s_axi_wdata_buf[223:216] : 8'h00),
-                                        ((bram_s_axi_wstrb_buf[26] == 1'b1) ? bram_s_axi_wdata_buf[215:208] : 8'h00),
-                                        ((bram_s_axi_wstrb_buf[25] == 1'b1) ? bram_s_axi_wdata_buf[207:200] : 8'h00),
-                                        ((bram_s_axi_wstrb_buf[24] == 1'b1) ? bram_s_axi_wdata_buf[199:192] : 8'h00),
-                                        ((bram_s_axi_wstrb_buf[23] == 1'b1) ? bram_s_axi_wdata_buf[191:184] : 8'h00),
-                                        ((bram_s_axi_wstrb_buf[22] == 1'b1) ? bram_s_axi_wdata_buf[183:176] : 8'h00),
-                                        ((bram_s_axi_wstrb_buf[21] == 1'b1) ? bram_s_axi_wdata_buf[175:168] : 8'h00),
-                                        ((bram_s_axi_wstrb_buf[20] == 1'b1) ? bram_s_axi_wdata_buf[167:160] : 8'h00),
-                                        ((bram_s_axi_wstrb_buf[19] == 1'b1) ? bram_s_axi_wdata_buf[159:152] : 8'h00),
-                                        ((bram_s_axi_wstrb_buf[18] == 1'b1) ? bram_s_axi_wdata_buf[151:144] : 8'h00),
-                                        ((bram_s_axi_wstrb_buf[17] == 1'b1) ? bram_s_axi_wdata_buf[143:136] : 8'h00),
-                                        ((bram_s_axi_wstrb_buf[16] == 1'b1) ? bram_s_axi_wdata_buf[135:128] : 8'h00),
-                                        ((bram_s_axi_wstrb_buf[15] == 1'b1) ? bram_s_axi_wdata_buf[127:120] : 8'h00),
-                                        ((bram_s_axi_wstrb_buf[14] == 1'b1) ? bram_s_axi_wdata_buf[119:112] : 8'h00),
-                                        ((bram_s_axi_wstrb_buf[13] == 1'b1) ? bram_s_axi_wdata_buf[111:104] : 8'h00),
-                                        ((bram_s_axi_wstrb_buf[12] == 1'b1) ? bram_s_axi_wdata_buf[103:96] : 8'h00),
-                                        ((bram_s_axi_wstrb_buf[11] == 1'b1) ? bram_s_axi_wdata_buf[95:88] : 8'h00),
-                                        ((bram_s_axi_wstrb_buf[10] == 1'b1) ? bram_s_axi_wdata_buf[87:80] : 8'h00),
-                                        ((bram_s_axi_wstrb_buf[9] == 1'b1) ? bram_s_axi_wdata_buf[79:72] : 8'h00),
-                                        ((bram_s_axi_wstrb_buf[8] == 1'b1) ? bram_s_axi_wdata_buf[71:64] : 8'h00),
-                                        ((bram_s_axi_wstrb_buf[7] == 1'b1) ? bram_s_axi_wdata_buf[63:56] : 8'h00),
-                                        ((bram_s_axi_wstrb_buf[6] == 1'b1) ? bram_s_axi_wdata_buf[55:48] : 8'h00),
-                                        ((bram_s_axi_wstrb_buf[5] == 1'b1) ? bram_s_axi_wdata_buf[47:40] : 8'h00),
-                                        ((bram_s_axi_wstrb_buf[4] == 1'b1) ? bram_s_axi_wdata_buf[39:32] : 8'h00),
-                                        ((bram_s_axi_wstrb_buf[3] == 1'b1) ? bram_s_axi_wdata_buf[31:24] : 8'h00),
-                                        ((bram_s_axi_wstrb_buf[2] == 1'b1) ? bram_s_axi_wdata_buf[23:16] : 8'h00),
-                                        ((bram_s_axi_wstrb_buf[1] == 1'b1) ? bram_s_axi_wdata_buf[15:8] : 8'h00),
-                                        ((bram_s_axi_wstrb_buf[0] == 1'b1) ? bram_s_axi_wdata_buf[7:0] : 8'h00)};
+                64: READ_DATA[dbc] = {((board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_wstrb[7] == 1'b1) ? board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_wdata[63:56] : 8'h00),
+                                    ((board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_wstrb[6] == 1'b1) ? board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_wdata[55:48] : 8'h00),
+                                    ((board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_wstrb[5] == 1'b1) ? board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_wdata[47:40] : 8'h00),
+                                    ((board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_wstrb[4] == 1'b1) ? board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_wdata[39:32] : 8'h00),
+                                    ((board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_wstrb[3] == 1'b1) ? board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_wdata[31:24] : 8'h00),
+                                    ((board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_wstrb[2] == 1'b1) ? board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_wdata[23:16] : 8'h00),
+                                    ((board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_wstrb[1] == 1'b1) ? board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_wdata[15:8] : 8'h00),
+                                    ((board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_wstrb[0] == 1'b1) ? board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_wdata[7:0] : 8'h00)};
+                128: READ_DATA[dbc] = {((board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_wstrb[15] == 1'b1) ? board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_wdata[127:120] : 8'h00),
+                                        ((board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_wstrb[14] == 1'b1) ? board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_wdata[119:112] : 8'h00),
+                                        ((board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_wstrb[13] == 1'b1) ? board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_wdata[111:104] : 8'h00),
+                                        ((board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_wstrb[12] == 1'b1) ? board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_wdata[103:96] : 8'h00),
+                                        ((board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_wstrb[11] == 1'b1) ? board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_wdata[95:88] : 8'h00),
+                                        ((board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_wstrb[10] == 1'b1) ? board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_wdata[87:80] : 8'h00),
+                                        ((board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_wstrb[9] == 1'b1) ? board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_wdata[79:72] : 8'h00),
+                                        ((board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_wstrb[8] == 1'b1) ? board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_wdata[71:64] : 8'h00),
+                                        ((board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_wstrb[7] == 1'b1) ? board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_wdata[63:56] : 8'h00),
+                                        ((board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_wstrb[6] == 1'b1) ? board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_wdata[55:48] : 8'h00),
+                                        ((board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_wstrb[5] == 1'b1) ? board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_wdata[47:40] : 8'h00),
+                                        ((board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_wstrb[4] == 1'b1) ? board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_wdata[39:32] : 8'h00),
+                                        ((board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_wstrb[3] == 1'b1) ? board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_wdata[31:24] : 8'h00),
+                                        ((board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_wstrb[2] == 1'b1) ? board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_wdata[23:16] : 8'h00),
+                                        ((board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_wstrb[1] == 1'b1) ? board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_wdata[15:8] : 8'h00),
+                                        ((board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_wstrb[0] == 1'b1) ? board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_wdata[7:0] : 8'h00)};
+                256: READ_DATA[dbc] = {((board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_wstrb[31] == 1'b1) ? board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_wdata[255:248] : 8'h00),
+                                        ((board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_wstrb[30] == 1'b1) ? board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_wdata[247:240] : 8'h00),
+                                        ((board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_wstrb[29] == 1'b1) ? board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_wdata[239:232] : 8'h00),
+                                        ((board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_wstrb[28] == 1'b1) ? board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_wdata[231:224] : 8'h00),
+                                        ((board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_wstrb[27] == 1'b1) ? board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_wdata[223:216] : 8'h00),
+                                        ((board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_wstrb[26] == 1'b1) ? board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_wdata[215:208] : 8'h00),
+                                        ((board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_wstrb[25] == 1'b1) ? board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_wdata[207:200] : 8'h00),
+                                        ((board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_wstrb[24] == 1'b1) ? board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_wdata[199:192] : 8'h00),
+                                        ((board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_wstrb[23] == 1'b1) ? board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_wdata[191:184] : 8'h00),
+                                        ((board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_wstrb[22] == 1'b1) ? board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_wdata[183:176] : 8'h00),
+                                        ((board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_wstrb[21] == 1'b1) ? board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_wdata[175:168] : 8'h00),
+                                        ((board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_wstrb[20] == 1'b1) ? board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_wdata[167:160] : 8'h00),
+                                        ((board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_wstrb[19] == 1'b1) ? board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_wdata[159:152] : 8'h00),
+                                        ((board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_wstrb[18] == 1'b1) ? board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_wdata[151:144] : 8'h00),
+                                        ((board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_wstrb[17] == 1'b1) ? board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_wdata[143:136] : 8'h00),
+                                        ((board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_wstrb[16] == 1'b1) ? board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_wdata[135:128] : 8'h00),
+                                        ((board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_wstrb[15] == 1'b1) ? board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_wdata[127:120] : 8'h00),
+                                        ((board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_wstrb[14] == 1'b1) ? board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_wdata[119:112] : 8'h00),
+                                        ((board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_wstrb[13] == 1'b1) ? board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_wdata[111:104] : 8'h00),
+                                        ((board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_wstrb[12] == 1'b1) ? board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_wdata[103:96] : 8'h00),
+                                        ((board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_wstrb[11] == 1'b1) ? board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_wdata[95:88] : 8'h00),
+                                        ((board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_wstrb[10] == 1'b1) ? board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_wdata[87:80] : 8'h00),
+                                        ((board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_wstrb[9] == 1'b1) ? board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_wdata[79:72] : 8'h00),
+                                        ((board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_wstrb[8] == 1'b1) ? board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_wdata[71:64] : 8'h00),
+                                        ((board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_wstrb[7] == 1'b1) ? board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_wdata[63:56] : 8'h00),
+                                        ((board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_wstrb[6] == 1'b1) ? board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_wdata[55:48] : 8'h00),
+                                        ((board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_wstrb[5] == 1'b1) ? board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_wdata[47:40] : 8'h00),
+                                        ((board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_wstrb[4] == 1'b1) ? board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_wdata[39:32] : 8'h00),
+                                        ((board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_wstrb[3] == 1'b1) ? board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_wdata[31:24] : 8'h00),
+                                        ((board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_wstrb[2] == 1'b1) ? board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_wdata[23:16] : 8'h00),
+                                        ((board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_wstrb[1] == 1'b1) ? board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_wdata[15:8] : 8'h00),
+                                        ((board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_wstrb[0] == 1'b1) ? board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_wdata[7:0] : 8'h00)};
+                512: READ_DATA[dbc] = {((board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_wstrb[63] == 1'b1) ? board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_wdata[511:504] : 8'h00),
+                                        ((board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_wstrb[62] == 1'b1) ? board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_wdata[503:496] : 8'h00),
+                                        ((board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_wstrb[61] == 1'b1) ? board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_wdata[495:488] : 8'h00),
+                                        ((board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_wstrb[60] == 1'b1) ? board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_wdata[487:480] : 8'h00),
+                                        ((board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_wstrb[59] == 1'b1) ? board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_wdata[479:472] : 8'h00),
+                                        ((board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_wstrb[58] == 1'b1) ? board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_wdata[471:464] : 8'h00),
+                                        ((board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_wstrb[57] == 1'b1) ? board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_wdata[463:456] : 8'h00),
+                                        ((board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_wstrb[56] == 1'b1) ? board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_wdata[455:448] : 8'h00),
+                                        ((board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_wstrb[55] == 1'b1) ? board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_wdata[447:440] : 8'h00),
+                                        ((board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_wstrb[54] == 1'b1) ? board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_wdata[439:432] : 8'h00),
+                                        ((board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_wstrb[53] == 1'b1) ? board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_wdata[431:424] : 8'h00),
+                                        ((board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_wstrb[52] == 1'b1) ? board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_wdata[423:416] : 8'h00),
+                                        ((board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_wstrb[51] == 1'b1) ? board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_wdata[415:408] : 8'h00),
+                                        ((board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_wstrb[50] == 1'b1) ? board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_wdata[407:400] : 8'h00),
+                                        ((board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_wstrb[49] == 1'b1) ? board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_wdata[399:392] : 8'h00),
+                                        ((board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_wstrb[48] == 1'b1) ? board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_wdata[391:384] : 8'h00),
+                                        ((board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_wstrb[47] == 1'b1) ? board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_wdata[383:376] : 8'h00),
+                                        ((board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_wstrb[46] == 1'b1) ? board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_wdata[375:368] : 8'h00),
+                                        ((board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_wstrb[45] == 1'b1) ? board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_wdata[367:360] : 8'h00),
+                                        ((board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_wstrb[44] == 1'b1) ? board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_wdata[359:352] : 8'h00),
+                                        ((board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_wstrb[43] == 1'b1) ? board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_wdata[351:344] : 8'h00),
+                                        ((board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_wstrb[42] == 1'b1) ? board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_wdata[343:336] : 8'h00),
+                                        ((board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_wstrb[41] == 1'b1) ? board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_wdata[335:328] : 8'h00),
+                                        ((board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_wstrb[40] == 1'b1) ? board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_wdata[327:320] : 8'h00),
+                                        ((board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_wstrb[39] == 1'b1) ? board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_wdata[319:312] : 8'h00),
+                                        ((board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_wstrb[38] == 1'b1) ? board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_wdata[311:304] : 8'h00),
+                                        ((board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_wstrb[37] == 1'b1) ? board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_wdata[303:296] : 8'h00),
+                                        ((board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_wstrb[36] == 1'b1) ? board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_wdata[295:288] : 8'h00),
+                                        ((board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_wstrb[35] == 1'b1) ? board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_wdata[287:280] : 8'h00),
+                                        ((board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_wstrb[34] == 1'b1) ? board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_wdata[279:272] : 8'h00),
+                                        ((board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_wstrb[33] == 1'b1) ? board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_wdata[271:264] : 8'h00),
+                                        ((board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_wstrb[32] == 1'b1) ? board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_wdata[263:256] : 8'h00),
+                                        ((board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_wstrb[31] == 1'b1) ? board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_wdata[255:248] : 8'h00),
+                                        ((board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_wstrb[30] == 1'b1) ? board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_wdata[247:240] : 8'h00),
+                                        ((board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_wstrb[29] == 1'b1) ? board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_wdata[239:232] : 8'h00),
+                                        ((board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_wstrb[28] == 1'b1) ? board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_wdata[231:224] : 8'h00),
+                                        ((board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_wstrb[27] == 1'b1) ? board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_wdata[223:216] : 8'h00),
+                                        ((board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_wstrb[26] == 1'b1) ? board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_wdata[215:208] : 8'h00),
+                                        ((board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_wstrb[25] == 1'b1) ? board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_wdata[207:200] : 8'h00),
+                                        ((board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_wstrb[24] == 1'b1) ? board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_wdata[199:192] : 8'h00),
+                                        ((board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_wstrb[23] == 1'b1) ? board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_wdata[191:184] : 8'h00),
+                                        ((board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_wstrb[22] == 1'b1) ? board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_wdata[183:176] : 8'h00),
+                                        ((board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_wstrb[21] == 1'b1) ? board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_wdata[175:168] : 8'h00),
+                                        ((board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_wstrb[20] == 1'b1) ? board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_wdata[167:160] : 8'h00),
+                                        ((board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_wstrb[19] == 1'b1) ? board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_wdata[159:152] : 8'h00),
+                                        ((board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_wstrb[18] == 1'b1) ? board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_wdata[151:144] : 8'h00),
+                                        ((board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_wstrb[17] == 1'b1) ? board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_wdata[143:136] : 8'h00),
+                                        ((board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_wstrb[16] == 1'b1) ? board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_wdata[135:128] : 8'h00),
+                                        ((board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_wstrb[15] == 1'b1) ? board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_wdata[127:120] : 8'h00),
+                                        ((board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_wstrb[14] == 1'b1) ? board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_wdata[119:112] : 8'h00),
+                                        ((board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_wstrb[13] == 1'b1) ? board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_wdata[111:104] : 8'h00),
+                                        ((board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_wstrb[12] == 1'b1) ? board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_wdata[103:96] : 8'h00),
+                                        ((board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_wstrb[11] == 1'b1) ? board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_wdata[95:88] : 8'h00),
+                                        ((board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_wstrb[10] == 1'b1) ? board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_wdata[87:80] : 8'h00),
+                                        ((board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_wstrb[9] == 1'b1) ? board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_wdata[79:72] : 8'h00),
+                                        ((board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_wstrb[8] == 1'b1) ? board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_wdata[71:64] : 8'h00),
+                                        ((board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_wstrb[7] == 1'b1) ? board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_wdata[63:56] : 8'h00),
+                                        ((board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_wstrb[6] == 1'b1) ? board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_wdata[55:48] : 8'h00),
+                                        ((board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_wstrb[5] == 1'b1) ? board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_wdata[47:40] : 8'h00),
+                                        ((board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_wstrb[4] == 1'b1) ? board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_wdata[39:32] : 8'h00),
+                                        ((board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_wstrb[3] == 1'b1) ? board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_wdata[31:24] : 8'h00),
+                                        ((board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_wstrb[2] == 1'b1) ? board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_wdata[23:16] : 8'h00),
+                                        ((board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_wstrb[1] == 1'b1) ? board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_wdata[15:8] : 8'h00),
+                                        ((board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_wstrb[0] == 1'b1) ? board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_wdata[7:0] : 8'h00)};
                endcase
                $display ("--- H2C data at QDMA = %h ---\n", READ_DATA[dbc]);
 
                dbc        = dbc + 1;
-               data_valid = (bram_s_axi_wlast_buf == 1'b1) ? 1'b0 : 1'b1;
+               data_valid = (board.EP.cpm_qdma_i.axi_bram_ctrl_0.s_axi_wlast == 1'b1) ? 1'b0 : 1'b1;
 
             end
             /* Remove when Narrow Burst data checking support is added - loop using wlast

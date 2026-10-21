@@ -664,7 +664,6 @@ proc create_root_design { parentCell } {
       CPM_PCIE1_PF3_SRIOV_VF_DEVICE_ID {C348} \
       CPM_PCIE1_SRIOV_CAP_ENABLE {1} \
       CPM_PCIE1_TL_PF_ENABLE_REG {4} \
-      CPM_PIPE_INTF_EN {1} \
     } \
     CONFIG.PS_PMC_CONFIG { \
       PS_PCIE_EP_RESET1_IO {None} \
