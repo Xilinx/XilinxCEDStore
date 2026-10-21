@@ -56,6 +56,10 @@ module board;
   localparam   [3:0] LINK_SPEED = 4'h8;
   `endif
 
+  //added to match the CPM5 BD
+  localparam PIPESIM = "FALSE";
+  defparam board.RP.design_rp_wrapper_i.design_rp_i.versal_cips_0.inst.cpm_0.inst.C_CPM_PIPESIM = PIPESIM;
+   
   // System-level clock and reset
   reg  sys_rst_n;
 
@@ -149,8 +153,9 @@ module board;
     .GT_Serial_RX_0_rxp(rp_pci_exp_txp)
   );
 
-   initial begin
-	force board.EP.design_1_i.pcie0_pipe_ep_0_rx_0 = pcie0_pipe_rp_0_rx_0;
+ initial begin
+  if (PIPESIM == "TRUE") begin
+    force board.EP.design_1_i.pcie0_pipe_ep_0_rx_0 = pcie0_pipe_rp_0_rx_0;
 	force board.EP.design_1_i.pcie0_pipe_ep_0_rx_1 = pcie0_pipe_rp_0_rx_1;
 	force board.EP.design_1_i.pcie0_pipe_ep_0_rx_2 = pcie0_pipe_rp_0_rx_2;
 	force board.EP.design_1_i.pcie0_pipe_ep_0_rx_3 = pcie0_pipe_rp_0_rx_3;
@@ -186,8 +191,8 @@ module board;
 
 	force pcie0_pipe_rp_0_commands_out = board.EP.design_1_i.pcie0_pipe_ep_0_commands_out;
 	force board.EP.design_1_i.pcie0_pipe_ep_0_commands_in = pcie0_pipe_rp_0_commands_in;
-
-   end // initial begin
+  end 
+ end // initial begin
 
   //------------------------------------------------------------------------------//
   // Simulation Root Port Model

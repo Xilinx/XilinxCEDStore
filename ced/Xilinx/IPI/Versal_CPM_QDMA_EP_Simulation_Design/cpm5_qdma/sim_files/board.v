@@ -98,7 +98,8 @@ module board;
    // Enable PIPESIM
    //defparam board.EP.design_1_wrapper_i.design_1_i.versal_cips_0.inst.cpm_0.inst.C_CPM_PIPESIM = "TRUE";
    //defparam board.RP.design_rp_wrapper_i.design_rp_i.versal_cips_0.inst.cpm_0.inst.C_CPM_PIPESIM = "TRUE";
-   localparam PIPESIM = board.EP.cpm_qdma_i.versal_cips_0.inst.cpm_0.inst.C_CPM_PIPESIM;
+  // localparam PIPESIM = board.EP.cpm_qdma_i.versal_cips_0.inst.cpm_0.inst.C_CPM_PIPESIM;
+   localparam PIPESIM = "FALSE";
    //defparam board.EP.design_1_wrapper_i.design_1_i.versal_cips_0.inst.cpm_0.inst.C_CPM_PIPESIM = "TRUE";
    defparam board.RP.design_rp_wrapper_i.design_rp_i.versal_cips_0.inst.cpm_0.inst.C_CPM_PIPESIM = PIPESIM;
    
