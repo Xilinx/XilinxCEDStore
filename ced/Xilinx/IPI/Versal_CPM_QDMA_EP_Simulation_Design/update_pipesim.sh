@@ -21,7 +21,7 @@
 # Navigate up 3 levels: behav/ → sim_1/ → <proj_name>.sim/ → <proj_root>/
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 PROJ_ROOT="$(cd "$SCRIPT_DIR/../../.." && pwd)"   # 3 levels up from .sim/sim_1/behav/
-PROJ_NAME="$(basename "$PROJ_ROOT")"              # e.g. CPM_QDMA_EP_SIM_design_xlm_25_001
+PROJ_NAME="$(basename "$(cd "$SCRIPT_DIR/../.." && pwd)" .sim)"
 
 echo "=== PIPESIM Auto-Update ==="
 echo "Project root : $PROJ_ROOT"
