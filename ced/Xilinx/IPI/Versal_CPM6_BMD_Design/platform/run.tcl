@@ -6,8 +6,8 @@
 # the CPM6 CEDs. Contains NO CPM6 CTRL0/CTRL1 configuration and no bridge-mode
 # (cpm_axi_pl0 / PCIe-AXI-NoC) content.
 #
-# This is ONE self-contained Tcl file: it sources nothing, needs no other file and no tool. Put it in your CED (BMD keeps it in <ced_dir>/platform/) and
-#   source <ced_dir>/platform/platform.tcl
+# This is ONE self-contained Tcl file: it sources nothing, needs no other file and no tool. Put it in your CED's platform/ folder and
+#   source <ced_dir>/platform/run.tcl
 # from your design_1_bd.tcl. Sourcing only defines procedures; nothing changes in the design until you call them.
 # Rule: where the platform and your CED set the same thing, YOUR value wins.
 #
@@ -49,6 +49,30 @@
 #        platform_add_bram platform_create_noc platform_assign_addr platform_auto_plan platform_auto
 # Known limits: the RPUs and PSM cannot reach NoC-attached PL memory (their NoC windows are only 0x0 2G and 0xE000_0000 256M).
 # Maintained by hand from now on (it was first derived from Versal_CPM6_SoC_Platform_Design/design_1_bd.tcl, 2026-10-13).
+
+# Folder this file was sourced from (the DDR constraints file lives in <platform_dir>/constrs).
+set ::platform_dir [file dirname [file normalize [info script]]]
+
+# DDR is created ONLY when the design has none and the user asked for it (::platform_ddr 1):
+#   1. the design already has DDR (an axi_noc2 whose memory controller is enabled): the platform does nothing for DDR, ::platform_ddr is ignored
+#   2. no DDR and ::platform_ddr is 1: the platform creates the LPDDR5 ports and memory controller and adds the DDR constraints file
+#   3. no DDR and DDR not requested: all DDR code is skipped
+# 1 if the NoC cell $noc has a memory controller (DDR) enabled.
+proc platform_ddr_in_design {noc} {
+  if { $noc eq "" } { return 0 }
+  set n [get_property CONFIG.NUM_MC $noc]
+  return [expr {$n ne "" && $n > 0}]
+}
+
+# Add the DDR pin constraints (LPDDR5 + sys_clk0, <platform_dir>/constrs/noc_ddr5_phy_phy.xdc) to constrs_1 once. Only case 2 calls it.
+proc platform_add_ddr_xdc {} {
+  set x [file join $::platform_dir constrs noc_ddr5_phy_phy.xdc]
+  if { ![file exists $x] } { puts "WARNING: platform: DDR constraints file $x not found"; return }
+  if { [get_files -quiet [file tail $x]] ne "" } { puts "INFO: platform: DDR constraints file already in the project"; return }
+  add_files -fileset constrs_1 -norecurse $x
+  import_files -fileset constrs_1 $x
+  puts "INFO: platform: DDR constraints file added ($x)"
+}
 
 # Common ps_wizard properties. Caller must merge these into its single
 # set_property -dict call on ps_wizard_0.
@@ -697,11 +721,12 @@ proc platform_apply_ps_props {ps} {
 }
 
 # Do the whole job. Finds the PS and the NoC once, then:
-#   a NoC is present -> attach: add the PS ports to it, plan the PS cores' addresses to follow the parent's, validate
+#   a NoC is present -> attach: apply the PS peripheral properties (the parent's own settings win), add the PS ports to the NoC, plan the PS cores' addresses to follow the parent's, validate
 #   no NoC           -> build everything: the PS peripherals, the NoC with the PS ports, the BRAM (and DDR if ::platform_ddr is 1),
 #                       the create-mode address plan, validate
 # Returns 1 if it did something, 0 if the design has no ps_wizard yet (then call the procs from your BD script).
-# The ONE argument (set before sourcing): ::platform_ddr 1 = add the LPDDR5 memory controller (adds top-level ports); default 0 = no DDR.
+# The ONE argument (set before sourcing): ::platform_ddr 1 = add the LPDDR5 memory controller and the DDR constraints file (adds top-level ports),
+# only if the design has no DDR yet; default 0 = no DDR. If the design already has DDR the argument is ignored.
 proc platform_auto {} {
   set d [current_bd_design]   ;# the CED flow always has a block design open
   set ps [lindex [get_bd_cells -quiet -filter {VLNV=~*ps_wizard*}] 0]
@@ -709,6 +734,12 @@ proc platform_auto {} {
   set noc [lindex [get_bd_cells -quiet -filter {VLNV=~*axi_noc2*}] 0]
   if { $noc ne "" } {
     puts "INFO: platform_auto: attaching the platform to the NoC of $d"
+    if { [platform_ddr_in_design $noc] } {
+      puts "INFO: platform_auto: DDR found in the design: no DDR code is run (::platform_ddr is ignored)"
+    } else {
+      puts "INFO: platform_auto: no DDR in the design and none created here: DDR code skipped"
+    }
+    platform_apply_ps_props $ps
     platform_noc_attach $ps $noc
     platform_auto_plan $ps $noc
   } else {
@@ -725,6 +756,7 @@ proc platform_auto {} {
       platform_add_bram $ps $noc
     }
     platform_assign_addr $ps $noc $ddr
+    if { $ddr } { platform_add_ddr_xdc } else { puts "INFO: platform_auto: DDR not requested: DDR code skipped" }
   }
   catch {validate_bd_design}
   puts "INFO: platform_auto: done"

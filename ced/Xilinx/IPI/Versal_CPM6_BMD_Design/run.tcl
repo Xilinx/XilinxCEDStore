@@ -82,9 +82,7 @@ proc createDesign {design_name options} {
   if { [string is true -strict $ddr_enabled] } {
     set_property verilog_define {DDR_EN} $src_fileset
     puts "INFO: verilog_define DDR_EN set on sources_1"
-    # DDR pin constraints (LPDDR5 + sys_clk0), same file as the DMA DDR CED
-    add_files -fileset constrs_1 -norecurse ${currentDir}/platform/constrs/noc_ddr5_phy_phy.xdc
-    import_files -fileset constrs_1 ${currentDir}/platform/constrs/noc_ddr5_phy_phy.xdc
+    # the DDR pin constraints (LPDDR5 + sys_clk0) are added by platform/run.tcl when it creates the DDR
   }
 
   # Create sim_1 fileset

@@ -328,7 +328,7 @@ proc create_root_design { parentCell link_width lane_rate ddr_enabled } {
 
   # Platform (PS peripherals, NoC, BRAM and, if requested, LPDDR5) is added by one shared file
   set ::platform_ddr $ddr_enabled
-  source [file join $script_folder .. platform platform.tcl]
+  source [file join $script_folder .. platform run.tcl]
 
   validate_bd_design
   save_bd_design
