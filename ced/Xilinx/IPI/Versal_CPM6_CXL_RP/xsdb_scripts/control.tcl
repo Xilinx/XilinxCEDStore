@@ -1,7 +1,6 @@
 # control.tcl - top-level loader for register transport (control::rd32/wr32)
-# and PL reset-pin display/control. Requires design:: already loaded (for
-# design::require_connected) -- source design.tcl first, or just source
-# all.tcl.
+# and PL reset-pin display/control. Requires design:: already loaded --
+# source design.tcl first, or just source all.tcl.
 #
 #   source xsdb_scripts/all.tcl
 #   design::connect
@@ -9,7 +8,7 @@
 
 set control_script_dir [file dirname [file normalize [info script]]]
 
-if {![llength [info commands ::design::require_connected]]} {
+if {![llength [info commands ::design::connect]]} {
   error "control requires design to be loaded first -- run: source [file join $control_script_dir design.tcl]"
 }
 

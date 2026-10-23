@@ -3,12 +3,24 @@ proc init_gui { IPINST } {
   ipgui::add_param $IPINST -name "Component_Name"
   #Adding Page
   set Page_0 [ipgui::add_page $IPINST -name "Page 0"]
-  ipgui::add_param $IPINST -name "AXI_ADDRESS_WIDTH" -parent ${Page_0}
-  ipgui::add_param $IPINST -name "AXI_AXIL_SYNC" -parent ${Page_0}
-  ipgui::add_param $IPINST -name "AXI_ID_WIDTH" -parent ${Page_0}
-  ipgui::add_param $IPINST -name "EXTERNAL_START_EN" -parent ${Page_0}
+  ipgui::add_param $IPINST -name "MAX_COMMANDS" -parent ${Page_0} -display_name "Maximum Commands"
+  ipgui::add_param $IPINST -name "AXI_ADDRESS_WIDTH" -parent ${Page_0} -display_name "AXI Address Width"
+  ipgui::add_param $IPINST -name "AXI_ID_WIDTH" -parent ${Page_0} -display_name "AXI ID Width"
+  ipgui::add_param $IPINST -name "EXTERNAL_START_EN" -parent ${Page_0} -display_name "External Start Enable" -widget checkBox
+  ipgui::add_param $IPINST -name "AXI_AXIL_SYNC" -parent ${Page_0} -display_name "AXI and AXI-L Clock Domain"
 
 
+}
+
+proc update_PARAM_VALUE.MAX_COMMANDS { PARAM_VALUE.MAX_COMMANDS } {}
+
+proc validate_PARAM_VALUE.MAX_COMMANDS { PARAM_VALUE.MAX_COMMANDS } {
+  # The range_long constraint in component.xml enforces 2..512.
+  return true
+}
+
+proc update_MODELPARAM_VALUE.MAX_COMMANDS { MODELPARAM_VALUE.MAX_COMMANDS PARAM_VALUE.MAX_COMMANDS } {
+  set_property value [get_property value ${PARAM_VALUE.MAX_COMMANDS}] ${MODELPARAM_VALUE.MAX_COMMANDS}
 }
 
 proc update_PARAM_VALUE.AXI_ADDRESS_WIDTH { PARAM_VALUE.AXI_ADDRESS_WIDTH } {
@@ -67,4 +79,3 @@ proc update_MODELPARAM_VALUE.EXTERNAL_START_EN { MODELPARAM_VALUE.EXTERNAL_START
 	# Procedure called to set VHDL generic/Verilog parameter value(s) based on TCL parameter value
 	set_property value [get_property value ${PARAM_VALUE.EXTERNAL_START_EN}] ${MODELPARAM_VALUE.EXTERNAL_START_EN}
 }
-

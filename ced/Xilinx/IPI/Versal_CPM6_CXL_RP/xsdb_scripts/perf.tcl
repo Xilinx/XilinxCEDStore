@@ -6,6 +6,17 @@
 #   source xsdb_scripts/all.tcl
 #   design::discover [pwd]
 #   design::connect
+#   design::program                 ;# brings up the link
+#   ecam::connect
+#   ecam::setup_ep_bars             ;# REQUIRED before any real traffic
+#   ecam::setup_hdm decoder         ;# REQUIRED before any real traffic
+#   hwtg::connect
+#   hwtg::load_append 0 "WRITE addr=0x8000000000 repeat=10 addr_stride=64"
+#   hwtg::start 0
+#   hwtg::wait_done 0               ;# generate some real traffic first --
+#                                   ;# perf:: only reports on data that's
+#                                   ;# actually been captured in the URAMs
+#   perf::connect
 #   perf::capture 0
 #   perf::report
 

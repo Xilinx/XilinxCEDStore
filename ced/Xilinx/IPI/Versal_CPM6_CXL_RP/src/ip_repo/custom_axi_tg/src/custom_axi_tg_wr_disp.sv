@@ -99,6 +99,7 @@ module custom_axi_tg_wr_disp
   output logic                         ring_alloc,
   output logic [                  8:0] ring_alloc_idx,
   output logic                         ring_inc,
+  output logic                         ring_issuing_done,
   output logic [          NUM_IDS-1:0] ring_inc_oh,
   output logic                         ring_dec,
   output logic [          NUM_IDS-1:0] ring_dec_oh,
@@ -209,6 +210,7 @@ module custom_axi_tg_wr_disp
   assign ring_alloc     = load_new;
   assign ring_alloc_idx = cpq_head_idx;               // registered in the CPQ
   assign ring_inc       = txn_acc;
+  assign ring_issuing_done = roll;
   assign ring_inc_oh    = id_oh_q;                    // REGISTERED one-hot
 
   assign busy           = active || aw_pend || w_pend;
@@ -525,11 +527,10 @@ module custom_axi_tg_wr_disp
   // decision made off any pseudorandom sample of the same LFSR stream is as
   // good as one made off the exact sample it gates.
   always_ff @(posedge clk) begin
-    // Special: '1 (3'd7) means NO BE
-    use_partial_be <= 1'b0;
-    // Else, 1/2^be_k_q probability of BE. Each case ORs together k of the
+    // 1/2^be_k_q probability of BE. Each case ORs together k of the
     // 6 fixed BE_TAP_POS entries (indices chosen per level below).
-    case (be_k_q)
+    if (load_new || w_acc) begin
+    case (load_new ? cpq_head_word[IW_BE_K_LSB+:3] : be_k_q)
       3'd0    : use_partial_be <= 1'b1; // n=1 : always partial
       3'd1    : use_partial_be <= ~lfsr64_state[BE_TAP_POS[0]];
       3'd2    : use_partial_be <= ~(lfsr64_state[BE_TAP_POS[0]] |
@@ -552,7 +553,10 @@ module custom_axi_tg_wr_disp
                                     lfsr64_state[BE_TAP_POS[3]] |
                                     lfsr64_state[BE_TAP_POS[4]] |
                                     lfsr64_state[BE_TAP_POS[5]]);
+      // Special: '1 (3'd7) means NO BE
+      default : use_partial_be <= 1'b0;
     endcase
+    end
   end
 
   //--------------------------------------------------------------------------

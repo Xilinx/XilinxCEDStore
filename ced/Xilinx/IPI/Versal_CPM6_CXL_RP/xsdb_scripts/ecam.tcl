@@ -11,6 +11,9 @@
 #
 #   source xsdb_scripts/all.tcl
 #   design::connect
+#   design::program                 ;# brings up the link -- without this,
+#                                   ;# the 'ep' side reports (unavailable: ...)
+#   ecam::connect
 #   ecam::report
 
 set ecam_script_dir [file dirname [file normalize [info script]]]
