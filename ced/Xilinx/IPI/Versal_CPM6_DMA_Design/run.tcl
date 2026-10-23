@@ -12,7 +12,7 @@ proc replace_file_contents {file string_map} {
 # at the destination instead of erroring out (Tcl's `file copy -force` does
 # NOT merge two same-named directories -- it errors if the destination
 # directory already exists). Used to overlay a variant's sim/* files
-# (e.g. dma/sim/verif/) on top of the base sim/ tree already copied into
+# (e.g. dma_ctrl1/sim/verif/) on top of the base sim/ tree already copied into
 # the project directory.
 proc copy_overlay {src dst} {
   if {[file isdirectory $src]} {
@@ -58,9 +58,9 @@ proc createDesign {design_name options} {
   # ----------------------------------------------------------------
   switch "${ctrl_config}_${ddr_en}" {
     "Controller_0_DDR_ENABLED" { set sub_name "dma_ddr_ctrl0"; set g_top "dma_ddr_top" }
-    "Controller_1_DDR_ENABLED" { set sub_name "dma_ddr";       set g_top "dma_ddr_top" }
+    "Controller_1_DDR_ENABLED" { set sub_name "dma_ddr_ctrl1"; set g_top "dma_ddr_top" }
     "Controller_0_DDR_DISABLED"  { set sub_name "dma_ctrl0";     set g_top "dma_top" }
-    "Controller_1_DDR_DISABLED"  { set sub_name "dma";           set g_top "dma_top" }
+    "Controller_1_DDR_DISABLED"  { set sub_name "dma_ctrl1";     set g_top "dma_top" }
     default {
       error "Unsupported combination CTRL_CONFIG=$ctrl_config DDR_EN=$ddr_en"
     }
@@ -130,8 +130,9 @@ if { $ddr_en eq "DDR_ENABLED" } {
   if {![file exists $sim_dst]} {    
     file copy -force ${currentDir}/sim $proj_dir
     foreach file [glob -nocomplain ${src_dir}/sim/*] {
-      copy_overlay $file [file join $sim_dst [file tail $file]]
+      file copy -force $file $sim_dst
     }
+    file copy -force ${currentDir}/README.md $proj_dir
     puts "INFO: Simulation files copied to $sim_dst"
   } else {
     puts "INFO: sim/ already exists at $sim_dst -- skipping copy"
@@ -139,6 +140,16 @@ if { $ddr_en eq "DDR_ENABLED" } {
   if { [string equal -nocase $OS "Windows"] == 0 } {
     set_property target_simulator VCS [current_project]
     set_property -dict [dict create generate_scripts_only 1 top $g_top top_lib xil_defaultlib vcs.simulate.runtime -all] $obj_sim_fileset
+
+    generate_target all [get_files $design_name.bd]
+    update_compile_order -fileset sources_1
+    update_compile_order -fileset sim_1
+    if {[info exists ::env(VIVADO_CLIBS)]} {
+      set_property compxlib.vcs_compiled_library_dir $::env(VIVADO_CLIBS) [current_project]
+    } else {
+      puts "WARNING: \$VIVADO_CLIBS is not set -- Vivado will fall back to its default compiled library path"
+    }
+    launch_simulation -scripts_only
   } else {
     puts "INFO: VCS simulator does not support Windows"
   }
