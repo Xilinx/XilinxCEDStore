@@ -139,7 +139,7 @@ if { $bCheckIPsPassed != 1 } {
 ##################################################################
 # Procedure to create entire design; Provide argument to make
 # procedure reusable. If parentCell is "", will use root.
-proc create_root_design { parentCell link_width lane_rate } {
+proc create_root_design { parentCell link_width lane_rate ddr_enabled } {
 
   variable script_folder
   variable design_name
@@ -326,6 +326,10 @@ proc create_root_design { parentCell link_width lane_rate } {
   # Restore current instance
   current_bd_instance $oldCurInst
 
+  # Platform (PS peripherals, NoC, BRAM and, if requested, LPDDR5) is added by one shared file
+  set ::platform_ddr $ddr_enabled
+  source [file join $script_folder .. platform run.tcl]
+
   validate_bd_design
   save_bd_design
 }
@@ -336,6 +340,6 @@ proc create_root_design { parentCell link_width lane_rate } {
 # MAIN FLOW
 ##################################################################
 
-create_root_design "" $link_width $lane_rate
+create_root_design "" $link_width $lane_rate [expr {[info exists ddr_enabled] ? $ddr_enabled : 0}]
 
 
