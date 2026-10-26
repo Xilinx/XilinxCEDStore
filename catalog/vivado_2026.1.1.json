@@ -936,11 +936,11 @@
         "name": "cpm6_dma",
         "display": "Versal CPM6 DMA Design",
         "latest_revision": "1.0",
-        "commit_id": "69d6d687c0724681b84e1ef53457343057abcb30",
+        "commit_id": "3b5f598cf0626e6773d0a8a63c058baef29ffa3b",
         "revisions": [
           {
             "revision": "1.0",
-            "commit_id": "69d6d687c0724681b84e1ef53457343057abcb30",
+            "commit_id": "3b5f598cf0626e6773d0a8a63c058baef29ffa3b",
             "date": "25-08-2026:05:47:27",
             "history": "Added board Versal CPM6 DMA Design v1.0"
           }
