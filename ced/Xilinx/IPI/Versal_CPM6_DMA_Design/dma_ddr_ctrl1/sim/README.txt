@@ -106,9 +106,9 @@ use the "ddr" flavored tests:
 See sim/testlist_full.txt. NOTE: the ddr/plaxi variant split above is based
 on test naming convention, not independently re-verified against this
 CED-generated project -- treat as a strong starting point, not confirmed
-sign-off. The "plaxi" flavored tests (for the non-DDR dma/ variant) are
+sign-off. The "plaxi" flavored tests (for the non-DDR dma_ctrl1/ variant) are
 also compiled in (all DMA tests share one test_pkg.svh) but are expected
-to target dma/'s BRAM-backed hardware, not this DDR variant.
+to target dma_ctrl1/'s BRAM-backed hardware, not this DDR variant.
 
 A handful of other generic framework tests (test_init, test_enum, test_base,
 base_ep_test, ...) are also compiled in via sim/tb/test/test_pkg.svh.
