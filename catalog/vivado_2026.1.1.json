@@ -1045,6 +1045,25 @@
           "metadata_file": "xitem.json"
         },
         "company": "xilinx.com"
+      },
+      {
+        "name": "cpm6_pcie_rp",
+        "display": "Versal CPM6 PCIe Root Port Design",
+        "latest_revision": "1.0",
+        "commit_id": "ff167e8499cd03b2883ff71e032273f313edcac0",
+        "revisions": [
+          {
+            "revision": "1.0",
+            "commit_id": "ff167e8499cd03b2883ff71e032273f313edcac0",
+            "date": "02-11-2026:16:30:09",
+            "history": "Added board Versal CPM6 PCIe Root Port Design v1.0"
+          }
+        ],
+        "config": {
+          "root": "ced/Xilinx/IPI/Versal_CPM6_PCIe_RP_Design",
+          "metadata_file": "xitem.json"
+        },
+        "company": "xilinx.com"
       }
     ],
     "categories": [
