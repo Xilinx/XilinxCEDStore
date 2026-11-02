@@ -1,0 +1,33 @@
+{
+    "config": {
+      "items": [
+        {
+          "infra": {
+            "name": "cpm6_pcie_rp",
+            "display": "Versal CPM6 PCIe Root Port Design",
+            "revision": "1.0",
+            "description": "Versal CPM6 PCIe Root Port design in AXI_Bridge mode, with and without LPDDR5 via NoC, and in PL_Streaming mode. Controller_0 or Controller_1. Both modes support link widths x2, x4 and x8 at lane rates 16.0, 32.0 and 64.0 GT/s, defaulting to x8 at 64.0 GT/s. PL_Streaming has no NoC/DDR path, so LPDDR5 is available in AXI_Bridge mode only.",
+            "company": "xilinx.com",
+            "company_display": "Xilinx",
+            "author": "AMD",
+            "contributors": [
+              {
+                "group": "Xilinx",
+                "url": "www.xilinx.com"
+              }
+            ],
+            "category": "PCIe",
+            "website": "www.xilinx.com",
+            "is_active" : true,
+            "search-keywords": [
+              "Versal CPM6 PCIe Root Port Design",
+              "xilinx.com",
+              "example"
+            ]
+          }
+        }
+      ]
+    },
+    "_major" : 1,
+    "_minor" : 0
+}

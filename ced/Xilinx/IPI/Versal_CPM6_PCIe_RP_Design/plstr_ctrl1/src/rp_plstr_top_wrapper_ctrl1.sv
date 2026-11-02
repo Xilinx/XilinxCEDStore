@@ -1,0 +1,338 @@
+////////////////////////////////////////////////////////////////////////
+// Copyright (C) 2026, Advanced Micro Devices, Inc. All rights reserved
+//
+// Licensed under the Apache License, Version 2.0 (the "License"). You may
+// not use this file except in compliance with the License. A copy of the
+// License is located at
+//
+//  http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+// WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+// License for the specific language governing permissions and limitations
+// under the License.
+////////////////////////////////////////////////////////////////////////
+
+`timescale 1 ps / 1 ps
+
+import rp_link_pkg::*;
+
+// CTRL1 wrapper: identical wiring to the CTRL0 wrapper but with a distinct top name
+module rp_plstr_top_wrapper_ctrl1 (
+
+    input [LINK_WIDTH-1:0]CTRL1_GT_0_grx_n,
+    input [LINK_WIDTH-1:0]CTRL1_GT_0_grx_p,
+    output [LINK_WIDTH-1:0]CTRL1_GT_0_gtx_n,
+    output [LINK_WIDTH-1:0]CTRL1_GT_0_gtx_p,
+    input ctrl1_gt_refclk_0_clk_n,
+    input ctrl1_gt_refclk_0_clk_p/*,
+//    input dbi1_clk_0,
+    output dbi1_rstn_0,
+//    input pcie1_clk_0,
+    output pcie1_rstn_0,
+    output pl0_ref_clk,
+    output pl0_resetn_0*/
+);
+
+    // wire dbi1_clk_0;
+    // wire dbi1_rstn_0;
+    (* MARK_DEBUG = "TRUE" *) wire [5:0]pcie1_cfg_status_0_cfg_neg_link_width;
+    (* MARK_DEBUG = "TRUE" *) wire [2:0]pcie1_cfg_status_0_pf_func_num;
+    (* MARK_DEBUG = "TRUE" *) wire [15:0]pcie1_cfg_status_0_pf_info;
+    (* MARK_DEBUG = "TRUE" *) wire pcie1_cfg_status_0_pf_sos;
+    (* MARK_DEBUG = "TRUE" *) wire pcie1_cfg_status_0_pf_vld;
+    (* MARK_DEBUG = "TRUE" *) wire pcie1_cfg_status_0_rdlh_link_up;
+    (* MARK_DEBUG = "TRUE" *) wire pcie1_cfg_status_0_smlh_link_up;
+    (* MARK_DEBUG = "TRUE" *) wire [5:0]pcie1_cfg_status_0_smlh_ltssm_state;
+    wire [7:0]pcie1_cfg_status_0_vf_func_num;
+    wire [15:0]pcie1_cfg_status_0_vf_info;
+    wire pcie1_cfg_status_0_vf_sos;
+    wire pcie1_cfg_status_0_vf_vld;
+    // wire pcie1_clk_0;
+    // wire pcie1_rstn_0;
+    wire [15:0]pcie1_strm_0_cpld_cdts;
+    wire [11:0]pcie1_strm_0_cplh_cdts;
+    wire [15:0]pcie1_strm_0_npd_cdts;
+    wire [11:0]pcie1_strm_0_nph_cdts;
+    wire [15:0]pcie1_strm_0_pd_cdts;
+    wire [11:0]pcie1_strm_0_ph_cdts;
+    wire [2:0]pcie1_strm_0_rx_credit;
+    wire pcie1_strm_0_rx_credit_ready;
+    wire pcie1_strm_0_rx_credit_valid;
+    wire [2645:0]pcie1_strm_0_rx_data;
+    wire [2:0]pcie1_strm_0_rx_end;
+    wire [5:0]pcie1_strm_0_rx_end0_ptr;
+    wire [5:0]pcie1_strm_0_rx_end1_ptr;
+    wire [5:0]pcie1_strm_0_rx_end2_ptr;
+    wire [8:0]pcie1_strm_0_rx_end_error;
+    wire [44:0]pcie1_strm_0_rx_parity;
+    // rx_slot*_np_valid: tied off
+    wire [2:0]pcie1_strm_0_rx_slot0_np_valid = 3'b0;
+    wire [1:0]pcie1_strm_0_rx_slot0_type;
+    wire [2:0]pcie1_strm_0_rx_slot1_np_valid = 3'b0;
+    wire [1:0]pcie1_strm_0_rx_slot1_type;
+    wire [2:0]pcie1_strm_0_rx_slot2_np_valid = 3'b0;
+    wire [1:0]pcie1_strm_0_rx_slot2_type;
+    wire [2:0]pcie1_strm_0_rx_start;
+    wire [1:0]pcie1_strm_0_rx_start0_ptr;
+    wire [1:0]pcie1_strm_0_rx_start1_ptr;
+    wire [1:0]pcie1_strm_0_rx_start2_ptr;
+    (* mark_debug = "true", keep = "true" *) wire pcie1_strm_0_rx_valid;
+    wire [2:0]pcie1_strm_0_tx_credit;
+    wire pcie1_strm_0_tx_credit_ready;
+    wire pcie1_strm_0_tx_credit_valid;
+    wire [2555:0]pcie1_strm_0_tx_data;
+    wire [2:0]pcie1_strm_0_tx_end;
+    wire [5:0]pcie1_strm_0_tx_end0_ptr;
+    wire [5:0]pcie1_strm_0_tx_end1_ptr;
+    wire [5:0]pcie1_strm_0_tx_end2_ptr;
+    wire [8:0]pcie1_strm_0_tx_end_error;
+    wire [43:0]pcie1_strm_0_tx_parity;
+    wire [2:0]pcie1_strm_0_tx_slot0_np_valid;
+    wire [1:0]pcie1_strm_0_tx_slot0_type;
+    wire [2:0]pcie1_strm_0_tx_slot1_np_valid;
+    wire [1:0]pcie1_strm_0_tx_slot1_type;
+    wire [2:0]pcie1_strm_0_tx_slot2_np_valid;
+    wire [1:0]pcie1_strm_0_tx_slot2_type;
+    wire [2:0]pcie1_strm_0_tx_start;
+    wire [1:0]pcie1_strm_0_tx_start0_ptr;
+    wire [1:0]pcie1_strm_0_tx_start1_ptr;
+    wire [1:0]pcie1_strm_0_tx_start2_ptr;
+    (* mark_debug = "true", keep = "true" *) wire pcie1_strm_0_tx_valid;
+    wire [31:0]pl_axil_dbi1_0_araddr;
+    wire [2:0]pl_axil_dbi1_0_arprot;
+    wire pl_axil_dbi1_0_arready;
+    wire [15:0]pl_axil_dbi1_0_aruser;
+    wire pl_axil_dbi1_0_arvalid;
+    wire [31:0]pl_axil_dbi1_0_awaddr;
+    wire [2:0]pl_axil_dbi1_0_awprot;
+    wire pl_axil_dbi1_0_awready;
+    wire [15:0]pl_axil_dbi1_0_awuser;
+    wire pl_axil_dbi1_0_awvalid;
+    wire pl_axil_dbi1_0_bready;
+    wire [1:0]pl_axil_dbi1_0_bresp;
+    wire [5:0]pl_axil_dbi1_0_buser;
+    wire pl_axil_dbi1_0_bvalid;
+    wire [31:0]pl_axil_dbi1_0_rdata;
+    wire pl_axil_dbi1_0_rready;
+    wire [1:0]pl_axil_dbi1_0_rresp;
+    wire [3:0]pl_axil_dbi1_0_ruser;
+    wire pl_axil_dbi1_0_rvalid;
+    wire [31:0]pl_axil_dbi1_0_wdata;
+    wire pl_axil_dbi1_0_wready;
+    wire [3:0]pl_axil_dbi1_0_wstrb;
+    wire [3:0]pl_axil_dbi1_0_wuser;
+    wire pl_axil_dbi1_0_wvalid; 
+//    wire pl0_resetn_0;
+   (* MARK_DEBUG = "TRUE" *) wire pl0_ref_clk;
+
+    reg [7:0] link_down_bus;
+
+    // LTSSM history: ltssm1_reg0 newest, reg1/reg2 the previous two.
+    // store_ltssm1 is high for one cycle on each state change.
+    (* mark_debug = "true", keep = "true" *) wire       store_ltssm1;
+    (* mark_debug = "true", keep = "true" *) reg [5:0]  ltssm1_reg0 = 6'b0;
+    (* mark_debug = "true", keep = "true" *) reg [5:0]  ltssm1_reg1 = 6'b0;
+    (* mark_debug = "true", keep = "true" *) reg [5:0]  ltssm1_reg2 = 6'b0;
+
+    // config_mem_handler enumeration/traffic state (IDLE .. TRAFFIC_GEN .. DONE).
+    (* mark_debug = "true", keep = "true" *) wire [3:0] cmh1_state;
+
+    assign store_ltssm1 = (ltssm1_reg0 != ltssm1_reg1);
+
+    always @(posedge pl0_ref_clk) begin
+        ltssm1_reg0 <= pcie1_cfg_status_0_smlh_ltssm_state;
+        ltssm1_reg1 <= ltssm1_reg0;
+        ltssm1_reg2 <= ltssm1_reg1;
+    end
+
+    design_1_wrapper design_1_wrapper_inst (
+        .CTRL1_GT_0_grx_n(CTRL1_GT_0_grx_n),
+        .CTRL1_GT_0_grx_p(    CTRL1_GT_0_grx_p),
+        .CTRL1_GT_0_gtx_n(    CTRL1_GT_0_gtx_n),
+        .CTRL1_GT_0_gtx_p(    CTRL1_GT_0_gtx_p),
+        .ctrl1_gt_refclk_0_clk_n(    ctrl1_gt_refclk_0_clk_n),
+        .ctrl1_gt_refclk_0_clk_p(    ctrl1_gt_refclk_0_clk_p),
+//        .dbi1_clk_0(    dbi1_clk_0),
+        .dbi1_rstn_0(    dbi1_rstn_0),
+        .pcie1_cfg_status_0_cfg_neg_link_width(    pcie1_cfg_status_0_cfg_neg_link_width),
+        .pcie1_cfg_status_0_pf_func_num(    pcie1_cfg_status_0_pf_func_num),
+        .pcie1_cfg_status_0_pf_info(    pcie1_cfg_status_0_pf_info),
+        .pcie1_cfg_status_0_pf_sos(    pcie1_cfg_status_0_pf_sos),
+        .pcie1_cfg_status_0_pf_vld(    pcie1_cfg_status_0_pf_vld),
+        .pcie1_cfg_status_0_rdlh_link_up(    pcie1_cfg_status_0_rdlh_link_up),
+        .pcie1_cfg_status_0_smlh_link_up(    pcie1_cfg_status_0_smlh_link_up),
+        .pcie1_cfg_status_0_smlh_ltssm_state(    pcie1_cfg_status_0_smlh_ltssm_state),
+        .pcie1_cfg_status_0_vf_func_num(    pcie1_cfg_status_0_vf_func_num),
+        .pcie1_cfg_status_0_vf_info(    pcie1_cfg_status_0_vf_info),
+        .pcie1_cfg_status_0_vf_sos(    pcie1_cfg_status_0_vf_sos),
+        .pcie1_cfg_status_0_vf_vld(    pcie1_cfg_status_0_vf_vld),
+//        .pcie1_clk_0(    pcie1_clk_0),
+        .pcie1_rstn_0(    pcie1_rstn_0),
+        .pcie1_strm_0_cpld_cdts(    pcie1_strm_0_cpld_cdts),
+        .pcie1_strm_0_cplh_cdts(    pcie1_strm_0_cplh_cdts),
+        .pcie1_strm_0_npd_cdts(    pcie1_strm_0_npd_cdts),
+        .pcie1_strm_0_nph_cdts(    pcie1_strm_0_nph_cdts),
+        .pcie1_strm_0_pd_cdts(    pcie1_strm_0_pd_cdts),
+        .pcie1_strm_0_ph_cdts(    pcie1_strm_0_ph_cdts),
+        .pcie1_strm_0_rx_credit(    pcie1_strm_0_rx_credit),
+        .pcie1_strm_0_rx_credit_ready(    pcie1_strm_0_rx_credit_ready),
+        .pcie1_strm_0_rx_credit_valid(    pcie1_strm_0_rx_credit_valid),
+        .pcie1_strm_0_rx_data(    pcie1_strm_0_rx_data),
+        .pcie1_strm_0_rx_end(    pcie1_strm_0_rx_end),
+        .pcie1_strm_0_rx_end0_ptr(    pcie1_strm_0_rx_end0_ptr),
+        .pcie1_strm_0_rx_end1_ptr(    pcie1_strm_0_rx_end1_ptr),
+        .pcie1_strm_0_rx_end2_ptr(    pcie1_strm_0_rx_end2_ptr),
+        .pcie1_strm_0_rx_end_error(    pcie1_strm_0_rx_end_error),
+        .pcie1_strm_0_rx_parity(    pcie1_strm_0_rx_parity),
+        // rx_slot*_np_valid: tied off
+        .pcie1_strm_0_rx_slot0_type(    pcie1_strm_0_rx_slot0_type),
+        .pcie1_strm_0_rx_slot1_type(    pcie1_strm_0_rx_slot1_type),
+        .pcie1_strm_0_rx_slot2_type(    pcie1_strm_0_rx_slot2_type),
+        .pcie1_strm_0_rx_start(    pcie1_strm_0_rx_start),
+        .pcie1_strm_0_rx_start0_ptr(    pcie1_strm_0_rx_start0_ptr),
+        .pcie1_strm_0_rx_start1_ptr(    pcie1_strm_0_rx_start1_ptr),
+        .pcie1_strm_0_rx_start2_ptr(    pcie1_strm_0_rx_start2_ptr),
+        .pcie1_strm_0_rx_valid(    pcie1_strm_0_rx_valid),
+        .pcie1_strm_0_tx_credit(    pcie1_strm_0_tx_credit),
+        .pcie1_strm_0_tx_credit_ready(    pcie1_strm_0_tx_credit_ready),
+        .pcie1_strm_0_tx_credit_valid(    pcie1_strm_0_tx_credit_valid),
+        .pcie1_strm_0_tx_data(    pcie1_strm_0_tx_data),
+        .pcie1_strm_0_tx_end(    pcie1_strm_0_tx_end),
+        .pcie1_strm_0_tx_end0_ptr(    pcie1_strm_0_tx_end0_ptr),
+        .pcie1_strm_0_tx_end1_ptr(    pcie1_strm_0_tx_end1_ptr),
+        .pcie1_strm_0_tx_end2_ptr(    pcie1_strm_0_tx_end2_ptr),
+        .pcie1_strm_0_tx_end_error(    pcie1_strm_0_tx_end_error),
+        .pcie1_strm_0_tx_parity(    pcie1_strm_0_tx_parity),
+        .pcie1_strm_0_tx_slot0_np_valid(    pcie1_strm_0_tx_slot0_np_valid),
+        .pcie1_strm_0_tx_slot0_type(    pcie1_strm_0_tx_slot0_type),
+        .pcie1_strm_0_tx_slot1_np_valid(    pcie1_strm_0_tx_slot1_np_valid),
+        .pcie1_strm_0_tx_slot1_type(    pcie1_strm_0_tx_slot1_type),
+        .pcie1_strm_0_tx_slot2_np_valid(    pcie1_strm_0_tx_slot2_np_valid),
+        .pcie1_strm_0_tx_slot2_type(    pcie1_strm_0_tx_slot2_type),
+        .pcie1_strm_0_tx_start(    pcie1_strm_0_tx_start),
+        .pcie1_strm_0_tx_start0_ptr(    pcie1_strm_0_tx_start0_ptr),
+        .pcie1_strm_0_tx_start1_ptr(    pcie1_strm_0_tx_start1_ptr),
+        .pcie1_strm_0_tx_start2_ptr(    pcie1_strm_0_tx_start2_ptr),
+        .pcie1_strm_0_tx_valid(    pcie1_strm_0_tx_valid),
+        .pl_axil_dbi1_0_araddr(    pl_axil_dbi1_0_araddr),
+        .pl_axil_dbi1_0_arprot(    pl_axil_dbi1_0_arprot),
+        .pl_axil_dbi1_0_arready(    pl_axil_dbi1_0_arready),
+        .pl_axil_dbi1_0_aruser(    pl_axil_dbi1_0_aruser),
+        .pl_axil_dbi1_0_arvalid(    pl_axil_dbi1_0_arvalid),
+        .pl_axil_dbi1_0_awaddr(    pl_axil_dbi1_0_awaddr),
+        .pl_axil_dbi1_0_awprot(    pl_axil_dbi1_0_awprot),
+        .pl_axil_dbi1_0_awready(    pl_axil_dbi1_0_awready),
+        .pl_axil_dbi1_0_awuser(    pl_axil_dbi1_0_awuser),
+        .pl_axil_dbi1_0_awvalid(    pl_axil_dbi1_0_awvalid),
+        .pl_axil_dbi1_0_bready(    pl_axil_dbi1_0_bready),
+        .pl_axil_dbi1_0_bresp(    pl_axil_dbi1_0_bresp),
+        .pl_axil_dbi1_0_buser(    pl_axil_dbi1_0_buser),
+        .pl_axil_dbi1_0_bvalid(    pl_axil_dbi1_0_bvalid),
+        .pl_axil_dbi1_0_rdata(    pl_axil_dbi1_0_rdata),
+        .pl_axil_dbi1_0_rready(    pl_axil_dbi1_0_rready),
+        .pl_axil_dbi1_0_rresp(    pl_axil_dbi1_0_rresp),
+        .pl_axil_dbi1_0_ruser(    pl_axil_dbi1_0_ruser),
+        .pl_axil_dbi1_0_rvalid(    pl_axil_dbi1_0_rvalid),
+        .pl_axil_dbi1_0_wdata(    pl_axil_dbi1_0_wdata),
+        .pl_axil_dbi1_0_wready(    pl_axil_dbi1_0_wready),
+        .pl_axil_dbi1_0_wstrb(    pl_axil_dbi1_0_wstrb),
+        .pl_axil_dbi1_0_wuser(    pl_axil_dbi1_0_wuser),
+        .pl_axil_dbi1_0_wvalid(    pl_axil_dbi1_0_wvalid),
+        .pl0_ref_clk( pl0_ref_clk),
+        .pl0_resetn_0(  pl0_resetn_0)
+
+    );
+    
+    rp_top rp_top_inst (
+        .clk(pl0_ref_clk),
+        .rst_n(pl0_resetn_0),
+        .link_down(link_down_bus),
+        .rx_valid(pcie1_strm_0_rx_valid),
+        .rx_data(pcie1_strm_0_rx_data),
+        .rx_parity(pcie1_strm_0_rx_parity),
+        .rx_start(pcie1_strm_0_rx_start),
+        .rx_start0ptr(pcie1_strm_0_rx_start0_ptr),
+        .rx_start1ptr(pcie1_strm_0_rx_start1_ptr),
+        .rx_start2ptr(pcie1_strm_0_rx_start2_ptr),
+        .rx_start0type(pcie1_strm_0_rx_slot0_type),
+        .rx_start1type(pcie1_strm_0_rx_slot1_type),
+        .rx_start2type(pcie1_strm_0_rx_slot2_type),
+        .rx_start0npinfo(pcie1_strm_0_rx_slot0_np_valid),
+        .rx_start1npinfo(pcie1_strm_0_rx_slot1_np_valid),
+        .rx_start2npinfo(pcie1_strm_0_rx_slot2_np_valid),
+        .rx_end(pcie1_strm_0_rx_end),
+        .rx_end0ptr(pcie1_strm_0_rx_end0_ptr),
+        .rx_end1ptr(pcie1_strm_0_rx_end1_ptr),
+        .rx_end2ptr(pcie1_strm_0_rx_end2_ptr),
+        .rx_end_err(pcie1_strm_0_rx_end_error),
+        .tx_credit_valid(pcie1_strm_0_tx_credit_valid),
+        .tx_credit(pcie1_strm_0_tx_credit),
+        .tx_credit_active(pcie1_strm_0_tx_credit_ready),
+        .rx_credit_valid(pcie1_strm_0_rx_credit_valid),
+        .rx_credit(pcie1_strm_0_rx_credit),
+        .rx_credit_active(pcie1_strm_0_rx_credit_ready),
+        .tx_valid(pcie1_strm_0_tx_valid),
+        .tx_data(pcie1_strm_0_tx_data),
+        .tx_parity(pcie1_strm_0_tx_parity),
+        .tx_start(pcie1_strm_0_tx_start),
+        .tx_start0ptr(pcie1_strm_0_tx_start0_ptr),
+        .tx_start1ptr(pcie1_strm_0_tx_start1_ptr),
+        .tx_start2ptr(pcie1_strm_0_tx_start2_ptr),
+        .tx_start0type(pcie1_strm_0_tx_slot0_type),
+        .tx_start1type(pcie1_strm_0_tx_slot1_type),
+        .tx_start2type(pcie1_strm_0_tx_slot2_type),
+        .tx_start0npinfo(pcie1_strm_0_tx_slot0_np_valid),
+        .tx_start1npinfo(pcie1_strm_0_tx_slot1_np_valid),
+        .tx_start2npinfo(pcie1_strm_0_tx_slot2_np_valid),
+        .tx_end(pcie1_strm_0_tx_end),
+        .tx_end0ptr(pcie1_strm_0_tx_end0_ptr),
+        .tx_end1ptr(pcie1_strm_0_tx_end1_ptr),
+        .tx_end2ptr(pcie1_strm_0_tx_end2_ptr),
+        .tx_end_error(pcie1_strm_0_tx_end_error),
+        .pf_cfg_status_pvld(pcie1_cfg_status_0_pf_vld),
+        .pf_cfg_status_info(pcie1_cfg_status_0_pf_info),
+        .pf_cfg_status_sos(pcie1_cfg_status_0_pf_sos),
+        .pf_cfg_status_func_num(pcie1_cfg_status_0_pf_func_num),
+        .vf_cfg_status_pvld(pcie1_cfg_status_0_vf_vld),
+        .vf_cfg_status_info(pcie1_cfg_status_0_vf_info),
+        .vf_cfg_status_sos(pcie1_cfg_status_0_vf_sos),
+        .vf_cfg_status_func_num(pcie1_cfg_status_0_vf_func_num),
+        .pl_dbi_axil_if_awaddr(pl_axil_dbi1_0_awaddr),
+        .pl_dbi_axil_if_awready(pl_axil_dbi1_0_awready),
+        .pl_dbi_axil_if_awvalid(pl_axil_dbi1_0_awvalid),
+        .pl_dbi_axil_if_awuser(pl_axil_dbi1_0_awuser),
+        .pl_dbi_axil_if_awprot(pl_axil_dbi1_0_awprot),
+        .pl_dbi_axil_if_araddr(pl_axil_dbi1_0_araddr),
+        .pl_dbi_axil_if_arready(pl_axil_dbi1_0_arready),
+        .pl_dbi_axil_if_arvalid(pl_axil_dbi1_0_arvalid),
+        .pl_dbi_axil_if_aruser(pl_axil_dbi1_0_aruser),
+        .pl_dbi_axil_if_arprot(pl_axil_dbi1_0_arprot),
+        .pl_dbi_axil_if_wdata(pl_axil_dbi1_0_wdata),
+        .pl_dbi_axil_if_wuser(pl_axil_dbi1_0_wuser),
+        .pl_dbi_axil_if_wstrb(pl_axil_dbi1_0_wstrb),
+        .pl_dbi_axil_if_wready(pl_axil_dbi1_0_wready),
+        .pl_dbi_axil_if_wvalid(pl_axil_dbi1_0_wvalid),
+        .pl_dbi_axil_if_rdata(pl_axil_dbi1_0_rdata),
+        .pl_dbi_axil_if_rresp(pl_axil_dbi1_0_rresp),
+        .pl_dbi_axil_if_ruser(pl_axil_dbi1_0_ruser),
+        .pl_dbi_axil_if_rready(pl_axil_dbi1_0_rready),
+        .pl_dbi_axil_if_rvalid(pl_axil_dbi1_0_rvalid),
+        .pl_dbi_axil_if_bresp(pl_axil_dbi1_0_bresp),
+        .pl_dbi_axil_if_buser(pl_axil_dbi1_0_buser),
+        .pl_dbi_axil_if_bready(pl_axil_dbi1_0_bready),
+        .pl_dbi_axil_if_bvalid(pl_axil_dbi1_0_bvalid),
+        .dbg_state(cmh1_state)
+    );
+
+
+    always @(posedge pl0_ref_clk or negedge pl0_resetn_0 ) begin
+        if(!pl0_resetn_0) begin
+            link_down_bus[7:0] <= 8'hff;
+        end
+        else begin
+            link_down_bus[7:0] <= {8{~pcie1_cfg_status_0_rdlh_link_up | ~pcie1_cfg_status_0_smlh_link_up}};
+        end
+    end
+endmodule
