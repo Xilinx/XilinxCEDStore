@@ -14,7 +14,6 @@ package env_pkg;
 
   import tb_params_pkg::*;
 
-  // SNPS VIP
 `ifdef CPM6_RTL
   import svt_uvm_pkg::*; 
   import svt_axi_uvm_pkg::*; 

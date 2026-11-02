@@ -9,7 +9,7 @@
 | **Example Type** | IP Example Design (CED) |
 | **Target Audience** | Verification/FPGA engineers validating the CPM6 DMA Bridge datapath |
 | **Devices Supported** | Versal devices with CPM6 hard IP (`vsvc3340` package family) — `xc2vp3602-vsvc3340-3HP-e-S`, `xc2vp3602-vsvc3340-2LHP-e-S` |
-| **Tools Required** | Vivado 2026.1 (validated with build v2026.1.1), VCS/Verdi X-2025.06 with UVM 1.1, Avery PLI/apci-xactor 2025.3_1, CPM6 Secure IP package |
+| **Tools Required** | Vivado 2026.1 (validated with build v2026.1.1), VCS/Verdi X-2025.06-SP2 with UVM 1.1, Avery PLI/apci-xactor 2025.3_1, CPM6 Secure IP package |
 | **Simulators Validated** | VCS (waveform viewing via Verdi or DVE) |
 | **Boards Validated** | VPK360 (hardware testing). No board is registered in the CED GUI; the CED is created part-only |
 | **Pre-Built Images** | Not available |
@@ -311,7 +311,7 @@ This CED supports both simulation-based and hardware validation. The simulation 
      ```
    Verify:
    ```
-   echo $VCS_HOME       # should show X-2025.06 path
+   echo $VCS_HOME       # should show X-2025.06-SP2 path
    echo $AVERY_PLI      # should show avery_pli-2025.3_1 path
    echo $AVERY_PCIE     # should show apcievip-2025.3_1 path
    echo $CPM6_SECUREIP  # should show your extracted path

@@ -46,7 +46,6 @@ module tb_top;
   // - These control the physical link connections; ergo you can enable 
   //   a link for training if non-zero, connect a subset of lanes of a 
   //   link, or disable a link entirely if zero
-  // - Cannot move these to module definition as it breaks SNPS VIP and 
   //   VCS sim for some reason
   // - Examples 
   //   - Questa: vopt ... -G tb_top/LINK0_WIDTH=4
@@ -255,7 +254,7 @@ module tb_top;
     assign dut_if1[ly].Pclk                     = gen_pipe_if[8+ly].Pclk;
     assign dut_if1[ly].Reset_                   = gen_pipe_if[8+ly].Reset_;
   end
-  // EDT-1093458 : MAC requires unused lanes driven low
+
   for (genvar ly=LINK1_WIDTH; ly<8; ly++) begin
     assign gen_pipe_if[8+ly].PhyStatus          = '0;
   end

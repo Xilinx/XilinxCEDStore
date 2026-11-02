@@ -61,7 +61,7 @@ class cxl_pm_out_cb extends gpmon_mon_cb#(gpmon_txn);
       `check_add_radix(3, "GPF Phase-1->Cache Flush Error")
       // ResetPrep VDM
       `check_add_radix(4, "ResetPrep Rsp VDM Rx'd")
-      // CXL Error VDM (SNPS Core specific, not CXL spec) 
+      // CXL Error VDM (Core specific, not CXL spec) 
       `check_add_radix(5, "CXL Error VDM Rx'd")
       `check_add_raw(9:6, $sformatf("[9:6] : Firmware IRQ Vector = 'h%0h", txn.sig[9:6]))
     end
