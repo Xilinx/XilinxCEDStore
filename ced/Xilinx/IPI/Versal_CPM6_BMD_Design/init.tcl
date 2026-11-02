@@ -6,7 +6,7 @@ set currentFile [file normalize [info script]]
 variable currentDir [file dirname $currentFile]
 source "$currentDir/run.tcl"
 
-proc getSupportedParts {} { return [get_parts xc2vp3602*] }
+proc getSupportedParts {} { return [get_parts -filter {SPEED == -2LHP || SPEED == -2MP || SPEED == -2MHP || SPEED == -3HP} xc2vp3602*] }
 
 proc getSupportedBoards {} { }
 

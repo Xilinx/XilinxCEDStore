@@ -1002,7 +1002,7 @@ class flit68_mst_qpacker_seq#(parameter NFI_W=3) extends cxl_nfi_mst_in_order_se
     // 1x CXL.cache DAT
     if (sc_h2ddat) begin
       h1.h2ddat_h   = h2ddat_q[0];
-      dat_q.push_back(h2ddat_q.pop_front()); // TODO Split Mode
+      dat_q.push_back(h2ddat_q.pop_front()); 
     end
     // 2x CXL.cache RSP
     foreach (h1.h2drsp_h[ii]) begin
@@ -1026,7 +1026,7 @@ class flit68_mst_qpacker_seq#(parameter NFI_W=3) extends cxl_nfi_mst_in_order_se
     // 1x CXL.cache DAT
     if (sc_h2ddat) begin
       h2.h2ddat_h = h2ddat_q[0];
-      dat_q.push_back(h2ddat_q.pop_front()); // TODO support split mode
+      dat_q.push_back(h2ddat_q.pop_front()); 
     end
     void'(h2.randomize);
     void'(h2.pack_slot);
@@ -1041,7 +1041,7 @@ class flit68_mst_qpacker_seq#(parameter NFI_W=3) extends cxl_nfi_mst_in_order_se
     foreach (h3.h2ddat_h[ii]) begin
       if (ii<sc_h2ddat) begin
         h3.h2ddat_h[ii] = h2ddat_q[0];
-        dat_q.push_back(h2ddat_q.pop_front()); // TODO Split Mode
+        dat_q.push_back(h2ddat_q.pop_front()); 
       end 
     end
     void'(h3.randomize);
@@ -1177,7 +1177,7 @@ class flit68_mst_qpacker_seq#(parameter NFI_W=3) extends cxl_nfi_mst_in_order_se
     // 1x CXL.cache DAT
     if (sc_d2hdat) begin
       h0.d2hdat_h = d2hdat_q[0];
-      dat_q.push_back(d2hdat_q.pop_front()); // TODO Split Mode
+      dat_q.push_back(d2hdat_q.pop_front()); 
     end 
     // 2x CXL.cache RSP
     foreach (h0.d2hrsp_h[ii]) begin
@@ -1205,7 +1205,7 @@ class flit68_mst_qpacker_seq#(parameter NFI_W=3) extends cxl_nfi_mst_in_order_se
     // 1x CXL.cache DAT
     if (sc_d2hdat) begin
       h1.d2hdat_h   = d2hdat_q[0];
-      dat_q.push_back(d2hdat_q.pop_front()); // TODO Split Mode
+      dat_q.push_back(d2hdat_q.pop_front()); 
     end 
     void'(h1.randomize);
     void'(h1.pack_slot);
@@ -1220,7 +1220,7 @@ class flit68_mst_qpacker_seq#(parameter NFI_W=3) extends cxl_nfi_mst_in_order_se
     foreach (h2.d2hdat_h[ii]) begin
       if (ii < sc_d2hdat) begin
         h2.d2hdat_h[ii] = d2hdat_q[0];
-        dat_q.push_back(d2hdat_q.pop_front()); // TODO Split Mode
+        dat_q.push_back(d2hdat_q.pop_front()); 
       end 
     end
     // 1x CXL.cache RSP
@@ -1239,7 +1239,7 @@ class flit68_mst_qpacker_seq#(parameter NFI_W=3) extends cxl_nfi_mst_in_order_se
     // 1x CXL.mem DAT
     if (sc_s2mdrs) begin
       h3.s2mdrs_h = s2mdrs_q[0];
-      dat_q.push_back(s2mdrs_q.pop_front()); // TODO Split Mode
+      dat_q.push_back(s2mdrs_q.pop_front()); 
     end
     // 1x CXL.mem RSP
     if (sc_s2mndr) begin
@@ -1273,7 +1273,7 @@ class flit68_mst_qpacker_seq#(parameter NFI_W=3) extends cxl_nfi_mst_in_order_se
     foreach (h5.s2mdrs_h[ii]) begin
       if (ii < sc_s2mdrs) begin
         h5.s2mdrs_h[ii] = s2mdrs_q[0];
-        dat_q.push_back(s2mdrs_q.pop_front()); // TODO Split Mode
+        dat_q.push_back(s2mdrs_q.pop_front()); 
       end 
     end
     void'(h5.randomize);
@@ -1307,7 +1307,7 @@ class flit68_mst_qpacker_seq#(parameter NFI_W=3) extends cxl_nfi_mst_in_order_se
     end
     if (sc_d2hdat) begin
       g2.d2hdat_h = d2hdat_q[0];
-      dat_q.push_back(d2hdat_q.pop_front()); // TODO Split Mode
+      dat_q.push_back(d2hdat_q.pop_front()); 
     end 
     if (sc_d2hrsp) begin
       g2.d2hrsp_h = d2hrsp_q.pop_front();
@@ -1324,7 +1324,7 @@ class flit68_mst_qpacker_seq#(parameter NFI_W=3) extends cxl_nfi_mst_in_order_se
     foreach (g3.d2hdat_h[ii]) begin
       if (ii < sc_d2hdat) begin
         g3.d2hdat_h[ii] = d2hdat_q[0];
-        dat_q.push_back(d2hdat_q.pop_front()); // TODO Split Mode
+        dat_q.push_back(d2hdat_q.pop_front()); 
       end
     end
     void'(g3.randomize);
@@ -1338,7 +1338,7 @@ class flit68_mst_qpacker_seq#(parameter NFI_W=3) extends cxl_nfi_mst_in_order_se
     g4.create_objects(flit.dir, {2'b11>>(2-sc_s2mndr), 1'b1>>(1-sc_s2mdrs)});
     if (sc_s2mdrs) begin
       g4.s2mdrs_h = s2mdrs_q[0];
-      dat_q.push_back(s2mdrs_q.pop_front()); // TODO Split Mode
+      dat_q.push_back(s2mdrs_q.pop_front()); 
     end 
     foreach (g4.s2mndr_h[ii]) begin
       if (ii < sc_s2mndr) begin
@@ -1371,7 +1371,7 @@ class flit68_mst_qpacker_seq#(parameter NFI_W=3) extends cxl_nfi_mst_in_order_se
     foreach (g6.s2mdrs_h[ii]) begin
       if (ii < sc_s2mdrs) begin
         g6.s2mdrs_h[ii] = s2mdrs_q[0];
-        dat_q.push_back(s2mdrs_q.pop_front()); // TODO Split Mode
+        dat_q.push_back(s2mdrs_q.pop_front()); 
       end
     end
     void'(g6.randomize);

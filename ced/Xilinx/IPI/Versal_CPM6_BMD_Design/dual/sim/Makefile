@@ -93,7 +93,8 @@ CDEF := +define+CPM6_VIVADO         \
         +define+PCIE_LINK_PIPE       \
         +define+CPM6_DECRYPTED_SIP   \
         +define+APCI_MAX_DATA_WIDTH=8 \
-        +define+VCS_SIM
+        +define+VCS_SIM              \
+        +define+BMD_DUT_PFX=dual_ctrl_bmd_ep_i
 
 ## ----------------------------------------------------------------------------
 ## Simulation plusargs
@@ -306,6 +307,7 @@ s sim: _check_env _check_simv _check_setup
 	@echo "run" >> uclirun.do
 	@ODIR=$(TEST)_$$(date +"%m%d%y_%Hh%Mm%Ss"); \
 	 mkdir -p $$ODIR; \
+ cp $(VIVADO_SIM)/nocattrs.dat $$ODIR/ 2>/dev/null || true; \
 	 export SYNOPSYS_SIM_SETUP=$(SIM_SETUP); \
 	 cd $$ODIR && ../simv \
 	    -no_save \
