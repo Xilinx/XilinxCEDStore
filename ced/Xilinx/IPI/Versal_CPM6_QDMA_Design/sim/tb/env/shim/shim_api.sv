@@ -99,7 +99,6 @@ class shim_api extends uvm_component;
     `uvm_fatal(get_type_name, "method not implemented yet")
   endtask
 
-  // DESCRIPTION: Send a CXL TLP specifically in basic mode (simple control)
   virtual task send_cxlmem(amd_cxlmem_tlp tlp);
     string           msg;
     bit [15:0][31:0] dat;
@@ -541,7 +540,7 @@ class shim_api extends uvm_component;
       endcase
     end
     else begin
-      // Confirmed: Type1 will still send across link if necessary
+      // Type1 will still send across link if necessary
       type1 = new(); _h = type1;
     end
     _h.configure();
@@ -691,7 +690,7 @@ class shim_api extends uvm_component;
       endcase
     end
     else begin
-      // Confirmed: Type1 will still send across link if necessary
+      // Type1 will still send across link if necessary
       type1 = new(); _h = type1;
     end
     _h.configure();

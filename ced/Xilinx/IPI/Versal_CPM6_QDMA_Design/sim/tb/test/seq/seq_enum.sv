@@ -3,10 +3,6 @@ class seq_enum extends vseq_base;
   `uvm_object_utils(seq_enum)
   `uvm_register_cb(seq_enum, seq_enum_callback)
 
-  // 250us: a generous upper bound above typical PCIe enumeration time in this
-  // testbench. Seed-sensitive at higher VF counts -- see the SEED debug hint
-  // in ctrl1/sim/README.txt for a documented case that needed most of this
-  // budget at NUM_VF_TEST=8.
   time enum_timeout = 250us;
 
   // provide handles to common objects that callbacks can use
@@ -16,9 +12,9 @@ class seq_enum extends vseq_base;
   generic_config vip_cfg;   
 
   // RP DUT only 
-  bit        skip_enum_seq;
-  bit [47:0] ecam_base;
-  bit [ 7:0] bus_base;
+  bit          skip_enum_seq;
+  logic [47:0] ecam_base;
+  bit   [ 7:0] bus_base;
 
   function new(string name = "seq_enum");
     super.new(name);
@@ -30,18 +26,18 @@ class seq_enum extends vseq_base;
     // callback 
     `uvm_do_callbacks(seq_enum, seq_enum_callback, pre_start(this))
     // call "start"
-    if (is_rp_vip) rp_vip_start; else rp_dut_start;
+    if (is_rp_vip()) rp_vip_start(); else rp_dut_start();
     // callback 
     `uvm_do_callbacks(seq_enum, seq_enum_callback, post_start(this))
     if (!$test$plusargs("AVERY_CPM6_COSIM")) begin
       // do enumeration
-      if (is_rp_vip) 
-        rp_vip_enum; 
+      if (is_rp_vip()) 
+        rp_vip_enum(); 
       else begin
         if (skip_enum_seq)
           `uvm_info(get_type_name, "skip_enum_seq=1, not running PCIe enumeration sequence", UVM_NONE)
         else
-          rp_dut_enum;
+          rp_dut_enum();
       end
       // callback 
       `uvm_do_callbacks(seq_enum, seq_enum_callback, post_enum(this))
@@ -63,16 +59,26 @@ class seq_enum extends vseq_base;
   // - RP VIP : Call "start" as a precursor to enumeration
   // - EP DUT : N/A
   virtual task rp_vip_start;
+    `uvm_info(get_type_name, "RP has been detected as VIP, calling 'start' on it as precursor to enumeration", UVM_LOW)
     p_sequencer.vip.set("start_bfm");
-    // 1us: comfortably generous for this VIP-internal software-model start-up
-    // transition (not a physical link event).
     p_sequencer.vip.wait_event("bfm_started", 1us, "RC BFM didn't start successfully");
   endtask
 
-  // - RP VIP : Use the API to initiate enumeration
+  // - RP VIP : auto_enum=1 from above; just need to wait
   // - EP DUT : N/A
   virtual task rp_vip_enum;
-    // initiate enumeration
+    string msg;
+    msg = "RP has been detected as VIP, waiting for RP to reach L0 and dl_up";
+    `uvm_info(get_type_name, msg , UVM_LOW)
+    // wait until VIP confirms L0 is reached
+    msg = {"Bus didn't reach L0 in ", env.pipe_sim ? "50us" : "200us"};
+    p_sequencer.vip.port_wait_event(0, "L0", env.pipe_sim ? 50us : 200us, msg); 
+    // wait until VIP confirms DLL is up 
+    msg = {"Bus didn't reach dl_up in ", env.pipe_sim ? "50us" : "250us"};
+    p_sequencer.vip.port_wait_event(0, "dl_up", env.pipe_sim ? 50us : 250us, msg); 
+    msg = "RP has been detected as VIP, waiting for it to report enumeration complete";
+    `uvm_info(get_type_name, msg, UVM_LOW)
+    // enumeration should have begun automatically
     p_sequencer.vip.wait_event("bus_enum_done", 
                                enum_timeout, 
                                $sformatf("Bus enumeration failed to complete in %t", enum_timeout));
@@ -87,28 +93,30 @@ class seq_enum extends vseq_base;
   // RP DUT : N/A
   // EP VIP : Call start as precursor to enumeration 
   virtual task rp_dut_start;
+    string msg;
+    msg = "RP has been detected as DUT, calling 'start' on EP as precursor to enumeration";
+    `uvm_info(get_type_name, msg, UVM_LOW)
     p_sequencer.vip.set("start_bfm");
-    // 1us: comfortably generous for this VIP-internal software-model start-up
-    // transition (not a physical link event).
     p_sequencer.vip.wait_event("bfm_started", 1us, "EP BFM didn't start successfully");
   endtask
 
   virtual task rp_dut_enum;
+    string msg;
     seq_ps_pcie_enum seq_enum;
+    msg = "RP has been detected as DUT, waiting for EP to report dl_up and L0 before beginning enumeration";
+    `uvm_info(get_type_name, msg, UVM_LOW)
     /* 
      * Querying the VIP before beginning the enumeration sequence is
      * technically cheating, as enumeration should be an entirely
-     * root side process, but just move on for now.
+     * root side process; enumeration proceeds after it.
      */
-    // wait until VIP confirms DLL is up
-    // 50us: sized to cover PCIe link training in this testbench's Avery PCIe
-    // VIP model, well under the 250us total enumeration budget (enum_timeout
-    // above).
-    p_sequencer.vip.port_wait_event(0, "dl_up", 50us, "Bus didn't reach dl_up in 50us");
-    // wait until VIP confirms L0 is reached (same 50us rationale as dl_up above)
+    // wait until VIP confirms L0 is reached
     p_sequencer.vip.port_wait_event(0, "L0", 50us, "Bus didn't reach L0 in 50us");
+    // wait until VIP confirms DLL is up 
+    p_sequencer.vip.port_wait_event(0, "dl_up", 50us, "Bus didn't reach dl_up in 50us");
     // start enumeration
-    `uvm_info(get_type_name, $sformatf("Using ECAM base=0x%h and Bus base=0x%h for enumeration", ecam_base, bus_base), UVM_LOW)
+    msg = $sformatf("Using ECAM base=0x%h and Bus base=0x%h for enumeration", ecam_base, bus_base);
+    `uvm_info(get_type_name, msg, UVM_LOW)
     seq_enum = seq_ps_pcie_enum::type_id::create("seq_enum");
     seq_enum.set_ctrlr(dut_cfg.ctrlr_en[1]);
     {seq_enum.ecam_base, seq_enum.bus_base} = {ecam_base, bus_base};

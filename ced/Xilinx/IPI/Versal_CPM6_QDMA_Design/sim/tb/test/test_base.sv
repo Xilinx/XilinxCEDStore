@@ -1,4 +1,4 @@
-/* DESCRIPTION
+/* DESCRIPTION 
  * This class creates the tb_env object, the DUT and VIP config objects,
  * and provides convenience printing methods. It also sets a default 
  * timeout, randomizes the DUT and VIP config objects and applies their
@@ -39,11 +39,13 @@ class test_base extends uvm_test;
     uvm_report_server::set_server(my_srvr);
     super.build_phase(phase);
     // By default, the env cfg will not be set up and it won't 
-    // be put in the cfg db. A user can specify the below
-    // `include via incdir to take precedence over the empty one.
+    // be put in the cfg db. A user can implement setup_env_cfg()
+    // and/or specify the below `include via incdir to take precedence 
+    // over the empty one and configure the env's cfg object.
     env_cfg = tb_env_cfg::type_id::create("env_cfg");
+    setup_env_cfg();
     `include "setup_env_cfg.sv"
-    if (env_cfg != null)
+    if (!env_cfg.is_default())
       uvm_config_db#(tb_env_cfg)::set(this, "env", "env_cfg", env_cfg);
     // These control all agent setup before time=0
     vip_cfg = generic_config::type_id::create("vip_cfg");
@@ -106,10 +108,7 @@ class test_base extends uvm_test;
          fork
            forever begin
              `uvm_info("HRTBEAT", $sformatf("Heartbeat at %0t",$time), UVM_LOW)
-             // 25us: an arbitrary, sim-time-scale interval chosen only to prove
-             // pre_reset-phase liveness in the log -- not tied to any protocol
-             // timing.
-             #25us;
+             #25us; 
            end
          join_none
        end
@@ -197,11 +196,13 @@ class test_base extends uvm_test;
     `uvm_info("RUNSTATE", "--- Entering post_shutdown_phase ---", UVM_MEDIUM)
   endtask
 
+  // Callback that extended classes can implement. 
+  virtual function void setup_env_cfg(); endfunction
+
 `ifdef CPM6_VIVADO 
   `ifndef QEMU_PS
   /* Helper functions that will allows users to check in tests that emulate
-   * modifying the CDO file of a Vivado project manually, which cannot be 
-   * checked into GitHub.
+   * modifying the CDO file of a Vivado project manually.
    */
 
   // DESCRIPTION: Write a single DW

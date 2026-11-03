@@ -14,7 +14,7 @@ module bind_isr
   // ***********************************************
 
   gpmon_if gpmon_ps_isr(); 
-  assign gpmon_ps_isr.clk    = inst.cpm_osc_clk_div2; //async(???); whatever, just sim
+  assign gpmon_ps_isr.clk    = inst.cpm_osc_clk_div2; //async
   assign gpmon_ps_isr.sig[2] = inst.cpmps_corr_irq;
   assign gpmon_ps_isr.sig[1] = inst.cpmps_uncorr_irq;
   assign gpmon_ps_isr.sig[0] = inst.cpmps_misc_irq;
@@ -27,10 +27,10 @@ module bind_isr
   // ***********************************************
 
   gpmon_if gpmon_pl_isr(); 
-  assign gpmon_pl_isr.clk    = inst.cpm_osc_clk_div2; //async(???); whatever, just sim 
-  assign gpmon_pl_isr.sig[2] = inst.cpm_pl_irq2; //not sure this is CORR
-  assign gpmon_pl_isr.sig[1] = inst.cpm_pl_irq1; //not sure this is UNCORR
-  assign gpmon_pl_isr.sig[0] = inst.cpm_pl_irq0; //not sure if this is MISC
+  assign gpmon_pl_isr.clk    = inst.cpm_osc_clk_div2; //async 
+  assign gpmon_pl_isr.sig[2] = inst.cpm_pl_irq2;
+  assign gpmon_pl_isr.sig[1] = inst.cpm_pl_irq1;
+  assign gpmon_pl_isr.sig[0] = inst.cpm_pl_irq0;
 
   initial
     uvm_config_db#(virtual gpmon_if)::set(null, "*", "vif_cpm_pl_isr", gpmon_pl_isr);

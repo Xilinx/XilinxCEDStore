@@ -11,8 +11,8 @@
 // qdma_periph_tm_dsc_if.sv is included unconditionally
 // for the same reason pswizard_msix_if.sv is in pswizard_agent's package:
 // the monitor declares a `virtual qdma_periph_tm_dsc_if vif_tm` member, so
-// the type must always exist even when bind.tm_dsc_sts.sv isn't compiled —
-// the monitor's config_db get for it is soft/non-fatal.
+// the type must always exist. The monitor's config_db get for it is
+// soft/non-fatal.
 `include "qdma_periph_tm_dsc_if.sv"
 
 package qdma_periph_agent_pkg;

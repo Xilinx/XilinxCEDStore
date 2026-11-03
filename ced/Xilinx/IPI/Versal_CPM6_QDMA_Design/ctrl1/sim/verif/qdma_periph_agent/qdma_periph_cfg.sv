@@ -18,9 +18,9 @@ class qdma_periph_cfg extends uvm_object;
    // Enable protocol checks (BRESP/RRESP != OKAY)
    bit checks_enable = 1;
 
-   // Timeout cycles (for future use — outstanding txn watchdog). 1000 is a
-   // generous round upper bound relative to typical DMA/register access
-   // latencies seen in this testbench, not tied to a specific spec value.
+   // to-do item for future consideration: outstanding txn watchdog
+   // (timeout_cycles is not used yet). 1000 cycles is a generous round upper
+   // bound, not tied to a specific spec value.
    int unsigned timeout_cycles = 1000;
 
    function new(string name = "qdma_periph_cfg");

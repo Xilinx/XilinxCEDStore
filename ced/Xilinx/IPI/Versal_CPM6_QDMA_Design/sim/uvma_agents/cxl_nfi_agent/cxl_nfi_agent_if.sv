@@ -93,10 +93,11 @@ interface cxl_nfi_agent_if #(
   endclocking
 
   // Equivalent to $past(ready) for ready_q
+  // Hitting some race condition, thus the #1step
   logic ready_q;
   initial ready_q <= 1'b0;
   always @(posedge clk)
-    ready_q <= ready;
+    ready_q <= #1step ready;
 
   /* Assertions */
   logic       en_assert = 1'bx;
@@ -114,148 +115,98 @@ interface cxl_nfi_agent_if #(
   end
 
   property no_valid_no_dec_sop_check(flit);
-  //@(mcb iff (mcb.valid[flit]===1'b0))
-  //@(posedge clk iff (mcb.valid[flit]===1'b0))
     @(posedge clk iff (valid[flit]===1'b0))
     disable iff (!en_assert || no_drive_dec_assts)
-  //$countones(mcb.dec_sop[flit])==0;
     $countones(dec_sop[flit])==0;
   endproperty
 
   property no_valid_no_dec_eop_check(flit);
-  //@(mcb iff (mcb.valid[flit]===1'b0))
-  //@(posedge clk iff (mcb.valid[flit]===1'b0))
     @(posedge clk iff (valid[flit]===1'b0))
     disable iff (!en_assert || no_drive_dec_assts)
-  //$countones(mcb.dec_eop[flit])==0;
     $countones(dec_eop[flit])==0;
   endproperty
 
   property no_valid_no_dec_mem_check(flit);
-  //@(mcb iff (mcb.valid[flit]===1'b0))
-  //@(posedge clk iff (mcb.valid[flit]===1'b0))
     @(posedge clk iff (valid[flit]===1'b0))
     disable iff (!en_assert || no_drive_dec_assts)
-  //$countones(mcb.dec_mem[flit][3:0])==0;
     $countones(dec_mem[flit][3:0])==0;
   endproperty
 
   property no_valid_no_dec_be_check(flit);
-  //@(mcb iff (mcb.valid[flit]===1'b0))
-  //@(posedge clk iff (mcb.valid[flit]===1'b0))
     @(posedge clk iff (valid[flit]===1'b0))
     disable iff (!en_assert || no_drive_dec_assts)
-  //$countones(mcb.dec_be[flit])==0;
     $countones(dec_be[flit])==0;
   endproperty
 
   property right_align_check;
-  //@(mcb iff (mcb.valid && (valid_only_mode || mcb.ready))) 
-  //@(posedge clk iff (mcb.valid && (valid_only_mode || mcb.ready))) 
     @(posedge clk iff (valid && (valid_only_mode || ready))) 
     disable iff (!en_assert || !right_align)
-  //(mcb.valid >> $countones(mcb.valid)) == 0;
     (valid >> $countones(valid)) == 0;
   endproperty 
 
   property dual_sop_f68_check(flit);
-  //@(mcb iff (mcb.valid && (valid_only_mode || mcb.ready)))
-  //@(posedge clk iff (mcb.valid && (valid_only_mode || mcb.ready)))
     @(posedge clk iff (valid && (valid_only_mode || ready)))
     disable iff (!en_assert || !f68_mode || h2c)
-  //($countones(mcb.dec_sop[flit])==2) |-> mcb.dec_sop==4'b1010; //S2M, 32B txfers
     ($countones(dec_sop[flit])==2) |-> dec_sop==4'b1010; //S2M, 32B txfers
   endproperty
 
   property dual_eop_f68_check(flit);
-  //@(mcb iff (mcb.valid && (valid_only_mode || mcb.ready)))
-  //@(posedge clk iff (mcb.valid && (valid_only_mode || mcb.ready)))
     @(posedge clk iff (valid && (valid_only_mode || ready)))
     disable iff (!en_assert || !f68_mode || h2c)
-  //($countones(mcb.dec_eop[flit])==2) |-> mcb.dec_eop==4'b1010; //S2M, 32B txfers
     ($countones(dec_eop[flit])==2) |-> dec_eop==4'b1010; //S2M, 32B txfers
   endproperty
 
   property max_valid_check;
-  //@(mcb iff (mcb.valid && (valid_only_mode || mcb.ready)))
-  //@(posedge clk iff (mcb.valid && (valid_only_mode || mcb.ready)))
     @(posedge clk iff (valid && (valid_only_mode || ready)))
     disable iff (!en_assert)
-  //$countones(mcb.valid) <= nfi_width;
     $countones(valid) <= nfi_width;
   endproperty
 
   property max_sop_check(flit);
-  //@(mcb iff (mcb.valid && (valid_only_mode || mcb.ready)))
-  //@(posedge clk iff (mcb.valid && (valid_only_mode || mcb.ready)))
     @(posedge clk iff (valid && (valid_only_mode || ready)))
     disable iff (!en_assert)
-  //$countones(mcb.dec_sop[flit]) <= ((f68_mode && !h2c) ? 2 : 1); //2 => S2M, 32B txfers
     $countones(dec_sop[flit]) <= ((f68_mode && !h2c) ? 2 : 1); //2 => S2M, 32B txfers
   endproperty
 
   property max_eop_check(flit);
-  //@(mcb iff (mcb.valid && (valid_only_mode || mcb.ready)))
-  //@(posedge clk iff (mcb.valid && (valid_only_mode || mcb.ready)))
     @(posedge clk iff (valid && (valid_only_mode || ready)))
     disable iff (!en_assert || !mcb.valid[flit])
-  //$countones(mcb.dec_eop[flit]) <= ((f68_mode && !h2c) ? 2 : 1); //2 => S2M, 32B txfers
     $countones(dec_eop[flit]) <= ((f68_mode && !h2c) ? 2 : 1); //2 => S2M, 32B txfers
   endproperty
 
   property max_be_check(flit);
-  //@(mcb iff (mcb.valid && (valid_only_mode || mcb.ready)))
-  //@(posedge clk iff (mcb.valid && (valid_only_mode || mcb.ready)))
     @(posedge clk iff (valid && (valid_only_mode || ready)))
     disable iff (!en_assert)
-  //$countones(mcb.dec_be[flit]) <= 1;
     $countones(dec_be[flit]) <= 1;
   endproperty
 
   property max_mem_check(flit);
-  //@(mcb iff (mcb.valid && (valid_only_mode || mcb.ready)))
-  //@(posedge clk iff (mcb.valid && (valid_only_mode || mcb.ready)))
     @(posedge clk iff (valid && (valid_only_mode || ready)))
     disable iff (!en_assert || !mcb.valid[flit])
-  //$countones(mcb.dec_mem[flit]) <= 1;
     $countones(dec_mem[flit]) <= 1;
   endproperty
 
   property eop_be_align(flit, x);
-  //@(mcb iff (mcb.valid && (valid_only_mode || mcb.ready)))
-  //@(posedge clk iff (mcb.valid && (valid_only_mode || mcb.ready)))
     @(posedge clk iff (valid && (valid_only_mode || ready)))
     disable iff (!en_assert)
-  //mcb.dec_be[flit][x] |-> mcb.dec_eop[flit][x];
     dec_be[flit][x] |-> dec_eop[flit][x];
   endproperty
 
   property sop_mem_align(flit, x);
-  //@(mcb iff (mcb.valid && (valid_only_mode || mcb.ready)))
-  //@(posedge clk iff (mcb.valid && (valid_only_mode || mcb.ready)))
     @(posedge clk iff (valid && (valid_only_mode || ready)))
     disable iff (!en_assert)
-  //mcb.dec_mem[flit][x] |-> mcb.dec_sop[flit][x];
     dec_mem[flit][x] |-> dec_sop[flit][x];
   endproperty
 
   property xz_dat_check(flit);
-  //@(mcb iff (mcb.valid && (valid_only_mode || mcb.ready)))
-  //@(posedge clk iff (mcb.valid && (valid_only_mode || mcb.ready)))
     @(posedge clk iff (valid && (valid_only_mode || ready)))
     disable iff (!en_assert || !en_xz_check)
     ($countbits(data[flit], 'x, 'z) == 0);
   endproperty
 
   property xz_assist_check(flit);
-  //@(mcb iff (mcb.valid && (valid_only_mode || mcb.ready)))
-  //@(posedge clk iff (mcb.valid && (valid_only_mode || mcb.ready)))
     @(posedge clk iff (valid && (valid_only_mode || ready)))
     disable iff (!en_assert || !en_xz_check || no_drive_dec_assts)
-  /*($countbits(mcb.dec_mem[flit], 'x, 'z) == 0) &&
-    ($countbits(mcb.dec_sop[flit], 'x, 'z) == 0) &&
-    ($countbits(mcb.dec_eop[flit], 'x, 'z) == 0) &&
-    ($countbits(mcb.dec_be [flit], 'x, 'z) == 0); */
     ($countbits(dec_mem[flit], 'x, 'z) == 0) &&
     ($countbits(dec_sop[flit], 'x, 'z) == 0) &&
     ($countbits(dec_eop[flit], 'x, 'z) == 0) &&

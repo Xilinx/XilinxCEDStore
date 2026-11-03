@@ -1,0 +1,25 @@
+2026.2:
+ * Version 1.0 (Rev. 1)
+ * New feature: SR-IOV/VF config — Added per-PF VF-count parameters (NUM_VFS_PF0–3) with allocation validation; fixed VF numbering and MSI-X routing for enabled PFs with unequal VF counts.
+ * Resolved issue: IP packaging/GUI — Fixed GUI to preserve descriptor-credit and transfer-mode settings on re-open; enabled schematic visibility for additional encrypted IP modules.
+ * New feature: C2H streaming — Added descriptor prefetch (shared pool, auto-eviction, ring wraparound) with new status ports (axis_c2h_status0–3) and diagnostic registers (error-status,
+ * New feature: Completion engine — Added per-queue completion coalescing with programmable timers; fixed completion delivery, ring addressing, color-bit/ack handling, late-completion
+ * Resolved issue: Descriptor fetch/credit — Fixed C2H timer/threshold/buffer-size register decode, per-queue buffer-size descriptor sizing, fetch hangs under backpressure, credit
+ * Subcore xilinx.com:ip:axi_register_slice:2.1: Updated IP packaging metadata and extended the example design simulation timeout to accommodate configurations requiring longer transaction completion times.
+ * Subcore xilinx.com:ip:axi_switch:1.0: Revision changes
+ * Subcore xilinx.com:ip:axi_vip:1.1: Updated IP packaging and AXI Infrastructure dependency; corrected spelling in the passthrough parameter propagation warning.
+ * Subcore xilinx.com:ip:pcie_qdma_mailbox:1.0: Updated IP packaging, corrected CPM6 driver identification and AXI4-Lite responses, and enabled encrypted IP schematic visibility in Vivado.
+ * Subcore xilinx.com:ip:proc_sys_reset:5.0: IP packaging metadata updates remove obsolete documentation links and address packaging validation warnings.
+ * Subcore xilinx.com:ip:sc_axi2sc:1.0: Revision changes
+ * Subcore xilinx.com:ip:sc_exit:1.0: Revision changes
+ * Subcore xilinx.com:ip:sc_mmu:1.0: Revision changes
+ * Subcore xilinx.com:ip:sc_node:1.0: Revision changes
+ * Subcore xilinx.com:ip:sc_sc2axi:1.0: Revision changes
+ * Subcore xilinx.com:ip:sc_si_converter:1.0: Revision changes
+ * Subcore xilinx.com:ip:sc_switchboard:1.0: Revision changes
+ * Subcore xilinx.com:ip:sc_transaction_regulator:1.0: Revision changes
+ * Subcore xilinx.com:ip:sc_ultralite:1.0: Revision changes
+
+2026.1.1:
+ * Version 1.0
+ * IP updates

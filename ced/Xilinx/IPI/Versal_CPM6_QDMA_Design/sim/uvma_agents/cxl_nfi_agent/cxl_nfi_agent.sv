@@ -82,21 +82,21 @@ class cxl_nfi_agent#(parameter NFI_W=3) extends base_agent#(
     endcase
     if (cfg.flitmode inside {F68, UNSPEC}) begin
       flit68_to_tl = flit68_tl_assembler #(flit68_txn) ::type_id::create("flit68_to_tl",  this);
-      if (is_active)
+      if (is_active_agent())
         api68 = flit68_api#(cxl_nfi_sequencer#(NFI_W), NFI_W)::type_id::create("api68", this);
     end
     if (cfg.flitmode inside {F256, UNSPEC}) begin
       flit256_to_tl = flit256_tl_assembler#(slotset_txn)::type_id::create("flit256_to_tl", this);
       flit256_to_tl.flitmode = F256;
-      if (is_active)
+      if (is_active_agent())
         api256 = flit256_api#(cxl_nfi_sequencer#(NFI_W), NFI_W)::type_id::create("api256", this);
     end
     // A master or slave agent only triggers certain events - only create 
     // those objects. Also only create components/ports we need.
-    if (is_slave) begin
+    if (is_slave_agent()) begin
       init_param_rcvd = new("init_param_rcvd");
       cred_give_ap    = new("cred_give_ap", this);
-      if (is_active)
+      if (is_active_agent())
         slv_seq = cxl_nfi_slv_seq#(NFI_W)::type_id::create("slv_seq");
     end
     else begin
@@ -112,7 +112,7 @@ class cxl_nfi_agent#(parameter NFI_W=3) extends base_agent#(
     // Hardcoded base class cfg settings
     cfg.disable_mon_ap_connect = 1'b1;
     super.connect_phase(phase);
-    if (is_master && is_active) begin
+    if (is_master_agent() && is_active_agent()) begin
       // Give api the handle to sqr
       if (cfg.flitmode inside {F68, UNSPEC})  api68.sqr  = sqr; 
       if (cfg.flitmode inside {F256, UNSPEC}) api256.sqr = sqr; 
@@ -137,7 +137,7 @@ class cxl_nfi_agent#(parameter NFI_W=3) extends base_agent#(
         flit68_to_tl.init_param_rcvd = init_param_rcvd;
         // Slave must be able to tell master what it swallowed so master
         // can return those credits 
-        if (is_slave) begin
+        if (is_slave_agent()) begin
           flit68_to_tl.is_slave = 1'b1;
           flit68_to_tl.cred_give_ap.connect(cred_give_ap);
         end
@@ -150,7 +150,7 @@ class cxl_nfi_agent#(parameter NFI_W=3) extends base_agent#(
         flit256_to_tl.init_param_rcvd = init_param_rcvd;
         // Slave must be able to tell master what it swallowed so master
         // can return those credits 
-        if (is_slave) begin
+        if (is_slave_agent()) begin
           flit256_to_tl.is_slave = 1'b1;
           flit256_to_tl.cred_give_ap.connect(cred_give_ap);
         end
@@ -162,11 +162,12 @@ class cxl_nfi_agent#(parameter NFI_W=3) extends base_agent#(
     bit cch_crd_present, mem_crd_present;
     cxl_nfi_mst_init_seq#(NFI_W)     init_seq;
     cxl_nfi_mst_crd_give_seq#(NFI_W) give_seq;
+
     // Seq: Active slave agents may need to backpressure master with ready signal
-    if (is_active) begin
-      if (is_slave)
+    if (is_active_agent()) begin
+      if (is_slave_agent())
         slv_seq.start(sqr);
-      else if (is_master) begin
+      else if (is_master_agent()) begin
         // Seq: Master agents must send initial credits (unique in F68 mode)
         if (!cfg.skip_link_init) begin
           if (!{cfg.cxl_mem_sup, cfg.cxl_cch_sup})
@@ -211,7 +212,7 @@ class cxl_nfi_agent#(parameter NFI_W=3) extends base_agent#(
   // This function will broadcast the init credits out the cred_give_ap 
   virtual function void txfer_init_credits();
     cxl_nfi_credit_txn t = cxl_nfi_credit_txn::type_id::create("t");
-    if (is_slave) begin
+    if (is_slave_agent()) begin
       t.info = "init";
       t.req_cred = cfg.init_req_credit;
       t.dat_cred = cfg.init_dat_credit;

@@ -17,7 +17,7 @@ class aximon_monitor#(type CFG, type VIF, type TXN) extends base_monitor#(CFG,VI
     granular_ap = new("granular_ap", this);
   endfunction
 
-  function set_txn_widths(TXN txn);
+  function void set_txn_widths(TXN txn);
     txn.addr_width   = cfg.addr_width;
     txn.data_width   = cfg.data_width;
     txn.id_width     = cfg.id_width;

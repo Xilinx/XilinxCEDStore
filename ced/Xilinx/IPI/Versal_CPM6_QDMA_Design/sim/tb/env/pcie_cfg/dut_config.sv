@@ -190,6 +190,7 @@ class dut_config extends generic_config;
   // settings, append to a base do given by the test or command line, and 
   // program the attribute registers so all settings get applied to the DUT.
   function void create_test_cdo;
+    bit    use_cdoutil_path;
     string rbase; //reg block base
     int    fd;
     string msg;
@@ -207,13 +208,13 @@ class dut_config extends generic_config;
       // Perform a quick check to make sure cfg.ctrlr_en[n] matches CDO
       // PCIE0_CFG = 0xFC0....
       if (ctrlr_en[0]) begin
-        if ($system({"grep -iq 'write 0xfc0' ",orig_cdo," 2&>1 > /dev/null"})) begin
+        if ($system({"grep -iq 'write 0xfc0' ",orig_cdo," 2>&1 > /dev/null"})) begin
           `uvm_fatal(get_type_name, "ctrlr_en[0]=1 but CDO doesn't contain any PCIE0_CFG setup")
         end
       end
       // PCIE1_CFG = 0xFC4....
       if (ctrlr_en[1]) begin
-        if ($system({"grep -iq 'write 0xfc4' ",orig_cdo," 2&>1 > /dev/null"})) begin
+        if ($system({"grep -iq 'write 0xfc4' ",orig_cdo," 2>&1 > /dev/null"})) begin
           `uvm_fatal(get_type_name, "ctrlr_en[1]=1 but CDO doesn't contain any PCIE1_CFG setup")
         end
       end
@@ -231,14 +232,32 @@ class dut_config extends generic_config;
         end
       end
       // Use CDO util call to convert to ASCII hex CDO instead of text CDO
-      msg = $sformatf("$CDOUTIL_PATH/cdoutil %0s %0s %0s 2&>1 > /dev/null",
+      msg = $sformatf("$CDOUTIL_PATH/cdoutil %0s %0s %0s 2>&1 > /dev/null",
                        cu_args,
                        output_cdo,
                        orig_cdo);
-      // if CDOUTIL_PATH env var is unset, just assume it's found in PATH 
-      if ($system("printenv | grep -q 'CDOUTIL_PATH='")) begin
-        // Use CDO util to convert to ASCII hex CDO instead of text CDO
-        msg = msg.substr(14, msg.len-1);
+      // if CDOUTIL_PATH env var is set correctly and cdoutil resolved, use that
+      if (!$system("test -d $CDOUTIL_PATH && test -x $CDOUTIL_PATH/cdoutil")) begin
+        use_cdoutil_path = 1;
+        `uvm_info(get_type_name(), "$CDOUTIL_PATH/cdoutil correctly resolved, using it to generate CDO", UVM_LOW)
+      end
+      // if CDOUTIL_PATH env var is set correctly, but no cdoutil, issue warning
+      else if (!$system("test -d $CDOUTIL_PATH")) begin
+        `uvm_warning("ERRCALL", "$CDOUTIL_PATH is valid, but doesn't contain cdoutil executable")
+      end
+      // if CDOUTIL_PATH env var is not set correctly, issue error
+      else if ($system("test -d $CDOUTIL_PATH")) begin
+        `uvm_error("ERRCALL", "$CDOUTIL_PATH does not point to a directory")
+      end
+      // if CDOUTIL_PATH env var does not properly resolve, find cdoutil in PATH and
+      // strip "$CDOUTIL_PATH" before having the system call it
+      if (!use_cdoutil_path) begin
+        if ($system("command -v cdoutil"))
+          `uvm_fatal("ERRCALL", "cdoutil not found in $PATH OR via $CDOUTIL_PATH; required for simulation") 
+        else begin
+          `uvm_info(get_type_name(), "cdoutil found in $PATH, using it to generate CDO", UVM_LOW)
+          msg = msg.substr(14, msg.len-1);
+        end
       end
       if ($system(msg)) begin
         `uvm_fatal("ERRCALL", {"Return value non-zero: ", msg}) 
@@ -292,14 +311,30 @@ class dut_config extends generic_config;
       // Done programming
       $fclose(fd);
       // Use CDO util call to convert to ASCII hex CDO instead of text CDO
-      msg = $sformatf("$CDOUTIL_PATH/cdoutil %0s %0s %0s 2&>1 > /dev/null",
+      msg = $sformatf("$CDOUTIL_PATH/cdoutil %0s %0s %0s 2>&1 > /dev/null",
                        cu_args,
                        output_cdo,
                        {output_cdo, ".anno"}); 
-      // if CDOUTIL_PATH env var is unset, just assume it's found in PATH 
-      if ($system("printenv | grep 'CDOUTIL_PATH='")) begin
-        // Use CDO util to convert to ASCII hex CDO instead of text CDO
-        msg = msg.substr(14, msg.len-1);
+      // if CDOUTIL_PATH env var is set correctly and cdoutil resolved, use that
+      if (!$system("test -d $CDOUTIL_PATH && test -x $CDOUTIL_PATH/cdoutil")) begin
+        use_cdoutil_path = 1;
+        `uvm_info(get_type_name(), "$CDOUTIL_PATH/cdoutil correctly resolved, using it to generate CDO", UVM_LOW)
+      end
+      // if CDOUTIL_PATH env var is set correctly, but no cdoutil, issue warning
+      else if (!$system("test -d $CDOUTIL_PATH")) begin
+        `uvm_warning("ERRCALL", "$CDOUTIL_PATH is valid, but doesn't contain cdoutil executable")
+      end
+      // if CDOUTIL_PATH env var is not set correctly, issue error
+      else if ($system("test -d $CDOUTIL_PATH")) begin
+        `uvm_error("ERRCALL", "$CDOUTIL_PATH does not point to a directory")
+      end
+      // if CDOUTIL_PATH env var does not properly resolve, find cdoutil in PATH and
+      // strip "$CDOUTIL_PATH" before having the system call it
+      if (!use_cdoutil_path) begin
+        if ($system("command -v cdoutil"))
+          `uvm_fatal("ERRCALL", "cdoutil not found in $PATH OR via $CDOUTIL_PATH; required for simulation") 
+        else
+          msg = msg.substr(14, msg.len-1);
       end
       if ($system(msg)) begin
         `uvm_fatal("ERRCALL", {"Return value non-zero: ", msg}) 

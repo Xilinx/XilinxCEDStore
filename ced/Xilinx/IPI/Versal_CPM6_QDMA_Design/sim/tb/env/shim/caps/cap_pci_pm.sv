@@ -56,24 +56,24 @@ class cap_pci_pm extends cap_base;
     
   struct { 
     struct {
-      field_attr_t undefined                    = {4, 23, 22, ACC_RO,         ACC_UNSPEC, 'x, 'x,  'x};
-      field_attr_t PME_status                   = {4, 15, 15, ACC_RW1CS,      ACC_UNSPEC, 'x, 'x,  'x};
-      field_attr_t data_scale                   = {4, 14, 13, ACC_RW,         ACC_RO,     'x, 'b0, 'x};
-      field_attr_t data_select                  = {4, 12, 9,  ACC_RW,         ACC_RO,     'x, 'b0, 'x};
-      field_attr_t PME_en                       = {4, 8,  8,  ACC_RW|ACC_RWS, ACC_UNSPEC, 'x, 'x,  'x};
-      field_attr_t no_soft_reset                = {4, 3,  3,  ACC_RO,         ACC_UNSPEC, 'x, 'x,  'b1};
-      field_attr_t powerstate                   = {4, 1,  0,  ACC_RW,         ACC_UNSPEC, 'x, 'x,  'x};
+      field_attr_t undefined     = '{4, 23, 22, ACC_RO,                       ACC_UNSPEC, 'x, 'x,  'x};
+      field_attr_t PME_status    = '{4, 15, 15, ACC_RW1CS,                    ACC_UNSPEC, 'x, 'x,  'x};
+      field_attr_t data_scale    = '{4, 14, 13, ACC_RW,                       ACC_RO,     'x, 'b0, 'x};
+      field_attr_t data_select   = '{4, 12, 9,  ACC_RW,                       ACC_RO,     'x, 'b0, 'x};
+      field_attr_t PME_en        = '{4, 8,  8,  field_acc_t'(ACC_RW|ACC_RWS), ACC_UNSPEC, 'x, 'x,  'x};
+      field_attr_t no_soft_reset = '{4, 3,  3,  ACC_RO,                       ACC_UNSPEC, 'x, 'x,  'b1};
+      field_attr_t powerstate    = '{4, 1,  0,  ACC_RW,                       ACC_UNSPEC, 'x, 'x,  'x};
     } pmcsr;
     // -- //
     struct {
-      field_attr_t PME_support                  = {2, 15, 11, ACC_RO, ACC_UNSPEC, 'x,    'x, 'x};
-      field_attr_t D2_support                   = {2, 10, 10, ACC_RO, ACC_UNSPEC, 'x,    'x, 'x};
-      field_attr_t D1_support                   = {2, 9,  9,  ACC_RO, ACC_UNSPEC, 'x,    'x, 'x};
-      field_attr_t aux_current                  = {2, 8,  6,  ACC_RO, ACC_UNSPEC, 'x,    'x, 'x};
-      field_attr_t dev_spec_init                = {2, 5,  5,  ACC_RO, ACC_UNSPEC, 'x,    'x, 'x};
-      field_attr_t immed_readiness_on_ret_to_D0 = {2, 4,  4,  ACC_RO, ACC_UNSPEC, 'x,    'x, 'x};
-      field_attr_t PME_clock                    = {2, 3,  3,  ACC_RO, ACC_UNSPEC, 'b1,   'x, 'x};
-      field_attr_t version                      = {2, 2,  0,  ACC_RO, ACC_UNSPEC, 'b011, 'x, 'x};
+      field_attr_t PME_support                  = '{2, 15, 11, ACC_RO, ACC_UNSPEC, 'x,    'x, 'x};
+      field_attr_t D2_support                   = '{2, 10, 10, ACC_RO, ACC_UNSPEC, 'x,    'x, 'x};
+      field_attr_t D1_support                   = '{2, 9,  9,  ACC_RO, ACC_UNSPEC, 'x,    'x, 'x};
+      field_attr_t aux_current                  = '{2, 8,  6,  ACC_RO, ACC_UNSPEC, 'x,    'x, 'x};
+      field_attr_t dev_spec_init                = '{2, 5,  5,  ACC_RO, ACC_UNSPEC, 'x,    'x, 'x};
+      field_attr_t immed_readiness_on_ret_to_D0 = '{2, 4,  4,  ACC_RO, ACC_UNSPEC, 'x,    'x, 'x};
+      field_attr_t PME_clock                    = '{2, 3,  3,  ACC_RO, ACC_UNSPEC, 'b1,   'x, 'x};
+      field_attr_t version                      = '{2, 2,  0,  ACC_RO, ACC_UNSPEC, 'b011, 'x, 'x};
     } pmc; 
   } attrs; 
 

@@ -48,13 +48,8 @@ class dma_req_processor extends uvm_component;
   int unsigned h2c_user_pkt_cnt = 0;  // total H2C packets received from user monitor
   int unsigned h2c_integrity_err_cnt = 0; // total H2C data integrity mismatches
 
-  // per-queue cap on logged mismatch DETAIL lines.
-  // The aggregate count was always printed, but the detail list stopped at a
-  // hardcoded 8 with no indication it had been truncated, so a 9-byte corruption
-  // and a 9000-byte corruption produced an identical-looking detail block. The
-  // first mismatches are also rarely the informative ones - a run of consecutive
-  // bad bytes reads very differently from scattered single-bit flips, and 8
-  // samples cannot distinguish them. Override with +MAX_MISMATCH_LOG=<n>.
+  // per-queue cap on logged mismatch DETAIL lines (the aggregate count is
+  // always printed). Override with +MAX_MISMATCH_LOG=<n>.
   int unsigned max_mismatch_log = 64;
 
   // DMA mode flag: set to 1 by ST tests to enable user-side data checks.
@@ -62,14 +57,14 @@ class dma_req_processor extends uvm_component;
   // When dma_st=0 (MM mode), user-side checks are informational only.
   bit dma_st = 0;
 
-  // Pass condition 3: WB packets received
-  int wb_done_cnt = 0;   // total ISR_WB_DONE events received
-  int wb_req_cnt  = 0;   // total WB_REQ (writeback pipeline push) events received
-  int wb_pipeline_done_cnt = 0;  // drain-detection counter
+  // wb_done_cnt, wb_req_cnt and wb_pipeline_done_cnt are not fed in this
+  // testbench; they stay 0.
+  int wb_done_cnt = 0;
+  int wb_req_cnt  = 0;
+  int wb_pipeline_done_cnt = 0;
 
   // Bound on the address-capture drain wait at test_done (see the
-  // qid_cmp_cnt==qid_in_test block below) -- large relative to the observed
-  // ~1-2us worst-case margin, small relative to the overall DMA_TIMEOUT.
+  // qid_cmp_cnt==qid_in_test block below).
   time WB_DRAIN_TIMEOUT = 20us;
 
   // One-shot guard: qid_cmp_cnt stays at qid_in_test permanently once reached,
@@ -77,15 +72,12 @@ class dma_req_processor extends uvm_component;
   // (and re-fork) on every subsequent mailbox item processed by the same loop.
   bit wb_drain_spawned = 0;
 
-  // Descriptor-status writebacks seen (DSC_WB_MWR), independent of wb_done_cnt
-  // (ISR-fed, needs irq_en) and wb_req_cnt (never incremented in this env).
+  // Descriptor-status writebacks seen (DSC_WB_MWR).
   // Writebacks drain serially, so used by the completion watchdog to
   // distinguish a healthy drain from a genuine stall.
   int unsigned wb_mwr_count = 0;
 
-  // Watchdog heartbeat: promoted to a class member (was a run_phase local) so
-  // notify_wb_done() can also touch it -- a draining writeback backlog counts
-  // as DMA progress just like a fresh TLP does (see notify_wb_done below).
+  // Watchdog heartbeat: time of the last DUT TLP.
   time last_tlp_time = 0;
 
   // -- Watchdog diagnostic enrichment (does NOT feed last_tlp_time and does
@@ -94,33 +86,27 @@ class dma_req_processor extends uvm_component;
   // dump_progress_snapshot() can report whether there was recent lower-level
   // bus/FSM activity within the stall window ("busy but stuck in a loop") or
   // genuinely none ("dead"), instead of qid_cmp_cnt alone.
-  //   last_fsm_activity_time : not wired in this env (open item --
-  //                            dump_progress_snapshot() skips printing it
-  //                            while unfed, see below).
-  //   last_axi_activity_time : not wired in this env (open item --
-  //                            dump_progress_snapshot() skips printing it
-  //                            while unfed, see below).
+  //   last_fsm_activity_time : not wired in this testbench;
+  //                            dump_progress_snapshot() prints it only when non-zero.
+  //   last_axi_activity_time : not wired in this testbench;
+  //                            dump_progress_snapshot() prints it only when non-zero.
   time last_axi_activity_time = 0;
   time last_fsm_activity_time = 0;
 
   // Stall-detection threshold shared by dump_progress_snapshot()'s activity
-  // comparison and the watchdogs below. Promoted to a class member (was a
-  // run_phase local) for the same reason last_tlp_time was: a function
-  // outside run_phase (dump_progress_snapshot) needs to read it. Set once at
-  // the top of run_phase from +DMA_STALL_TIMEOUT (default 50us) and never
-  // written anywhere else -- this is the SAME value driving both watchdogs,
-  // not a second timeout knob.
+  // comparison and the watchdogs below. Set once at the top of run_phase from
+  // +DMA_STALL_TIMEOUT (default 50us).
   time STALL_LIMIT;
 
   // WB destination-address scoreboard (pass condition 3b).
   // Tracks the first PCIe MWr address seen for each QID's WB write into its
   // descriptor ring.  Expected address: dsc_base + (RING_SIZE-1)*QDMA_DSC_SZ
   // (the last slot of the ring, where the QDMA WBI status descriptor is placed).
-  // A C2H WB landing at the H2C base indicates a read-mux defect in the DUT.
+  // A C2H WB landing at the H2C base is a DUT defect this check catches.
   longint unsigned h2c_wb_mwr_addr[bit [10:0]]; // first H2C WB MWr addr per QID
   longint unsigned c2h_wb_mwr_addr[bit [10:0]]; // first C2H WB MWr addr per QID
   int              h2c_wb_addr_err_cnt = 0;      // H2C WB at wrong slot
-  int              c2h_wb_addr_err_cnt = 0;      // C2H WB at wrong slot (the bug)
+  int              c2h_wb_addr_err_cnt = 0;      // C2H WB at wrong slot
 
   // WB status PIDX/CIDX scoreboard (pass condition 7 — PG302 Table 10).
   // Captures pidx[47:32] and cidx[31:16] from MWr TLP payload (DWord 1 and DWord 0)
@@ -135,14 +121,14 @@ class dma_req_processor extends uvm_component;
   int c2h_msix_cnt = 0;  // count of MSI-X MWr TLPs with vec=2 (C2H)
   bit irq_en       = 0;  // mirrored from +IRQ_EN plusarg; gates MSI-X pass check
 
-  // PIDX refill support: continuous descriptor feeding for sustained throughput tests
+  // PIDX refill state. Not set in this testbench; total_dsc_cnt = 0 means no refill.
   int total_dsc_cnt;                     // total descriptors per queue (0 = no refill)
   int refill_threshold;                  // remaining < this triggers refill
   int unsigned cidx_latest[bit [10:0]];  // per-QID latest CIDX from WB
   int unsigned pidx_current[bit [10:0]]; // per-QID current PIDX written to doorbell
   int unsigned total_submitted[bit [10:0]]; // per-QID total descriptors submitted so far
   bit refill_needed[bit [10:0]];         // per-QID flag: refill needed
-  uvm_event refill_ev;                   // wakeup event (broadcast to all refill tasks)
+  uvm_event refill_ev;                   // refill wakeup event
 
   // Byte-count scoreboard: accumulated bytes per queue, compared to pidx*DMA_BYTE_CNT
   longint unsigned h2c_bytes[bit [10:0]]; // bytes read from host_mem (H2C MRD TLPs)
@@ -278,9 +264,7 @@ class dma_req_processor extends uvm_component;
       // Print the FULL address, not addr[39:0]. The PL BRAM apertures are flagged
       // by address bit[48] (see pkg.cpm6_qdma_params.sv H2C_DAT_DST_ADDR1 /
       // C2H_DAT_SRC_ADDR0..3), so a [39:0] mask makes a misrouted PL-aperture
-      // access print as a benign low host address. That masking hid 78 upstream
-      // MRDs to 0x1_0000_0000_0000 and sent a debug arc after the interrupt path
-      // instead of the address decode.
+      // access print as a benign low host address.
       $fdisplay(log_fd, "%9t ns  DMA   %-14s  qid=%2d  %s  addr=0x%016h  %0dB  cum=%0d/%0d (rem=%0d)  tlp#%0d  %s",
                 $time, short_event, qid, dir_str, addr,
                 bytes_tlp, cum_bytes, exp_bytes, rem, tlp_cnt, extra);
@@ -307,8 +291,8 @@ class dma_req_processor extends uvm_component;
     // genuinely none" -- compared against the SAME STALL_LIMIT driving
     // DMA_COMPLETION_WATCHDOG (no second timeout knob). This is diagnostic
     // context only; it never changes whether/when the watchdog fires.
-    // last_axi_activity_time: not printed here for now -- open item, tracked
-    // outside this file, to wire a real activity feed for it.
+    // last_axi_activity_time: printed only when non-zero (not wired in this
+    // testbench).
     if (last_axi_activity_time != 0) begin
       $fdisplay(log_fd,
         "#   last_axi_activity_time=%0t  (%0t ago vs STALL_LIMIT=%0t)  %s",
@@ -316,8 +300,8 @@ class dma_req_processor extends uvm_component;
         (($time - last_axi_activity_time) >= STALL_LIMIT) ? "STALE (>= STALL_LIMIT, no recent AXI activity)"
                                                             : "recent AXI activity within stall window");
     end
-    // last_fsm_activity_time: not printed here for now -- open item, tracked
-    // outside this file, to wire a real activity feed for it.
+    // last_fsm_activity_time: printed only when non-zero (not wired in this
+    // testbench).
     if (last_fsm_activity_time != 0) begin
       $fdisplay(log_fd,
         "#   last_fsm_activity_time=%0t  (%0t ago vs STALL_LIMIT=%0t)  %s",
@@ -486,17 +470,14 @@ class dma_req_processor extends uvm_component;
   endfunction
 
   // --- notify_wb_done ---------------------------------------------------------
-  // Counts an ISR_WB_DONE event (pass condition 3).
+  // Increments wb_done_cnt. Not called in this testbench.
   function void notify_wb_done(bit [1:0] sts);
     wb_done_cnt++;
   endfunction
 
   // --- notify_wb_pipeline_done -------------------------------------------------
-  // Counts a WB_DONE event, used to detect when the writeback backlog has
-  // actually drained (wb_req_cnt == wb_pipeline_done_cnt) at the test_done
-  // trigger site. Also refreshes last_tlp_time so DMA_PROGRESS_WATCHDOG
-  // doesn't misfire on a healthy drain that outlasts STALL_LIMIT once
-  // data-TLP traffic has already ended.
+  // Increments wb_pipeline_done_cnt and refreshes last_tlp_time. Not called
+  // in this testbench.
   function void notify_wb_pipeline_done();
     wb_pipeline_done_cnt++;
     last_tlp_time = $time;
@@ -504,14 +485,13 @@ class dma_req_processor extends uvm_component;
 
   // --- notify_fsm_activity -----------------------------------------------------
   // Diagnostic timestamp only -- does not gate or reset either watchdog.
+  // Not called in this testbench.
   function void notify_fsm_activity();
     last_fsm_activity_time = $time;
   endfunction
 
   // --- notify_wb_cidx ---------------------------------------------------------
-  // Updates per-QID CIDX and checks whether the remaining descriptors have
-  // fallen below the refill threshold, signalling the refill task to submit
-  // more descriptors.
+  // Updates per-QID CIDX and the refill state. Not called in this testbench.
   function void notify_wb_cidx(int qid, int cidx);
     bit [10:0] q;
     int remaining;
@@ -544,8 +524,7 @@ class dma_req_processor extends uvm_component;
   longint unsigned bytes_this_tlp;
   // Watchdog state: updated on every TLP; watchdog thread monitors for stalls.
   bit           dma_started  = 0;     // set on first TLP  - gates the watchdog
-  // STALL_LIMIT is now a class member (see declaration near last_tlp_time) so
-  // dump_progress_snapshot() can read the same value driving these watchdogs.
+  // STALL_LIMIT is a class member (see declaration near last_tlp_time).
   string        stall_str;
   time          PROGRESS_INTERVAL;
   if (!$value$plusargs("DMA_STALL_TIMEOUT=%s", stall_str))
@@ -831,7 +810,7 @@ class dma_req_processor extends uvm_component;
             // descriptor ring in host memory after completing descriptors.
             // Per-slot address check: the WBI status descriptor must land at
             // dsc_base + (RING_SIZE-1)*QDMA_DSC_SZ (the last slot of the ring).
-            // A C2H WB at the H2C base indicates the read-mux defect.
+            // A C2H WB at the H2C base is a DUT defect this check catches.
             end else if (tr.addr >= H2C_DSC_ADDR &&
                          tr.addr <  H2C_DSC_ADDR + HOST_DSC_MEM_SIZE) begin
               begin
@@ -900,7 +879,7 @@ class dma_req_processor extends uvm_component;
                   wb_extra = $sformatf("C2H WB_SLOT ERR qid=%0d addr=0x%0h exp=0x%0h",
                                        wb_dsc_qid, tr.addr, wb_exp_addr);
                   `uvm_error("DMA_SCOREBOARD",
-                    $sformatf("C2H WB address mismatch: qid=%0d got=0x%0h exp=0x%0h (C2H dsc_base=0x%0h + (RING_SIZE-1)*DSC_SZ=0x%0h) -- C2H WB may have used H2C dsc_base",
+                    $sformatf("C2H WB address mismatch: qid=%0d got=0x%0h exp=0x%0h (C2H dsc_base=0x%0h + (RING_SIZE-1)*DSC_SZ=0x%0h) -- C2H WB landed at wrong slot",
                               wb_dsc_qid, tr.addr, wb_exp_addr,
                               wb_dsc_base, longint'(RING_SIZE-1)*QDMA_DSC_SZ))
                 end
@@ -923,21 +902,15 @@ class dma_req_processor extends uvm_component;
       if ((qid_cmp_cnt > 0) && (qid_cmp_cnt == qid_in_test) && !wb_drain_spawned) begin
         wb_drain_spawned = 1;
         dma_last_done_time = $time;
-        // wb_req_cnt/wb_pipeline_done_cnt never get incremented in this env
-        // (no RTL-signal monitor feeds them): both counters stay at 0 for
-        // the whole run, so the drain-wait this replaces was a silent
-        // no-op, and only a
-        // fixed #1us margin ever ran. The writeback TLP for a given qid trails
-        // that qid's own data completion by the DMA engine's internal
-        // completion-sequencing latency. Because this check fires once,
+        // The writeback TLP for a given qid trails that qid's own data
+        // completion. Because this check fires once,
         // globally, when the LAST qid's byte count completes, whichever qid
         // happens to finish last has the least margin before this point -- if
         // that margin is under the WB's own trailing latency, its WB address
         // has not landed yet and is misreported as missing.
         //
         // Use the PCIe-TLP-level WB capture (h2c/c2h_wb_mwr_addr, populated
-        // directly from observed MWr TLPs and already relied on elsewhere in
-        // this file) as the real drain-detection signal: wait until every qid
+        // directly from observed MWr TLPs) as the drain-detection signal: wait until every qid
         // counted as byte-count-complete also has its WB address captured,
         // bounded so a genuine RTL/DUT WB failure still reports as a real
         // error below instead of hanging.
@@ -975,7 +948,7 @@ class dma_req_processor extends uvm_component;
                 #100ns;
               end
             end while (!wb_drain_done);
-            #1us; // settle margin, unchanged
+            #1us; // settle margin
             `uvm_info("dma_req_processor",
               $sformatf("qid_cmp_cnt:%0d, qid_in_test:%0d, wb_req_cnt:%0d, wb_pipeline_done_cnt:%0d",
                          qid_cmp_cnt, qid_in_test, wb_req_cnt, wb_pipeline_done_cnt), UVM_NONE)
@@ -1045,7 +1018,7 @@ class dma_req_processor extends uvm_component;
     // Condition 3b: Per-slot WB destination-address check.
     // Verifies that each WB MWr TLP landed at the correct last-slot address
     // (dsc_base + (RING_SIZE-1)*QDMA_DSC_SZ) for each completed queue.
-    // Detects the C2H WB→H2C_base read-mux defect: a C2H WB will
+    // Detects a C2H WB that lands at the H2C ring base: such a WB will
     // be decoded as landing inside the H2C ring and will produce a UVM_ERROR
     // at the slot-address check above (c2h_wb_addr_err_cnt > 0).
     begin
@@ -1087,7 +1060,7 @@ class dma_req_processor extends uvm_component;
             wb_exp      = wb_dsc_base + longint'(RING_SIZE - 1) * QDMA_DSC_SZ;
             if (!c2h_wb_mwr_addr.exists(wq)) begin
               `uvm_error("DMA_SCOREBOARD",
-                $sformatf("C2H WB address MISSING: qid=%0d no WB MWr TLP seen in C2H ring (exp=0x%0h) -- C2H WB may have been routed to H2C base by incorrect reg_space read-mux selection",
+                $sformatf("C2H WB address MISSING: qid=%0d no WB MWr TLP seen in C2H ring (exp=0x%0h) -- WB write may have been directed to wrong address",
                            wq, wb_exp))
               wb_addr_pass = 0;
             end else if (c2h_wb_mwr_addr[wq] != wb_exp) begin
@@ -1171,8 +1144,8 @@ class dma_req_processor extends uvm_component;
       int exp_h2c, exp_c2h;
       exp_h2c = h2c_trfr_done.size();
       exp_c2h = c2h_trfr_done.size();
-      // Multi-round dispatch (PIDX > DSC_FETCH_MAX_QID=49) generates multiple
-      // ISR cycles per QID, each producing an MSI-X TLP.  Therefore the count
+      // Multi-round dispatch (PIDX > DSC_FETCH_MAX_QID) generates multiple
+      // MSI-X TLPs per QID.  Therefore the count
       // can exceed the number of completed queues.  Use >= instead of ==.
       if (h2c_msix_cnt >= exp_h2c && c2h_msix_cnt >= exp_c2h)
         `uvm_info("DMA_SCOREBOARD",

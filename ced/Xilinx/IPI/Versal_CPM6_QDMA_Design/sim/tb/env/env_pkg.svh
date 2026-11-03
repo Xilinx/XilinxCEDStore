@@ -14,7 +14,7 @@ package env_pkg;
 
   import tb_params_pkg::*;
 
-  // SNPS VIP
+  // AXI verification IP packages
 `ifdef CPM6_RTL
   import svt_uvm_pkg::*; 
   import svt_axi_uvm_pkg::*; 
@@ -53,10 +53,10 @@ package env_pkg;
   `include "seq/axi_slv/seq_svt_slv_mem_rsp.sv"
 `endif
 
-  // For gpdrv
+  // For gpdrv 
   `include "gpdrv_cb/cxl_pm_in_cb.sv"
-
-  // For gpmon
+    
+  // For gpmon 
   `include "gpmon_cb/cxl_cfgsts_cb.sv"
   `include "gpmon_cb/cxl_pm_out_cb.sv"
   `include "gpmon_cb/isr_cb.sv"

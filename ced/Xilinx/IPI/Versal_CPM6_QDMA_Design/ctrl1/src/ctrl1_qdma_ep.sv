@@ -8,9 +8,7 @@
 // design under that name before sourcing design_1_bd.tcl, which reuses that
 // same name.
 //
-// Port list confirmed directly from the actual Vivado-generated BD wrapper
-// for this design (design_1_wrapper.v): only the GT quad + its reference
-// clock cross the BD boundary.
+// Only the GT lanes and their reference clock cross the BD boundary.
 // cpm6_qdma_0 is a fully self-contained IP within the BD -- QDMA's
 // DMA/interrupt/register stack is entirely internal (routed to on-chip
 // BRAM/NoC memory and ps_wizard's pcie1_msix inside the BD itself), so

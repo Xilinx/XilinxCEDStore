@@ -179,37 +179,37 @@ class ecap_ide extends ecap_base;
     
   struct { 
     struct {
-      field_attr_t link_ide_stream_sup   = {'h4, 0, 0, ACC_RO, ACC_UNSPEC, 'x, 'x, 'x};
-      field_attr_t sel_ide_stream_sup    = {'h4, 1, 1, ACC_RO, ACC_UNSPEC, 'x, 'x, 'x};
-      field_attr_t num_sel_ide_streams   = {'h4, 23, 16, ACC_RO, ACC_UNSPEC, 'x, 'x, 'x};
+      field_attr_t link_ide_stream_sup   = '{'h4, 0, 0, ACC_RO, ACC_UNSPEC, 'x, 'x, 'x};
+      field_attr_t sel_ide_stream_sup    = '{'h4, 1, 1, ACC_RO, ACC_UNSPEC, 'x, 'x, 'x};
+      field_attr_t num_sel_ide_streams   = '{'h4, 23, 16, ACC_RO, ACC_UNSPEC, 'x, 'x, 'x};
     } cap;
     struct {
-      field_attr_t en                    = {'hC, 0, 0, ACC_RW, ACC_UNSPEC, 'x, 'x, 'x};
-      field_attr_t pcrc_en               = {'hC, 8, 8, ACC_RW, ACC_UNSPEC, 'x, 'x, 'x};
-      field_attr_t tc                    = {'hC, 21, 19, ACC_RW, ACC_UNSPEC, 'x, 'x, 'x};
-      field_attr_t stream_id             = {'hC, 31, 24, ACC_RW, ACC_UNSPEC, 'x, 'x, 'x};
+      field_attr_t en                    = '{'hC, 0, 0, ACC_RW, ACC_UNSPEC, 'x, 'x, 'x};
+      field_attr_t pcrc_en               = '{'hC, 8, 8, ACC_RW, ACC_UNSPEC, 'x, 'x, 'x};
+      field_attr_t tc                    = '{'hC, 21, 19, ACC_RW, ACC_UNSPEC, 'x, 'x, 'x};
+      field_attr_t stream_id             = '{'hC, 31, 24, ACC_RW, ACC_UNSPEC, 'x, 'x, 'x};
     } link_ctrl;
     struct {
-      field_attr_t state                 = {'h10, 1, 1, ACC_RO, ACC_UNSPEC, 'x, 'x, 'x};
+      field_attr_t state                 = '{'h10, 1, 1, ACC_RO, ACC_UNSPEC, 'x, 'x, 'x};
     } link_status;
     struct {
-      field_attr_t en                    = {'h18, 0, 0, ACC_RW, ACC_UNSPEC, 'x, 'x, 'x};
-      field_attr_t pcrc_en               = {'h18, 8, 8, ACC_RW, ACC_UNSPEC, 'x, 'x, 'x};
-      field_attr_t sel_ide_for_cfg_req   = {'h18, 9, 9, ACC_RW, ACC_UNSPEC, 'x, 'x, 'x};
-      field_attr_t partial_header_enc_mode = {'h18, 13, 10, ACC_RW, ACC_UNSPEC, 'x, 'x, 'x};
-      field_attr_t default_stream        = {'h18, 22, 22, ACC_RW, ACC_UNSPEC, 'x, 'x, 'x};
-      field_attr_t tc                    = {'h18, 21, 19, ACC_RW, ACC_UNSPEC, 'x, 'x, 'x};
-      field_attr_t stream_id             = {'h18, 31, 24, ACC_RW, ACC_UNSPEC, 'x, 'x, 'x};
+      field_attr_t en                    = '{'h18, 0, 0, ACC_RW, ACC_UNSPEC, 'x, 'x, 'x};
+      field_attr_t pcrc_en               = '{'h18, 8, 8, ACC_RW, ACC_UNSPEC, 'x, 'x, 'x};
+      field_attr_t sel_ide_for_cfg_req   = '{'h18, 9, 9, ACC_RW, ACC_UNSPEC, 'x, 'x, 'x};
+      field_attr_t partial_header_enc_mode = '{'h18, 13, 10, ACC_RW, ACC_UNSPEC, 'x, 'x, 'x};
+      field_attr_t default_stream        = '{'h18, 22, 22, ACC_RW, ACC_UNSPEC, 'x, 'x, 'x};
+      field_attr_t tc                    = '{'h18, 21, 19, ACC_RW, ACC_UNSPEC, 'x, 'x, 'x};
+      field_attr_t stream_id             = '{'h18, 31, 24, ACC_RW, ACC_UNSPEC, 'x, 'x, 'x};
     } sel_ctrl;
     struct {
-      field_attr_t state                 = {'h1C, 1, 1, ACC_RO, ACC_UNSPEC, 'x, 'x, 'x};
+      field_attr_t state                 = '{'h1C, 1, 1, ACC_RO, ACC_UNSPEC, 'x, 'x, 'x};
     } sel_status;
     struct {
-      field_attr_t rid_limit             = {'h20, 23, 8, ACC_RW, ACC_UNSPEC, 'x, 'x, 'x};
+      field_attr_t rid_limit             = '{'h20, 23, 8, ACC_RW, ACC_UNSPEC, 'x, 'x, 'x};
     } rid_assoc1;
     struct {
-      field_attr_t rid_base              = {'h24, 23, 8, ACC_RW, ACC_UNSPEC, 'x, 'x, 'x};
-      field_attr_t valid                 = {'h24, 0, 0, ACC_RW, ACC_UNSPEC, 'x, 'x, 'x};
+      field_attr_t rid_base              = '{'h24, 23, 8, ACC_RW, ACC_UNSPEC, 'x, 'x, 'x};
+      field_attr_t valid                 = '{'h24, 0, 0, ACC_RW, ACC_UNSPEC, 'x, 'x, 'x};
     } rid_assoc2;
   } attrs; 
 

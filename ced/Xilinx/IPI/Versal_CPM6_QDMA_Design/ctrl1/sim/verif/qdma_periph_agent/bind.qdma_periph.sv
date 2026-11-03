@@ -1,13 +1,6 @@
 // bind.qdma_periph.sv — Bind QDMA periphery monitor to the cpm6_qdma BD wrapper
 //
-// This CED's BD wrapper module type is `cpm6_qdma`, confirmed via
-// cpm6_qdma.gen/.../sim/cpm6_qdma.v and this project's own bind.pswizard.sv,
-// which already binds the same module. Wire names/widths at this scope
-// (qdma_s_axi_mem_*, qdma_s_axi_reg_*, qdma_M_AXIL_DBI_*,
-// cpm6_qdma_0_PCIE_MSIX_*) were verified directly against the generated
-// netlist.
-//
-// Bind target: plain "bind cpm6_qdma" (same as this project's own PSW).
+// Bind target: the BD wrapper module cpm6_qdma (same as bind.pswizard.sv).
 //
 // All cpm6_qdma wires are declared as input ports so that the bind statement's
 // (.*) connects them via standard port resolution (IEEE 1800-2017 section
@@ -24,13 +17,9 @@
 //       (constants, not wires) — cannot be captured by bind. Hardcoded as
 //       2'b00 in monitor.
 //
-// Note: tm_dsc_sts is NOT wired here — this project has no bind.tm_dsc_sts.sv.
-//       qdma_periph_tm_dsc_if.sv is still compiled
-//       (the monitor's build_phase references the type), but its config_db
-//       get is a soft/non-fatal get — tm_dsc_sts observation is simply
-//       disabled here (one-time uvm_warning). Full tm_dsc_sts coverage for
-//       this project instead comes from bind.qdma_boundary_probe.sv, which
-//       already captures it in full.
+// Note: tm_dsc_sts is not bound in this testbench, so the monitor's soft
+//       config_db get fails and tm_dsc_sts observation is disabled (one-time
+//       uvm_warning). bind.qdma_boundary_probe.sv captures tm_dsc_sts.
 //
 // Config DB key registered: "vif_qdma_periph" (global path "*")
 
@@ -119,9 +108,8 @@ module bind_qdma_periph
    input wire          qdma_s_axi_reg_BREADY,
    input wire [1:0]    qdma_s_axi_reg_BRESP,
 `ifdef ENABLE_AXI_REG_BUSER_BIND
-   // BUSER preserved here for re-enablement: dropped from this project's wires
-   // when the BD topology was updated; re-enable via +define+ENABLE_AXI_REG_BUSER_BIND
-   // when the BD restores the qdma_s_axi_reg BUSER sideband.
+   // qdma_s_axi_reg BUSER is not a wire of this BD; define
+   // ENABLE_AXI_REG_BUSER_BIND only for a BD that carries it.
    input wire [2:0]    qdma_s_axi_reg_BUSER,
 `endif
    input wire          qdma_s_axi_reg_BVALID,
@@ -442,12 +430,6 @@ module bind_qdma_periph
          null, "*", "vif_qdma_periph", qdma_periph_if_inst);
       $display("[BIND_DBG] %0t bind_qdma_periph: instantiated, config_db set", $time);
       #1;
-      // [DBGFIX 0624] disabled - port idents unresolvable in initial block under bind(.*), broke elaboration
-      // $display("[BIND_DBG] %0t bind_qdma_periph: clk=%b rst_n=%b mem_awvalid=%b reg_awvalid=%b (X=port not connected)",
-               // $time, ps_wizard_0_pl0_ref_clk,
-               // proc_sys_reset_0_peripheral_aresetn,
-               // qdma_s_axi_mem_AWVALID,
-               // qdma_s_axi_reg_AWVALID);
    end
 
 endmodule : bind_qdma_periph

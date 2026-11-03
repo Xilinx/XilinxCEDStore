@@ -341,10 +341,10 @@ class slotset_txn extends uvm_object;
     valid  = 1'b1;
     viral  = 1'b0;
 
-    // Generate parity
+    // Generate parity (odd)
     foreach (slot[ii]) begin
-      parity[ii*2+0] = ^(slot[ii].data[ 0+:64]);
-      parity[ii*2+1] = ^(slot[ii].data[64+:64]);
+      parity[ii*2+0] = ~^(slot[ii].data[ 0+:64]);
+      parity[ii*2+1] = ~^(slot[ii].data[64+:64]);
     end
 
     // Generate the decode assists

@@ -12,9 +12,9 @@ class pswizard_cfg extends uvm_object;
   int log_level = 1;
 
   bit          checks_enable  = 1;
-  // 1000 cycles: a generous round upper bound relative to typical DMA/register
-  // access latencies seen in this testbench. Not tied to a specific spec value --
-  // reserved for a future outstanding-transaction watchdog, not currently wired up.
+  // to-do item for future consideration: outstanding-transaction watchdog
+  // (timeout_cycles is not used yet). 1000 cycles is a generous round upper
+  // bound, not tied to a specific spec value.
   int unsigned timeout_cycles = 1000;
 
   function new(string name = "pswizard_cfg");

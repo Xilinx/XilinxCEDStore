@@ -1,11 +1,11 @@
 // qdma_periph_if.sv — Portless SV interface for QDMA periphery monitoring
 //
 // Captures ALL external interfaces at the cpm6_qdma module boundary as seen
-// from the design_1 block-design wire scope:
+// from the block-design wire scope:
 //
-//   s_axi_mem   (axi_noc2_0_M01_AXI_*)     — 128-bit descriptor fetch + DMA data
-//   s_axi_reg   (smartconnect_0_M00_AXI_*)  — 32-bit register access (PIDX, CTXT)
-//   m_axil_dbi  (cpm6_qdma_0_M_AXIL_DBI_*) — DBI register access (ISR write-back)
+//   s_axi_mem   (qdma_s_axi_mem_*)         — 128-bit descriptor fetch + DMA data
+//   s_axi_reg   (qdma_s_axi_reg_*)          — 32-bit register access (PIDX, CTXT)
+//   m_axil_dbi  (qdma_M_AXIL_DBI_*)        — DBI register access (ISR write-back)
 //   msix        (cpm6_qdma_0_PCIE_MSIX_*)   — MSI-X req/grant/error handshake
 //
 // Monitor samples on posedge clk with #1ps settle.
@@ -20,7 +20,7 @@ interface qdma_periph_if ();
 
    // ----------------------------------------------------------------
    // s_axi_mem — AXI4 slave, 128-bit data, 64-bit addr, 2-bit ID
-   // Wire prefix: axi_noc2_0_M01_AXI_*
+   // Wire prefix: qdma_s_axi_mem_*
    // ----------------------------------------------------------------
    // Write address channel
    logic [63:0]  mem_awaddr;
@@ -69,8 +69,8 @@ interface qdma_periph_if ();
 
    // ----------------------------------------------------------------
    // s_axi_reg — AXI4 slave, 32-bit data, 43-bit addr
-   // Wire prefix: smartconnect_0_M00_AXI_*
-   // Note: AWID/ARID are tied to {1'b0,1'b0} in design_1 (constants,
+   // Wire prefix: qdma_s_axi_reg_*
+   // Note: AWID/ARID are tied to {1'b0,1'b0} at the BD wire scope (constants,
    //       not wires) — cannot be captured; hardcoded as 2'b00 in monitor.
    // ----------------------------------------------------------------
    // Write address channel
@@ -117,9 +117,7 @@ interface qdma_periph_if ();
 
    // ----------------------------------------------------------------
    // m_axil_dbi — AXI-Lite master, 32-bit data/addr
-   // Wire prefix: cpm6_qdma_0_M_AXIL_DBI_*
-   // Note: slave side (AWREADY, WREADY, BVALID, ARREADY, RVALID, RDATA,
-   //       RRESP, RUSER) undriven by PS VIP — see Bug F3.
+   // Wire prefix: qdma_M_AXIL_DBI_*
    // ----------------------------------------------------------------
    // Write address channel
    logic [31:0]  dbi_awaddr;

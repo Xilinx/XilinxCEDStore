@@ -125,8 +125,8 @@ interface pswizard_if ();
 
   // ----------------------------------------------------------------
   // cpm_axi_pl0 / cpm_axi_pl1 / cpm_axi_pl3 -- for cross-correlation with
-  // PSW_DMA_IRQ in the same log stream. Same wire names/widths as this
-  // project's own qdma_boundary_probe.sv uses for cpm_axi_pl0-3 at the
+  // PSW_DMA_IRQ in the same log stream. Same wire names/widths as
+  // bind.qdma_boundary_probe.sv uses for cpm_axi_pl0-3 at the
   // IP-boundary scope; here they are read one level up, at the ps_wizard_0
   // BD-cell scope (same convention as the NOC0/NOC1 groups above). No pl2
   // group — does not exist on this BD. pl3 is gated behind `ENABLE_PL3_BIND.

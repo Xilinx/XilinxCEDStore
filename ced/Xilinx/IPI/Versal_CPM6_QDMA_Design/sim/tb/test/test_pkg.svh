@@ -1,5 +1,8 @@
 package test_pkg;
 
+  // Avery VIP uses these values so we set ours to these so that 
+  // hardcoded time literals (e.g. 100us) actually resolves to that
+  // time value in the VIP
   timeunit 1ps;
   timeprecision 1ps;
 
@@ -9,8 +12,16 @@ package test_pkg;
   import avery_pkg::*;
   import apci_pkg::*;
   import apci_pkg_test::*;
+`ifdef CPM6_RTL
+  import svt_uvm_pkg::*; 
+  import svt_axi_uvm_pkg::*; 
+`endif
   import base_agent_pkg::*;
   import reset_agent_pkg::*;
+  import cxl_nfi_agent_pkg::*;
+  import elbi_agent_pkg::*;
+  import cxl31_ll_pkg::*;
+  import cxl31_tl_pkg::*;
   import env_pkg::*;
   import tb_params_pkg::*;
 `ifdef CPM6_VIVADO
@@ -23,19 +34,79 @@ package test_pkg;
   import shim_device_pkg::*;
   import shim_pkg::*;
   import pcie_cfg_pkg::*;
+  import cxl_mbox_pkg::*;
+
+  import socket_dpi_pkg::*;
 
   // Just for printing
   `include "other/custom_report_server.sv"
 
-  // Sequences used during enumeration
-  import axi_mst_seq_pkg::*;
+  // Callbacks
+  `include "cb/cxl_hdm_decoder.sv"
+
+  // Callbacks for below specific sequences
   `include "seq/seq_enum_callback.sv"
+  // Sequences that may be used across several tests
+  import axi_mst_seq_pkg::*;
   `include "seq/seq_enum.sv"
+  `include "seq/seq_hot_reset.sv"
+  `include "seq/cseq_core_cxl_decoder_commit.sv"
+  `include "seq/cseq_core_doe_discovery_cfg_mb.sv"
+  `include "seq/cseq_core_doe_emu_cfg_mb.sv"
+`ifdef CPM6_VIVADO
+  `include "seq/seq_program_ide_key.sv"
+  `include "seq/seq_disable_crs.sv"
+`endif
 
   // Base Tests
   `include "test_base.sv"
   `include "test_init.sv"
   `include "test_enum.sv"
   `include "base_ep_test.sv"
+`ifdef CPM6_VIVADO
+  // test_ide_basic uses ps_vip_vsqr (CPM6_VIVADO only) and seq_program_ide_key
+  `include "test_ide_basic.sv"
+`endif
+  `include "base_rp_test.sv"
+`ifdef CPM6_RTL
+  `include "base_rp_gen6x8_bar_access_test.sv"
+`endif
+  `include "base_cxl_ep_test.sv"
+  `include "base_cxl_rp_test.sv"
+  `include "base_cxl_ep_type3_hdm1_fm.sv"
+  `include "base_cxl_ep_type3_hdm2_fm.sv"
+  `include "base_cxl_ep_type3_hdm1_nfm.sv"
+  `include "base_cxl_ep_type3_hdm2_nfm.sv"
+
+  // Operational Tests
+  //   - CXL
+  `include "ext_cxl_test/other/cxl_basic_responder.sv"
+
+  //     - Controller - Agnostic
+  `include "rand_traffic_cxl_mem_hdm1.sv"
+
+  //     - Controller 0
+  `include "ext_cxl_test/basic_cxl0_ep_type3_hdm1_fm.sv"
+  `include "ext_cxl_test/basic_cxl0_ep_type3_hdm2_fm.sv"
+  `include "ext_cxl_test/basic_cxl0_ep_type3_hdm1_nfm.sv"
+  `include "ext_cxl_test/basic_cxl0_ep_type3_hdm2_nfm.sv"
+
+  `include "ext_cxl_test/ctrl0_rand_traffic_cxl_mem_hdm1.sv"
+  //     - Controller 1
+  `include "ext_cxl_test/basic_cxl1_ep_type3_hdm1_fm.sv"
+  `include "ext_cxl_test/basic_cxl1_ep_type3_hdm2_fm.sv"
+  `include "ext_cxl_test/basic_cxl1_ep_type3_hdm1_nfm.sv"
+  `include "ext_cxl_test/basic_cxl1_ep_type3_hdm2_nfm.sv"
+
+  `include "ext_cxl_test/ctrl1_rand_traffic_cxl_mem_hdm1.sv"
+  // Example Tests
+  `include "hello_world.sv"
+  `include "examples/test_cfg_tlps.sv"
+  `include "examples/test_mem_tlps.sv"
+`ifdef CPM6_VIVADO
+  `include "examples/test_ide_tlps.sv"
+  `include "examples/test_mem_ide_tlps.sv"
+  `include "examples/test_ide_tlps_spdm.sv"
+`endif
 
 endpackage

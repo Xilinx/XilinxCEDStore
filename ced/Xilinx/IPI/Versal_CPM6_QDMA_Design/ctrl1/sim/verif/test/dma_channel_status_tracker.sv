@@ -1,7 +1,7 @@
 // dma_channel_status_tracker.sv — per-HDMA-channel lifecycle status map
 //
 // Per-HDMA-channel lifecycle state machine, staying entirely in HDMA-channel-index
-// space (channel<->qid mapping rejected as inaccurate):
+// space (no channel<->qid mapping):
 //
 //   IDLE -> DRBL_PROGRAMMED (DBI) -> DSC_FETCHED (NOC0) -> DMA_TRANSFERRED (AXI-PL0/1)
 //        -> INT_GENERATED (DBI) -> INT_SERVICED (DBI) -> back to IDLE
@@ -19,13 +19,11 @@
 // preceding DBI_RD's address, assumed single-outstanding (matches this DBI's AXI-Lite,
 // one-request-at-a-time usage pattern).
 //
-// Host-side MRD/MWR corroboration (dma_req_processor.sv) is intentionally NOT wired in
-// here — dma_req_processor.sv has no analysis port and is per-qid, not per-channel;
-// forcing a channel index onto it would repeat the rejected channel<->qid guess. Cross-
+// Host-side MRD/MWR corroboration (dma_req_processor.sv) is NOT wired in here —
+// dma_req_processor.sv has no analysis port and is per-qid, not per-channel. Cross-
 // check the DMA_SCOREBOARD log lines in the same timeframe as DMA_TRANSFERRED by hand.
 //
-// This is observability only — no new checks/errors, matching the user's ask for a
-// status MAP, not a scoreboard.
+// This is observability only — no checks/errors.
 
 `uvm_analysis_imp_decl(_qper)
 `uvm_analysis_imp_decl(_psw)
@@ -57,8 +55,8 @@ class dma_channel_status_tracker extends uvm_component;
 
    ch_status_t ch[128];
 
-   // Per-state transition counters (all channels combined; IDLE excluded per
-   // request — IDLE is a default/reset state, not a real transition event).
+   // Per-state transition counters (all channels combined; IDLE excluded —
+   // IDLE is a default/reset state, not a real transition event).
    int unsigned cnt_drbl_programmed;
    int unsigned cnt_dsc_fetched;
    int unsigned cnt_dma_transferred;
@@ -70,8 +68,8 @@ class dma_channel_status_tracker extends uvm_component;
    local logic [6:0]  last_rd_ch;
    local logic [8:0]  last_rd_off;
 
-   // DBI per-channel register offsets, per the register space documentation --
-   // see qdma_periph_monitor.sv's decode_dbi().
+   // DBI per-channel register offsets (same decode as qdma_periph_monitor.sv's
+   // decode_dbi()).
    localparam logic [8:0] OFF_DRBL       = 9'h004;
    localparam logic [8:0] OFF_STATUS     = 9'h080;
    localparam logic [8:0] OFF_INT_CLEAR  = 9'h08c;
@@ -96,8 +94,7 @@ class dma_channel_status_tracker extends uvm_component;
                ch[ch_idx].ever_active = 1'b1;
                cnt_drbl_programmed++;
             end else if (reg_off == OFF_INT_CLEAR) begin
-               // Per the user-specified state machine, INT_SERVICED is
-               // followed by "back to IDLE" — left implicit rather than
+               // INT_SERVICED is followed by "back to IDLE" — left implicit rather than
                // immediately overwritten here, so the summary table still
                // shows INT_SERVICED as the last real transition for a
                // channel that completed its lifecycle (the channel returns
@@ -115,8 +112,7 @@ class dma_channel_status_tracker extends uvm_component;
          end
          qdma_periph_txn::DBI_R: begin
             if (last_rd_valid && last_rd_off == OFF_STATUS) begin
-               // HDMA_STATUS[1:0]: 0=STOPPED, 1=RUNNING, 3=HALTED (per the register
-               // space documentation's own ISR flow description). Non-RUNNING is
+               // HDMA_STATUS[1:0]: 0=STOPPED, 1=RUNNING, 3=HALTED. Non-RUNNING is
                // the DBI-side "interrupt generated" signal for this channel.
                if (t.data[1:0] != 2'b01) begin
                   ch[last_rd_ch].state     = INT_GENERATED;
@@ -135,7 +131,7 @@ class dma_channel_status_tracker extends uvm_component;
       if (!t.chan_valid) return;
       case (t.txn_type)
          pswizard_txn::PSW_NOC_AW, pswizard_txn::PSW_NOC_AR: begin
-            if (t.port == 1'b0) begin // NOC0 only, per user scope
+            if (t.port == 1'b0) begin // NOC0 only
                ch[t.chan].state       = DSC_FETCHED;
                ch[t.chan].t_dsc_fetch = t.timestamp_ns;
                ch[t.chan].ever_active = 1'b1;

@@ -75,9 +75,6 @@ Steps to run CPM6 QDMA (CTRL1) simulation
 
     NOTE: use part xc2vp3602-vsvc3340-2MHP-e-S (not 2MP-e-L or 2LHP-e-S).
 
-    NOTE: Controller_0 and Dual_Controller are not yet supported for QDMA --
-    only Controller_1 is offered (see ../../init.tcl).
-
     The sim/ directory contains:
       Makefile        -- build and simulation targets (see step 5)
       README.txt      -- this file
@@ -110,6 +107,9 @@ Steps to run CPM6 QDMA (CTRL1) simulation
                                         fresh (use if a build gets stuck/inconsistent)
          make h                      -- show help with all options
 
+    Link width: the X2 or X8 width chosen when the project was created from
+    the CED is read from the project's defines.sv; nothing to set here.
+
     IMPORTANT: plusargs must be passed inside PARG_EXTRA="...". A bare
     +ARG=VAL on the make command line is silently dropped and the run falls
     back to the Makefile defaults.
@@ -118,8 +118,8 @@ Steps to run CPM6 QDMA (CTRL1) simulation
       Simulation completes with UVM_ERROR : 0 and UVM_FATAL : 0 in the report
       summary at the end of vcs.sim.log.
 
-    To force-recompile only the Vivado DUT lib (e.g. after a hand-patched
-    generated source), clear contents only -- never remove vcs_lib itself:
+    To force-recompile only the Vivado DUT lib, clear contents only -- never
+    remove vcs_lib itself:
       rm -rf <project>.sim/sim_1/behav/vcs/vcs_lib/*
     (vhdlan, used for VHDL libs like proc_sys_reset_v5_0_17, can't recreate
     a missing vcs_lib parent and fails with Error-[DLIB_CANT_CREATE_DIR].)
@@ -160,6 +160,10 @@ and/or VF functions. Default and preferred mode is POLL (+IRQ_EN=0); interrupt
 mode (+IRQ_EN=1) is not supported when VFs are in use. See the test file header
 for the full plusarg list(NUM_PF_TEST/NUM_VF_TEST/NUM_Q_TEST/PIDX/DMA_BYTE_CNT/DIRECTION/
 NUM_DMA_PORTS), and pass them via PARG_EXTRA as shown in step 5.
+
+test_qdma_mem_tlps -- writes five data patterns to the QDMA global scratch
+register (PF0 BAR1 + 0x244) with PCIe memory-write TLPs, reads each back with a
+memory-read TLP and compares. No DMA is run. Run it with make s TEST=test_qdma_mem_tlps.
 
 --------------------------------------------------------------------------------
 RUNNING ON HARDWARE

@@ -10,12 +10,6 @@
 // PCIe Device Control (MRRS/MPS) programming (TSK_PROGRAM_PCIE_DEVCTL), and
 // the two top-level H2C/C2H MM DMA test tasks (TSK_QDMA_MM_H2C_TEST,
 // TSK_QDMA_MM_C2H_TEST) that the test calls per PF and per queue.
-//
-// PF-only: test_qdma_h2c_c2h_mm_Mfnc_MQ.sv never sets fnc >= NUM_PFS, so
-// TSK_FIND_PF_VF_NUM's VF branch is never reached; its "Mfnc" covers
-// multiple PFs (looping pf_fnc 0..NUM_PF_TEST-1), not VFs. FIRST_VF_OFFSET/
-// NUM_VFS are initialized to this IP build's real VF_OFFSET/NUM_VF anyway,
-// so a future VF-aware test resolves fnc->pfn/vfn correctly from the start.
 
 import cpm6_qdma_params_pkg::*;
 
@@ -80,9 +74,8 @@ class qdma_base_test extends base_ep_test;
   reg    [15:0] TOTAL_VFS[NUM_PFS-1:0]      = '{default: 16'h20};
 
   // 64-bit descriptor ring base upper word (dsc_base itself stays 32-bit --
-  // host_mem[int] is a 32-bit-indexed associative array in this CED). Default 0
-  // keeps every existing PF test bit-identical; the
-  // VF DMA tasks below program it into the SW context's dsc_base[63:32].
+  // host_mem[int] is a 32-bit-indexed associative array in this CED). Default 0;
+  // the VF DMA tasks below program it into the SW context's dsc_base[63:32].
   bit [31:0] dsc_base_hi = 32'h0;
 
   // Set use_vf_enum=1 (in a test's end_of_elaboration_phase) to activate
@@ -126,10 +119,8 @@ class qdma_base_test extends base_ep_test;
       QUEUE_PER_PF = 32;
     `uvm_info("qdma_base_test", $sformatf("QUEUE_PER_PF=%0d", QUEUE_PER_PF), UVM_MEDIUM)
 
-    // shared_log_fd was declared but never opened/registered in this CED
-    // (dma_req_processor.sv's own "log_fd not found in config_db" warning
-    // traces back to this) -- opening it here is a prerequisite for
-    // pswizard_monitor.sv, which uvm_fatals if "log_fd" isn't in config_db.
+    // Open the shared debug log and register its fd: pswizard_monitor.sv
+    // uvm_fatals if "log_fd" isn't in config_db.
     if (shared_log_fd == 0) begin
       shared_log_fd = $fopen("cpm6_qdma_dbg.log", "w");
       uvm_config_db#(int)::set(this, "*", "log_fd", shared_log_fd);
@@ -139,9 +130,7 @@ class qdma_base_test extends base_ep_test;
     // bind_pswizard (bound to cpm6_qdma, this CED's BD top module) registers
     // "vif_pswizard" in config_db. Monitors CPM_PCIE_AXI_NOC0,
     // CPM_PCIE_AXI_NOC1 AXI handshakes and the 128-bit DMA completion IRQ
-    // vector -- and, via its own run_phase blocking on
-    // "wait(vif.rst_n === 1'b1)", gives independent, ground-truth
-    // confirmation of whether ps_wizard_0_pl0_resetn actually deasserts.
+    // vector.
     begin
       virtual pswizard_if vif_psw;
       pswizard_cfg cfg_psw = pswizard_cfg::type_id::create("cfg_psw", this);
@@ -157,11 +146,9 @@ class qdma_base_test extends base_ep_test;
 
     // --- QDMA periphery monitor (s_axi_mem + s_axi_reg + m_axil_dbi + MSIX) ---
     // bind_qdma_periph (bound to cpm6_qdma, this CED's BD top module) registers
-    // "vif_qdma_periph" in config_db. No tm_dsc_sts bridging here (no
-    // bind.tm_dsc_sts.sv in
-    // this project; the monitor's own get for it is non-fatal, see
-    // bind.qdma_periph.sv's header note). Full tm_dsc_sts coverage for this
-    // project comes from the pre-existing qdma_boundary_probe.sv instead.
+    // "vif_qdma_periph" in config_db. tm_dsc_sts is not bound in this
+    // testbench (the monitor's own get for it is non-fatal); it is logged by
+    // qdma_boundary_probe instead.
     begin
       virtual qdma_periph_if vif_qper;
       qdma_periph_cfg cfg_qper = qdma_periph_cfg::type_id::create("cfg_qper", this);
@@ -628,8 +615,7 @@ class qdma_base_test extends base_ep_test;
   Description : Program the PCIe Device Control Register (PCI Express
                 Capability offset +0x08) via CfgWr TLP from the Root Complex.
                 Sets MRRS/MPS while preserving all other Device Control bits.
-                Default values (MRRS=3, MPS=3, both 1024B) match the CDO
-                programming at 0xfc000078. Override via +PCIE_MRRS/+PCIE_MPS.
+                Override via +PCIE_MRRS/+PCIE_MPS.
   *************************************************************/
   task TSK_PROGRAM_PCIE_DEVCTL;
     input [2:0] mrrs_val;
@@ -705,9 +691,8 @@ class qdma_base_test extends base_ep_test;
 
     // Enable MSI-X in PCIe config space for this function by setting
     // msix_enable (bit 31 of DW0 in the MSI-X Capability Control register).
-    // CPM6's cpm6_msix_ctrl_logic checks user_function_is_enabled_reg; when 0,
-    // CPM6 asserts msix_error alongside msix_grant and irq_mgr drops the
-    // retry, so the host never receives the MSI-X message.
+    // CPM6 checks the function's MSI-X enable; when 0, CPM6 asserts msix_error
+    // alongside msix_grant, so the host never receives the MSI-X message.
     begin
       bit         cap_err;
       bit [31:0]  cap_dw0;
@@ -747,7 +732,7 @@ class qdma_base_test extends base_ep_test;
   /************************************************************
   Task : TSK_CHECK_MSIX_TLP
   Description : Wait for and verify the MSI-X Memory Write TLP generated by
-                CPM6 after irq_mgr asserts pcie_msix_req. Detection: dma_req_proc
+                CPM6 after the DMA raises its MSI-X request. Detection: dma_req_proc
                 (via qdma_mem_callback, boundary-level) increments
                 h2c_msix_cnt (vec==1) / c2h_msix_cnt (vec==2) when an MWr TLP
                 lands in the MSI-X window; this task snapshots the relevant
@@ -913,8 +898,7 @@ class qdma_base_test extends base_ep_test;
 
   /************************************************************
   Task : TSK_QDMA_MM_C2H_TEST
-  Description : Mirror of TSK_QDMA_MM_H2C_TEST for the C2H direction; see that task's
-                header for the defer_doorbell/refill scope note.
+  Description : Mirror of TSK_QDMA_MM_H2C_TEST for the C2H direction.
   *************************************************************/
   task TSK_QDMA_MM_C2H_TEST(input bit [10:0] qid, input dsc_bypass, input irq_en,
                              input bit defer_doorbell = 1'b0);
@@ -1173,9 +1157,6 @@ class qdma_base_test extends base_ep_test;
         is_pf = 0;
 
       wr_add = trq_sel_queue_addr + (qid* 16) + 4;
-      // Sequential (not fork/join): no concurrency was needed for a single
-      // blocking call -- see the matching fix in TSK_QDMA_VF_C2H_MM_TEST, which
-      // had a live is_pf race from this same fork-without-begin/end pattern.
       `uvm_info("TSK_QDMA_VF_H2C_MM_TEST", $sformatf(" Enabling PIDX 'd%0d for H2C", pidx), UVM_MEDIUM)
       // bit[16]=irq_en arms the interrupt on this PIDX update (same field as PF PIDX register)
       issue_reg_write(ptr_upt_dma_bar_idx, wr_add[31:0], {irq_en, pidx[15:0]}, is_pf, pfn, vfn);
@@ -1333,12 +1314,8 @@ class qdma_base_test extends base_ep_test;
     for (int iter=0; iter < NUM_ITER; iter=iter+1) begin
 
       `uvm_info("TSK_QDMA_VF_C2H_MM_TEST", $sformatf(" Start C2H Iteration %0d for fnc %0d", iter, fnc), UVM_MEDIUM)
-      // Sequential (not fork/join): fork with no begin/end grouping spawns each
-      // statement as an independent parallel thread, so issue_reg_write's read of
-      // is_pf raced against the is_pf=0 assignment above it with no ordering
-      // guarantee -- a VF doorbell could be issued with the stale is_pf=1 (PF
-      // addressing). No concurrency was needed here; these steps are sequential
-      // by data dependency (is_pf/wr_add must resolve before the write uses them).
+      // Sequential by data dependency: is_pf/wr_add must resolve before the
+      // write uses them.
       if(fnc > (NUM_PFS-1))
         is_pf = 0;
       wr_add = trq_sel_queue_addr + (qid* 16) + 8;

@@ -1,3 +1,8 @@
+`ifdef CPM6_RTL
+ `include "cpm6_demux_sel_if.sv"
+ `include "xil_cpm6_cdo_loader_sim.sv"
+ `include "cdo_loader_sim_if.sv"
+`elsif CPM6_VIVADO
  `include "bind.efuse.sv"
  `include "bind.isr.sv"
  `include "bind.cxl.sv"
@@ -8,9 +13,7 @@
  `include "bind.ps_vip.sv"
  `include "bind.cpm_pl_axi.sv"
  `include "bind.cpm_noc_axi.sv"
-
-// Currently only used in RTL sim
-`include "cdo_loader_sim_if.sv"
+`endif
 
 // Set +incdir to point to a location BEFORE this directory such that the project-
 // specific test package files are picked up instead of the empty ones. This 
@@ -41,8 +44,7 @@ module tb_top;
   // - These control the physical link connections; ergo you can enable 
   //   a link for training if non-zero, connect a subset of lanes of a 
   //   link, or disable a link entirely if zero
-  // - Cannot move these to module definition as it breaks SNPS VIP and 
-  //   VCS sim for some reason
+  // - Kept as tb_top parameters so they can be overridden at elaboration
   // - Examples 
   //   - Questa: vopt ... -G tb_top/LINK0_WIDTH=4
   //   - VCS   : vcs ... -pvalue tb_top.LINK0_WIDTH=4
@@ -78,10 +80,9 @@ module tb_top;
   import proj_test_pkg::*; //addl tests added by users
 
   // Serial sim wires
-  logic [7:0] vip2dut_0_p, vip2dut_0_n;
-  logic [7:0] dut2vip_0_p, dut2vip_0_n;
-  logic [7:0] vip2dut_1_p, vip2dut_1_n;
-  logic [7:0] dut2vip_1_p, dut2vip_1_n;
+  logic [7:0] vip2dut_0_p, vip2dut_0_n, vip2dut_1_p, vip2dut_1_n;
+  logic [7:0] dut2vip_0_p, dut2vip_0_n, dut2vip_1_p, dut2vip_1_n;
+  wire        clkreq_n_0, clkreq_n_1;
 
 `ifdef PCIE_LINK_PIPE
   // - assignments are upward referencing from bind modules to PIPE
@@ -250,7 +251,7 @@ module tb_top;
     assign dut_if1[ly].Pclk                     = gen_pipe_if[8+ly].Pclk;
     assign dut_if1[ly].Reset_                   = gen_pipe_if[8+ly].Reset_;
   end
-  // EDT-1093458 : MAC requires unused lanes driven low
+  // MAC requires unused lanes driven low
   for (genvar ly=LINK1_WIDTH; ly<8; ly++) begin
     assign gen_pipe_if[8+ly].PhyStatus          = '0;
   end
@@ -295,10 +296,10 @@ module tb_top;
       .rxp      (dut2vip_0_p),
       .rxn      (dut2vip_0_n),
       // Agent transmit
-      .txp      (vip2dut_p[0]),
-      .txn      (vip2dut_n[0]),
-      // Tie to 1 if unused
-      .clkreq_n (1'b1)
+      .txp      (vip2dut_0_p),
+      .txn      (vip2dut_0_n),
+      // type: inout tri1
+      .clkreq_n (clkreq_n_0)
     );  
   end
 
@@ -316,32 +317,42 @@ module tb_top;
       // Agent transmit
       .txp      (vip2dut_1_p),
       .txn      (vip2dut_1_n),
-      // Tie to 1 if unused
-      .clkreq_n (1'b1)
+      // type: inout tri1
+      .clkreq_n (clkreq_n_1)
     );  
   end
 
 `endif
 
-  // 100 MHz clock generators
-  bit refclk_0_p, refclk_0_n;
-  assign refclk_0_n = !refclk_0_p;
-  // Add some clock phase randomization
-  initial if (LINK0_WIDTH) begin
-    #($urandom_range(0,9)*1ns);
-    #($urandom_range(0,999)*1ps);
-    forever refclk_0_p = #5ns !refclk_0_p; 
-  end
-  bit refclk_1_p, refclk_1_n;
-  assign refclk_1_n = !refclk_1_p;
-  // Add some clock phase randomization
-  initial if (LINK1_WIDTH) begin
-    #($urandom_range(0,9)*1ns);
-    #($urandom_range(0,999)*1ps);
-    forever refclk_1_p = #5ns !refclk_1_p; 
-  end
-  `include "cpm6_vivado_binds.sv"
-  `include "dut_inst.sv"
+  `ifdef CPM6_RTL
+    `include "cpm6_rtl_dut.sv"
+    `include "cpm6_pl_demux.sv"
+    `include "cpm6_rtl_axi_vip.sv"
+    `include "cpm6_rtl_cdo_loader.sv"
+    `include "cpm6_rtl_pl_vip.sv"
+    `include "cpm6_rtl_ps_vip.sv"
+    `include "cpm6_rtl_binds.sv"
+  `else
+    // 100 MHz clock generators
+    bit refclk_0_p, refclk_0_n;
+    assign refclk_0_n = !refclk_0_p;
+    // Add some clock phase randomization
+    initial if (LINK0_WIDTH) begin
+      #($urandom_range(0,9)*1ns);
+      #($urandom_range(0,999)*1ps);
+      forever refclk_0_p = #5ns !refclk_0_p; 
+    end
+    bit refclk_1_p, refclk_1_n;
+    assign refclk_1_n = !refclk_1_p;
+    // Add some clock phase randomization
+    initial if (LINK1_WIDTH) begin
+      #($urandom_range(0,9)*1ns);
+      #($urandom_range(0,999)*1ps);
+      forever refclk_1_p = #5ns !refclk_1_p; 
+    end
+    `include "dut_inst.sv"
+    `include "cpm6_vivado_binds.sv"
+  `endif
 
   // The agent is a SV class object that can function as a multi-port RC or single port RP/EP
   // The UVM env will grab the virtual interface and attach it to the respective object
@@ -359,6 +370,15 @@ module tb_top;
     uvm_config_db#(int)::set(null, "*", "PIPE_SIM", 0);
 `endif
   end
+
+`ifdef PCIE_LINK_SERIAL `ifdef CPM6_RTL
+  initial
+    `uvm_fatal("UNSUPPORTED", "CPM6 RTL does not support SERIAL sim")
+`endif `endif
+
+`ifdef INCLUDE_FW_REPO_INFO
+  `include "print_framework_repo_info.sv"
+`endif
 
   initial run_test("");
 

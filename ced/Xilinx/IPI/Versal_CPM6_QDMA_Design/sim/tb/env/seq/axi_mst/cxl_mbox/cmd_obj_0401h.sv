@@ -1,4 +1,3 @@
-// Command object for opcode=0x0401 (Get Log)
 class cmd_obj_0401h extends cxl_comp_cmd_obj;
 
   `uvm_object_utils(cmd_obj_0401h)

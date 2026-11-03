@@ -12,4 +12,25 @@ class cxl_credit_cfg extends base_cfg;
     super.new(name);
   endfunction
 
+  virtual function void do_copy(uvm_object rhs);
+    cxl_credit_cfg _rhs;
+    super.do_copy(rhs);
+    if (!$cast(_rhs, rhs))
+      `uvm_fatal(get_type_name, "Cast in do_copy failed")
+    else begin
+      mon_indi            = _rhs.mon_indi;
+      cmp_zero            = _rhs.cmp_zero;
+      broadcast_all       = _rhs.broadcast_all;
+      mst_use_credit_pool = _rhs.mst_use_credit_pool;
+    end
+  endfunction
+
+  virtual function void do_print(uvm_printer printer);
+    super.do_print(printer);
+    printer.print_int   ("mon_indi",            mon_indi,            1, UVM_BIN);
+    printer.print_int   ("cmp_zero",            cmp_zero,            1, UVM_BIN);
+    printer.print_int   ("broadcast_all",       broadcast_all,       1, UVM_BIN);
+    printer.print_int   ("mst_use_credit_pool", mst_use_credit_pool, 1, UVM_BIN);
+  endfunction
+
 endclass

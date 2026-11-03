@@ -12,9 +12,9 @@ class cxl_pm_out_cb extends gpmon_mon_cb#(gpmon_txn);
 
   virtual function void make_specific(gpmon_txn txn);
     if (dut_cxl_host)
-      host_make_specific(txn);
+      host_make_specific(txn); 
     else
-      device_make_specific(txn);
+      device_make_specific(txn); 
   endfunction
 
   // Make macro printing sensible
@@ -61,7 +61,7 @@ class cxl_pm_out_cb extends gpmon_mon_cb#(gpmon_txn);
       `check_add_radix(3, "GPF Phase-1->Cache Flush Error")
       // ResetPrep VDM
       `check_add_radix(4, "ResetPrep Rsp VDM Rx'd")
-      // CXL Error VDM
+      // CXL Error VDM 
       `check_add_radix(5, "CXL Error VDM Rx'd")
       // CXL Error VDM sub-field
       `check_add_raw(9:6, $sformatf("[9:6] : CXL Error Firmware IRQ Vector = 'h%0h", txn.sig[9:6]))

@@ -4,7 +4,7 @@
   <Library>design</Library>
   <Name>cpm6_qdma</Name>
    <DisplayName>Versal CPM6 QDMA Design</DisplayName>
-  <Description>Versal CPM6 QDMA Design supporting Controller1 configuration, link speeds up to PCIe Gen6 and link width X2. Controller0 and Dual Controller configurations are not yet available.</Description>
+  <Description>Versal CPM6 QDMA Design supporting Controller1 configuration, link speeds up to PCIe Gen6 and link width X2.</Description>
    <Version>1.0</Version>
   <Design>init.tcl</Design>
   <Image>cpm6_qdma_g6x2_mm.png</Image>

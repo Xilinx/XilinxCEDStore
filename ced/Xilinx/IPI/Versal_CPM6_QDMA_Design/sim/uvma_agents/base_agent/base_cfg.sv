@@ -40,6 +40,27 @@ class base_cfg extends uvm_object;
     end
   endfunction
 
+  virtual function void do_print(uvm_printer printer);
+    super.do_print(printer);
+    printer.print_string("activity",  activity.name());
+    printer.print_string("component", component.name());
+    if (uid != "")
+      printer.print_string("uid",                      uid);
+    printer.print_int   ("append_uid",                 append_uid,                  1, UVM_BIN);
+    printer.print_int   ("disable_api",                disable_api,                 1, UVM_BIN);
+    printer.print_int   ("disable_mon_ap_connect",     disable_mon_ap_connect,      1, UVM_BIN);
+    printer.print_int   ("disable_mon_baseap_connect", disable_mon_baseap_connect,  1, UVM_BIN);
+    printer.print_int   ("compare_addl_txn_info",      compare_addl_txn_info,      32, UVM_DEC);
+    if (addl_txn_info.size) begin
+      printer.print_array_header("addl_txn_info", addl_txn_info.size(), "queue(string)");
+      foreach (addl_txn_info[i])
+        printer.print_string($sformatf("[%0d]", i), addl_txn_info[i]);
+      printer.print_array_footer();
+    end
+    else
+      printer.print_string("addl_txn_info", "empty queue");
+  endfunction
+
   // Helper functions
   virtual function bit is_master (); return (component==UVM_MASTER); endfunction
   virtual function bit is_slave  (); return (component==UVM_SLAVE);  endfunction

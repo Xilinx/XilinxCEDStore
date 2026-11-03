@@ -1,6 +1,5 @@
-// Real proj_test_pkg for this CED (QDMA MM basic tests). tb_top.sv `includes
-// "pkg.proj_test_pkg.sv" and resolves it via +incdir search order -- this
-// file must be found ahead of any empty framework stub of the same name
+// proj_test_pkg for this CED (QDMA MM test). tb_top.sv `includes
+// "pkg.proj_test_pkg.sv" and resolves it via +incdir search order
 // (see ctrl1/sim/tb_files.f: +incdir+verif/test appears before +incdir+tb/test).
 //
 // Content list mirrors what this CED's test (test_qdma_h2c_c2h_mm_Mfnc_MQ.sv)
@@ -62,5 +61,6 @@ package proj_test_pkg;
   // Base test + the test this CED ships.
   `include "qdma_base_test.sv"
   `include "test_qdma_h2c_c2h_mm_Mfnc_MQ.sv"
+  `include "test_qdma_mem_tlps.sv"
 
 endpackage

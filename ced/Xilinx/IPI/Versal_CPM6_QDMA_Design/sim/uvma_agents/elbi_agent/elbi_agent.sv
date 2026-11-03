@@ -30,7 +30,7 @@ class elbi_agent extends base_agent #(
     cfg.disable_mon_ap_connect = 1; //won't use this port
     super.connect_phase(phase);
     // Need to steer requests to sequencer FIFO
-    if (is_slave && is_active)
+    if (is_slave_agent() && is_active_agent())
       req_ap.connect(sqr.analysis_export);
   endfunction
 
@@ -51,7 +51,7 @@ class elbi_agent extends base_agent #(
   // this is the selected default sequence for responders
   virtual function void start_of_simulation_phase(uvm_phase phase);
     elbi_slv_base_seq seq = elbi_slv_base_seq::type_id::create("seq");
-    if (is_slave && is_active) begin
+    if (is_slave_agent() && is_active_agent()) begin
       fork
         seq.start(sqr);
       join_none

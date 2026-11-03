@@ -37,12 +37,10 @@ class qdma_mem_callback /*#(
 
       `uvm_info("qdma_RC_MEM", $psprintf("read mem cb: is_host_mem: %0d, ADDR_hex: %0h, addr_decimal: %0d, NDW: %0h, FBE: %0h, LBE: %0h",
       is_host_mem, addr, addr_decimal,ndw, first_be, last_be), UVM_HIGH);
-      // The uvm_info above is UVM_HIGH and the sim default
-      // is VERBOSITY=MEDIUM, so every host-memory TLP callback was dark. Mirror the
-      // per-TLP HEADER to cpm6_qdma_dbg.log, which is verbosity-independent.
-      // Deliberately header-only: the per-DWORD logs further down sit inside a loop
-      // over ndw and would emit roughly 32 lines per 128B TLP - on the order of a
-      // million lines for a PIDX=53 5-queue run - so they stay gated (see below).
+      // The uvm_info above is UVM_HIGH; mirror the per-TLP HEADER to
+      // cpm6_qdma_dbg.log, which is verbosity-independent. Header-only: the
+      // per-DWORD logs further down sit inside a loop over ndw and would emit
+      // roughly 32 lines per 128B TLP, so they stay gated (see below).
       if (this.test != null && this.test.shared_log_fd != 0)
         $fdisplay(this.test.shared_log_fd,
                   "%9t ns  TLP   TLP_RD_CB   is_host_mem=%0d  addr=0x%0h  ndw=%0h  fbe=0x%0h  lbe=0x%0h",

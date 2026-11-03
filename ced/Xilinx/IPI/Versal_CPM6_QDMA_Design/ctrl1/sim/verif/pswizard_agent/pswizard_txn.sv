@@ -21,9 +21,9 @@ class pswizard_txn extends uvm_sequence_item;
     PSW_NOC_R,     // Read last-beat handshake
     PSW_DMA_IRQ,   // DMA completion IRQ assertion
     PSW_RESET,     // rst_n de-assertion
-    // cpm_axi_pl0/1/3 events (added for cross-correlation with PSW_DMA_IRQ in
-    // the same log stream — observation only, no BRESP/RRESP/BW_CYC/
-    // THROUGHPUT checks on these ports; no PL2 (does not exist on this BD);
+    // cpm_axi_pl0/1/3 events (for cross-correlation with PSW_DMA_IRQ in
+    // the same log stream — observation only, no checks on these ports;
+    // no PL2 (does not exist on this BD);
     // PL3 gated behind `ENABLE_PL3_BIND)
     PSW_PL_AW,
     PSW_PL_W,
@@ -50,7 +50,7 @@ class pswizard_txn extends uvm_sequence_item;
   longint unsigned bytes;   // (len+1)<<size burst estimate; write-side WSTRB-accurate
                             // total (on wlast) is added on top of this in the W log line
   // HDMA channel decoded from addr/SLOT_SIZE_BYTES (dsc_slot_params_pkg) — PSW_NOC_AW/AR
-  // (NOC0 only, per user scope) and PSW_PL_AW/AR (PL0/1/3). '1 = not decoded (e.g. NOC1).
+  // (NOC0 only) and PSW_PL_AW/AR (PL0/1/3). '1 = not decoded (e.g. NOC1).
   logic [6:0]   chan;
   bit           chan_valid;
 

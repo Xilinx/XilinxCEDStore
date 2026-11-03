@@ -23,4 +23,10 @@ class reset_cfg extends base_cfg;
     end
   endfunction
 
+  virtual function void do_print(uvm_printer printer);
+    super.do_print(printer);
+    printer.print_int   ("has_clk",    has_clk, 1, UVM_BIN);
+    printer.print_string("active_val", active_val.name());
+  endfunction
+
 endclass

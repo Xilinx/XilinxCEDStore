@@ -6,7 +6,7 @@
             "name": "cpm6_qdma",
             "display": "Versal CPM6 QDMA Design",
             "revision": "1.0",
-            "description": "Versal CPM6 QDMA Design supporting Controller1 configuration, PCIe Gen6 X2. Controller0 and Dual Controller configurations are not yet available.",
+            "description": "Versal CPM6 QDMA Design supporting Controller1 configuration, PCIe Gen6 X2.",
             "company": "xilinx.com",
             "company_display": "Xilinx",
             "author": "AMD",

@@ -165,7 +165,7 @@ if { $bCheckIPsPassed != 1 } {
 
 # Procedure to create entire design; Provide argument to make
 # procedure reusable. If parentCell is "", will use root.
-proc create_root_design { parentCell } {
+proc create_root_design { parentCell link_width } {
 
   variable script_folder
   variable design_name
@@ -303,6 +303,18 @@ proc create_root_design { parentCell } {
   set constant_1 [ create_bd_cell -type ip -vlnv xilinx.com:ip:xlconstant constant_1 ]
 
   # Create instance: ps_wizard_0, and set properties
+  # Controller 1 lane placement. X2 uses CPIPE lane location 6 (lanes
+  # reversed) with QUAD3_REFCLK0; for other widths the VPK360 board-aware
+  # CPM6 configuration (CPM6_BOARD) selects the lanes and reference clock.
+  set x2_lane_loc {}
+  set x2_refclk   {}
+  if {$link_width eq "X2"} {
+    set x2_lane_loc [list \
+      CONFIG.CPM6_CONFIG(CPM6_CTRL1_CPIPE_LANE_LOC) {6} \
+      CONFIG.CPM6_CONFIG(CPM6_CTRL1_CPIPE_LANE_REVERSAL_EN) {1} ]
+    set x2_refclk [list \
+      CONFIG.CPM6_CONFIG(CPM6_CTRL1_REFCLK) {QUAD3_REFCLK0} ]
+  }
   set ps_wizard_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:ps_wizard ps_wizard_0 ]
   set_property -dict [list \
     CONFIG.CPM6_CONFIG(CPM6_AXI_PL0_IF) {1} \
@@ -310,8 +322,7 @@ proc create_root_design { parentCell } {
     CONFIG.CPM6_CONFIG(CPM6_AXI_PL3_IF) {1} \
     CONFIG.CPM6_CONFIG(CPM6_BOARD) {VPK360} \
     CONFIG.CPM6_CONFIG(CPM6_CTRL1_CFG_STATUS_IF) {1} \
-    CONFIG.CPM6_CONFIG(CPM6_CTRL1_CPIPE_LANE_LOC) {6} \
-    CONFIG.CPM6_CONFIG(CPM6_CTRL1_CPIPE_LANE_REVERSAL_EN) {1} \
+    {*}$x2_lane_loc \
     CONFIG.CPM6_CONFIG(CPM6_CTRL1_DMA_APERTURE0_BASEADDR) {0x0000_0000_0000_0000} \
     CONFIG.CPM6_CONFIG(CPM6_CTRL1_DMA_APERTURE0_INTERLEAVE) {None} \
     CONFIG.CPM6_CONFIG(CPM6_CTRL1_DMA_APERTURE0_LIMITADDR) {0x0000_0000_0000_FFFF} \
@@ -334,7 +345,7 @@ proc create_root_design { parentCell } {
     CONFIG.CPM6_CONFIG(CPM6_CTRL1_INBOUND_REGION1_TRGTADDR) {0x0000_0000_0200_0000} \
     CONFIG.CPM6_CONFIG(CPM6_CTRL1_LANE_RATE) {64.0_GT/s} \
     CONFIG.CPM6_CONFIG(CPM6_CTRL1_LINK_IDE_STREAM_EN) {1} \
-    CONFIG.CPM6_CONFIG(CPM6_CTRL1_LINK_WIDTH) {X2} \
+    CONFIG.CPM6_CONFIG(CPM6_CTRL1_LINK_WIDTH) $link_width \
     CONFIG.CPM6_CONFIG(CPM6_CTRL1_MMIO_APERTURE0_BASEADDR) {0x0000_0000_0200_0000} \
     CONFIG.CPM6_CONFIG(CPM6_CTRL1_MMIO_APERTURE0_DEST) {CPM_AXI_PL3} \
     CONFIG.CPM6_CONFIG(CPM6_CTRL1_MMIO_APERTURE0_LIMITADDR) {0x0000_0000_03FF_FFFF} \
@@ -360,7 +371,7 @@ proc create_root_design { parentCell } {
     CONFIG.CPM6_CONFIG(CPM6_CTRL1_PF0_MSIX_TABLE_OFFSET) {0x14000} \
     CONFIG.CPM6_CONFIG(CPM6_CTRL1_PF0_MSIX_VECTORS) {8} \
     CONFIG.CPM6_CONFIG(CPM6_CTRL1_PROTOCOL) {PCIE_6_1} \
-    CONFIG.CPM6_CONFIG(CPM6_CTRL1_REFCLK) {QUAD3_REFCLK0} \
+    {*}$x2_refclk \
     CONFIG.CPM6_CONFIG(CPM6_CTRL1_SELECTIVE_IDE_STREAM_EN) {1} \
     CONFIG.CPM6_CONFIG(CPM6_CTRL1_SRIOV_CAP_EN) {1} \
     CONFIG.CPM6_CONFIG(CPM6_CTRL1_VFG0_BAR0_SCALE) {Megabytes} \
@@ -389,7 +400,7 @@ proc create_root_design { parentCell } {
     CONFIG.PS_PMC_CONFIG(CPM6_AXI_PL0_IF) {1} \
     CONFIG.PS_PMC_CONFIG(CPM6_AXI_PL1_IF) {1} \
     CONFIG.PS_PMC_CONFIG(CPM6_AXI_PL3_IF) {1} \
-    CONFIG.PS_PMC_CONFIG(CPM6_CTRL1_LINK_WIDTH) {X2} \
+    CONFIG.PS_PMC_CONFIG(CPM6_CTRL1_LINK_WIDTH) $link_width \
     CONFIG.PS_PMC_CONFIG(CPM6_CTRL1_MODE) {DMA_BRIDGE} \
     CONFIG.PS_PMC_CONFIG(CPM6_CTRL1_PERST) {PS_MIO_19} \
     CONFIG.PS_PMC_CONFIG(CPM6_CTRL1_PROTOCOL) {PCIE_6_1} \
@@ -542,6 +553,9 @@ connect_bd_intf_net -intf_net [get_bd_intf_nets qdma_s_axi_reg] [get_bd_intf_pin
 # MAIN FLOW
 ##################################################################
 
-create_root_design ""
+# Link width (X2 or X8) comes from the CED's CTRL_LINK_WIDTH option (run.tcl);
+# X2 when this script is sourced on its own.
+if {![info exists link_width]} { set link_width X2 }
+create_root_design "" $link_width
 
 

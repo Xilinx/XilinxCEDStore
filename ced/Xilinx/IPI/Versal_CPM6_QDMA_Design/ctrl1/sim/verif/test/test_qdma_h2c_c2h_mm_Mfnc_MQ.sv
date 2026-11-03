@@ -62,11 +62,9 @@ class test_qdma_h2c_c2h_mm_Mfnc_MQ extends qdma_base_test;
     phase.drop_objection(this);
   endfunction
 
-  // seq_enum's default enum_timeout (250us, uvma-pcie-sim-framework/cpm6/common/
-  // test/seq/seq_enum.sv) is not enough once VFs are enumerated on this CED --
-  // measured: 1PF+8VF enumeration runs at ~15.4us/VF, needing ~330-350us total
-  // on this CED's link config. Override via pre_enum_seq(), outside the shared
-  // framework file, rather than editing seq_enum.sv directly.
+  // seq_enum's default enum_timeout (250us) is not enough once VFs are
+  // enumerated on this CED: 1PF+8VF enumeration runs at ~15.4us/VF, ~330-350us
+  // in total.
   virtual task pre_enum_seq();
     bus_enum.enum_timeout = 500us;
   endtask
@@ -176,10 +174,7 @@ class test_qdma_h2c_c2h_mm_Mfnc_MQ extends qdma_base_test;
 
         // Default (no plusarg) randomization is capped to a small range so an
         // unconstrained run can't drive an unbounded number/size of DMA
-        // transfers -- NUM_Q_TEST=21 x PIDX=51 x DMA_BYTE_CNT=14208 (all
-        // random) produced a single queue needing ~1.18ms and
-        // 8255 TLPs just to complete, and other queues never even started.
-        // An explicit +NUM_Q_TEST/+PIDX/+DMA_BYTE_CNT plusarg is NOT capped
+        // transfers. An explicit +NUM_Q_TEST/+PIDX/+DMA_BYTE_CNT plusarg is NOT capped
         // by these and can still use the full c_num_q/c_pidx/c_dma_byte_cnt
         // range above. NUM_VF_TEST has no "no plusarg" random range -- unlike
         // PF, omitting +NUM_VF_TEST means VF-off (0), not a random VF count.

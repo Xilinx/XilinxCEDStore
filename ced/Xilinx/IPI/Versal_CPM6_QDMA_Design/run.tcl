@@ -21,28 +21,32 @@ proc createDesign {design_name options} {
   # Parse controller config, lane rate and link width
   # ----------------------------------------------------------------
   set ctrl_config [get_opt $options CTRL_CONFIG    "Controller_1"]
+  set dma_mode    [get_opt $options DMA_MODE       "Memory_Mapped"]
   set lane_rate   [get_opt $options CTRL_LANE_RATE "64.0_GT/s"]
   # Fallback default must match init.tcl's addOptions CTRL_LINK_WIDTH default
-  # (X2) -- ctrl1/design_1_bd.tcl hardcodes ps_wizard_0 to X2 and its BD-level
-  # CTRL1_GT_0 port is only 2 bits wide. X4 here caused a real bitgen DRC
-  # failure (NSTD-2/UCIO-1 on GT bits [2]/[3]).
+  # (X2). The selected width is passed to the block design script (which sets
+  # CPM6_CTRL1_LINK_WIDTH) and written to defines.sv as LINK_WIDTH.
   set link_width  [get_opt $options CTRL_LINK_WIDTH "X2"]
   set link_width_int [string index $link_width end]
 
   puts "INFO: Controller Config = $ctrl_config"
+  puts "INFO: DMA Mode          = $dma_mode"
   puts "INFO: PCIe Lane Rate    = $lane_rate"
   puts "INFO: PCIe Link Width   = $link_width"
 
   # ----------------------------------------------------------------
   # Set sub-design directory and top module based on controller config
-  # to-do item for future consideration: Controller_0 / Dual_Controller are
-  # intentionally not offered yet
-  # (see init.tcl value_list) -- add entries here only once ctrl0/dual are
-  # authored with real design_1_bd.tcl + src content.
   # ----------------------------------------------------------------
   set ctrl_map [dict create \
     Controller_1    {ctrl1 ctrl1_qdma_ep}     ]
-  lassign [dict get $ctrl_map $ctrl_config] sub_name g_top
+  # Streaming: same controller, streaming sub-design and top
+  set ctrl_st_map [dict create \
+    Controller_1    {ctrl1_st ctrl1_qdma_st_ep} ]
+  if {$dma_mode eq "Streaming"} {
+    lassign [dict get $ctrl_st_map $ctrl_config] sub_name g_top
+  } else {
+    lassign [dict get $ctrl_map $ctrl_config] sub_name g_top
+  }
   set src_dir "${currentDir}/${sub_name}"
 
   # Create 'sources_1' fileset
@@ -83,6 +87,34 @@ proc createDesign {design_name options} {
   set obj_sim_fileset [get_filesets sim_1]
 
   ##################################################################
+  # Streaming: the QDMA and mailbox IP versions with the streaming
+  # data path ship with this design under ip/. Register them before the
+  # block design is built, and stop if either was not taken from there
+  # (Vivado falls back to the installed IP when a repository entry cannot
+  # be read).
+  ##################################################################
+  if {$dma_mode eq "Streaming"} {
+    set local_ip_root [file normalize "${currentDir}/ip"]
+    set_property ip_repo_paths [list $local_ip_root] [current_project]
+    update_ip_catalog
+    # Compile every IP from source for simulation: the local cpm6_qdma is not
+    # the same version as the precompiled library that ships with Vivado.
+    set_property sim.use_ip_compiled_libs 0 [current_project]
+    foreach ip_name {cpm6_qdma pcie_qdma_mailbox} {
+      set from_local 0
+      foreach ipdef [get_ipdefs -quiet *:${ip_name}:*] {
+        if {[string first $local_ip_root [file normalize [get_property REPOSITORY $ipdef]]] == 0} {
+          set from_local 1
+        }
+      }
+      if {!$from_local} {
+        error "ERROR: ${ip_name} was not loaded from ${local_ip_root}; see the IP_Flow messages above"
+      }
+      puts "INFO: ${ip_name} loaded from ${local_ip_root}"
+    }
+  }
+
+  ##################################################################
   # DESIGN PROCs — source the correct BD TCL
   ##################################################################
   source "${src_dir}/design_1_bd.tcl"
@@ -105,7 +137,16 @@ proc createDesign {design_name options} {
     puts "INFO: Simulation files copied to $sim_dst"
   } else {
     puts "INFO: sim/ already exists at $sim_dst -- skipping copy"
-  }  
+  }
+  # README and the images it links, next to the project
+  foreach item {README.md design_architecture.png cpm6_qdma_g6x2_mm.png cpm6_qdma_g6x2_st.png} {
+    if {![file exists ${proj_dir}/$item]} {
+      file copy -force ${currentDir}/$item $proj_dir
+      puts "INFO: $item copied to $proj_dir"
+    } else {
+      puts "INFO: $item already exists at $proj_dir -- skipping copy"
+    }
+  }
   if { [string equal -nocase $OS "Windows"] == 0 } {
     set_property target_simulator VCS [current_project]
     set_property -dict [dict create generate_scripts_only 1 top $g_top top_lib xil_defaultlib vcs.simulate.runtime -all] $obj_sim_fileset

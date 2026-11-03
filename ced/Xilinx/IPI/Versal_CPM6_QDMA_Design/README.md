@@ -5,14 +5,14 @@
 | Item | Summary |
 |---|---|
 | **Primary Purpose** | Demonstrates the CPM6 QDMA IP core (`cpm6_qdma_v1_0`) -- a multi-queue, context-based DMA IP built in PL fabric on top of the CPM6 hard IP's DMA Bridge interface -- with H2C/C2H descriptor-ring traffic |
-| **Configurations** | Single variant: CPM6 Controller 1 only (`ctrl1/`); `Controller_0`/`Dual_Controller` are not yet offered |
+| **Configurations** | CPM6 Controller 1, Memory Mapped (`ctrl1/`) or Streaming (`ctrl1_st/`) DMA |
 | **Example Type** | IP Example Design (CED) |
 | **Target Audience** | Verification/FPGA engineers validating the CPM6 QDMA IP core's multi-queue DMA datapath |
 | **Devices Supported** | Versal devices with CPM6 hard IP (`vsvc3340` package family) -- `xc2vp3602-vsvc3340-2MHP-e-S` |
 | **Tools Required** | Vivado 2026.1.1, VCS/Verdi X-2025.06-SP2 with UVM 1.1, Avery PLI/apci-xactor 2025.3_1, CPM6 Secure IP package |
 | **Simulators Validated** | VCS (waveform viewing via Verdi) |
 | **Board Part** | None selected in the Vivado project -- the design targets the supported part directly. The CPM6 configuration is set up for the VPK360 board (`CPM6_BOARD=VPK360`), so GT lanes and PERST are allocated as per the VPK360 schematic -- see [Board Configuration](#board-configuration) |
-| **Key Features Shown** | Multi-queue H2C/C2H MM DMA via `cpm6_qdma_v1_0`'s descriptor-ring engine, SR-IOV (8 VFs behind 1 PF), PCIe Gen6 X2 link, POLL mode |
+| **Key Features Shown** | Multi-queue H2C/C2H MM or stream DMA via `cpm6_qdma_v1_0`'s descriptor-ring engine, SR-IOV (8 VFs behind 1 PF), PCIe Gen6 X2 or X8 link, POLL mode |
 | **Not Intended For** | Production deployment, performance benchmarking |
 | **Time to First Success** | ~20-30 minutes (compile + optimize + simulate) |
 
@@ -23,7 +23,7 @@
 This example design demonstrates the CPM6 QDMA IP core (`cpm6_qdma_v1_0`) -- a full multi-queue, context-based DMA IP implemented in PL fabric -- layered on top of CPM6 Controller 1's hard-IP DMA Bridge interface as a PCIe Gen6 Endpoint. The `cpm6_qdma_0` cell here provides real QDMA semantics: per-queue descriptor rings, SW/HW contexts, and a writeback/completion path, all driven by a UVM testbench issuing real PCIe traffic.
 
 By working through this example design, you will learn how to:
-- Configure CPM6 Controller 1 in DMA Bridge mode (PCIe Gen6, link width X2) with SR-IOV (1 PF + 8 VFs)
+- Configure CPM6 Controller 1 in DMA Bridge mode (PCIe Gen6, link width X2 or X8) with SR-IOV (1 PF + 8 VFs)
 - Program QDMA queue contexts, descriptor rings, and function-map registers over the PCIe link
 - Drive multi-queue H2C/C2H DMA traffic and observe per-queue completion via byte-count tracking and writeback
 - Build and run the simulation using VCS, with optional Verdi/FSDB waveform viewing
@@ -33,7 +33,8 @@ By working through this example design, you will learn how to:
 - **Multi-queue H2C/C2H MM DMA** -- descriptor-ring-based host-to-card and card-to-host transfers, one test class covering both directions across an arbitrary number of queues/PFs
 - **SR-IOV** -- 1 PF, 8 VFs (`CPM6_CTRL1_SRIOV_CAP_EN=1`, `CPM6_CTRL1_VFG0_TOTAL_VFS=8`)
 - **MSI-X interrupt generation** -- 8 vectors/function (`CPM6_CTRL1_PF0_MSIX_VECTORS 8`); POLL (`+IRQ_EN=0`) is the default and preferred completion mode -- INTERRUPT (`+IRQ_EN=1`) is not supported when VFs are in use
-- **PCIe Gen6 X2 link** -- lane rate selectable (16.0/32.0/64.0 GT/s) via the CED GUI; link width is fixed at X2 for this CED
+- **PCIe Gen6 link** -- lane rate (16.0/32.0/64.0 GT/s) and link width (X2/X8) selectable via the CED GUI
+- **Streaming DMA option** -- H2C/C2H AXI4-Stream with a register-driven C2H packet generator; see [Streaming Design](#streaming-design)
 
 ## Features
 
@@ -62,9 +63,10 @@ These are the only options presented at generation time; everything else in the 
 |---|---|---|---|
 | Controller selection | `CTRL_CONFIG.VALUE` | `Controller_1` | `Controller_1` |
 | Link Speed | `CTRL_LANE_RATE.VALUE` | `64.0_GT/s`, `32.0_GT/s`, `16.0_GT/s` | `64.0_GT/s` |
-| Link width | `CTRL_LINK_WIDTH.VALUE` | `X2` | `X2` |
+| DMA mode | `DMA_MODE.VALUE` | `Memory_Mapped`, `Streaming` | `Memory_Mapped` |
+| Link width | `CTRL_LINK_WIDTH.VALUE` | `X2`, `X8` | `X2` |
 
-The generated DUT top-level module is `ctrl1_qdma_ep`.
+The generated DUT top-level module is `ctrl1_qdma_ep` (Memory Mapped) or `ctrl1_qdma_st_ep` (Streaming).
 
 ## Design Architecture
 
@@ -112,7 +114,7 @@ flowchart TB
         RSTIF["reset_if"]
     end
 
-    subgraph DUT["DUT: design_1_wrapper"]
+    subgraph DUT["DUT: ctrl1_qdma_ep"]
         CPM6SEC["CPM6 Secure IP"]
         QDMAB["CPM6-QDMA"]
     end
@@ -136,7 +138,7 @@ The Avery PCIe VIP drives link training/enumeration/TLP generation over the PIPE
 into CPM6's PCIe core; the Synopsys AMBA VIP stands in for the PS/PL AXI fabric (no real PS
 is present in this testbench) and connects to CPM6-QDMA's AXI-PL ports; ELBI, reset, and
 clock-generation agents provide the remaining sideband connections into CPM6 Secure IP. This
-CED ships a single test class, `test_qdma_h2c_c2h_mm_Mfnc_MQ.sv` (see
+CED ships the DMA test `test_qdma_h2c_c2h_mm_Mfnc_MQ.sv` and a register-access test (see
 [Available Tests](#available-tests)), built on the generic `test_base`/`test_init`/`test_enum`/
 `base_ep_test` framework chain (`sim/tb/test/`).
 
@@ -145,7 +147,7 @@ CED ships a single test class, `test_qdma_h2c_c2h_mm_Mfnc_MQ.sv` (see
 | Block design cell | IP | Role |
 |---|---|---|
 | `cpm6_qdma_0` | CPM6 QDMA (`cpm6_qdma_v1_0`) | The QDMA engine itself -- queue contexts, descriptor fetch, writeback, MSI-X generation. |
-| `ps_wizard_0` | Processing System Wizard (CIPS) | Hosts the CPM6 hard-IP configuration (`CPM6_CONFIG`) for Controller 1 (PCIe Gen6 DMA-Bridge endpoint) plus PMC/PS configuration. Controller 0 is left disabled in this CED. |
+| `ps_wizard_0` | Processing System Wizard (CIPS) | Hosts the CPM6 hard-IP configuration (`CPM6_CONFIG`) for Controller 1 (PCIe Gen6 DMA-Bridge endpoint) plus PMC/PS configuration. |
 | `axi_noc2_0` | AXI NoC | Routes `DMA_APERTURE2` (`PCIE_AXI_NOC0` destination) -- descriptor (DSC) memory access, not a BRAM data path. `PSW_NOC_*` monitor traffic on this path is descriptor traffic, not H2C/C2H data movement. |
 | `smartconnect_0` | SmartConnect | AXI interconnect feeding the NoC-routed aperture path. |
 | `axi_bram_ctrl_0` / `_1` | AXI BRAM Controller (v4.1) | Single-port AXI-to-BRAM bridge behind `CPM_AXI_PL0`/`PL1` respectively -- the two real DMA data-path apertures. |
@@ -270,12 +272,13 @@ The QDMA core's `dsc_ram_base_addr` (`0x201_0000_0000`) must match this aperture
    ```
 3. Via the GUI: File -> Project -> New (or IP Catalog -> Example Designs) and select "Versal CPM6 QDMA Design", then set the options on the **CPM6 QDMA Configuration** page -- see [Choosing a Configuration](#choosing-a-configuration).
 
-   Alternately, users can use command line options in the Vivado Tcl console -- substitute the desired `CTRL_LANE_RATE`:
+   Alternately, users can use command line options in the Vivado Tcl console -- substitute the desired `DMA_MODE`, `CTRL_LANE_RATE` and `CTRL_LINK_WIDTH`:
    ```
    create_project <project_name> <output_dir>/<project_name> -part xc2vp3602-vsvc3340-2MHP-e-S
    create_bd_design "cpm6_qdma" -mode batch
    instantiate_example_design -template xilinx.com:design:cpm6_qdma:1.0 \
-       -design cpm6_qdma -options { CTRL_CONFIG.VALUE Controller_1 CTRL_LANE_RATE.VALUE 64.0_GT/s }
+       -design cpm6_qdma -options { CTRL_CONFIG.VALUE Controller_1 DMA_MODE.VALUE Memory_Mapped \
+       CTRL_LANE_RATE.VALUE 64.0_GT/s CTRL_LINK_WIDTH.VALUE X2 }
    ```
 4. This single step also generates the VCS simulation scripts and copies the `sim/` directory alongside the Vivado project -- no separate `launch_simulation` step is needed.
 
@@ -297,9 +300,11 @@ Simulation completes with `UVM_ERROR : 0` and `UVM_FATAL : 0` in the report summ
 
 #### Available Tests
 
-This CED ships a single test class, `test_qdma_h2c_c2h_mm_Mfnc_MQ` -- multi-queue, H2C+C2H MM DMA across PF and/or VF functions. It is configured entirely via plusargs (`NUM_PF_TEST`/`NUM_VF_TEST`/`NUM_Q_TEST`/`PIDX`/`DMA_BYTE_CNT`/`IRQ_EN`/`DIRECTION`/`NUM_DMA_PORTS`) -- see the header of `test_qdma_h2c_c2h_mm_Mfnc_MQ.sv` for the full list. With no plusargs the test randomizes within a bounded range so a default run stays short; explicit plusargs override that range.
+`test_qdma_h2c_c2h_mm_Mfnc_MQ` -- multi-queue, H2C+C2H MM DMA across PF and/or VF functions. It is configured entirely via plusargs (`NUM_PF_TEST`/`NUM_VF_TEST`/`NUM_Q_TEST`/`PIDX`/`DMA_BYTE_CNT`/`IRQ_EN`/`DIRECTION`/`NUM_DMA_PORTS`) -- see the header of `test_qdma_h2c_c2h_mm_Mfnc_MQ.sv` for the full list. With no plusargs the test randomizes within a bounded range so a default run stays short; explicit plusargs override that range.
 
 `make smoke` runs this test with the default configuration.
+
+`test_qdma_mem_tlps` -- writes five data patterns to the QDMA global scratch register (PF0 BAR1 + 0x244) with PCIe memory-write TLPs, reads each back with a memory-read TLP and compares. No DMA is run. Run it with `make s TEST=test_qdma_mem_tlps`.
 
 ### Running the Example in Hardware
 
@@ -309,9 +314,55 @@ https://xilinx.github.io/dma_ip_drivers/
 
 The programming model the driver implements is the same one this CED's UVM test exercises in simulation -- queue context setup, descriptor ring population, PIDX doorbell, then CIDX writeback or MSI-X for completion.
 
+For the Streaming design, C2H data comes from the C2H generator; see [Running the Streaming Design in Hardware](#running-the-streaming-design-in-hardware).
+
+## Streaming Design
+
+With `DMA_MODE` set to `Streaming`, the CED builds `ctrl1_st/`. The QDMA IP core runs its H2C and C2H stream interfaces:
+
+- **H2C**: stream data from the host is received by H2C sinks in the PL.
+- **C2H**: a C2H generator (`c2h_source_cfg.sv`, `c2h_source.sv`) produces packets on request. Software posts C2H descriptors on the queue, then programs the generator, which sends the packets and their completions.
+
+![Versal CPM6 QDMA streaming block diagram](cpm6_qdma_g6x2_st.png)
+
+The generator registers are in PF BAR2, offset 0 (BAR2 -> MMIO aperture 3 -> `CPM_AXI_PL3`). Port 0 uses the qdma_v5.1 example design's register offsets:
+
+| Offset | Register | Use |
+|---|---|---|
+| `0x00` | QID | Absolute queue ID of the next burst |
+| `0x04` | LEN | Packet length in bytes (non-zero multiple of 64) |
+| `0x08` | CONTROL | Write `0x2` (bit 1) to START a burst |
+| `0x20` | NUM_PKT | Packets per burst |
+| `0x100` | EXT_CONTROL | Read: bit 0 BUSY, bit 1 STOPPED; write bit 0 to STOP |
+| `0x1C0` | ID | Reads `0x43324843` |
+
+The full map, including ports 1-3, is in the header of `c2h_source_cfg.sv`.
+
+To simulate it, generate the project with `DMA_MODE.VALUE Streaming`; `<project_name>/sim/README.txt` describes the streaming presets (`CONFIG=st_pfch_both_pidx7`, `CONFIG=st_pfch_both_8k_1q`) and the expected `DRV_SEQ SUMMARY` result.
+
+### Running the Streaming Design in Hardware
+
+Load the QDMA driver, add a stream queue in both directions and start it, then program the generator through the PF's BAR2. The PF programs the generator for its own queues and for VF queues; QID is the absolute queue ID.
+
+```
+dma-ctl qdma01000 q add idx 0 mode st dir bi
+dma-ctl qdma01000 q start idx 0 dir h2c
+dma-ctl qdma01000 q start idx 0 dir c2h
+
+# H2C: 7 packets of 512 B to the H2C sink
+dma-to-device -d /dev/qdma01000-ST-0 -s 512 -c 7
+
+# C2H: 7 packets of 512 B from the generator
+dma-ctl qdma01000 reg write bar 2 0x00 <qid>
+dma-ctl qdma01000 reg write bar 2 0x04 512
+dma-ctl qdma01000 reg write bar 2 0x20 7
+dma-ctl qdma01000 reg write bar 2 0x08 0x2
+dma-from-device -d /dev/qdma01000-ST-0 -s 512 -c 7 -f c2h.bin
+```
+
 ## Performance Considerations
 
-- **Link bandwidth**: default configuration is PCIe Gen6 X2 (`64.0_GT/s` x 2 lanes) -- the theoretical maximum raw link bandwidth for this CED's default settings; lower lane rates (`16.0`/`32.0_GT/s`) are selectable via the CED GUI; link width is fixed at `X2` for this CED.
+- **Link bandwidth**: default configuration is PCIe Gen6 X2 (`64.0_GT/s` x 2 lanes) -- the theoretical maximum raw link bandwidth for this CED's default settings; lower lane rates (`16.0`/`32.0_GT/s`) and link width `X8` are selectable via the CED GUI.
 - **Aperture window size caps single-transfer addressability**: `CPM_AXI_PL0`/`PL1` apertures each decode only a 64 KB window (`0x0-0xFFFF`); transfers must stay within that decoded window, not any larger BAR/address space.
 - **MSI-X vector sharing under SR-IOV**: 8 MSI-X vectors are available per function; SR-IOV enables 8 VFs behind the 1 PF. INTERRUPT mode is not supported with VFs, so multi-VF runs rely on the always-active writeback CIDX update plus host-side POLL, not per-queue MSI-X, for completion detection.
 - The bounds above are structural limits derived from the link and aperture configuration, not measured throughput.
