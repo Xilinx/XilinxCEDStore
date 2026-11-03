@@ -50,9 +50,6 @@ class seq_cxl_cachemem_reqrwd_avery_rand extends seq_cxl_base;
           m.u.m2s_req.metaValue   = `THISHEADER.metavalue;
           m.u.m2s_req.snpType     = `THISHEADER.snptype;
           m.u.m2s_req.valid       = `THISHEADER.val;
-          // memop and opcode enumeration encodings are the same. Reference:
-          // AMD CXL Enumeration: uvma-agents/cxl_nfi_agent/pkg.cxl31_tl_pkg.sv (only supports CXL 3.1)
-          // Avery CXL Enumeration: /tools/installs/avery/apciexactor/2025.1_cxl/src/acxl_enum.svh (definitions up through 3.2)
           m.u.m2s_req.opcode      = `THISHEADER.memop;
         end
         /*******************************/
@@ -78,9 +75,6 @@ class seq_cxl_cachemem_reqrwd_avery_rand extends seq_cxl_base;
           m.u.m2s_reqdata.snpType   = `THISHEADER.snptype;
           m.u.m2s_reqdata.poison    = `THISHEADER.poi;
           m.u.m2s_reqdata.valid     = `THISHEADER.val;
-          // memop and opcode enumeration encodings are the same. Reference:
-          // AMD CXL Enumeration: uvma-agents/cxl_nfi_agent/pkg.cxl31_tl_pkg.sv
-          // Avery CXL Enumeration: /tools/installs/avery/apciexactor/2025.1_cxl/src/acxl_enum.svh
           m.u.m2s_reqdata.opcode    = `THISHEADER.memop;
           // Load the data payload
           m.be          = m2srwd.be;

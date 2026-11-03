@@ -8,7 +8,7 @@ interface elbi_if;
   wire         clk;
 
   wire         ext_lbc_override_en; //not used
-  wire  [ 7:0] ext_lbc_ack;         //not used per SNPS behavior (any valid = good)
+  wire  [ 7:0] ext_lbc_ack;         
   wire  [63:0] ext_lbc_din;
   wire  [31:0] lbc_ext_addr;
   wire  [63:0] lbc_ext_dout;

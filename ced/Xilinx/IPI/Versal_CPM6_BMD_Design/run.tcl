@@ -24,10 +24,12 @@ proc createDesign {design_name options} {
   set lane_rate   [get_opt $options CTRL_LANE_RATE "64.0_GT/s"]
   set link_width  [get_opt $options CTRL_LINK_WIDTH "X4"]
   set link_width_int [string index $link_width end]
+  set ddr_enabled [get_opt $options DDR_EN "false"]
 
   puts "INFO: Controller Config = $ctrl_config"
   puts "INFO: PCIe Lane Rate    = $lane_rate"
   puts "INFO: PCIe Link Width   = $link_width"
+  puts "INFO: DDR Enabled         = $ddr_enabled"
 
   # ----------------------------------------------------------------
   # Set sub-design directory and top module based on controller config
@@ -76,11 +78,19 @@ proc createDesign {design_name options} {
   }
   set_property -name "top" -value $g_top -objects $src_fileset
 
+  # DDR: the RTL top passes the LPDDR5 / sys_clk ports through only when DDR_EN is defined
+  if { [string is true -strict $ddr_enabled] } {
+    set_property verilog_define {DDR_EN} $src_fileset
+    puts "INFO: verilog_define DDR_EN set on sources_1"
+    # the DDR pin constraints (LPDDR5 + sys_clk0) are added by platform/run.tcl when it creates the DDR
+  }
+
   # Create sim_1 fileset
   if {[string equal [get_filesets -quiet sim_1] ""]} {
     create_fileset -simset sim_1
   }
   set obj_sim_fileset [get_filesets sim_1]
+  if { [string is true -strict $ddr_enabled] } { set_property verilog_define {DDR_EN} $obj_sim_fileset }
 
   ##################################################################
   # DESIGN PROCs — source the correct BD TCL
