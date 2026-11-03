@@ -37,9 +37,7 @@ SEED  ?= 439119098
 SEED_ARG := $(if $(SEED),+ntb_random_seed=$(SEED),+ntb_random_seed_automatic)
 ## PARG_EXTRA -- free-form additional plusargs appended after the fixed PARG
 ## list (see test_qdma_h2c_c2h_mm_Mfnc_MQ.sv for the full plusarg list this
-## test honors). Default below is the 1PF+8VF/PIDX=7 config used for the
-## WB-drain-fix validation arc -- override with PARG_EXTRA="..." for a
-## different config.
+## test honors). Override with PARG_EXTRA="..." for a different config.
 PARG_EXTRA ?= +NUM_PF_TEST=1 +NUM_VF_TEST=8 +NUM_Q_TEST=1 +PIDX=7 +DMA_BYTE_CNT=512 +DIRECTION=BOTH
 ## DUMP_START_TIME -- delay FSDB dump start past CDO load (completes ~313-314us)
 ## so the waveform isn't dominated by the CDO-load phase, which isn't useful for
@@ -115,33 +113,42 @@ ifneq ($(PMCPS_V),)
   PL0_CLK := $(shell grep -o "PL0_REF_CLK.*FREQ_HZ [0-9]*" "$(PMCPS_V)" 2>/dev/null | \
               awk '{print $$3}' | sed 's/[0-9]\{6\}$$/.\0/' | head -1)
 # +PL0_CLK is consumed by tb/bind.ps_vip.sv as MHz (ps_vip_api.pl_gen_clock's
-# freq_mhz arg), so the FREQ_HZ value must shift 6 digits (Hz->MHz), not 3
-# (Hz->kHz). The 3-digit form previously here produced a value 1000x too
-# high (e.g. 249997.498 "MHz" instead of 249.997498 MHz).
+# freq_mhz arg), so the FREQ_HZ value must shift 6 digits (Hz->MHz).
+endif
+
+## ----------------------------------------------------------------------------
+## Vivado build
+## ----------------------------------------------------------------------------
+# Vivado names the generated cpm6_qdma modules after the IP revision it ships
+# (cpm6_qdma_v1_0_<rev>_top_wrapper), and the boundary-probe bind targets that
+# module. Set VIVADO_BUILD to the Vivado release the design is generated with.
+VIVADO_BUILD ?= 2026.1.1
+CPM6_QDMA_REV_2026.1.1 := 0
+CPM6_QDMA_REV_2026.2   := 1
+CPM6_QDMA_REV := $(CPM6_QDMA_REV_$(VIVADO_BUILD))
+ifeq ($(CPM6_QDMA_REV),)
+  $(error VIVADO_BUILD=$(VIVADO_BUILD) has no cpm6_qdma revision; add a CPM6_QDMA_REV_$(VIVADO_BUILD) entry)
 endif
 
 ## ----------------------------------------------------------------------------
 ## Compilation defines
 ## ----------------------------------------------------------------------------
-# VF_OFFSET_OVERRIDE=4: this IP build's generated VFGX_FIRST_VF_OFFSET is 4
-# (see qdma_ced_test.gen/.../msix_params.vh), not NUM_PFS. Without this,
-# cpm6_qdma_params_pkg.sv's VF_OFFSET defaults to NUM_PFS and any VF-aware
-# test resolves fnc->pfn/vfn against the wrong function numbers.
+# VF_OFFSET_OVERRIDE=4: the block design's VFG0_FIRST_VF_OFFSET is 4, not
+# NUM_PF. Without this, cpm6_qdma_params_pkg's VF_OFFSET defaults to NUM_PF
+# and any VF-aware test resolves fnc->pfn/vfn against the wrong function numbers.
 CDEF := +define+CPM6_VIVADO         \
         +define+PCIE_LINK_PIPE       \
-        +define+CPM6_DECRYPTED_SIP   \
         +define+APCI_MAX_DATA_WIDTH=8 \
         +define+VCS_SIM               \
         +define+VF_OFFSET_OVERRIDE=4
 
+CDEF += +define+CPM6_QDMA_TOP_WRAPPER=cpm6_qdma_v1_0_$(CPM6_QDMA_REV)_top_wrapper
+
 ## ----------------------------------------------------------------------------
 ## Simulation plusargs
 ## ----------------------------------------------------------------------------
-# NOTE: this is a CTRL1-only CED (see ../../init.tcl) -- CTRLR0 stays
-# disabled and LINK0_WIDTH=0 in the opt step below. Inherited backwards
-# (CTRLR0 enabled, CTRLR1 disabled) from the ctrl0 Makefile this was ported
-# from; fixed 2026-08-11 alongside sim/verif/dut_inst.sv, which guards on
-# tb_top.LINK1_WIDTH != 0 and would never instantiate the DUT with the old values.
+# Controller 1 only: CTRLR0 is disabled and LINK0_WIDTH=0 in the opt step
+# below; sim/verif/dut_inst.sv instantiates the DUT only when LINK1_WIDTH != 0.
 PARG  := +CTRLR0_EN=0
 PARG  += +CTRLR1_EN=1
 PARG  += +CTRLR0_SPEED=$(CTRL_SPEED)
@@ -173,9 +180,9 @@ h help:
 	@echo "======================================================="
 	@echo ""
 	@echo " Prerequisites:"
-	@echo "   1. Load VCS module       : module switch vcs/X-2025.06-SP2"
-	@echo "   2. Load Avery module     : module load averyvip/2025.3_1"
-	@echo "                              (sets AVERY_PLI, AVERY_PCIE, AVERY_SIM)"
+	@echo "   1. Set up VCS            : X-2025.06-SP2 (VCS_HOME)"
+	@echo "   2. Set up Avery PCIe VIP : 2025.3_1"
+	@echo "                              (AVERY_PLI, AVERY_PCIE, AVERY_SIM)"
 	@echo "   3. Set CPM6 Secure IP   : setenv CPM6_SECUREIP <path>"
 	@echo "                              (download separately, see README)"
 	@echo "   4. Create project from CED in Vivado"
@@ -280,13 +287,6 @@ c compile: _check_env _check_vivado
 	fi
 	@echo ""
 	@echo "=== COMPILE STEP 3/3: Top-level Testbench ==="
-	# to-do item for future consideration: the explicit ordering below
-	# (pcie_str_pkg.sv / pcie_intf_pkg.sv / bmd_mem_pkg.sv) is carried over
-	# from BMD's package compile-order dependencies. None of these three
-	# files exist in a QDMA design; keep this ordering hook only if QDMA's
-	# own top-level src/ (once authored) has an analogous ordering-sensitive
-	# package, updating the filenames accordingly -- otherwise this can
-	# collapse to the single glob below.
 	$(eval PROJ_PKGS := \
 	    $(shell find $(PROJ_ROOT) -path "*/imports/src/*_pkg.sv" 2>/dev/null | sort))
 	SYNOPSYS_SIM_SETUP=$(SIM_SETUP) \
@@ -321,8 +321,8 @@ _gen_sim_setup:
 ## OPTIMIZE
 ## ---------------------------------------------------------------------------
 # Do not add $(KDB_FLAG) (-kdb) to this link/elaboration step. -kdb requires
-# every linked library -- including the central SWIP-shipped Xilinx/VHDL
-# precompiled libraries this project's OTHERS= chain resolves against (e.g.
+# every linked library -- including the Xilinx/VHDL precompiled
+# libraries this project's OTHERS= chain resolves against (e.g.
 # VCOMPONENTS) -- to also be -kdb-compiled; they are not, and -kdb here
 # fails elaboration with Error-[ANA-KDB-ICS] Incompatible VHDL database
 # Found ('VCOMPONENTS' design unit isn't generated with -kdb). $(DBG_FLAG)
@@ -367,10 +367,7 @@ s sim: _check_env _check_simv _check_setup
 	        echo '# reach real hierarchy.' >> uclirun.do; \
 	        echo 'fsdbDumpvars 9 tb_top +all +mda +packedmda +struct' >> uclirun.do; \
 	        echo '# cpm6_qdma_0 is a SIBLING BD cell of ps_wizard_0 (not nested under it) --' >> uclirun.do; \
-	        echo '# depth 9 from tb_top only reaches cpm6_qdma_0/inst, one level above any' >> uclirun.do; \
-	        echo '# real QDMA IP RTL (arbitration, descriptor fetch, channel management,' >> uclirun.do; \
-	        echo '# credit counters). Full depth here is required for any QDMA-internal' >> uclirun.do; \
-	        echo '# debug -- a depth-9 waveform contains none of that hierarchy.' >> uclirun.do; \
+	        echo '# depth 9 from tb_top only reaches cpm6_qdma_0/inst.' >> uclirun.do; \
 	        echo '# fsdbDumpvars syntax is [depth] [instance] [options] -- depth must be a' >> uclirun.do; \
 	        echo '# number, not "+all" -- a bare "+all" silently parses as depth 0 (no' >> uclirun.do; \
 	        echo '# descendants) and reports no error.' >> uclirun.do; \
@@ -452,13 +449,13 @@ distclean: fullclean
 ## ---------------------------------------------------------------------------
 _check_env:
 	@if [ -z "$(AVERY_PLI)" ]; then \
-	    echo ""; echo "ERROR: AVERY_PLI not set. Load Avery module (averyvip/2025.3_1)."; echo ""; exit 1; fi
+	    echo ""; echo "ERROR: AVERY_PLI not set. Set up the Avery PCIe VIP (see README.txt)."; echo ""; exit 1; fi
 	@if [ -z "$(AVERY_PCIE)" ]; then \
-	    echo ""; echo "ERROR: AVERY_PCIE not set. Load Avery module (averyvip/2025.3_1)."; echo ""; exit 1; fi
+	    echo ""; echo "ERROR: AVERY_PCIE not set. Set up the Avery PCIe VIP (see README.txt)."; echo ""; exit 1; fi
 	@if [ -z "$(AVERY_SIM)" ]; then \
-	    echo ""; echo "ERROR: AVERY_SIM not set. Load Avery module (averyvip/2025.3_1)."; echo ""; exit 1; fi
+	    echo ""; echo "ERROR: AVERY_SIM not set. Set up the Avery PCIe VIP (see README.txt)."; echo ""; exit 1; fi
 	@if [ -z "$(VCS_HOME)" ]; then \
-	    echo ""; echo "ERROR: VCS_HOME not set. Load VCS module."; echo ""; exit 1; fi
+	    echo ""; echo "ERROR: VCS_HOME not set. Set up VCS (see README.txt)."; echo ""; exit 1; fi
 	@if [ -z "$(CPM6_SECUREIP)" ]; then \
 	    echo ""; echo "ERROR: CPM6_SECUREIP not set."; \
 	    echo "       Download CPM6 Secure IP and set: setenv CPM6_SECUREIP <path>"; echo ""; exit 1; fi

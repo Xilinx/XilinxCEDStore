@@ -69,13 +69,13 @@ class shim_layer extends uvm_component;
       `uvm_info("SHIM", $sformatf("Assigned vif_vip[1] to VIP with %0d lanes to port 1", vif_vip[1].size()), UVM_MEDIUM)
     end
     else if (link_width[0] > 0) begin
-      // pass vif to vip (only one controller for now)
+      // pass vif to vip (only one controller)
       vip.configure(APCI_DEVICE_rc, 1); // max 1 port
       vip.assign_vi(0, vif_vip[0]);
       `uvm_info("SHIM", $sformatf("Assigned vif_vip[0] to VIP with %0d lanes to port 0", vif_vip[0].size()), UVM_MEDIUM)
     end
     else if (link_width[1] > 0) begin
-      // pass vif to vip (only one controller for now)
+      // pass vif to vip (only one controller)
       vip.configure(APCI_DEVICE_rc, 1); // max 1 port
       vip.assign_vi(0, vif_vip[1]);
       `uvm_info("SHIM", $sformatf("Assigned vif_vip[1] to VIP with %0d lanes to port 0", vif_vip[1].size()), UVM_MEDIUM)

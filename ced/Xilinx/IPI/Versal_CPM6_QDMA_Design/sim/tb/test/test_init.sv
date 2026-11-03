@@ -1,4 +1,4 @@
-/* DESCRIPTION
+/* DESCRIPTION 
  * This class exists to deassert resets and load the CPM6 CDO, after which 
  * useful work should be performed. This is a sort of smoke-test for a 
  * basic simulation to work.

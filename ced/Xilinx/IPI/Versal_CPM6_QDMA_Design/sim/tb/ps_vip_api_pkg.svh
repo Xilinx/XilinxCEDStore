@@ -61,5 +61,5 @@ package ps_vip_api_pkg;
     PS_CPM_CFG //different
   } ps_route_mst_e;
 
-endpackage;
+endpackage
 

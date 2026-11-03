@@ -228,7 +228,6 @@ class tb_env extends uvm_env;
         cxl_nfi_cfg_tx[ii].uid                 = $sformatf("CXL Tx[%0d]",ii);
         cxl_nfi_cfg_tx[ii].component           = UVM_MASTER;
         cxl_nfi_cfg_tx[ii].activity            = cfg.cxl_nfi_agnt_tx[ii]==ACTIVE_AGNT ? UVM_ACTIVE : UVM_PASSIVE;
-        cxl_nfi_cfg_tx[ii].dir                 = C2H;
         cxl_nfi_cfg_tx[ii].right_align         = 1'b1;
         cxl_nfi_cfg_tx[ii].nfi_width           = 3;
         cxl_nfi_cfg_tx[ii].addl_txn_info.push_back("Sends toward link");
@@ -241,7 +240,6 @@ class tb_env extends uvm_env;
         cxl_nfi_cfg_rx[ii].uid             = $sformatf("CXL Rx[%0d]",ii);
         cxl_nfi_cfg_rx[ii].component       = UVM_SLAVE;
         cxl_nfi_cfg_rx[ii].activity        = UVM_PASSIVE;
-        cxl_nfi_cfg_rx[ii].dir             = H2C;
         cxl_nfi_cfg_rx[ii].right_align     = 1'b1;
         cxl_nfi_cfg_rx[ii].nfi_width       = 3;
         cxl_nfi_cfg_rx[ii].addl_txn_info.push_back("Receives from link");
@@ -249,8 +247,8 @@ class tb_env extends uvm_env;
       // --- //
       if (cfg.elbi_agnt[ii] != UNUSED_AGNT) begin
         pl_elbi_cfg[ii] = elbi_cfg::type_id::create($sformatf("pl_elbi_cfg[%0d]", ii));
-        pl_elbi_cfg[ii].activity   = cfg.elbi_agnt[ii]==ACTIVE_AGNT ? UVM_ACTIVE : UVM_PASSIVE;
         pl_elbi_cfg[ii].component  = UVM_SLAVE;
+        pl_elbi_cfg[ii].activity   = cfg.elbi_agnt[ii]==ACTIVE_AGNT ? UVM_ACTIVE : UVM_PASSIVE;
         pl_elbi_cfg[ii].uid        = $sformatf("ELBI[%0d]",ii);
       end
     end
@@ -273,8 +271,8 @@ class tb_env extends uvm_env;
     axi_cfg.master_cfg[M_AXIMM_PS_CFG].axi_interface_type = svt_axi_port_configuration::AXI4;
     axi_cfg.master_cfg[M_AXIMM_PS_CFG].initialize_output_signals_at_start = 1; //0 at t=0, not z
     axi_cfg.master_cfg[M_AXIMM_PS_CFG].is_active   = cfg.axi_mst_agnt[M_AXIMM_PS_CFG]==ACTIVE_AGNT;
-    axi_cfg.master_cfg[M_AXIMM_PS_CFG].aruser_enable    = 1;    //added for PS_NoC                                                                                                                                
-    axi_cfg.master_cfg[M_AXIMM_PS_CFG].awuser_enable    = 1;    //added for PS_NoC
+    axi_cfg.master_cfg[M_AXIMM_PS_CFG].aruser_enable    = 1;
+    axi_cfg.master_cfg[M_AXIMM_PS_CFG].awuser_enable    = 1;
     axi_cfg.master_cfg[M_AXIMM_PS_CFG].data_width  = 32;
     axi_cfg.master_cfg[M_AXIMM_PS_CFG].silent_mode = 1; //0->TxnInfo=UVM_LOW, 1->TxnInfo=UVM_HIGH
     //   - Master 1
@@ -337,9 +335,9 @@ class tb_env extends uvm_env;
     axi_cfg.slave_cfg[S_AXIMM_PS0_128].silent_mode = 1; //0->TxnInfo=UVM_LOW, 1->TxnInfo=UVM_HIGH
     //     -> Create a memory associated with the slave, configure it, pass the handle down to slv agent
     vip_axi_slv_mem[S_AXIMM_PS0_128] = new(.name("PS0_128"),
-                                           .suite_name(""), //?
+                                           .suite_name(""),
                                            .data_wdth(axi_cfg.slave_cfg[S_AXIMM_PS0_128].data_width),
-                                           .addr_region(0), //?
+                                           .addr_region(0),
                                            .min_addr('0), 
                                            .max_addr('1));
     uvm_config_db#(svt_mem)::set(this, $sformatf("axi_env.slave[%0d]",S_AXIMM_PS0_128), 
@@ -354,9 +352,9 @@ class tb_env extends uvm_env;
     axi_cfg.slave_cfg[S_AXIMM_PS1_128].silent_mode = 1; //0->TxnInfo=UVM_LOW, 1->TxnInfo=UVM_HIGH
     //     -> Create a memory associated with the slave, configure it, pass the handle down to slv agent
     vip_axi_slv_mem[S_AXIMM_PS1_128] = new(.name("PS1_128"),
-                                           .suite_name(""), //?
+                                           .suite_name(""),
                                            .data_wdth(axi_cfg.slave_cfg[S_AXIMM_PS1_128].data_width),
-                                           .addr_region(0), //?
+                                           .addr_region(0),
                                            .min_addr('0), 
                                            .max_addr('1));
     uvm_config_db#(svt_mem)::set(this, $sformatf("axi_env.slave[%0d]",S_AXIMM_PS1_128), 
@@ -371,9 +369,9 @@ class tb_env extends uvm_env;
     axi_cfg.slave_cfg[S_AXIMM_PL0_512].silent_mode = 1; //0->TxnInfo=UVM_LOW, 1->TxnInfo=UVM_HIGH
     //     -> Create a memory associated with the slave, configure it, pass the handle down to slv agent
     vip_axi_slv_mem[S_AXIMM_PL0_512] = new(.name("PL0_512"),
-                                           .suite_name(""), //?
+                                           .suite_name(""),
                                            .data_wdth(axi_cfg.slave_cfg[S_AXIMM_PL0_512].data_width),
-                                           .addr_region(0), //?
+                                           .addr_region(0),
                                            .min_addr('0), 
                                            .max_addr('1));
     uvm_config_db#(svt_mem)::set(this, $sformatf("axi_env.slave[%0d]",S_AXIMM_PL0_512), 
@@ -388,9 +386,9 @@ class tb_env extends uvm_env;
     axi_cfg.slave_cfg[S_AXIMM_PL1_512].silent_mode = 1; //0->TxnInfo=UVM_LOW, 1->TxnInfo=UVM_HIGH
     //     -> Create a memory associated with the slave, configure it, pass the handle down to slv agent
     vip_axi_slv_mem[S_AXIMM_PL1_512] = new(.name("PL1_512"),
-                                           .suite_name(""), //?
+                                           .suite_name(""),
                                            .data_wdth(axi_cfg.slave_cfg[S_AXIMM_PL1_512].data_width),
-                                           .addr_region(0), //?
+                                           .addr_region(0),
                                            .min_addr('0), 
                                            .max_addr('1));
     uvm_config_db#(svt_mem)::set(this, $sformatf("axi_env.slave[%0d]",S_AXIMM_PL1_512), 
@@ -405,9 +403,9 @@ class tb_env extends uvm_env;
     axi_cfg.slave_cfg[S_AXIMM_PL2_512].silent_mode = 1; //0->TxnInfo=UVM_LOW, 1->TxnInfo=UVM_HIGH
     //     -> Create a memory associated with the slave, configure it, pass the handle down to slv agent
     vip_axi_slv_mem[S_AXIMM_PL2_512] = new(.name("PL2_512"),
-                                           .suite_name(""), //?
+                                           .suite_name(""),
                                            .data_wdth(axi_cfg.slave_cfg[S_AXIMM_PL2_512].data_width),
-                                           .addr_region(0), //?
+                                           .addr_region(0),
                                            .min_addr('0), 
                                            .max_addr('1));
     uvm_config_db#(svt_mem)::set(this, $sformatf("axi_env.slave[%0d]",S_AXIMM_PL2_512), 
@@ -422,9 +420,9 @@ class tb_env extends uvm_env;
     axi_cfg.slave_cfg[S_AXIMM_PL3_512].silent_mode = 1; //0->TxnInfo=UVM_LOW, 1->TxnInfo=UVM_HIGH
     //     -> Create a memory associated with the slave, configure it, pass the handle down to slv agent
     vip_axi_slv_mem[S_AXIMM_PL3_512] = new(.name("PL3_512"),
-                                           .suite_name(""), //?
+                                           .suite_name(""),
                                            .data_wdth(axi_cfg.slave_cfg[S_AXIMM_PL3_512].data_width),
-                                           .addr_region(0), //?
+                                           .addr_region(0),
                                            .min_addr('0), 
                                            .max_addr('1));
     uvm_config_db#(svt_mem)::set(this, $sformatf("axi_env.slave[%0d]",S_AXIMM_PL3_512), 
@@ -467,7 +465,7 @@ class tb_env extends uvm_env;
     for (int ii=0; ii<4; ii++) begin
       if (cfg.cpm_pl_axi_agnt[ii] != UNUSED_AGNT) begin
         cpm_pl_axi_agnt[ii] = aximon_agent_creator#()::spawn($sformatf("cpm_pl_axi_agnt[%0d]",ii), this, vif_cpm_pl_axi[ii]);
-
+        cpm_pl_axi_agnt[ii].cfg.uid          = $sformatf("PL AXI %0d",ii);
         cpm_pl_axi_agnt[ii].cfg.addr_width   = 51;
         cpm_pl_axi_agnt[ii].cfg.data_width   = 512;
         cpm_pl_axi_agnt[ii].cfg.id_width     = 10;
@@ -481,7 +479,7 @@ class tb_env extends uvm_env;
     for (int ii=0; ii<2; ii++) begin
       if(cfg.cpm_noc_axi_agnt[ii] != UNUSED_AGNT) begin
         cpm_noc_axi_agnt[ii] = aximon_agent_creator#()::spawn($sformatf("cpm_noc_axi_agnt[%0d]",ii), this, vif_cpm_noc_axi[ii]);
-
+        cpm_noc_axi_agnt[ii].cfg.uid          = $sformatf("NOC AXI %0d",ii);
         cpm_noc_axi_agnt[ii].cfg.addr_width   = 64;
         cpm_noc_axi_agnt[ii].cfg.data_width   = 128;
         cpm_noc_axi_agnt[ii].cfg.id_width     = 16;
@@ -513,6 +511,14 @@ class tb_env extends uvm_env;
         cxl_cfgsts_agnt[ii].cfg.print_value = 1'b0;
       end
       // --- //
+      if (cfg.cxl_pm_in_agnt[ii] != UNUSED_AGNT) begin
+        cxl_pm_in_agnt[ii] = gpdrv_agent_creator#()::spawn($sformatf("cxl_pm_in_agnt[%0d]",ii), 
+                                                            this,
+                                                            vif_cxl_pm_in[ii]);
+        cxl_pm_in_agnt[ii].cfg.width    = 34;
+        cxl_pm_in_agnt[ii].cfg.uid      = $sformatf("CXL PM In[%0d]",ii);
+        cxl_pm_in_agnt[ii].cfg.activity = cfg.cxl_pm_in_agnt[ii]==ACTIVE_AGNT ? UVM_ACTIVE : UVM_PASSIVE;
+      end
       if (cfg.cxl_pm_out_agnt[ii] != UNUSED_AGNT) begin
         if (cfg.cxl_pm_out_agnt[ii]==ACTIVE_AGNT)
           `uvm_warning(get_type_name(), $sformatf("cfg.cxl_pm_out_agnt[%0d] needn't be active because it has no driven signals to DUT",ii))
@@ -523,23 +529,14 @@ class tb_env extends uvm_env;
         cxl_pm_out_agnt[ii].cfg.uid = $sformatf("CXL PM Out[%0d]",ii);
       end
       // --- //
-      if (cfg.cxl_pm_in_agnt[ii] != UNUSED_AGNT) begin
-        cxl_pm_in_agnt[ii] = gpdrv_agent_creator#()::spawn($sformatf("cxl_pm_in_agnt[%0d]",ii),
-                                                            this,
-                                                            vif_cxl_pm_in[ii]);
-        cxl_pm_in_agnt[ii].cfg.width    = 34;
-        cxl_pm_in_agnt[ii].cfg.uid      = $sformatf("CXL PM In[%0d]",ii);
-        cxl_pm_in_agnt[ii].cfg.activity = cfg.cxl_pm_in_agnt[ii]==ACTIVE_AGNT ? UVM_ACTIVE : UVM_PASSIVE;
-      end
-      // --- //
       if (cfg.cxl_credit_agnt_tx[ii] != UNUSED_AGNT) begin
         cxl_credit_agnt_tx[ii] = cxl_credit_agent_creator::spawn($sformatf("cxl_credit_agnt_tx[%0d]",ii),
                                                                  this,
                                                                  vif_cxl_crd_tx[ii]);
         cxl_credit_agnt_tx[ii].cfg.uid                 = $sformatf("Tx Credit[%0d]",ii);
         cxl_credit_agnt_tx[ii].cfg.mst_use_credit_pool = 1'b1;
-        cxl_credit_agnt_tx[ii].cfg.activity            = cfg.cxl_credit_agnt_tx[ii]==ACTIVE_AGNT ? UVM_ACTIVE : UVM_PASSIVE;
         cxl_credit_agnt_tx[ii].cfg.component           = UVM_MASTER;
+        cxl_credit_agnt_tx[ii].cfg.activity            = cfg.cxl_credit_agnt_tx[ii]==ACTIVE_AGNT ? UVM_ACTIVE : UVM_PASSIVE;
         cxl_credit_agnt_tx[ii].cfg.addl_txn_info.push_back("Local credits available");
       end
       // --- //
@@ -595,7 +592,7 @@ class tb_env extends uvm_env;
       if (cfg.cxl_pm_in_agnt[ii] != UNUSED_AGNT)
         gpdrv_cb_cxl_pm_in[ii]  = cxl_pm_in_cb ::type_id::create($sformatf("gpdrv_cb_cxl_pm_in[%0d]",ii));
     end
-    if (isr_used)
+    if (isr_used)  
       gpmon_cb_isr = isr_cb::type_id::create("gpmon_cb_isr");
     // scoreboards
     base_printer = print_sb#()::type_id::create("base_printer", this);
@@ -622,11 +619,11 @@ class tb_env extends uvm_env;
     for (int ii=0; ii<2; ii++) begin
       // Add callbacks for GPMONs
       if (cfg.cxl_cfgsts_agnt[ii]!=UNUSED_AGNT)
-        uvm_callbacks#(gpmon_mon_t, cxl_cfgsts_cb)::add(cxl_cfgsts_agnt[ii].mon, gpmon_cb_cxl_cfgsts);
+        uvm_callbacks#(gpmon_mon_t, cxl_cfgsts_cb)::add(cxl_cfgsts_agnt[ii].mon, gpmon_cb_cxl_cfgsts); 
       if (cfg.cxl_pm_in_agnt[ii]!=UNUSED_AGNT)
-        uvm_callbacks#(gpdrv_mon_t, cxl_pm_in_cb) ::add(cxl_pm_in_agnt[ii].mon,  gpdrv_cb_cxl_pm_in[ii]);
+        uvm_callbacks#(gpdrv_mon_t, cxl_pm_in_cb) ::add(cxl_pm_in_agnt[ii].mon,  gpdrv_cb_cxl_pm_in[ii]); 
       if (cfg.cxl_pm_out_agnt[ii]!=UNUSED_AGNT)
-        uvm_callbacks#(gpmon_mon_t, cxl_pm_out_cb)::add(cxl_pm_out_agnt[ii].mon, gpmon_cb_cxl_pm_out[ii]);
+        uvm_callbacks#(gpmon_mon_t, cxl_pm_out_cb)::add(cxl_pm_out_agnt[ii].mon, gpmon_cb_cxl_pm_out[ii]); 
       if (&{cfg.cxl_nfi_agnt_tx[ii]!=UNUSED_AGNT, cfg.cxl_nfi_agnt_rx[ii]!=UNUSED_AGNT}) begin
         // CXL inter-master/slave port connections 
         //  - returned/available credits
@@ -649,7 +646,7 @@ class tb_env extends uvm_env;
         // Shim to give callbacks for external ELBI txns
         elbi_agnt[ii].reqext_ap.connect(impl_elbi);
       end
-      // Just print these txns for now; eventually will likely remove some/all these connections
+      // Print these txns
       if (cfg.cxl_nfi_agnt_rx[ii]!=UNUSED_AGNT)
         cxl_nfi_agnt_rx[ii]   .base_tl_ap.connect(base_printer.analysis_export);
       if (cfg.cxl_nfi_agnt_tx[ii]!=UNUSED_AGNT)
@@ -893,6 +890,18 @@ class tb_env extends uvm_env;
         end
         else
           `uvm_fatal(get_type_name, "Port type must be RP or EP")
+      end
+      if (this.cfg.cxl_nfi_agnt_tx[ii] != UNUSED_AGNT) begin
+        if (cfg.pcie_cfg[ii].pcie_cap.pcie_cap.dev_port_type == pcie_config::EP)
+          cxl_nfi_agnt_tx[ii].cfg.dir = C2H;
+        else
+          cxl_nfi_agnt_tx[ii].cfg.dir = H2C;
+      end
+      if (this.cfg.cxl_nfi_agnt_rx[ii] != UNUSED_AGNT) begin
+        if (cfg.pcie_cfg[ii].pcie_cap.pcie_cap.dev_port_type == pcie_config::EP)
+          cxl_nfi_agnt_rx[ii].cfg.dir = H2C;
+        else
+          cxl_nfi_agnt_rx[ii].cfg.dir = C2H;
       end
     end
   endfunction

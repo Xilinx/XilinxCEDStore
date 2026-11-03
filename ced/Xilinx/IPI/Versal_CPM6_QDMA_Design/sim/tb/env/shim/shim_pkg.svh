@@ -9,7 +9,7 @@ package shim_pkg;
   `include "uvm_macros.svh" 
   import uvm_pkg::*;
 
-  // SNPS VIP
+  // AXI verification IP packages
 `ifdef CPM6_RTL
   import svt_uvm_pkg::*; 
   import svt_axi_uvm_pkg::*; 

@@ -1,32 +1,23 @@
 // bind.qdma_boundary_probe.sv -- diagnostic-only bind covering the FULL
 // interface boundary of the cpm6_qdma IP core (module type
-// cpm6_qdma_v1_0_0_top_wrapper, the "cpm6_qdma_0" BD cell's actual type).
-//
-// This probe answers "which HDMA channel / which
-// cpm_axi_pl port does a queue's transfer actually use, and does the C2H
-// direction ever produce a DBI doorbell/context write at all".
-//
-// This probe is limited to the IP's port boundary and is a debug-only
-// addition, not a permanent monitor.
+// cpm6_qdma_v1_0_<rev>_top_wrapper, the "cpm6_qdma_0" BD cell's actual type;
+// the Makefile passes the module name as CPM6_QDMA_TOP_WRAPPER from VIVADO_BUILD).
 //
 // Self-contained plain $fdisplay-to-file bind (no UVM agent, no
-// uvm_config_db) -- a standard pattern for diagnostic-only probes.
-// $fdisplay executes at elaboration regardless of
-// -kdb/-debug_access, unlike FSDB waveform dumping, so this works today
-// without touching Vivado's generated compile.sh.
+// uvm_config_db).
 //
-// Following bind.pswizard.sv's established convention in this same
-// directory: every port below is declared "input wire" regardless of the
-// target module's actual port direction, relying on (.*) name-based
+// As in pswizard_agent/bind.pswizard.sv, every port below is declared
+// "input wire" regardless of the target module's actual port direction,
+// relying on (.*) name-based
 // connection resolution (IEEE 1800-2017 23.3.2) rather than preserving
 // exact directionality -- avoids depending on VCS XMRE wire merge across
 // library boundaries.
 //
-// Port list copied verbatim from the generated cpm6_qdma_v1_0_0_top_wrapper
+// Port list copied verbatim from the generated cpm6_qdma_v1_0_<rev>_top_wrapper
 // module. Parameter values below (DMA_ST=0, MSIX_EN=1, P_DSC_CRDT_EN=1) are
 // hardcoded LOCAL CONSTANTS, not read from the bound instance -- these match
-// this CED's BD IP configuration (msix_en=true, traf_man_intf=true; DMA_ST=0
-// since this CED ships only the MM-mode test suite, test_qdma_h2c_c2h_mm_Mfnc_MQ).
+// this CED's BD IP configuration (memory-mapped mode, msix_en=true,
+// traf_man_intf=true).
 // Re-verify these three if the BD's cpm6_qdma_0 IP configuration ever changes.
 
 `default_nettype wire
@@ -351,7 +342,7 @@ module qdma_boundary_probe (
     input  wire          axi_aresetn
 );
 
-  // Confirmed against this build's BD IP parameters -- see header comment.
+  // Match the BD IP configuration -- see header comment.
   localparam bit DMA_ST_LOCAL         = 1'b0;
   localparam bit MSIX_EN_LOCAL        = 1'b1;
   localparam bit P_DSC_CRDT_EN_LOCAL  = 1'b1;
@@ -371,10 +362,10 @@ module qdma_boundary_probe (
   initial begin
     log_fd = $fopen("qdma_boundary_probe.log", "w");
     $fdisplay(log_fd, "# qdma_boundary_probe -- full cpm6_qdma_0 IP interface boundary log");
-    $fdisplay(log_fd, "# DMA_ST=%0d MSIX_EN=%0d P_DSC_CRDT_EN=%0d (hardcoded, confirmed against BD IP params -- see file header)",
+    $fdisplay(log_fd, "# DMA_ST=%0d MSIX_EN=%0d P_DSC_CRDT_EN=%0d (hardcoded, see file header)",
               DMA_ST_LOCAL, MSIX_EN_LOCAL, P_DSC_CRDT_EN_LOCAL);
     if (!DMA_ST_LOCAL)
-      $fdisplay(log_fd, "# H2C/C2H streaming + completion ports (h2c_st_port*/c2h_st_port*/c2h_cmpt_port*) NOT logged -- DMA_ST=0, provably inactive (generate-gated in the IP)");
+      $fdisplay(log_fd, "# H2C/C2H streaming + completion ports (h2c_st_port*/c2h_st_port*/c2h_cmpt_port*) NOT logged -- DMA_ST=0");
     $fdisplay(log_fd, "#");
   end
 
@@ -462,8 +453,7 @@ module qdma_boundary_probe (
   final begin
     $fdisplay(log_fd, "#");
     $fdisplay(log_fd, "# ===== END-OF-TEST TRANSACTION-COUNT SUMMARY =====");
-    $fdisplay(log_fd, "# (answers \"was this interface ever exercised\" directly from observed data,");
-    $fdisplay(log_fd, "#  not from the rfs header comments, which are confirmed unreliable for cpm_axi_pl0-3)");
+    $fdisplay(log_fd, "# (answers \"was this interface ever exercised\" directly from observed data)");
     $fdisplay(log_fd, "# s_axi_mem : AW=%0d W=%0d B=%0d AR=%0d R=%0d", cnt_mem_aw, cnt_mem_w, cnt_mem_b, cnt_mem_ar, cnt_mem_r);
     $fdisplay(log_fd, "# m_axil_dbi: AW=%0d W=%0d AR=%0d", cnt_dbi_aw, cnt_dbi_w, cnt_dbi_ar);
     $fdisplay(log_fd, "# cpm_axi_pl0: AW=%0d W=%0d B=%0d AR=%0d R=%0d", cnt_pl0_aw, cnt_pl0_w, cnt_pl0_b, cnt_pl0_ar, cnt_pl0_r);
@@ -477,4 +467,4 @@ module qdma_boundary_probe (
 endmodule : qdma_boundary_probe
 `default_nettype none
 
-bind cpm6_qdma_v1_0_0_top_wrapper qdma_boundary_probe qdma_boundary_probe_inst (.*);
+bind `CPM6_QDMA_TOP_WRAPPER qdma_boundary_probe qdma_boundary_probe_inst (.*);

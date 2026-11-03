@@ -11,35 +11,26 @@ proc getSupportedParts {} { return [get_parts xc2vp3602*] }
 proc getSupportedBoards {} { }
 
 # --------------------------------------------------------------------
-# addOptions: Controller config + lane rate + link width
+# addOptions: Controller config + DMA mode + lane rate + link width
 #
-# NOTE: Controller_0 and Dual_Controller are intentionally NOT offered
-# yet -- only ctrl1/ has real design_1_bd.tcl + src content authored so
-# far. The CED framework has no per-value "greyed out" mechanism for a
-# value_list (confirmed by inspecting every init.tcl in this CEDStore
-# checkout), so rather than list them as selectable and fail later, they
-# are left out of value_list entirely until ctrl0/dual are implemented.
-# Add them back here (and to run.tcl's ctrl_map) once ready.
+# DMA_MODE selects the QDMA data path. Memory_Mapped builds ctrl1/ (H2C/C2H
+# to AXI memory); Streaming builds ctrl1_st/ (H2C/C2H AXI4-Stream with the
+# streaming example design). The QDMA IP supports one mode per instance.
 #
-# NOTE: CTRL_LINK_WIDTH is pinned to X2 -- ctrl1/design_1_bd.tcl (ported
-# from a write_bd_tcl export of the reference cpm6_qdma design) hardcodes
-# ps_wizard_0's CPM6_CTRL1_LINK_WIDTH to X2 and its BD-level CTRL1_GT_0
-# port is only 2 bits wide. Offering X1/X4/X8 here (as BMD does) produced
-# a real bitgen failure: ctrl1_qdma_ep.sv's LINK_WIDTH-sized port ended up
-# wider than the BD's fixed 2-bit port, leaving bits [2]/[3] dangling at
-# the top level with no I/O standard or LOC -> DRC NSTD-2/UCIO-1, bitgen
-# refused (confirmed via a real synth+impl+write_device_image run). Do not
-# widen this value_list until design_1_bd.tcl
-# is made genuinely width-parameterized.
+# NOTE: CTRL_LINK_WIDTH offers X2 and X8. The block designs set
+# CPM6_CTRL1_LINK_WIDTH from this option, and the controller-1 GT port and
+# the top-level GT ports (LINK_WIDTH in defines.sv) follow it.
 # --------------------------------------------------------------------
 proc addOptions {DESIGNOBJ PROJECT_PARAM.BOARD_PART} {
   return [list \
     [dict create name "CTRL_CONFIG" type "string" value "Controller_1" enabled true \
       value_list {Controller_1}] \
+    [dict create name "DMA_MODE" type "string" value "Memory_Mapped" enabled true \
+      value_list {Memory_Mapped Streaming}] \
     [dict create name "CTRL_LANE_RATE" type "string" value "64.0_GT/s" enabled true \
       value_list {64.0_GT/s 32.0_GT/s 16.0_GT/s} ] \
     [dict create name "CTRL_LINK_WIDTH" type "string" value "X2" enabled true \
-      value_list {X2}] \
+      value_list {X2 X8}] \
   ]
 }
 
@@ -50,7 +41,18 @@ proc addGUILayout {DESIGNOBJ PROJECT_PARAM.BOARD_PART} {
     set designObj $DESIGNOBJ
     set page [ced::add_page  -name "Configuration" -display_name "CPM6 QDMA Configuration" -designObject $designObj]
     ced::add_param -name CTRL_CONFIG -display_name "Controller selection" -parent $page -designObject $designObj -widget radioGroup -layout horizontal
+    ced::add_param -name DMA_MODE -display_name "DMA mode" -parent $page -designObject $designObj -widget radioGroup -layout horizontal
     set panel [ced::add_panel -name panel -parent $page -designObject $designObj -layout horizontal]
     ced::add_param -name CTRL_LANE_RATE -display_name "Link Speed" -parent $panel -designObject $designObj -widget comboBox
     ced::add_param -name CTRL_LINK_WIDTH -display_name "Link width" -parent $panel -designObject $designObj -widget comboBox
+    ced::add_image -name Image -parent $page -designObject $designObj -width 600 -height 280 -layout vertical
+}
+
+# Block design picture for the selected DMA mode
+updater {PROJECT_PARAM.BOARD_PART DMA_MODE.VALUE} {Image.IMAGE_PATH} {
+  if { ${DMA_MODE.VALUE} == "Streaming" } {
+    set Image.IMAGE_PATH "cpm6_qdma_g6x2_st.png"
+  } else {
+    set Image.IMAGE_PATH "cpm6_qdma_g6x2_mm.png"
+  }
 }

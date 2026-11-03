@@ -1,8 +1,3 @@
-/* - Taken from running the example back-to-back TB from $AVERY_PCIE and
-     seeing what was necessary for compilation, then copying and pasting
-     what seemed necessary into this file
-   - Run the tools_setup script to get paths, env. vars, etc. set up
-*/
 //-CFLAGS -DVCS
 
 +define+AVERY_UVM

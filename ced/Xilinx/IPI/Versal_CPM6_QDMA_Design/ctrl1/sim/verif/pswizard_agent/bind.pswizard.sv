@@ -1,10 +1,8 @@
 // bind.pswizard.sv — Bind ps_wizard interface monitor to the BD top-level
 // module's wires.
 //
-// This CED's own Vivado-generated BD top wrapper is named "cpm6_qdma" (see
-// qdma_ced_test.gen/sources_1/bd/cpm6_qdma/sim/cpm6_qdma.v). Every signal
-// referenced here was confirmed present, with identical names, against that
-// generated netlist.
+// Bind target: the BD top module cpm6_qdma
+// (qdma_ced_test.gen/sources_1/bd/cpm6_qdma/sim/cpm6_qdma.v).
 //
 // All BD top wires are declared as input ports so that the bind statement's
 // (.*) connects them via standard port resolution (IEEE 1800-2017 section

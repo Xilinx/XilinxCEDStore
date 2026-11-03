@@ -94,7 +94,7 @@ class seq_cxl_base extends vseq_base;
     // Handle if the odds struct is not set to anything which will throw an error
     // and evenly distribute odds...
     if ($bits(odds)'(odds) == 0) begin
-      odds = {$bits(odds){1}}; // Equal weight of odds for all types
+      odds = {$bits(odds){1'b1}}; // Equal weight of odds for all types
     end
   endfunction 
 
@@ -105,7 +105,7 @@ class seq_cxl_base extends vseq_base;
     `uvm_info(get_type_name(), "body begin...", UVM_NONE)
 
     // Initially randomize this sequence
-    this.randomize;
+    void'(this.randomize());
 
     `uvm_info(get_type_name(), $sformatf("Total transaction count %d", r_tt.size()), UVM_NONE)
 
@@ -125,13 +125,6 @@ class seq_cxl_base extends vseq_base;
 
   virtual task spawn_generic_transaction(tt_types this_tt, bit[15:0] this_tag, bit this_hdm);
 
-    //      this is C.2 and C.4 table stuffs.
-    //      There is an EMD bit that comes out on the PL which could be monitored.
-    //
-    //      Set the constraint_mode to turn on EMD fields.
-    //      txn.c_noemd.constraint_mode(0);
-    //      Set the constraint_mode to turn off EMD fields.
-    //      txn.c_noemd.constraint_mode(1);
 
     // Local, single address range
     bit [63:0] c_upper_addr = pdev.cxl_hdm[this_hdm].base + pdev.cxl_hdm[this_hdm].sz - 1;
@@ -189,7 +182,7 @@ class seq_cxl_base extends vseq_base;
       // Write Requests
       /*******************************/
       M2SRWD: begin
-        // Disable EMD (for now)
+        // Disable EMD
         m2srwd.c_noemd.constraint_mode(1);
 
         // Branch based on flit mode

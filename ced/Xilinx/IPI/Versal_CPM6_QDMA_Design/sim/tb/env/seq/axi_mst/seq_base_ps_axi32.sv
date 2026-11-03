@@ -64,9 +64,6 @@ uvm_sequence;
                   end
       endcase
     end
-    // 4-10 cycle random band: small, nonzero handshake delay to inject
-    // realistic WVALID/BREADY backpressure/jitter without materially
-    // slowing the sim; not derived from any spec value.
     wr.wvalid_delay[0] = $urandom_range(4,10);
     wr.bready_delay    = $urandom_range(4,10);
     `uvm_send(wr)

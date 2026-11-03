@@ -1,12 +1,12 @@
-// Not all methods are implemented here (yet). To find the APIs, refer to 
-// the PSX VIP Confluence page or go to a Vivado project's source file:
-//   <project>.gen/.../versal_cips_ps_vip_v1_0_1*_apis.sv
 interface ps_vip_api_if
   import uvm_pkg::*;
   import ps_vip_api_pkg::*;
 ();
 
   `include "uvm_macros.svh"
+
+  // Questa requires a string to be cast for a packed variable
+  typedef bit [127:0] str_cast_t;
 
   task por_reset(bit value);
     inst.por_reset(value);
@@ -63,7 +63,7 @@ interface ps_vip_api_if
       PS_CPM_CFG       : mst_str = "PSCPMCFG";
       default          : mst_str = mst.name;
     endcase
-    inst.set_routing_config(slv_str, mst_str, en);
+    inst.set_routing_config(str_cast_t'(slv_str), str_cast_t'(mst_str), en);
   endtask
 
   task get_routing_config;
@@ -84,7 +84,7 @@ interface ps_vip_api_if
     else if (!(mst inside {NOC_API, A72_API, R5_API}))
       `uvm_fatal("ps_vip_api_if::write_data_32", "Argument 'mst' must be NOC_API, A72_API, or R5_API")
     else
-      inst.write_data_32(mst.name(), addr, data, rsp);
+      inst.write_data_32(str_cast_t'(mst.name()), addr, data, rsp);
   endtask
 
   task read_data_32(ps_route_slv_e mst, bit [43:0] addr, output logic [31:0] data, output logic [1:0] rsp); 
@@ -93,7 +93,7 @@ interface ps_vip_api_if
     else if (!(mst inside {NOC_API, A72_API, R5_API}))
       `uvm_fatal("ps_vip_api_if::read_data_32", "Argument 'mst' must be NOC_API, A72_API, or R5_API")
     else
-      inst.read_data_32(mst.name(), addr, data, rsp);
+      inst.read_data_32(str_cast_t'(mst.name()), addr, data, rsp);
   endtask
 
   task write_data_128(ps_route_slv_e mst, bit [43:0] addr, logic [127:0] data, output logic [1:0] rsp, input bit [4:0] nbytes = 16); 
@@ -102,7 +102,7 @@ interface ps_vip_api_if
     else if (!(mst inside {NOC_API, A72_API, R5_API}))
       `uvm_fatal("ps_vip_api_if::write_data_128", "Argument 'mst' must be NOC_API, A72_API, or R5_API")
     else
-      inst.write_data(mst.name(), addr, nbytes, data, rsp);
+      inst.write_data(str_cast_t'(mst.name()), addr, nbytes, data, rsp);
   endtask
 
   task read_data_128(ps_route_slv_e mst, bit [43:0] addr, output logic [127:0] data, output logic [1:0] rsp, input bit [4:0] nbytes = 16); 
@@ -111,7 +111,7 @@ interface ps_vip_api_if
     else if (!(mst inside {NOC_API, A72_API, R5_API}))
       `uvm_fatal("ps_vip_api_if::read_data_128", "Argument 'mst' must be NOC_API, A72_API, or R5_API")
     else
-      inst.read_data(mst.name(), addr, nbytes, data, rsp);
+      inst.read_data(str_cast_t'(mst.name()), addr, nbytes, data, rsp);
   endtask
 
 endinterface

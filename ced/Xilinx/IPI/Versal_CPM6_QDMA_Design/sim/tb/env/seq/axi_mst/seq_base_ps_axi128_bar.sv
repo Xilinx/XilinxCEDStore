@@ -2,9 +2,6 @@ class seq_base_ps_axi128_bar extends seq_base_ps_axi128;
 
   `uvm_object_utils(seq_base_ps_axi128_bar)
 
-  // AWUSER/ARUSER value that selects the BAR-routed access path (as opposed to
-  // the base seq_base_ps_axi128's direct-routed path) through the AXI
-  // interconnect's USER-bit decode -- bit 9 set, no other bits used.
   localparam bit [17:0] BAR_USER = 18'h200;
 
   function new(string name = "seq_base_ps_axi128_bar");

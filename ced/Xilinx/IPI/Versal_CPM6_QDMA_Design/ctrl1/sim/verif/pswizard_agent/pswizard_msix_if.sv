@@ -1,19 +1,7 @@
 // pswizard_msix_if.sv - MSI-X control-FSM observation interface
 //
-// Exposes the enable-lookup path inside the CPM6 MSI-X controller so the
-// VF-index computation is readable from the simulation monitor log rather than
-// only from a waveform.
-//
-// Why this exists: msix_user_vf_index is not otherwise published to any log,
-// and can only be read from a waveform capture. That leaves two distinct
-// outcomes indistinguishable from log output alone -- an incorrect VF index
-// versus a build that does not contain the expected design -- because both
-// leave MSI-X errors in place. Publishing the index separates them.
-//
-// Widths are deliberately over-provisioned relative to the RTL nets, which are
-// sized from the NUM_VFS/NUM_PFS parameters of the bound instance. Port
-// connection zero-extends the narrower actual, so one interface serves every
-// configuration; the bind does not need to know the parameter values.
+// Not bound in this testbench. Compiled because pswizard_monitor declares a
+// virtual pswizard_msix_if member (see pkg.pswizard_agent.sv).
 `ifndef __PSWIZARD_MSIX_IF_SV__
 `define __PSWIZARD_MSIX_IF_SV__
 
@@ -22,7 +10,7 @@ interface pswizard_msix_if;
    logic         clk;
    logic         rst_n;
 
-   // --- Requester side (msix_user_if_i), sampled combinationally ---
+   // --- Requester side, sampled combinationally ---
    logic         user_req;
    logic         user_grant;
    logic         user_error;
@@ -33,8 +21,6 @@ interface pswizard_msix_if;
    logic [1:0]   user_operation;
 
    // --- The enable lookup itself ---
-   // msix_user_vf_index is THE signal the 2026-08-21 fix changed. Everything
-   // else here is context for interpreting it.
    logic [15:0]  msix_user_vf_index;
    logic         user_function_is_enabled;
    logic [255:0] msix_vf_msix_enable;

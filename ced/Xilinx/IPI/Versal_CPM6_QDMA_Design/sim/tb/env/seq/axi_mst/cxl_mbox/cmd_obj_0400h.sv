@@ -1,4 +1,3 @@
-// Command object for opcode=0x0400 (Get Supported Logs)
 class cmd_obj_0400h extends cxl_comp_cmd_obj;
 
   `uvm_object_utils(cmd_obj_0400h)

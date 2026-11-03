@@ -1,8 +1,6 @@
 // cxl_cm_reg_cb: CXL Component Register Callback
 //
 // Registered on the Avery VIP when it acts as a CXL Type-3 EP.
-// Modelled after the cxl_ep_cb + ep_storage_cb pattern from the Avery
-// VIP sandbox test (test_cxlmem.sv / test_base.sv).
 //
 // Responsibilities:
 //   1. Track CfgWr to BAR3/BAR4 to capture the 64-bit Component Register
@@ -13,8 +11,7 @@
 //   3. Intercept MemWr that sets the Commit bit (bit 9) of any HDM Decoder
 //      Control register.  Fork a process that waits for write_mem_cb to
 //      land the write in mem[], then back-door sets Committed (bit 10).
-//   4. setup_mmio_reg: minimal override (disable unused MMIO caps) matching
-//      the reference test pattern.
+//   4. setup_mmio_reg: minimal override (disable unused MMIO caps).
 //
 // Shadow memory layout (relative to arr_base = bar_base + 0x1000):
 //
@@ -90,7 +87,6 @@ class cxl_cm_reg_cb extends apci_callbacks;
   // =========================================================================
   // init_cxl_cm_regs
   //   Initialise the capability-array and HDM-decoder struct fields.
-  //   Matches init_cxl_cm_regs() in test_cxlmem.sv (vip_sandbox reference).
   // =========================================================================
   function void init_cxl_cm_regs();
     // Array header: CXL Cap ID=1, Cap Ver=1, CXL.cache+mem Ver=1, 3 entries
@@ -114,7 +110,6 @@ class cxl_cm_reg_cb extends apci_callbacks;
   // load_cxl_cm_regs
   //   Populate the shadow memory (mem[]) with the CXL Component Register
   //   Capability Array once bar_base is known.
-  //   Matches load_cxl_cm_regs() in test_cxlmem.sv.
   // =========================================================================
   function void load_cxl_cm_regs();
     bit [63:0] arr_base;
@@ -148,7 +143,6 @@ class cxl_cm_reg_cb extends apci_callbacks;
   // =========================================================================
   // setup_mmio_reg  (apci_callbacks override)
   //   Minimal: disable unused MMIO capabilities.
-  //   Matches setup_mmio_reg() in cxl_ep_cb (test_cxlmem.sv reference).
   // =========================================================================
   virtual function void setup_mmio_reg(apci_device bfm, apci_mmio_reg mmreg);
     `uvm_info(id, "setup_mmio_reg: disabling unused MMIO caps (cpmu, chmu)", UVM_LOW)
@@ -237,7 +231,7 @@ class cxl_cm_reg_cb extends apci_callbacks;
                            (waddr - hdm_dec_base) / 'h20, {waddr_u, waddr});
           `uvm_info(id, msg, UVM_LOW)
           // Fork: wait for write_mem_cb to land the data in mem[], then
-          // back-door set Committed (bit 10) — same pattern as test_cxlmem.sv.
+          // back-door set Committed (bit 10).
           fork
             begin
               automatic bit [63:0] ctl_addr = {waddr_u, waddr};

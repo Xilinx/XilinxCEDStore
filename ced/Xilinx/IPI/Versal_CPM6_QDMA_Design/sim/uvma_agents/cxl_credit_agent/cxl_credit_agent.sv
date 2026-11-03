@@ -35,7 +35,7 @@ class cxl_credit_agent extends base_agent #(
 
   virtual task run_phase(uvm_phase phase);
     cxl_credit_pool_seq pool_seq;
-    if (is_master && is_active) begin
+    if (is_master_agent() && is_active_agent()) begin
       if (cfg.mst_use_credit_pool) begin
         pool_seq = cxl_credit_pool_seq::type_id::create("pool_seq");
         pool_seq.start(sqr);

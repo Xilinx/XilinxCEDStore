@@ -49,7 +49,6 @@ class m2sreq_c extends base_txn;
         if (req256.memop     === 'x) req256.memop     = rand_req256.memop;
         if (req256.val       === 'x) req256.val       = rand_req256.val;
       end
-      FPBR : ;
       default : `uvm_fatal(get_type_name, "Need to specify flitmode")
     endcase
   endfunction
@@ -102,7 +101,6 @@ class m2sreq_c extends base_txn;
         printer.print_string("memop",     str[3]);
         printer.print_int   ("val",       req256.val,  $bits(req256.val));
       end
-      FPBR : ;
       default : `uvm_fatal(get_type_name, "Need to specify flitmode")
     endcase
   endfunction
@@ -119,7 +117,6 @@ class m2sreq_c extends base_txn;
         case (flitmode)
           F68  : req68  = _rhs.req68;
           F256 : req256 = _rhs.req256;
-          FPBR : ;
           default : `uvm_fatal(get_type_name, "Need to specify flitmode")
         endcase
       end
@@ -152,7 +149,6 @@ class m2sreq_c extends base_txn;
             if (req256.memop === 'x)     req256.memop     = _rhs.req256.memop;
             if (req256.val === 'x)       req256.val       = _rhs.req256.val;
           end
-          FPBR : ;
           default : `uvm_fatal(get_type_name, "Need to specify flitmode")
         endcase
       end
@@ -192,7 +188,6 @@ class m2sreq_c extends base_txn;
         do_compare &= comparer.compare_field_int("memop",     req256.memop,     _rhs.req256.memop,     $bits(req256.memop));
         do_compare &= comparer.compare_field_int("val",       req256.val,       _rhs.req256.val,       $bits(req256.val));
       end
-      FPBR : ;
       default : `uvm_fatal(get_type_name, "Need to specify flitmode")
     endcase
   endfunction
@@ -295,7 +290,6 @@ class m2srwd_c extends base_txn;
     case (flitmode)
       F68  : begin rand_hdr256.rand_mode(0); c_f256.constraint_mode(0); end
       F256 : begin rand_hdr68 .rand_mode(0); c_f68 .constraint_mode(0); end
-      FPBR : ;
       default : `uvm_fatal(get_type_name, "Need to specify flitmode")
     endcase
     // Control BEs 
@@ -430,7 +424,6 @@ class m2srwd_c extends base_txn;
         hdr256.trp = (hdr256.memop inside {MemWrPtl, MemWrPtlTEE}) || 
                      (hdr256.metafield == ExtMetaState);
       end
-      FPBR : ;
       default : `uvm_fatal(get_type_name, "Need to specify flitmode")
     endcase
   endfunction
@@ -513,7 +506,6 @@ class m2srwd_c extends base_txn;
           printer.print_int ("emd", emd, 32);
         end
       end
-      FPBR : ;
       default : `uvm_fatal(get_type_name, "Need to specify flitmode")
     endcase
   endfunction
@@ -535,7 +527,6 @@ class m2srwd_c extends base_txn;
         case (flitmode)
           F68  : hdr68  = _rhs.hdr68;
           F256 : hdr256 = _rhs.hdr256;
-          FPBR : ;
           default : `uvm_fatal(get_type_name, "Need to specify flitmode")
         endcase
       end
@@ -571,7 +562,6 @@ class m2srwd_c extends base_txn;
             if (hdr256.memop     === 'x) hdr256.memop     = _rhs.hdr256.memop;
             if (hdr256.val       === 'x) hdr256.val       = _rhs.hdr256.val;
           end
-          FPBR : ;
           default : `uvm_fatal(get_type_name, "Need to specify flitmode")
         endcase
       end
@@ -620,7 +610,6 @@ class m2srwd_c extends base_txn;
         if (hdr256.metafield == ExtMetaState)
           do_compare &= comparer.compare_field  ("emd",       emd,              _rhs.emd,              $bits(emd));
       end
-      FPBR : ;
       default : `uvm_fatal(get_type_name, "Need to specify flitmode")
     endcase
   endfunction
@@ -657,7 +646,6 @@ class m2sbirsp_c extends base_txn;
         if (birsp256.opcode  === 'x) birsp256.opcode  = rand_birsp256.opcode;
         if (birsp256.val     === 'x) birsp256.val     = rand_birsp256.val;
       end 
-      FPBR : ;
       default : `uvm_fatal(get_type_name, "Need to specify flitmode")
     endcase
   endfunction
@@ -678,7 +666,6 @@ class m2sbirsp_c extends base_txn;
         printer.print_string("opcode",  str);
         printer.print_int   ("val",     birsp256.val,     $bits(birsp256.val));
       end 
-      FPBR : ;
       default : `uvm_fatal(get_type_name, "Need to specify flitmode")
     endcase
   endfunction
@@ -694,7 +681,6 @@ class m2sbirsp_c extends base_txn;
         case (flitmode)
           F68  : `uvm_fatal(get_type_name, "BIRsp channel not supported in 68B flit mode")
           F256 : birsp256 = _rhs.birsp256;
-          FPBR : ;
           default : `uvm_fatal(get_type_name, "Need to specify flitmode")
         endcase
       end
@@ -710,7 +696,6 @@ class m2sbirsp_c extends base_txn;
             if (birsp256.opcode  === 'x) birsp256.opcode  = _rhs.birsp256.opcode;
             if (birsp256.val     === 'x) birsp256.val     = _rhs.birsp256.val;
           end
-          FPBR : ;
           default : `uvm_fatal(get_type_name, "Need to specify flitmode")
         endcase
       end
@@ -773,7 +758,6 @@ class s2mndr_c extends base_txn;
         if (ndr256.opcode    === 'x) ndr256.opcode    = rand_ndr256.opcode;
         if (ndr256.val       === 'x) ndr256.val       = rand_ndr256.val;
       end
-      FPBR : ;
       default : `uvm_fatal(get_type_name, "Need to specify flitmode")
     endcase
   endfunction
@@ -816,7 +800,6 @@ class s2mndr_c extends base_txn;
         printer.print_string("opcode",    str[3]);
         printer.print_int   ("val",       ndr256.val,  $bits(ndr256.val));
       end
-      FPBR : ;
       default : `uvm_fatal(get_type_name, "Need to specify flitmode")
     endcase
   endfunction
@@ -833,7 +816,6 @@ class s2mndr_c extends base_txn;
         case (flitmode)
           F68  : ndr68  = _rhs.ndr68;
           F256 : ndr256 = _rhs.ndr256;
-          FPBR : ;
           default : `uvm_fatal(get_type_name, "Need to specify flitmode")
         endcase
       end
@@ -860,7 +842,6 @@ class s2mndr_c extends base_txn;
             if (ndr256.opcode    === 'x) ndr256.opcode    = _rhs.ndr256.opcode;
             if (ndr256.val       === 'x) ndr256.val       = _rhs.ndr256.val;
           end
-          FPBR : ;
           default : `uvm_fatal(get_type_name, "Need to specify flitmode")
         endcase
       end
@@ -894,7 +875,6 @@ class s2mndr_c extends base_txn;
         do_compare &= comparer.compare_field_int("opcode",    ndr256.opcode,    _rhs.ndr256.opcode,    $bits(ndr256.opcode));
         do_compare &= comparer.compare_field_int("val",       ndr256.val,       _rhs.ndr256.val,       $bits(ndr256.val));
       end
-      FPBR : ;
       default : `uvm_fatal(get_type_name, "Need to specify flitmode")
     endcase
   endfunction
@@ -956,7 +936,6 @@ class s2mdrs_c extends base_txn;
     case (flitmode)
       F68  : begin rand_hdr256.rand_mode(0); c_f256.constraint_mode(0); end
       F256 : begin rand_hdr68 .rand_mode(0);                            end
-      FPBR : ;
       default : `uvm_fatal(get_type_name, "Need to specify flitmode")
     endcase
     dat.rand_mode(dat==='x);
@@ -1024,7 +1003,6 @@ class s2mdrs_c extends base_txn;
         // If no EMD, just assign it to 0
         if (!hdr256.trp) emd = '0;
       end
-      FPBR : ;
       default : `uvm_fatal(get_type_name, "Need to specify flitmode")
     endcase
   endfunction
@@ -1091,7 +1069,6 @@ class s2mdrs_c extends base_txn;
         if (hdr256.metafield==ExtMetaState)
           printer.print_int ("emd",       emd,  $bits(emd));
       end
-      FPBR : ;
       default : `uvm_fatal(get_type_name, "Need to specify flitmode")
     endcase
   endfunction
@@ -1112,7 +1089,6 @@ class s2mdrs_c extends base_txn;
         case (flitmode)
           F68  : hdr68  = _rhs.hdr68;
           F256 : hdr256 = _rhs.hdr256;
-          FPBR : ;
           default : `uvm_fatal(get_type_name, "Need to specify flitmode")
         endcase
       end
@@ -1143,7 +1119,6 @@ class s2mdrs_c extends base_txn;
             if (hdr256.opcode    === 'x) hdr256.opcode    = _rhs.hdr256.opcode;
             if (hdr256.val       === 'x) hdr256.val       = _rhs.hdr256.val;
           end
-          FPBR : ;
           default : `uvm_fatal(get_type_name, "Need to specify flitmode")
         endcase
       end
@@ -1186,7 +1161,6 @@ class s2mdrs_c extends base_txn;
          if (hdr256.metafield == ExtMetaState)
            do_compare &= comparer.compare_field  ("emd",       emd,              _rhs.emd,              $bits(emd));
        end
-       FPBR : ;
        default : `uvm_fatal(get_type_name, "Need to specify flitmode")
      endcase
   endfunction
@@ -1223,7 +1197,6 @@ class s2mbisnp_c extends base_txn;
         if (bisnp256.opcode === 'x) bisnp256.opcode = rand_bisnp256.opcode;
         if (bisnp256.val    === 'x) bisnp256.val    = rand_bisnp256.val;
       end
-      FPBR : ;
       default : `uvm_fatal(get_type_name, "Need to specify flitmode")
     endcase
   endfunction
@@ -1244,7 +1217,6 @@ class s2mbisnp_c extends base_txn;
         printer.print_string("opcode", str);
         printer.print_int   ("val",    bisnp256.val,   $bits(bisnp256.val));
       end
-      FPBR : ;
       default : `uvm_fatal(get_type_name, "Need to specify flitmode")
     endcase
   endfunction
@@ -1260,7 +1232,6 @@ class s2mbisnp_c extends base_txn;
         case (flitmode)
           F68  : `uvm_fatal(get_type_name, "BISnp channel not supported in 68B flit mode")
           F256 : bisnp256 = _rhs.bisnp256;
-          FPBR : ;
           default : `uvm_fatal(get_type_name, "Need to specify flitmode")
         endcase
       end
@@ -1276,7 +1247,6 @@ class s2mbisnp_c extends base_txn;
             if (bisnp256.opcode=== 'x) bisnp256.opcode = _rhs.bisnp256.opcode;
             if (bisnp256.val   === 'x) bisnp256.val    = _rhs.bisnp256.val;
           end
-          FPBR : ;
           default : `uvm_fatal(get_type_name, "Need to specify flitmode")
         endcase
       end
@@ -1299,7 +1269,6 @@ class s2mbisnp_c extends base_txn;
         do_compare &= comparer.compare_field_int("opcode", bisnp256.opcode, _rhs.bisnp256.opcode, $bits(bisnp256.opcode));
         do_compare &= comparer.compare_field_int("val",    bisnp256.val,    _rhs.bisnp256.val,    $bits(bisnp256.val));
       end
-      FPBR : ;
       default : `uvm_fatal(get_type_name, "Need to specify flitmode")
     endcase
   endfunction

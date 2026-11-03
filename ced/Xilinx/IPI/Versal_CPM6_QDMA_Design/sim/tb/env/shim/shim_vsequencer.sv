@@ -16,7 +16,9 @@ class shim_vsequencer extends uvm_sequencer;
 
   // Sequences may need those handles
           uvm_event         cdo_load_done;
+`ifdef CPM6_RTL
   virtual cdo_loader_sim_if cdo_loader_vif;
+`endif
 
   function new(string name, uvm_component parent);
     super.new(name, parent);

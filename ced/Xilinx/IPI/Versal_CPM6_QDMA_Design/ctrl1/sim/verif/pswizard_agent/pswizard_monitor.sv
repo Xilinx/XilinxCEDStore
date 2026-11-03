@@ -26,11 +26,9 @@ class pswizard_monitor extends uvm_monitor;
   local int    log_fd;
   int          check_err_count = 0;
 
-  // ---- MSI-X control-FSM observation (optional, MSIX_CTRL_MON) -----------
-  // Present only when bind.pswizard_msix.sv was compiled. The get is soft:
-  // absence disables the sampling task and is reported once, rather than
-  // uvm_fatal-ing, because the bind is gated OFF by default (it requires the
-  // decrypted cpm6 rfs -- see bind.pswizard_msix.sv header).
+  // ---- MSI-X control-FSM observation (optional) ---------------------------
+  // Not bound in this testbench: the soft get fails, sampling stays disabled,
+  // and this is reported once.
   virtual pswizard_msix_if msix_vif;
   bit                      msix_mon_en = 1'b0;
 
@@ -66,22 +64,21 @@ class pswizard_monitor extends uvm_monitor;
 
   // ---- cpm_noc0 / cpm_axi_pl0/1/3 channel decode ----
   // slot_id = addr / SLOT_SIZE_BYTES, slot_id == HDMA channel ID directly
-  // (dsc_slot_params_pkg imported via pkg.pswizard_agent.sv). No qid step --
-  // a channel<->qid heuristic was found to be inaccurate.
+  // (dsc_slot_params_pkg imported via pkg.pswizard_agent.sv).
   local function logic [6:0] decode_noc_channel(logic [63:0] addr);
     return logic'(addr / SLOT_SIZE_BYTES);
   endfunction
 
   // ---- dma_irq[N] channel role — duplicated from qdma_periph_monitor.sv's
   // decode_dbi_ch_name() (small per-agent helper, not worth a shared header
-  // for 4 entries). Indices 4+ are the scheduler's dynamically-allocated
-  // pool — direction is NOT statically known from the channel index alone.
+  // for 4 entries). Indices 4+ are allocated dynamically, so their direction
+  // is not known from the channel index alone.
   local function string irq_ch_role(int ch);
     case (ch)
-      0: return "WRCH_0/wb_desc_writer dir=C2H";
-      1: return "RDCH_0/cmpt_desc_writer dir=C2H";
-      2: return "WRCH_1/dsc_fetch_engine dir=H2C";
-      3: return "RDCH_1/dsc_fetch_engine dir=H2C";
+      0: return "WRCH_0/status writeback dir=C2H";
+      1: return "RDCH_0/completion dir=C2H";
+      2: return "WRCH_1/descriptor fetch dir=H2C";
+      3: return "RDCH_1/descriptor fetch dir=H2C";
       default: return "dir=UNKNOWN(dynamic channel)";
     endcase
   endfunction
@@ -176,7 +173,7 @@ class pswizard_monitor extends uvm_monitor;
       txn.addr = awaddr; txn.id = awid;
       txn.len = awlen; txn.size = awsize; txn.burst = awburst;
       txn.bytes = (longint'(awlen) + 1) << awsize;
-      // Channel decode is NOC0-only per explicit user scope (NOC1 out of scope).
+      // Channel decode is NOC0-only.
       if (port_sel == 1'b0) begin
         txn.chan = decode_noc_channel(awaddr);
         txn.chan_valid = 1'b1;
@@ -319,7 +316,7 @@ class pswizard_monitor extends uvm_monitor;
       txn.len = awlen; txn.size = awsize; txn.burst = awburst;
       txn.bytes = (longint'(awlen) + 1) << awsize;
       // PL0 carries H2C traffic, PL1 carries C2H. PL3 is gated behind
-      // ENABLE_PL3_BIND and is dead code on the current BD, which has no PL3.
+      // ENABLE_PL3_BIND; this BD has no PL3.
       // Same decode_noc_channel() formula reused, assuming PL0/1/3 addresses
       // are in the same host-facing space as NOC0.
       txn.chan = decode_noc_channel(txn.addr);
@@ -417,7 +414,7 @@ class pswizard_monitor extends uvm_monitor;
           cnt_msix_index_skew++;
           `uvm_error("pswizard_monitor", $sformatf(
             {"[MSIX_VF_INDEX_SKEW] signal=msix_user_vf_index ",
-             "file=cpm6_msix_ctrl_logic.sv observed=%0d expected=%0d ",
+             "observed=%0d expected=%0d ",
              "fnc=0 vfnc=%0d verdict=INDEX_SKEW ",
              "cite=PF0 VF group is based at absolute VF 0 by construction"},
             idx, vfn, vfn))
@@ -485,7 +482,7 @@ class pswizard_monitor extends uvm_monitor;
       sample_pl_port(3);
 `endif
 
-      // ---- MSI-X enable lookup (only when the bind is compiled in) ----
+      // ---- MSI-X enable lookup (only when msix_vif is set) ----
       if (msix_mon_en) sample_msix_lookup(msix_req_prev);
 
       // ---- DMA IRQ edge detect ----
@@ -526,8 +523,7 @@ class pswizard_monitor extends uvm_monitor;
         // Say so explicitly. A summary that simply omits MSI-X would read as
         // "no MSI-X problems" when the truth is "not observed at all".
         $fdisplay(log_fd,
-          {"    MSIX_LOOKUP: NOT MONITORED (bind.pswizard_msix.sv not compiled ",
-           "-- MSIX_CTRL_MON=0, or the encrypted cpm6 rfs is in use)"});
+          {"    MSIX_LOOKUP: NOT MONITORED (MSI-X lookup interface not bound)"});
       end else begin
         string idx_list = "";
         foreach (idx_seen[i]) idx_list = {idx_list, $sformatf("%0d ", i)};

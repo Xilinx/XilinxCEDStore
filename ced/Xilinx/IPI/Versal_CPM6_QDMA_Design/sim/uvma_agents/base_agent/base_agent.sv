@@ -61,10 +61,10 @@ class base_agent #(
   endfunction
 
   // Helper functions
-  virtual function bit is_master (); return cfg.is_master;  endfunction
-  virtual function bit is_slave  (); return cfg.is_slave;   endfunction
-  virtual function bit is_active (); return cfg.is_active;  endfunction
-  virtual function bit is_passive(); return cfg.is_passive; endfunction
+  virtual function bit is_master_agent (); return cfg.is_master();  endfunction
+  virtual function bit is_slave_agent  (); return cfg.is_slave();   endfunction
+  virtual function bit is_active_agent (); return cfg.is_active();  endfunction //!!uvm_agent::is_active exists as member
+  virtual function bit is_passive_agent(); return cfg.is_passive(); endfunction
 
   virtual function void build_phase(uvm_phase phase);
     super.build_phase(phase);
@@ -77,12 +77,12 @@ class base_agent #(
     mon = MON::type_id::create("mon", this);
     shr = SHR::type_id::create("shr", this);
 
-    if (is_active) begin
+    if (is_active_agent()) begin
       drv = DRV::type_id::create("drv", this);
       sqr = SQR::type_id::create("sqr", this);
     end
 
-    if (is_master && !cfg.disable_api) begin
+    if (is_master_agent() && !cfg.disable_api) begin
       api = API::type_id::create("api", this);
       api.sqr = sqr;
     end
@@ -102,14 +102,14 @@ class base_agent #(
     if (!cfg.disable_mon_ap_connect)     append_ap.connect(ap);
     if (!cfg.disable_mon_baseap_connect) base_append_ap.connect(base_ap);
 
-    if (is_active) begin
+    if (is_active_agent()) begin
       drv.seq_item_port.connect(sqr.seq_item_export);
       // "Active responder" (slave) agent will specify SQR as base_sqr
       // or an extended sqr and user will respond to requests 
       // in a specific manner as directed by the custom sequence,
       // likely with a fifo.get in the sequence that determines
       // the slave response.
-      if (is_slave && !cfg.disable_mon_ap_connect) begin
+      if (is_slave_agent() && !cfg.disable_mon_ap_connect) begin
         mon.ap.connect(sqr.analysis_export);  
       end
     end

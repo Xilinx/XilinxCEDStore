@@ -1,4 +1,4 @@
-/* DESCRIPTION
+/* DESCRIPTION 
  * This class configures the VIP as RP and DUT as EP and instructs both to 
    link up in PCIe mode so tests need not worry about these common settings.
 |*/

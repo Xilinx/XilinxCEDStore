@@ -24,11 +24,14 @@ class flit68_api#(type SQR, parameter NFI_W=3) extends base_api#(SQR);
     r_slot_type inside {[_G1:_G6]} -> r_slot_num==1; 
   }
 
-  constraint c_1msg_loc {
+  constraint c_base_level {
     r_flit_num inside {[0:nfi_width-1]};
     r_slot_num == 0           -> r_slot_type inside {[_H0:_H5]};
     r_slot_num inside {[1:3]} -> r_slot_type inside {[_G1:_G6]};
-    // Note that these are for one message only in a flit, which means no MDH
+  }
+
+  // Note that these are for ONE message only in a flit, which means no MDH
+  constraint c_1msg_loc {
     if (sqr.cfg.dir == H2C) {
       msg_sel == H2DREQ -> r_slot_type inside {_H0, _H2, _G2};
       msg_sel == H2DDAT -> r_slot_type inside {_H1, _H2, _G2, _G4};
@@ -41,6 +44,16 @@ class flit68_api#(type SQR, parameter NFI_W=3) extends base_api#(SQR);
       msg_sel == D2HRSP -> r_slot_type inside {_H0, _G1, _G2};
       msg_sel == S2MNDR -> r_slot_type inside {_H0, _H3, _H4, _G4, _G5};
       msg_sel == S2MDRS -> r_slot_type inside {_H3, _G4};
+    }
+  }
+
+  // Note that these are for MULTIPLE DATA HEADERS in a flit
+  constraint c_mdh_loc {
+    if (sqr.cfg.dir == H2C) {
+      msg_sel == H2DDAT -> r_slot_type==_H3;
+    } else {
+      msg_sel == D2HDAT -> r_slot_type inside {_H2, _G3};
+      msg_sel == S2MDRS -> r_slot_type inside {_H5, _G6};
     }
   }
   
@@ -141,6 +154,9 @@ class flit68_api#(type SQR, parameter NFI_W=3) extends base_api#(SQR);
     r_slot_num.rand_mode(1);
     r_slot_type.rand_mode(1);
     r_flit_num.rand_mode(1);
+    // Control contraints so only non-MDH is selected
+    c_1msg_loc.constraint_mode(1); 
+    c_mdh_loc .constraint_mode(0); 
     // Accounts for all cases
     c_tight_flit.constraint_mode(slot_num<=1);
     if (slot_num != -1) begin
@@ -1195,9 +1211,20 @@ class flit68_api#(type SQR, parameter NFI_W=3) extends base_api#(SQR);
       return;
     end
 
+    // Set so randomization can resolve
+    case (txn[0].txn_type)
+      "S2M_DRS" : msg_sel = S2MDRS; 
+      "H2D_DAT" : msg_sel = H2DDAT;
+      "D2H_DAT" : msg_sel = D2HDAT;
+    endcase
+
+    // Control contraints so only MDH is selected
+    c_1msg_loc.constraint_mode(0); 
+    c_mdh_loc .constraint_mode(1); 
     // Initialize randomization to on
-    r_slot_num.rand_mode(1);
-    r_flit_num.rand_mode(1);
+    r_slot_num .rand_mode(1);
+    r_flit_num .rand_mode(1);
+    r_slot_type.rand_mode(1);
     // Perform randomization after setup
     if (slot_num != -1) begin
       r_slot_num = slot_num;
@@ -1210,17 +1237,10 @@ class flit68_api#(type SQR, parameter NFI_W=3) extends base_api#(SQR);
     // Do randomization
     void'(this.randomize());
     // Assign to finalized values
-    slot_num = r_slot_num;
-    flit_num = r_flit_num;
+    slot_num  = r_slot_num;
+    flit_num  = r_flit_num;
+    slot_type = r_slot_type;
     
-    // Make sure slot_type is correct
-    if (txn[0].txn_type=="S2M_DRS")
-      slot_type = slot_num==0 ? _H5 : _G6;
-    else if (txn[0].txn_type=="H2D_DAT")
-      slot_type = slot_num==0 ? _H3 : _G3;
-    else //D2H_DAT
-      slot_type = slot_num==0 ? _H2 : _G3;
-
      msg = slot_type.name;
     `uvm_info("::issue_msg_mdh", $sformatf("Sending %0d %0ss via %0s slot (MDH) in slot position %0d and flit position %0d", $countones(not_null), txn[0].txn_type, msg.substr(1,2), slot_num, flit_num), UVM_MEDIUM)
 

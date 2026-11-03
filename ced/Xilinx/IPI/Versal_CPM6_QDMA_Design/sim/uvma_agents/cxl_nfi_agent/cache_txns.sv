@@ -22,7 +22,6 @@ class h2dreq_c extends base_txn;
     case (flitmode)
       F68  : rand_req256.rand_mode(0); 
       F256 : rand_req68 .rand_mode(0); 
-      FPBR : ;
       default : `uvm_fatal(get_type_name, "Need to specify flitmode")
     endcase
   endfunction
@@ -46,7 +45,6 @@ class h2dreq_c extends base_txn;
         if (req256.opcode  === 'x) req256.opcode  = rand_req256.opcode;
         if (req256.val     === 'x) req256.val     = rand_req256.val;
       end
-      FPBR : ;
       default : `uvm_fatal(get_type_name, "Need to specify flitmode")
     endcase
   endfunction
@@ -76,7 +74,6 @@ class h2dreq_c extends base_txn;
         printer.print_string("opcode",  str);
         printer.print_int   ("val",     req256.val,     $bits(req256.val));
       end
-      FPBR : ;
       default : `uvm_fatal(get_type_name, "Need to specify flitmode")
     endcase
   endfunction
@@ -93,7 +90,6 @@ class h2dreq_c extends base_txn;
         case (flitmode)
           F68  : req68  = _rhs.req68;
           F256 : req256 = _rhs.req256;
-          FPBR : ;
           default : `uvm_fatal(get_type_name, "Need to specify flitmode")
         endcase
       end
@@ -116,7 +112,6 @@ class h2dreq_c extends base_txn;
             if (req256.opcode  === 'x) req256.opcode  = _rhs.req256.opcode;
             if (req256.val     === 'x) req256.val     = _rhs.req256.val;
           end
-          FPBR : ;
           default : `uvm_fatal(get_type_name, "Need to specify flitmode")
         endcase
       end
@@ -124,6 +119,7 @@ class h2dreq_c extends base_txn;
   endfunction
 
   virtual function bit do_compare(uvm_object rhs, uvm_comparer comparer);
+    `uvm_warning(get_type_name, "do_compare not written yet")
     do_compare = 0;
   endfunction
 
@@ -151,7 +147,6 @@ class h2drsp_c extends base_txn;
     case (flitmode)
       F68  : rand_rsp256.rand_mode(0); 
       F256 : rand_rsp68 .rand_mode(0); 
-      FPBR : ;
       default : `uvm_fatal(get_type_name, "Need to specify flitmode")
     endcase
   endfunction
@@ -177,7 +172,6 @@ class h2drsp_c extends base_txn;
         if (rsp256.opcode  === 'x) rsp256.opcode  = rand_rsp256.opcode;
         if (rsp256.val     === 'x) rsp256.val     = rand_rsp256.val;
       end
-      FPBR : ;
       default : `uvm_fatal(get_type_name, "Need to specify flitmode")
     endcase
   endfunction
@@ -211,7 +205,6 @@ class h2drsp_c extends base_txn;
         printer.print_string("opcode",  str[1]);
         printer.print_int   ("val",     rsp256.val,     $bits(rsp256.val));
       end
-      FPBR : ;
       default : `uvm_fatal(get_type_name, "Need to specify flitmode")
     endcase
   endfunction
@@ -228,7 +221,6 @@ class h2drsp_c extends base_txn;
         case (flitmode)
           F68  : rsp68  = _rhs.rsp68;
           F256 : rsp256 = _rhs.rsp256;
-          FPBR : ;
           default : `uvm_fatal(get_type_name, "Need to specify flitmode")
         endcase
       end
@@ -253,7 +245,6 @@ class h2drsp_c extends base_txn;
             if (rsp256.opcode  === 'x) rsp256.opcode  = _rhs.rsp256.opcode;
             if (rsp256.val     === 'x) rsp256.val     = _rhs.rsp256.val;
           end
-          FPBR : ;
           default : `uvm_fatal(get_type_name, "Need to specify flitmode")
         endcase
       end
@@ -261,6 +252,7 @@ class h2drsp_c extends base_txn;
   endfunction
 
   virtual function bit do_compare(uvm_object rhs, uvm_comparer comparer);
+    `uvm_warning(get_type_name, "do_compare not written yet")
     do_compare = 0;
   endfunction
 
@@ -282,6 +274,9 @@ class h2ddat_c extends base_txn;
   rand logic [511:0]    dat;
   rand logic            txfer_64B = 'x;
 
+  // Mostly don't do 32B transfers (only 5% of time)
+  constraint c_sz { txfer_64B dist {0 := 5, 1 := 95}; }
+
   function new(string name = "h2ddat_c");
     super.new(name);
     txn_type = "H2D_DAT";
@@ -292,7 +287,6 @@ class h2ddat_c extends base_txn;
     case (flitmode)
       F68  : rand_hdr256.rand_mode(0); 
       F256 : rand_hdr68 .rand_mode(0); 
-      FPBR : ;
       default : `uvm_fatal(get_type_name, "Need to specify flitmode")
     endcase
     if (flitmode != F68) begin
@@ -324,7 +318,6 @@ class h2ddat_c extends base_txn;
         if (hdr256.cqid    === 'x) hdr256.cqid    = rand_hdr256.cqid;
         if (hdr256.val     === 'x) hdr256.val     = rand_hdr256.val;
       end
-      FPBR : ;
       default : `uvm_fatal(get_type_name, "Need to specify flitmode")
     endcase
   endfunction
@@ -374,7 +367,6 @@ class h2ddat_c extends base_txn;
         printer.print_int ("data[2]", dat[128*2+:128], 128);
         printer.print_int ("data[3]", dat[128*3+:128], 128);
       end
-      FPBR : ;
       default : `uvm_fatal(get_type_name, "Need to specify flitmode")
     endcase 
   endfunction
@@ -393,7 +385,6 @@ class h2ddat_c extends base_txn;
         case (flitmode)
           F68  : hdr68  = _rhs.hdr68;
           F256 : hdr256 = _rhs.hdr256;
-          FPBR : ;
           default : `uvm_fatal(get_type_name, "Need to specify flitmode")
         endcase
       end
@@ -417,7 +408,6 @@ class h2ddat_c extends base_txn;
             if (hdr256.cqid    === 'x) hdr256.cqid    = _rhs.hdr256.cqid;
             if (hdr256.val     === 'x) hdr256.val     = _rhs.hdr256.val;
           end
-          FPBR : ;
           default : `uvm_fatal(get_type_name, "Need to specify flitmode")
         endcase
       end
@@ -425,6 +415,7 @@ class h2ddat_c extends base_txn;
   endfunction
 
   virtual function bit do_compare(uvm_object rhs, uvm_comparer comparer);
+    `uvm_warning(get_type_name, "do_compare not written yet")
     do_compare = 0;
   endfunction
 
@@ -452,7 +443,6 @@ class d2hreq_c extends base_txn;
     case (flitmode)
       F68  : rand_req256.rand_mode(0); 
       F256 : rand_req68 .rand_mode(0); 
-      FPBR : ;
       default : `uvm_fatal(get_type_name, "Need to specify flitmode")
     endcase
   endfunction
@@ -480,7 +470,6 @@ class d2hreq_c extends base_txn;
         if (req256.opcode  === 'x) req256.opcode  = rand_req256.opcode;
         if (req256.val     === 'x) req256.val     = rand_req256.val;
       end
-      FPBR : ;
       default : `uvm_fatal(get_type_name, "Need to specify flitmode")
     endcase
   endfunction
@@ -514,7 +503,6 @@ class d2hreq_c extends base_txn;
         printer.print_string("opcode", str);
         printer.print_int   ("val",    req256.val,     $bits(req256.val));
       end
-      FPBR : ;
       default : `uvm_fatal(get_type_name, "Need to specify flitmode")
     endcase
   endfunction
@@ -531,7 +519,6 @@ class d2hreq_c extends base_txn;
         case(flitmode)
           F68  : req68  = _rhs.req68;
           F256 : req256 = _rhs.req256;
-          FPBR : ;
           default : `uvm_fatal(get_type_name, "Need to specify flitmode")
         endcase
       end
@@ -558,7 +545,6 @@ class d2hreq_c extends base_txn;
             if (req256.opcode  === 'x) req256.opcode  = _rhs.req256.opcode;
             if (req256.val     === 'x) req256.val     = _rhs.req256.val;
           end
-          FPBR : ;
           default : `uvm_fatal(get_type_name, "Need to specify flitmode")
         endcase
       end
@@ -566,6 +552,7 @@ class d2hreq_c extends base_txn;
   endfunction
 
   virtual function bit do_compare(uvm_object rhs, uvm_comparer comparer);
+    `uvm_warning(get_type_name, "do_compare not written yet")
     do_compare = 0;
   endfunction
 
@@ -593,7 +580,6 @@ class d2hrsp_c extends base_txn;
     case (flitmode)
       F68  : rand_rsp256.rand_mode(0); 
       F256 : rand_rsp68 .rand_mode(0); 
-      FPBR : ;
       default : `uvm_fatal(get_type_name, "Need to specify flitmode")
     endcase
   endfunction
@@ -614,7 +600,6 @@ class d2hrsp_c extends base_txn;
         if (rsp256.opcode === 'x) rsp256.opcode = rand_rsp256.opcode;
         if (rsp256.val    === 'x) rsp256.val    = rand_rsp256.val;
       end 
-      FPBR : ;
       default : `uvm_fatal(get_type_name, "Need to specify flitmode")
     endcase
   endfunction
@@ -642,7 +627,6 @@ class d2hrsp_c extends base_txn;
         printer.print_string("opcode", str);
         printer.print_int   ("val",    rsp256.val,   $bits(rsp256.val));
       end
-      FPBR : ;
       default : `uvm_fatal(get_type_name, "Need to specify flitmode")
     endcase
   endfunction
@@ -659,7 +643,6 @@ class d2hrsp_c extends base_txn;
         case (flitmode)
           F68  : rsp68  = _rhs.rsp68;
           F256 : rsp256 = _rhs.rsp256;
-          FPBR : ;
           default : `uvm_fatal(get_type_name, "Need to specify flitmode")
         endcase
       end
@@ -679,7 +662,6 @@ class d2hrsp_c extends base_txn;
             if (rsp256.opcode === 'x) rsp256.opcode = _rhs.rsp256.opcode;
             if (rsp256.val    === 'x) rsp256.val    = _rhs.rsp256.val;
           end
-          FPBR : ;
           default : `uvm_fatal(get_type_name, "Need to specify flitmode")
         endcase
       end
@@ -687,6 +669,7 @@ class d2hrsp_c extends base_txn;
   endfunction
 
   virtual function bit do_compare(uvm_object rhs, uvm_comparer comparer);
+    `uvm_warning(get_type_name, "do_compare not written yet")
     do_compare = 0;
   endfunction
 
@@ -715,8 +698,9 @@ class d2hdat_c extends base_txn;
   // 68B Flits
   //  1. Set the be field depending on desired behavior
   //   a. be=='x -> byte enables presence is randomized
-  //   b. be=='0 -> special case; user wants randomized byte enables!='1
-  //   c. be=='1 -> user wants set byte enables=='1
+  //   b. be=='1 -> user wants set byte enables=='1
+  //   c. be=='0 -> special case; user wants randomized byte enables!='1
+  //   d. be==<some value> -> user wants specific byte enables
   // 256B Flits
   //  1. Set the hdr256.bep field depending on desired behavior
   //   a. hdr256.bep=='x -> byte enables presence is randomized unless 2. is active
@@ -724,7 +708,7 @@ class d2hdat_c extends base_txn;
   //   c. hdr256.bep=='1 -> user wants randomized byte enables!='1 
   //  2. Set the be field depending on desired behavior
   //   a. be=='1 -> user wants set byte enables=='1
-  //   b. be==<some value> -> user wants specific byte enables=='1
+  //   b. be==<some value> -> user wants specific byte enables
 
   // Mostly don't do BE (only 30% of time)
   constraint c_be {
@@ -746,7 +730,6 @@ class d2hdat_c extends base_txn;
     case (flitmode)
       F68  : rand_hdr256.rand_mode(0); 
       F256 : rand_hdr68.rand_mode(0); 
-      FPBR : ;
       default : `uvm_fatal(get_type_name, "Need to specify flitmode")
     endcase
     // Control BEs
@@ -836,7 +819,6 @@ class d2hdat_c extends base_txn;
         if (hdr256.uqid === 'x)   hdr256.uqid = rand_hdr256.uqid;
         if (hdr256.val  === 'x)   hdr256.val  = rand_hdr256.val;
       end
-      FPBR : ;
       default : `uvm_fatal(get_type_name, "Need to specify flitmode")
     endcase
   endfunction
@@ -911,7 +893,6 @@ class d2hdat_c extends base_txn;
           printer.print_int ("data[3] (resultant)", masked_data[128*3+:128], 128);
         end
       end
-      FPBR : ;
       default : `uvm_fatal(get_type_name, "Need to specify flitmode")
     endcase
   endfunction
@@ -932,7 +913,6 @@ class d2hdat_c extends base_txn;
         case (flitmode)  
           F68  : hdr68  = _rhs.hdr68;
           F256 : hdr256 = _rhs.hdr256;
-          FPBR : ;
           default : `uvm_fatal(get_type_name, "Need to specify flitmode")
         endcase
       end
@@ -956,7 +936,6 @@ class d2hdat_c extends base_txn;
             if (hdr256.uqid === 'x) hdr256.uqid = _rhs.hdr256.uqid;
             if (hdr256.val  === 'x) hdr256.val  = _rhs.hdr256.val;
           end
-          FPBR : ;
           default : `uvm_fatal(get_type_name, "Need to specify flitmode")
         endcase
       end

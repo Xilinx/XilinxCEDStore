@@ -90,4 +90,76 @@ class tb_env_cfg extends uvm_object;
     printer.m_scope.up(); //decrease indent
   endfunction
 
-endclass 
+  // Field-by-field compare
+  virtual function bit do_compare(uvm_object rhs, uvm_comparer comparer);
+    tb_env_cfg t;
+    do_compare = super.do_compare(rhs, comparer);
+    if (!$cast(t, rhs))
+      `uvm_fatal(get_type_name, "do_compare got an object that wasn't extended from tb_env_cfg")
+
+    do_compare &= comparer.compare_field_int("pl_isr_recheck_time",
+                    pl_isr_recheck_time, t.pl_isr_recheck_time, $bits(time));
+    do_compare &= comparer.compare_field_int("ps_isr_recheck_time",
+                    ps_isr_recheck_time, t.ps_isr_recheck_time, $bits(time));
+
+    foreach (pl_isr_final[ii])
+      do_compare &= comparer.compare_field_int($sformatf("pl_isr_final[%0d]",ii),
+                      pl_isr_final[ii], t.pl_isr_final[ii], 2);
+    foreach (ps_isr_final[ii])
+      do_compare &= comparer.compare_field_int($sformatf("ps_isr_final[%0d]",ii),
+                      ps_isr_final[ii], t.ps_isr_final[ii], 2);
+
+    foreach (cxl_nfi_agnt_tx[ii])
+      do_compare &= comparer.compare_field_int($sformatf("cxl_nfi_agnt_tx[%0d]",ii),
+                      cxl_nfi_agnt_tx[ii], t.cxl_nfi_agnt_tx[ii], $bits(agent_mode_t));
+    foreach (cxl_nfi_agnt_rx[ii])
+      do_compare &= comparer.compare_field_int($sformatf("cxl_nfi_agnt_rx[%0d]",ii),
+                      cxl_nfi_agnt_rx[ii], t.cxl_nfi_agnt_rx[ii], $bits(agent_mode_t));
+    foreach (cxl_cfgsts_agnt[ii])
+      do_compare &= comparer.compare_field_int($sformatf("cxl_cfgsts_agnt[%0d]",ii),
+                      cxl_cfgsts_agnt[ii], t.cxl_cfgsts_agnt[ii], $bits(agent_mode_t));
+    foreach (cxl_pm_in_agnt[ii])
+      do_compare &= comparer.compare_field_int($sformatf("cxl_pm_in_agnt[%0d]",ii),
+                      cxl_pm_in_agnt[ii], t.cxl_pm_in_agnt[ii], $bits(agent_mode_t));
+    foreach (cxl_pm_out_agnt[ii])
+      do_compare &= comparer.compare_field_int($sformatf("cxl_pm_out_agnt[%0d]",ii),
+                      cxl_pm_out_agnt[ii], t.cxl_pm_out_agnt[ii], $bits(agent_mode_t));
+    foreach (cxl_credit_agnt_tx[ii])
+      do_compare &= comparer.compare_field_int($sformatf("cxl_credit_agnt_tx[%0d]",ii),
+                      cxl_credit_agnt_tx[ii], t.cxl_credit_agnt_tx[ii], $bits(agent_mode_t));
+    foreach (cxl_credit_agnt_rx[ii])
+      do_compare &= comparer.compare_field_int($sformatf("cxl_credit_agnt_rx[%0d]",ii),
+                      cxl_credit_agnt_rx[ii], t.cxl_credit_agnt_rx[ii], $bits(agent_mode_t));
+    foreach (elbi_agnt[ii])
+      do_compare &= comparer.compare_field_int($sformatf("elbi_agnt[%0d]",ii),
+                      elbi_agnt[ii], t.elbi_agnt[ii], $bits(agent_mode_t));
+
+    do_compare &= comparer.compare_field_int("ps_isr_agnt",
+                    ps_isr_agnt, t.ps_isr_agnt, $bits(agent_mode_t));
+    do_compare &= comparer.compare_field_int("pl_isr_agnt",
+                    pl_isr_agnt, t.pl_isr_agnt, $bits(agent_mode_t));
+
+`ifdef CPM6_RTL
+    foreach (axi_mst_agnt[ii])
+      do_compare &= comparer.compare_field_int($sformatf("axi_mst_agnt[%0d]",ii),
+                      axi_mst_agnt[ii], t.axi_mst_agnt[ii], $bits(agent_mode_t));
+    foreach (axi_slv_agnt[ii])
+      do_compare &= comparer.compare_field_int($sformatf("axi_slv_agnt[%0d]",ii),
+                      axi_slv_agnt[ii], t.axi_slv_agnt[ii], $bits(agent_mode_t));
+`else
+    foreach (cpm_pl_axi_agnt[ii])
+      do_compare &= comparer.compare_field_int($sformatf("cpm_pl_axi_agnt[%0d]",ii),
+                      cpm_pl_axi_agnt[ii], t.cpm_pl_axi_agnt[ii], $bits(agent_mode_t));
+    foreach (cpm_noc_axi_agnt[ii])
+      do_compare &= comparer.compare_field_int($sformatf("cpm_noc_axi_agnt[%0d]",ii),
+                      cpm_noc_axi_agnt[ii], t.cpm_noc_axi_agnt[ii], $bits(agent_mode_t));
+`endif
+  endfunction
+
+  // Returns 1 if this object is unmodified from a freshly constructed one
+  virtual function bit is_default();
+    tb_env_cfg default_cfg = new("default_cfg");
+    return this.compare(default_cfg);
+  endfunction
+
+endclass

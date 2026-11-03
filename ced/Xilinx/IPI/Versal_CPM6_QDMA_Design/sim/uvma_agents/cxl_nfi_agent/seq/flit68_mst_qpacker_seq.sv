@@ -57,7 +57,7 @@ class flit68_mst_qpacker_seq#(parameter NFI_W=3) extends cxl_nfi_mst_in_order_se
 
   typedef enum {H2DREQ, H2DDAT, H2DRSP, D2HREQ, D2HDAT, D2HRSP,
                 M2SREQ, M2SRWD, S2MDRS, S2MNDR,
-                // Below values cannot randomized
+                // Below values not randomization targets
                 NONE, DATA} e_txn_type;
 
   rand e_txn_type r_tt; // randomized txn type; potentially rand multiple times per slot

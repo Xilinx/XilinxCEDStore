@@ -616,9 +616,9 @@ class flit68_txn extends flit_base_txn;
     end
     // Set if flit is empty
     empty_flit = &empty_slot;
-    // 1 bit of parity for each 64 bits
+    // 1 bit of parity (odd) for each 64 bits
     foreach(parity[ii])
-      parity[ii] = ^flit.raw[ii*64+:64];
+      parity[ii] = ~^flit.raw[ii*64+:64];
     // Set viral to 0 right now, could be added in the future
     viral = '0;
     // Check if adf needs to be set based on flit composition

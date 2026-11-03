@@ -7,19 +7,15 @@ package cpm6_qdma_params_pkg;
   localparam NUM_PF = 1;
   localparam NUM_VF = 8;
   localparam NUM_CHN = 128;
-  // VF_OFFSET is VF0's absolute PCIe function number. CPM6's mailbox_fsm.sv
-  // sets it to NUM_PFS by default, but this IP build's actual generated
-  // VFGX_FIRST_VF_OFFSET (see genBd/msix_params.vh) is 4, not NUM_PF -- a
-  // pre-S4 mailbox convention this build predates. +define+VF_OFFSET_OVERRIDE=4
-  // forces the value this IP build actually uses; omit it once a build with
-  // VF_OFFSET == NUM_PFS is used instead.
+  // VF_OFFSET is VF0's absolute PCIe function number; it defaults to NUM_PF.
+  // This block design sets VFG0_FIRST_VF_OFFSET=4, so the Makefile passes
+  // +define+VF_OFFSET_OVERRIDE=4.
   localparam VF_OFFSET = `ifdef VF_OFFSET_OVERRIDE `VF_OFFSET_OVERRIDE `else NUM_PF `endif;
   localparam NUM_FNCS = NUM_PF + NUM_VF;
   localparam VIRTIO_EN = 0;
   localparam C_MHOST_EN = "FALSE";
-  // DMA mode — set by Makefile via +define+QDMA_DMA_ST=<0|1> +define+QDMA_DMA_MM=<0|1>.
-  // Auto-detected from Vivado IP wrapper (design_1_cpm6_qdma_0_0.sv).
-  // Fallback: DMA_ST=0, DMA_MM=1 (memory-mapped) if defines are absent.
+  // DMA mode — +define+QDMA_DMA_ST=<0|1> +define+QDMA_DMA_MM=<0|1>.
+  // Without the defines: DMA_ST=0, DMA_MM=1 (memory-mapped).
   localparam DMA_ST = `ifdef QDMA_DMA_ST `QDMA_DMA_ST `else 0 `endif;
   localparam DMA_MM = `ifdef QDMA_DMA_MM `QDMA_DMA_MM `else 1 `endif;
   localparam DMA_CMPT = DMA_ST;
@@ -54,17 +50,13 @@ package cpm6_qdma_params_pkg;
   // e.g. via `get_bd_cells ps_wizard_0` + inspect CPM6_CONFIG, or Vivado's Address Editor tab) --
   // bit [48] selects the PL0/PL2 vs PL1/PL3 port group, and the remaining bits are the offset
   // checked against that port's aperture BASEADDR/LIMITADDR. This BD's DMA_APERTURE0/1 are both
-  // BASEADDR=0x0/LIMITADDR=0xFFFF (64KB, matches PL_BRAM_APERTURE_SIZE) -- ADDR0 below was
-  // 0xC0000000 (an offset far outside that 64KB window; happened to collide numerically with
-  // the unrelated CPM6 DBI1 register segment on a different address map, not this BD's PL0
-  // aperture) and caused H2C writes on port 0 to target an unmapped offset, stalling the
-  // transfer after partial host-side read progress.
+  // BASEADDR=0x0/LIMITADDR=0xFFFF (64KB, matches PL_BRAM_APERTURE_SIZE).
   bit  [63:0] H2C_DAT_DST_ADDR0  = 64'h0;  //CPM-PL-AXI0 port Address assigned in PL address editor
-  bit  [63:0] H2C_DAT_DST_ADDR1  = 64'h1_0000_0000_0000;  //CPM-PL-AXI1 port Address assigned in PL address editor -
+  bit  [63:0] H2C_DAT_DST_ADDR1  = 64'h1_0000_0000_0000;  //CPM-PL-AXI1 port Address assigned in PL address editor
   bit  [63:0] H2C_DAT_DST_ADDR2  = 64'h02040000;  //CPM-PL-AXI2 port address from the PL Address Editor. NOTE: in this design DMA_APERTURE2 targets PCIE_AXI_NOC0 (CSR/register space), not a third BRAM port, and is only reachable with NUM_DMA_PORTS>2 (default 2). Confirm the Address Editor before using this address.
   bit  [63:0] H2C_DAT_DST_ADDR3  = 64'h04040000;  //CPM-PL-AXI3 port address from the PL Address Editor. Same caveat as ADDR2; this design defines 3 DMA apertures total. Confirm the Address Editor before using this address.
   // Size of the AXI-PL0/PL1 BRAM apertures backing H2C_DAT_DST_ADDR0/1 and
-  // C2H_DAT_SRC_ADDR0/1 (axi_bram_ctrl_0/_1 in genBd_cpm6_qdma_ip_2026_2_072026.tcl).
+  // C2H_DAT_SRC_ADDR0/1 (axi_bram_ctrl_0/_1 in the block design).
   // Used to assign each QID a wrapped slot index so its destination/source offset
   // never exceeds the real backing memory, regardless of how many QIDs are tested
   // or their numeric values.
@@ -76,7 +68,7 @@ package cpm6_qdma_params_pkg;
   // C2H reads from PL1 BRAM (independent of H2C which uses PL0 BRAM).
   // PL1 BRAM is pre-loaded with the H2C data pattern before C2H PIDX is issued,
   // eliminating the ordering dependency between H2C and C2H in DIRECTION=BOTH.
-  bit  [63:0] C2H_DAT_SRC_ADDR0  = H2C_DAT_DST_ADDR1;  // PL1 BRAM (was PL0)
+  bit  [63:0] C2H_DAT_SRC_ADDR0  = H2C_DAT_DST_ADDR1;  // PL1 BRAM
   bit  [63:0] C2H_DAT_SRC_ADDR1  = H2C_DAT_DST_ADDR1;  // PL1 BRAM
   bit  [63:0] C2H_DAT_SRC_ADDR2  = H2C_DAT_DST_ADDR1;  // PL1 BRAM
   bit  [63:0] C2H_DAT_SRC_ADDR3  = H2C_DAT_DST_ADDR1;  // PL1 BRAM

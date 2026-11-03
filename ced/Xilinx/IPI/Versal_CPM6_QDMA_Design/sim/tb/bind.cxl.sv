@@ -91,12 +91,12 @@ import uvm_pkg::*;
     
     // CXL Power Mgmt (out)
     assign pm_out_0.clk       = inst.cxl0_clk;
-    assign pm_out_0.sig[32:0] = inst.cxl0_pm_out;
+    assign pm_out_0.sig[32:0] = inst.cxl0_pm_out; 
 
     // CXL Power Mgmt (in)
     assign pm_in_0.clk       = inst.cxl0_clk;
-    assign pm_in_0.sig[33:0] = inst.cxl0_pm_in;
-
+    assign pm_in_0.sig[33:0] = inst.cxl0_pm_in; 
+    
     // NFI Rx (from link)
     assign nfi_rx_0.clk     = inst.cxl0_clk;
     assign nfi_rx_0.data    = inst.cxl0_rx_data;   
@@ -187,12 +187,12 @@ import uvm_pkg::*;
     
     // CXL Power Mgmt (out)
     assign pm_out_1.clk       = inst.cxl1_clk;
-    assign pm_out_1.sig[32:0] = inst.cxl1_pm_out;
+    assign pm_out_1.sig[32:0] = inst.cxl1_pm_out; 
 
     // CXL Power Mgmt (in)
     assign pm_in_1.clk       = inst.cxl1_clk;
-    assign pm_in_1.sig[33:0] = inst.cxl1_pm_in;
-
+    assign pm_in_1.sig[33:0] = inst.cxl1_pm_in; 
+    
     // NFI Rx (from link)
     assign nfi_rx_1.clk     = inst.cxl1_clk;
     assign nfi_rx_1.data    = inst.cxl1_rx_data;   

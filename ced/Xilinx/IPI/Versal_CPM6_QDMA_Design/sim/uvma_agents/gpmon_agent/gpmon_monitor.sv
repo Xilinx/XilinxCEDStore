@@ -62,7 +62,8 @@ class gpmon_monitor#(type CFG, type VIF, type TXN) extends base_monitor#(CFG,VIF
       end
       ap.write(txn);
       base_ap.write(bt);
-      // Clear the txn.ml_sig_enum because we're not new the object
+      // Clear the txn.ml_sig_enum because we're not new-ing the object
+      // and we will get repeated prints from the callback
       txn.ml_sig_enum.delete();
     end
   endtask

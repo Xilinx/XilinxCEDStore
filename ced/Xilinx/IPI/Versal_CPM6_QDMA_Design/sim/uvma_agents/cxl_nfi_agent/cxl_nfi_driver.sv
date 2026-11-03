@@ -25,7 +25,7 @@ class cxl_nfi_driver#(type REQ, type RSP, type VIF, type CFG, type SHR) extends 
   endfunction
 
   virtual task run_phase(uvm_phase phase);
-    if (cfg.is_master && cfg.valid_only_mode) begin
+    if (cfg.is_master() && cfg.valid_only_mode) begin
       fork
         forever begin
           @(vif.mcb);
@@ -39,7 +39,7 @@ class cxl_nfi_driver#(type REQ, type RSP, type VIF, type CFG, type SHR) extends 
 
   virtual task drive_init();
     vif.agent_driven = 1;
-    if (cfg.is_slave)
+    if (cfg.is_slave())
       vif.i_ready   <= '1;
     else begin
       vif.i_valid   <= '0;
@@ -57,7 +57,7 @@ class cxl_nfi_driver#(type REQ, type RSP, type VIF, type CFG, type SHR) extends 
 
   virtual task drive_item(REQ req);
     // Active slave drives ready to control blocking
-    if (cfg.is_slave) begin
+    if (cfg.is_slave()) begin
       // ready is just a signal expanded to a bus, drive the txn lsb on bus
       vif.dcb.i_ready <= {5{req.ready[0]}};
       @(vif.dcb);
@@ -149,144 +149,101 @@ class cxl_nfi_driver#(type REQ, type RSP, type VIF, type CFG, type SHR) extends 
 
   virtual function void report_phase(uvm_phase phase);
     string amsg, lmsg, spc; //amsg = "all msg", lmsg = "line msg"
-    int digits;
-    int unsigned max[$];
-    int unsigned new_max[$];
+    int unsigned digits[0:2];
+    int unsigned tmp_max[$];
+    int unsigned max[0:2];
     int unsigned total_flits;
+    int unsigned tmp_total;
     super.report_phase(phase);
-    if (cfg.disable_final_txn_reporting || cfg.is_slave) return;
+    if (cfg.disable_final_txn_reporting || cfg.is_slave()) return;
     // Find the biggest number
-    max     = total_req_driven.max;
-    new_max = total_dat_driven.max;
-    if (new_max[0] > max[0]) max = new_max;
-    new_max = total_rsp_driven.max;
-    if (new_max[0] > max[0]) max = new_max;
-    // Find how many digits to fit biggest number
-    if (max[0]/10000)     digits = 5;
-    else if (max[0]/1000) digits = 4;
-    else if (max[0]/100)  digits = 3;
-    else if (max[0]/10)   digits = 2;
-    else if (max[0]/1)    digits = 1;
-    else    return;
+    tmp_max = total_req_driven.max(); max[0] = tmp_max[0];
+    tmp_max = total_dat_driven.max(); max[1] = tmp_max[0];
+    tmp_max = total_rsp_driven.max(); max[2] = tmp_max[0];
+    // Find how many digits to fit biggest number in each column
+    foreach (max[ii]) begin
+      if      (max[ii] >= 1_000_000)  digits[ii] = 7;
+      else if (max[ii] >= 100_000)    digits[ii] = 6;
+      else if (max[ii] >= 10_000)     digits[ii] = 5;
+      else if (max[ii] >= 1_000)      digits[ii] = 4;
+      else if (max[ii] >= 100)        digits[ii] = 3;
+      else if (max[ii] >= 10)         digits[ii] = 2;
+      else                            digits[ii] = 1;
+    end
     total_flits = cfg.flitmode==F68 ? total_slotsets : total_slotsets/4;
     amsg = {"Summary Statistics\n"};
-    if (cfg.dir == H2C) begin 
-      case (digits)
-        5 : lmsg = $sformatf("CXL.mem     : %5d REQ (M2S_Req) | %5d DAT (M2S_RwD) | %0sNone",
-                            total_req_driven[1], 
-                            total_dat_driven[1],
-                            {digits-1{" "}});
-        4 : lmsg = $sformatf("CXL.mem     : %4d REQ (M2S_Req) | %4d DAT (M2S_RwD) | %0sNone",
-                            total_req_driven[1], 
-                            total_dat_driven[1],
-                            {digits-1{" "}});
-        3 : lmsg = $sformatf("CXL.mem     : %3d REQ (M2S_Req) | %3d DAT (M2S_RwD) | %0sNone",
-                            total_req_driven[1], 
-                            total_dat_driven[1],
-                            {digits-1{" "}});
-        2 : lmsg = $sformatf("CXL.mem     : %2d REQ (M2S_Req) | %2d DAT (M2S_RwD) | %0sNone",
-                            total_req_driven[1], 
-                            total_dat_driven[1],
-                            {digits-1{" "}});
-        1 : lmsg = $sformatf("CXL.mem     : %1d REQ (M2S_Req) | %1d DAT (M2S_RwD) | %0sNone",
-                            total_req_driven[1], 
-                            total_dat_driven[1],
-                            {digits-1{" "}});
-        default : lmsg = "print error, see driver";
+    lmsg = $sformatf("CXL.mem     :");
+    foreach (max[ii]) begin
+      case (ii)
+        0 : tmp_total = total_req_driven[1];
+        1 : tmp_total = total_dat_driven[1];
+        2 : tmp_total = total_rsp_driven[1];
       endcase
-    end
-    else begin
-      spc = !total_req_driven[0] && !total_dat_driven[0] && !total_rsp_driven[0] ? "" : {digits+9{" "}};
-      case (digits)
-        5 : lmsg = $sformatf("CXL.mem     : %0sNone | %5d DAT (S2M_DRS) | %5d RSP (S2M_NDR) ",
-                             spc,
-                             total_dat_driven[1],
-                             total_rsp_driven[1]);
-        4 : lmsg = $sformatf("CXL.mem     : %0sNone | %4d DAT (S2M_DRS) | %4d RSP (S2M_NDR) ",
-                             spc,
-                             total_dat_driven[1],
-                             total_rsp_driven[1]);
-        3 : lmsg = $sformatf("CXL.mem     : %0sNone | %3d DAT (S2M_DRS) | %3d RSP (S2M_NDR) ",
-                             spc,
-                             total_dat_driven[1],
-                             total_rsp_driven[1]);
-        2 : lmsg = $sformatf("CXL.mem     : %0sNone | %2d DAT (S2M_DRS) | %2d RSP (S2M_NDR) ",
-                             spc,
-                             total_dat_driven[1], 
-                             total_rsp_driven[1]);
-        1 : lmsg = $sformatf("CXL.mem     : %0sNone | %1d DAT (S2M_DRS) | %1d RSP (S2M_NDR) ",
-                             spc,
-                             total_dat_driven[1], 
-                             total_rsp_driven[1]);
-        default : lmsg = "print error, see driver";
+      case (digits[ii])
+        7  : lmsg = {lmsg, $sformatf(" %7d", tmp_total)};
+        6  : lmsg = {lmsg, $sformatf(" %6d", tmp_total)};
+        5  : lmsg = {lmsg, $sformatf(" %5d", tmp_total)};
+        4  : lmsg = {lmsg, $sformatf(" %4d", tmp_total)};
+        3  : lmsg = {lmsg, $sformatf(" %3d", tmp_total)};
+        2  : lmsg = {lmsg, $sformatf(" %2d", tmp_total)};
+        1  : lmsg = {lmsg, $sformatf(" %1d", tmp_total)};
+        0  : lmsg = {lmsg, $sformatf(" %1d", tmp_total)};
       endcase
+      if (cfg.dir == H2C) begin 
+        case (ii)
+          0 : lmsg = {lmsg, " REQ (M2S_Req) |"};
+          1 : lmsg = {lmsg, " DAT (M2S_RwD) |"};
+          2 : lmsg = {lmsg, " RSP (M2S_BIRsp)"};
+        endcase
+      end
+      else begin
+        case (ii)
+          0 : lmsg = {lmsg, " REQ (S2M_BISnp) |"};
+          1 : lmsg = {lmsg, " DAT (S2M_DRS) |"};
+          2 : lmsg = {lmsg, " RSP (S2M_NDR)"};
+        endcase
+      end
     end
     // If no .mem txns, just align and print "None" for that whole row
     if (!total_req_driven[1] && !total_dat_driven[1] && !total_rsp_driven[1]) begin
-      lmsg = "CXL.mem     :";
-      repeat (digits-1) lmsg = {lmsg," "};
-      lmsg = {lmsg,"None"};
+      lmsg = "CXL.mem     : None";
     end
     amsg = {amsg, {70{"-"}}, "\n", $sformatf("Total Flits : %0d\n",total_flits), lmsg, "\n"};
-    if (cfg.dir == H2C) begin
-      case (digits)
-        5 : lmsg = $sformatf("CXL.cache   : %5d REQ (H2D_Req) | %5d DAT (H2D_Dat) | %5d RSP (H2D_Rsp) ",
-                            total_req_driven[0],
-                            total_dat_driven[0],
-                            total_rsp_driven[0]);
-        4 : lmsg = $sformatf("CXL.cache   : %4d REQ (H2D_Req) | %4d DAT (H2D_Dat) | %4d RSP (H2D_Rsp) ",
-                            total_req_driven[0],
-                            total_dat_driven[0],
-                            total_rsp_driven[0]);
-        3 : lmsg = $sformatf("CXL.cache   : %3d REQ (H2D_Req) | %3d DAT (H2D_Dat) | %3d RSP (H2D_Rsp) ",
-                            total_req_driven[0],
-                            total_dat_driven[0],
-                            total_rsp_driven[0]);
-        2 : lmsg = $sformatf("CXL.cache   : %2d REQ (H2D_Req) | %2d DAT (H2D_Dat) | %2d RSP (H2D_Rsp) ",
-                            total_req_driven[0],
-                            total_dat_driven[0],
-                            total_rsp_driven[0]);
-        1 : lmsg = $sformatf("CXL.cache   : %1d REQ (H2D_Req) | %1d DAT (H2D_Dat) | %1d RSP (H2D_Rsp) ",
-                            total_req_driven[0],
-                            total_dat_driven[0],
-                            total_rsp_driven[0]);
-        default : lmsg = "print error, see driver";
+    lmsg = $sformatf("CXL.cache   :");
+    foreach (max[ii]) begin
+      case (ii)
+        0 : tmp_total = total_req_driven[0];
+        1 : tmp_total = total_dat_driven[0];
+        2 : tmp_total = total_rsp_driven[0];
       endcase
-    end
-    else begin
-      case (digits)
-        5 : lmsg = $sformatf("CXL.cache   : %5d REQ (D2H_Req) | %5d DAT (D2H_Dat) | %5d RSP (D2H_Rsp) ",
-                            total_req_driven[0],
-                            total_dat_driven[0],
-                            total_rsp_driven[0]);
-        4 : lmsg = $sformatf("CXL.cache   : %4d REQ (D2H_Req) | %4d DAT (D2H_Dat) | %4d RSP (D2H_Rsp) ",
-                            total_req_driven[0],
-                            total_dat_driven[0],
-                            total_rsp_driven[0]);
-        3 : lmsg = $sformatf("CXL.cache   : %3d REQ (D2H_Req) | %3d DAT (D2H_Dat) | %3d RSP (D2H_Rsp) ",
-                            total_req_driven[0],
-                            total_dat_driven[0],
-                            total_rsp_driven[0]);
-        2 : lmsg = $sformatf("CXL.cache   : %2d REQ (D2H_Req) | %2d DAT (D2H_Dat) | %2d RSP (D2H_Rsp) ",
-                            total_req_driven[0],
-                            total_dat_driven[0],
-                            total_rsp_driven[0]);
-        1 : lmsg = $sformatf("CXL.cache   : %1d REQ (D2H_Req) | %1d DAT (D2H_Dat) | %1d RSP (D2H_Rsp) ",
-                            total_req_driven[0],
-                            total_dat_driven[0],
-                            total_rsp_driven[0]);
-        default : lmsg = "print error, see driver";
+      case (digits[ii])
+        7  : lmsg = {lmsg, $sformatf(" %7d", tmp_total)};
+        6  : lmsg = {lmsg, $sformatf(" %6d", tmp_total)};
+        5  : lmsg = {lmsg, $sformatf(" %5d", tmp_total)};
+        4  : lmsg = {lmsg, $sformatf(" %4d", tmp_total)};
+        3  : lmsg = {lmsg, $sformatf(" %3d", tmp_total)};
+        2  : lmsg = {lmsg, $sformatf(" %2d", tmp_total)};
+        1  : lmsg = {lmsg, $sformatf(" %1d", tmp_total)};
+        0  : lmsg = {lmsg, $sformatf(" %1d", tmp_total)};
       endcase
+      if (cfg.dir == H2C) begin
+        case (ii)
+          0 : lmsg = {lmsg, " REQ (H2D_Req) |"};
+          1 : lmsg = {lmsg, " DAT (H2D_Dat) |"};
+          2 : lmsg = {lmsg, " RSP (H2D_Rsp)"};
+        endcase
+      end
+      else begin
+        case (ii)
+          0 : lmsg = {lmsg, " REQ (D2H_Req)   |"};
+          1 : lmsg = {lmsg, " DAT (D2H_Dat) |"};
+          2 : lmsg = {lmsg, " RSP (D2H_Rsp)"};
+        endcase
+      end
     end
     // If no .cache txns, just align and print "None" for that whole row
     if (!total_req_driven[0] && !total_dat_driven[0] && !total_rsp_driven[0]) begin
-      if (cfg.dir == H2C) begin
-        lmsg = "CXL.cache   :";
-        repeat (digits-1) lmsg = {lmsg," "};
-        lmsg = {lmsg,"None"};
-      end
-      else
-        lmsg = "CXL.cache   : None";
+      lmsg = "CXL.cache   : None";
     end
     amsg = {amsg, lmsg, "\n", {70{"-"}}};
     // Send it

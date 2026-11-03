@@ -99,10 +99,6 @@ class amd_cfg_tlp extends amd_base_tlp;
       this.dst_bdf = bdf;
   endfunction
 
-//  . build_rd_raw
-//  . build_wr_raw
-//  . build_rd_raw_fm
-//  . build_wr_raw_fm
 
 //  virtual function void build_write(bit [15:0] bdf, bit [11:0] addr, bit [31:0] data, 
 //                                    bit [ 3:0] be = '1);

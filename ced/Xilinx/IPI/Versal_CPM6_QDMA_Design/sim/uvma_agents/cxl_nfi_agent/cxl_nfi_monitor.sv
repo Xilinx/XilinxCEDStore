@@ -72,7 +72,7 @@ class cxl_nfi_monitor#(type CFG, type VIF, type TXN, type SHR) extends base_moni
           t68.unpack_flit();
 
           // Check if we've given link partner enough credits for txns it sent us
-          if (cfg.is_slave) check_rcvd_have_credits(t68);
+          if (cfg.is_slave()) check_rcvd_have_credits(t68);
 
           // Broadcast out APs
           ap68.write(t68);
@@ -122,7 +122,7 @@ class cxl_nfi_monitor#(type CFG, type VIF, type TXN, type SHR) extends base_moni
           t256.unpack_slotset(ptr);
 
           // Check if we've given link partner enough credits for txns it sent us
-          if (cfg.is_slave && ptr==3) check_rcvd_have_credits(t256);
+          if (cfg.is_slave() && ptr==3) check_rcvd_have_credits(t256);
 
           // Have the assembler parse the slotset
           apSS.write(t256.slotset[ptr]);

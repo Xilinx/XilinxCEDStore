@@ -1,4 +1,4 @@
-/* DESCRIPTION
+/* DESCRIPTION 
  * This class exists to complete enumeration of the bus; after which the user
  * should run test-specific behavior.
 |*/

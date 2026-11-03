@@ -83,103 +83,103 @@ class ecap_pl_64gts extends ecap_base;
     
   struct { 
     struct {
-      field_attr_t usp_tx_preset = {'h1F, 7, 4, ACC_HWINIT|ACC_RSVDP, ACC_UNSPEC, 'x, 'x, 'x};
-      field_attr_t dsp_tx_preset = {'h1F, 3, 0, ACC_HWINIT|ACC_RSVDP, ACC_UNSPEC, 'x, 'x, 'x};
+      field_attr_t usp_tx_preset = '{'h1F, 7, 4, field_acc_t'(ACC_HWINIT|ACC_RSVDP), ACC_UNSPEC, 'x, 'x, 'x};
+      field_attr_t dsp_tx_preset = '{'h1F, 3, 0, field_acc_t'(ACC_HWINIT|ACC_RSVDP), ACC_UNSPEC, 'x, 'x, 'x};
     } lane15_eq;
     // -- //
     struct {
-      field_attr_t usp_tx_preset = {'h1E, 7, 4, ACC_HWINIT|ACC_RSVDP, ACC_UNSPEC, 'x, 'x, 'x};
-      field_attr_t dsp_tx_preset = {'h1E, 3, 0, ACC_HWINIT|ACC_RSVDP, ACC_UNSPEC, 'x, 'x, 'x};
+      field_attr_t usp_tx_preset = '{'h1E, 7, 4, field_acc_t'(ACC_HWINIT|ACC_RSVDP), ACC_UNSPEC, 'x, 'x, 'x};
+      field_attr_t dsp_tx_preset = '{'h1E, 3, 0, field_acc_t'(ACC_HWINIT|ACC_RSVDP), ACC_UNSPEC, 'x, 'x, 'x};
     } lane14_eq;
     // -- //
     struct {
-      field_attr_t usp_tx_preset = {'h1D, 7, 4, ACC_HWINIT|ACC_RSVDP, ACC_UNSPEC, 'x, 'x, 'x};
-      field_attr_t dsp_tx_preset = {'h1D, 3, 0, ACC_HWINIT|ACC_RSVDP, ACC_UNSPEC, 'x, 'x, 'x};
+      field_attr_t usp_tx_preset = '{'h1D, 7, 4, field_acc_t'(ACC_HWINIT|ACC_RSVDP), ACC_UNSPEC, 'x, 'x, 'x};
+      field_attr_t dsp_tx_preset = '{'h1D, 3, 0, field_acc_t'(ACC_HWINIT|ACC_RSVDP), ACC_UNSPEC, 'x, 'x, 'x};
     } lane13_eq;
     // -- //
     struct {
-      field_attr_t usp_tx_preset = {'h1C, 7, 4, ACC_HWINIT|ACC_RSVDP, ACC_UNSPEC, 'x, 'x, 'x};
-      field_attr_t dsp_tx_preset = {'h1C, 3, 0, ACC_HWINIT|ACC_RSVDP, ACC_UNSPEC, 'x, 'x, 'x};
+      field_attr_t usp_tx_preset = '{'h1C, 7, 4, field_acc_t'(ACC_HWINIT|ACC_RSVDP), ACC_UNSPEC, 'x, 'x, 'x};
+      field_attr_t dsp_tx_preset = '{'h1C, 3, 0, field_acc_t'(ACC_HWINIT|ACC_RSVDP), ACC_UNSPEC, 'x, 'x, 'x};
     } lane12_eq;
     // -- //
     struct {
-      field_attr_t usp_tx_preset = {'h1B, 7, 4, ACC_HWINIT|ACC_RSVDP, ACC_UNSPEC, 'x, 'x, 'x};
-      field_attr_t dsp_tx_preset = {'h1B, 3, 0, ACC_HWINIT|ACC_RSVDP, ACC_UNSPEC, 'x, 'x, 'x};
+      field_attr_t usp_tx_preset = '{'h1B, 7, 4, field_acc_t'(ACC_HWINIT|ACC_RSVDP), ACC_UNSPEC, 'x, 'x, 'x};
+      field_attr_t dsp_tx_preset = '{'h1B, 3, 0, field_acc_t'(ACC_HWINIT|ACC_RSVDP), ACC_UNSPEC, 'x, 'x, 'x};
     } lane11_eq;
     // -- //
     struct {
-      field_attr_t usp_tx_preset = {'h1A, 7, 4, ACC_HWINIT|ACC_RSVDP, ACC_UNSPEC, 'x, 'x, 'x};
-      field_attr_t dsp_tx_preset = {'h1A, 3, 0, ACC_HWINIT|ACC_RSVDP, ACC_UNSPEC, 'x, 'x, 'x};
+      field_attr_t usp_tx_preset = '{'h1A, 7, 4, field_acc_t'(ACC_HWINIT|ACC_RSVDP), ACC_UNSPEC, 'x, 'x, 'x};
+      field_attr_t dsp_tx_preset = '{'h1A, 3, 0, field_acc_t'(ACC_HWINIT|ACC_RSVDP), ACC_UNSPEC, 'x, 'x, 'x};
     } lane10_eq;
     // -- //
     struct {
-      field_attr_t usp_tx_preset = {'h19, 7, 4, ACC_HWINIT|ACC_RSVDP, ACC_UNSPEC, 'x, 'x, 'x};
-      field_attr_t dsp_tx_preset = {'h19, 3, 0, ACC_HWINIT|ACC_RSVDP, ACC_UNSPEC, 'x, 'x, 'x};
+      field_attr_t usp_tx_preset = '{'h19, 7, 4, field_acc_t'(ACC_HWINIT|ACC_RSVDP), ACC_UNSPEC, 'x, 'x, 'x};
+      field_attr_t dsp_tx_preset = '{'h19, 3, 0, field_acc_t'(ACC_HWINIT|ACC_RSVDP), ACC_UNSPEC, 'x, 'x, 'x};
     } lane9_eq;
     // -- //
     struct {
-      field_attr_t usp_tx_preset = {'h18, 7, 4, ACC_HWINIT|ACC_RSVDP, ACC_UNSPEC, 'x, 'x, 'x};
-      field_attr_t dsp_tx_preset = {'h18, 3, 0, ACC_HWINIT|ACC_RSVDP, ACC_UNSPEC, 'x, 'x, 'x};
+      field_attr_t usp_tx_preset = '{'h18, 7, 4, field_acc_t'(ACC_HWINIT|ACC_RSVDP), ACC_UNSPEC, 'x, 'x, 'x};
+      field_attr_t dsp_tx_preset = '{'h18, 3, 0, field_acc_t'(ACC_HWINIT|ACC_RSVDP), ACC_UNSPEC, 'x, 'x, 'x};
     } lane8_eq;
     // -- //
     struct {
-      field_attr_t usp_tx_preset = {'h17, 7, 4, ACC_HWINIT|ACC_RSVDP, ACC_UNSPEC, 'x, 'x, 'x};
-      field_attr_t dsp_tx_preset = {'h17, 3, 0, ACC_HWINIT|ACC_RSVDP, ACC_UNSPEC, 'x, 'x, 'x};
+      field_attr_t usp_tx_preset = '{'h17, 7, 4, field_acc_t'(ACC_HWINIT|ACC_RSVDP), ACC_UNSPEC, 'x, 'x, 'x};
+      field_attr_t dsp_tx_preset = '{'h17, 3, 0, field_acc_t'(ACC_HWINIT|ACC_RSVDP), ACC_UNSPEC, 'x, 'x, 'x};
     } lane7_eq;
     // -- //
     struct {
-      field_attr_t usp_tx_preset = {'h16, 7, 4, ACC_HWINIT|ACC_RSVDP, ACC_UNSPEC, 'x, 'x, 'x};
-      field_attr_t dsp_tx_preset = {'h16, 3, 0, ACC_HWINIT|ACC_RSVDP, ACC_UNSPEC, 'x, 'x, 'x};
+      field_attr_t usp_tx_preset = '{'h16, 7, 4, field_acc_t'(ACC_HWINIT|ACC_RSVDP), ACC_UNSPEC, 'x, 'x, 'x};
+      field_attr_t dsp_tx_preset = '{'h16, 3, 0, field_acc_t'(ACC_HWINIT|ACC_RSVDP), ACC_UNSPEC, 'x, 'x, 'x};
     } lane6_eq;
     // -- //
     struct {
-      field_attr_t usp_tx_preset = {'h15, 7, 4, ACC_HWINIT|ACC_RSVDP, ACC_UNSPEC, 'x, 'x, 'x};
-      field_attr_t dsp_tx_preset = {'h15, 3, 0, ACC_HWINIT|ACC_RSVDP, ACC_UNSPEC, 'x, 'x, 'x};
+      field_attr_t usp_tx_preset = '{'h15, 7, 4, field_acc_t'(ACC_HWINIT|ACC_RSVDP), ACC_UNSPEC, 'x, 'x, 'x};
+      field_attr_t dsp_tx_preset = '{'h15, 3, 0, field_acc_t'(ACC_HWINIT|ACC_RSVDP), ACC_UNSPEC, 'x, 'x, 'x};
     } lane5_eq;
     // -- //
     struct {
-      field_attr_t usp_tx_preset = {'h14, 7, 4, ACC_HWINIT|ACC_RSVDP, ACC_UNSPEC, 'x, 'x, 'x};
-      field_attr_t dsp_tx_preset = {'h14, 3, 0, ACC_HWINIT|ACC_RSVDP, ACC_UNSPEC, 'x, 'x, 'x};
+      field_attr_t usp_tx_preset = '{'h14, 7, 4, field_acc_t'(ACC_HWINIT|ACC_RSVDP), ACC_UNSPEC, 'x, 'x, 'x};
+      field_attr_t dsp_tx_preset = '{'h14, 3, 0, field_acc_t'(ACC_HWINIT|ACC_RSVDP), ACC_UNSPEC, 'x, 'x, 'x};
     } lane4_eq;
     // -- //
     struct {
-      field_attr_t usp_tx_preset = {'h13, 7, 4, ACC_HWINIT|ACC_RSVDP, ACC_UNSPEC, 'x, 'x, 'x};
-      field_attr_t dsp_tx_preset = {'h13, 3, 0, ACC_HWINIT|ACC_RSVDP, ACC_UNSPEC, 'x, 'x, 'x};
+      field_attr_t usp_tx_preset = '{'h13, 7, 4, field_acc_t'(ACC_HWINIT|ACC_RSVDP), ACC_UNSPEC, 'x, 'x, 'x};
+      field_attr_t dsp_tx_preset = '{'h13, 3, 0, field_acc_t'(ACC_HWINIT|ACC_RSVDP), ACC_UNSPEC, 'x, 'x, 'x};
     } lane3_eq;
     // -- //
     struct {
-      field_attr_t usp_tx_preset = {'h12, 7, 4, ACC_HWINIT|ACC_RSVDP, ACC_UNSPEC, 'x, 'x, 'x};
-      field_attr_t dsp_tx_preset = {'h12, 3, 0, ACC_HWINIT|ACC_RSVDP, ACC_UNSPEC, 'x, 'x, 'x};
+      field_attr_t usp_tx_preset = '{'h12, 7, 4, field_acc_t'(ACC_HWINIT|ACC_RSVDP), ACC_UNSPEC, 'x, 'x, 'x};
+      field_attr_t dsp_tx_preset = '{'h12, 3, 0, field_acc_t'(ACC_HWINIT|ACC_RSVDP), ACC_UNSPEC, 'x, 'x, 'x};
     } lane2_eq;
     // -- //
     struct {
-      field_attr_t usp_tx_preset = {'h11, 7, 4, ACC_HWINIT|ACC_RSVDP, ACC_UNSPEC, 'x, 'x, 'x};
-      field_attr_t dsp_tx_preset = {'h11, 3, 0, ACC_HWINIT|ACC_RSVDP, ACC_UNSPEC, 'x, 'x, 'x};
+      field_attr_t usp_tx_preset = '{'h11, 7, 4, field_acc_t'(ACC_HWINIT|ACC_RSVDP), ACC_UNSPEC, 'x, 'x, 'x};
+      field_attr_t dsp_tx_preset = '{'h11, 3, 0, field_acc_t'(ACC_HWINIT|ACC_RSVDP), ACC_UNSPEC, 'x, 'x, 'x};
     } lane1_eq;
     // -- //
     struct {
-      field_attr_t usp_tx_preset = {'h10, 7, 4, ACC_HWINIT|ACC_RSVDP, ACC_UNSPEC, 'x, 'x, 'x};
-      field_attr_t dsp_tx_preset = {'h10, 3, 0, ACC_HWINIT|ACC_RSVDP, ACC_UNSPEC, 'x, 'x, 'x};
+      field_attr_t usp_tx_preset = '{'h10, 7, 4, field_acc_t'(ACC_HWINIT|ACC_RSVDP), ACC_UNSPEC, 'x, 'x, 'x};
+      field_attr_t dsp_tx_preset = '{'h10, 3, 0, field_acc_t'(ACC_HWINIT|ACC_RSVDP), ACC_UNSPEC, 'x, 'x, 'x};
     } lane0_eq;
     // -- //
     struct {
-      field_attr_t rsvd31to8         = {'hC, 31, 8, ACC_RSVDZ,           ACC_UNSPEC, 'x, 'x, 'x};
-      field_attr_t no_eq_needed      = {'hC, 7,  7, ACC_RO,              ACC_UNSPEC, 'x, 'x, 'x};
-      field_attr_t tx_precoding_req  = {'hC, 6,  6, ACC_RO,              ACC_UNSPEC, 'x, 'x, 'x};
-      field_attr_t tx_precoding_on   = {'hC, 5,  5, ACC_RO,              ACC_UNSPEC, 'x, 'x, 'x};
-      field_attr_t link_eq_req_64gts = {'hC, 4,  4, ACC_RW1CS|ACC_RSVDZ, ACC_UNSPEC, 'x, 'x, 'x};
-      field_attr_t eq_64gts_ph3_succ = {'hC, 3,  3, ACC_ROS|ACC_RSVDZ,   ACC_UNSPEC, 'x, 'x, 'x};
-      field_attr_t eq_64gts_ph2_succ = {'hC, 2,  2, ACC_ROS|ACC_RSVDZ,   ACC_UNSPEC, 'x, 'x, 'x};
-      field_attr_t eq_64gts_ph1_succ = {'hC, 1,  1, ACC_ROS|ACC_RSVDZ,   ACC_UNSPEC, 'x, 'x, 'x};
-      field_attr_t eq_64gts_complete = {'hC, 0,  0, ACC_ROS|ACC_RSVDZ,   ACC_UNSPEC, 'x, 'x, 'x};
+      field_attr_t rsvd31to8         = '{'hC, 31, 8, ACC_RSVDZ,                         ACC_UNSPEC, 'x, 'x, 'x};
+      field_attr_t no_eq_needed      = '{'hC, 7,  7, ACC_RO,                            ACC_UNSPEC, 'x, 'x, 'x};
+      field_attr_t tx_precoding_req  = '{'hC, 6,  6, ACC_RO,                            ACC_UNSPEC, 'x, 'x, 'x};
+      field_attr_t tx_precoding_on   = '{'hC, 5,  5, ACC_RO,                            ACC_UNSPEC, 'x, 'x, 'x};
+      field_attr_t link_eq_req_64gts = '{'hC, 4,  4, field_acc_t'(ACC_RW1CS|ACC_RSVDZ), ACC_UNSPEC, 'x, 'x, 'x};
+      field_attr_t eq_64gts_ph3_succ = '{'hC, 3,  3, field_acc_t'(ACC_ROS  |ACC_RSVDZ), ACC_UNSPEC, 'x, 'x, 'x};
+      field_attr_t eq_64gts_ph2_succ = '{'hC, 2,  2, field_acc_t'(ACC_ROS  |ACC_RSVDZ), ACC_UNSPEC, 'x, 'x, 'x};
+      field_attr_t eq_64gts_ph1_succ = '{'hC, 1,  1, field_acc_t'(ACC_ROS  |ACC_RSVDZ), ACC_UNSPEC, 'x, 'x, 'x};
+      field_attr_t eq_64gts_complete = '{'hC, 0,  0, field_acc_t'(ACC_ROS  |ACC_RSVDZ), ACC_UNSPEC, 'x, 'x, 'x};
     } stts_64gts;
     // -- //
     struct {
-      field_attr_t rsvd31to0 = {'h8, 31, 0, ACC_RSVDP, ACC_UNSPEC, 'x, 'x, 'x};
+      field_attr_t rsvd31to0 = '{'h8, 31, 0, ACC_RSVDP, ACC_UNSPEC, 'x, 'x, 'x};
     } ctrl_64gts;
     // -- //
     struct {
-      field_attr_t rsvd31to0 = {'h4, 31, 0, ACC_RSVDP, ACC_UNSPEC, 'x, 'x, 'x};
+      field_attr_t rsvd31to0 = '{'h4, 31, 0, ACC_RSVDP, ACC_UNSPEC, 'x, 'x, 'x};
     } caps_64gts;
   } attrs; 
 

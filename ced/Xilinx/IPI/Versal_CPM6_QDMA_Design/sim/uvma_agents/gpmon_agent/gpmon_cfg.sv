@@ -24,8 +24,18 @@ class gpmon_cfg extends base_cfg;
       width        = _rhs.width;
       sync_control = _rhs.sync_control;
       print_radix  = _rhs.print_radix;
+      print_value  = _rhs.print_value;
       drop_first   = _rhs.drop_first;
     end
+  endfunction
+
+  virtual function void do_print(uvm_printer printer);
+    super.do_print(printer);
+    printer.print_int   ("width",        width,       32, UVM_DEC);
+    printer.print_string("sync_control", sync_control.name());
+    printer.print_string("print_radix",  print_radix.name());
+    printer.print_int   ("print_value",  print_value,  1, UVM_BIN);
+    printer.print_int   ("drop_first",   drop_first,   1, UVM_BIN);
   endfunction
 
 endclass

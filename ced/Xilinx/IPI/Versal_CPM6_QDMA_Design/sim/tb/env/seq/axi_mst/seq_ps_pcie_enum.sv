@@ -34,9 +34,6 @@ class seq_ps_pcie_enum extends seq_base_ps_axi32;
 
   // CXL HDM allocation knobs (host programs these into the device's HDM decoders)
   rand bit [63:0] cxl_mem_base;    // Starting host PA for CXL HDM allocation
-       // 4096 MiB (4 GiB): an arbitrary but generous default HDM allocation size,
-       // chosen as a whole multiple (16x) of the 256 MiB decoder granule enforced
-       // by the HDM decoder programming below.
        int        cxl_mem_size_mb = 4096; // Per-decoder allocation size in MiB
 
   constraint c_aper_base_alignment {
@@ -44,9 +41,9 @@ class seq_ps_pcie_enum extends seq_base_ps_axi32;
     mem_aper_base[19:0]   == '0;
     pfmem_aper_base[19:0] == '0;
     // 32b IO address support or not
-    dsp_io32 -> io_aper_base[31:16] == '0;
+    !dsp_io32 -> io_aper_base[31:16] == '0;
     // 64b PF Mem address support or not
-    dsp_pfmem64 -> pfmem_aper_base[63:32] == '0;
+    !dsp_pfmem64 -> pfmem_aper_base[63:32] == '0;
   };
 
   // CXL HDM base must be 256MiB aligned (minimum HDM decoder granule) and in 48-bit PA space
@@ -152,6 +149,7 @@ class seq_ps_pcie_enum extends seq_base_ps_axi32;
     dsp.primary_bus   = bus_base;
     dsp.secondary_bus = bus_base+1;
     dsp.subord_bus    = bus_base+1;
+    dsp.bdf           = '{b: bus_base, id: 8'h0};
     // CfgSpc 0x2C | {Subsys ID, Subsys Vendor ID}
     axi_rd(build_ecam_acc(dsp_ecam_base,'h2c), rdat);
     {dsp.subsys_id, dsp.subsys_vendorid} = rdat;
@@ -164,11 +162,17 @@ class seq_ps_pcie_enum extends seq_base_ps_axi32;
     dsp.ptype = amd_devport_t'(rdat[23:20]);
     // Ext. Capabilities Linked List
     get_ecaps(dsp_ecam_base, dsp);
+
+    // A CXL-capable port implements the Flex Bus Port DVSEC (ID=7)
+    foreach (dsp.ecap[ii]) begin
+      if (dsp.ecap[ii].id          == ECAP_DVSEC &&
+          dsp.ecap[ii].dvsec_vendid== CXL_VENDID &&
+          dsp.ecap[ii].dvsec_id    == 16'h7) begin
+          dsp.is_cxl_port = 1'b1;
+      end
+    end
     // --------------- //
     /* Upstream Port */
-    // - Support multiple PFs
-    // - Add VF support
-    // --------------- //
     usp_ecam_base = dsp_ecam_base+(1'b1<<20);
     usp = pcie_device::type_id::create("usp");
     // CfgSpc 0x0 | {Device ID, Vendor ID}
@@ -185,7 +189,8 @@ class seq_ps_pcie_enum extends seq_base_ps_axi32;
     {usp.deviceid, usp.vendorid} = rdat; 
     // CfgSpc 0x8 | {Class Code, Revision ID}
     axi_rd(build_ecam_acc(usp_ecam_base,'h8), rdat);
-    usp.class_code = rdat[31:8]; 
+    usp.class_code = rdat[31:8];
+    usp.bdf        = '{b: bus_base+1, id: 8'h0};
     // CfgSpc 0x2C | {Subsys ID, Subsys Vendor ID}
     axi_rd(build_ecam_acc(usp_ecam_base,'h2c), rdat);
     {usp.subsys_id, usp.subsys_vendorid} = rdat;
@@ -199,10 +204,11 @@ class seq_ps_pcie_enum extends seq_base_ps_axi32;
     // Ext. Capabilities Linked List
     get_ecaps(usp_ecam_base, usp);
 
+    // A CXL-capable port implements the Flex Bus Port DVSEC (ID=7)
     foreach (usp.ecap[ii]) begin
       if (usp.ecap[ii].id          == ECAP_DVSEC &&
           usp.ecap[ii].dvsec_vendid== CXL_VENDID &&
-          usp.ecap[ii].dvsec_id    == 16'h0) begin
+          usp.ecap[ii].dvsec_id    == 16'h7) begin
           usp.is_cxl_port = 1'b1;
       end
     end
@@ -381,12 +387,16 @@ class seq_ps_pcie_enum extends seq_base_ps_axi32;
     if (tot_io_sz) begin
       // CfgSpc 0x1C | {Sec. Sts, IO Limit, IO Base}
       axi_rd(build_ecam_acc(dsp_ecam_base,'h1C), rdat);
-      dsp_io32 = (rdat[3:0]=='h1);
+      dsp_io32 = (rdat[3:0]=='h1) && (rdat[11:8]=='h1);
+      if (rdat[3:0]!=rdat[11:8])
+        `uvm_error(get_type_name, "IO Base[3:0] and IO Limit[3:0] must contain the same value")
     end
     if (tot_pfmem_sz) begin
       // CfgSpc 0x24 | {PF Mem Limit, PF Mem Base}
       axi_rd(build_ecam_acc(dsp_ecam_base,'h24), rdat);
-      dsp_pfmem64 = (rdat[3:0]=='h1);
+      dsp_pfmem64 = (rdat[3:0]=='h1) && (rdat[19:16]=='h1);
+      if (rdat[3:0]!=rdat[19:16])
+        `uvm_error(get_type_name, "Prefetch. Mem Base[3:0] and Prefetch. Mem Limit[3:0] must contain the same value")
     end
     // If CDO has programmed all PS apertures (PS_APER_CFG_DONE bit[0]=1), scan
     // all iATU OB regions for enabled MEM-type regions sized >= tot_pfmem_sz.
@@ -434,17 +444,17 @@ class seq_ps_pcie_enum extends seq_base_ps_axi32;
     mem_aper_base.rand_mode  (|tot_mem_sz);
     pfmem_aper_base.rand_mode(|tot_pfmem_sz && !iatu_pfmem_found);
     // Perform randomization
-    void'(this.randomize with {
+    if (!(this.randomize with {
       // Ensure there's no overlap between memory ranges
       (mem_aper_base<pfmem_aper_base && (mem_aper_base+tot_mem_sz)<=pfmem_aper_base)
       ^
       (pfmem_aper_base<mem_aper_base && (pfmem_aper_base+tot_pfmem_sz)<=mem_aper_base);
-      // pfmem window must not overlap the ECAM aperture [E000_0000, EFFF_FFFF].
-      // BAR3 is placed at pfmem_aper_base+0x10000; excluding the whole window
-      // guarantees no prefetchable BAR lands inside the ECAM range.
-      (pfmem_aper_base + tot_pfmem_sz <= 64'hE000_0000) ||
-      (pfmem_aper_base >= 64'hF000_0000);
-    });
+      // pfmem and mem window must not overlap the ECAM aperture [E000_0000, EFFF_FFFF].
+      // Excluding the whole window guarantees no BAR lands inside the ECAM range.
+      (pfmem_aper_base+tot_pfmem_sz <= 'hE000_0000) || (pfmem_aper_base >= 'hF000_0000);
+      (mem_aper_base  +tot_mem_sz   <= 'hE000_0000) || (  mem_aper_base >= 'hF000_0000);
+    }))
+      `uvm_error(get_type_name, "Randomize of enumeration sequence failed; debug further")
 
     // Reprogram PS_A1 aperture and iATU OB_2 to match randomized pfmem_aper_base.
     // Skipped when CDO has already programmed PS apertures (ps_aper_done=1) AND a
@@ -457,12 +467,12 @@ class seq_ps_pcie_enum extends seq_base_ps_axi32;
       bit [31:0] pf_limit_l;
       pf_limit_l = pfmem_aper_base[31:0] + tot_pfmem_sz[31:0] - 1;
       // --- PS_A1 aperture ---
-      axi_wr(64'hfc801018, pfmem_aper_base[31:0]);  // PS_A1_BASE_L
-      axi_wr(64'hfc80101c, 32'h0);                  // PS_A1_BASE_H  (PS VIP ARADDR[51:32])
+      axi_wr(64'hfc801018, pfmem_aper_base[31:0]);   // PS_A1_BASE_L
+      axi_wr(64'hfc80101c, 32'h0);                   // PS_A1_BASE_H  (PS VIP ARADDR[51:32])
       axi_wr(64'hfc801020, pf_limit_l);              // PS_A1_LIMIT_L
       axi_wr(64'hfc801024, 32'h0);                   // PS_A1_LIMIT_H
-      axi_wr(64'hfc80fc04, 32'h0);                          // PS_A1_SMID (mask=0, match all)
-      axi_wr(64'hfc80102c, 32'h1 | (32'h10 << ctrlr));     // PS_A1_CONTROL (dest=DMA[ctrlr], valid=1)
+      axi_wr(64'hfc80fc04, 32'h0);                   // PS_A1_SMID (mask=0, match all)
+      axi_wr(64'hfc80102c, 32'h1 | (32'h10<<ctrlr)); // PS_A1_CONTROL (dest=DMA[ctrlr], valid=1)
       axi_wr(64'hfc801124, 32'h1);                   // PS_APER_CFG_DONE
       // iATU: no explicit OB region needed. DMA[ctrlr] uses pass-through (identity)
       // translation when no enabled OB region covers the pfmem address, so the PS
@@ -568,8 +578,7 @@ class seq_ps_pcie_enum extends seq_base_ps_axi32;
     bit          cache_cap, mem_cap;
     // Determine CXL version from DVSEC ID=7 (Flex Bus Port).
     // DVSEC ID=7 is present for CXL 2.0 (rev=1, Gen5) and CXL 3.x (rev=2/3, Gen6)
-    // and absent for CXL 1.1. Not affected by the dvsec_revision=0 workaround
-    // applied to DVSEC ID=0 in shim_layer.sv setup_cfg_space.
+    // and absent for CXL 1.1.
     cxl_ver_str = "1.x";
     foreach (usp.ecap[jj]) begin
       if (usp.ecap[jj].id           != ECAP_DVSEC) continue;
@@ -684,7 +693,7 @@ class seq_ps_pcie_enum extends seq_base_ps_axi32;
     // CXL.cachemem Primary Range begins at comp_reg_base+0x1000 (CXL spec §8.2.4).
     // The Capability Array header is at arr_base+0x0:
     //   [15:0]  = Array ID (must be 0x0001)
-    //   [31:24] = Number of capability entries // changed as per spec
+    //   [31:24] = Number of capability entries
     arr_base  = comp_reg_base + 'h1000;
     axi_rd(arr_base[47:0], rdat);
     found = 0;
@@ -784,9 +793,7 @@ class seq_ps_pcie_enum extends seq_base_ps_axi32;
       axi_rd(ctrl_addr, rdat);
       rdat[9] = 1'b1;
       axi_wr(ctrl_addr, rdat);
-      // Poll Committed status (bit 10, RO). 100 iterations is a generous bound
-      // for this CXL control-plane Commit->Committed handshake (expected to
-      // clear in 1-2 polls); not a multi-cycle DMA-scale wait.
+      // Poll Committed status (bit 10, RO)
       timeout = 100;
       do begin
         axi_rd(ctrl_addr, rdat);
@@ -809,74 +816,111 @@ class seq_ps_pcie_enum extends seq_base_ps_axi32;
                 dec_cnt, cxl_mem_base, tot_cxl_sz), UVM_LOW)
   endtask
 
+  /* Human-readable Device/Port Type */
+  virtual function string ptype_str(amd_devport_t pt);
+    case (pt)
+      PT_PCIE_EP   : return "PCIe Endpoint";
+      PT_LPCIE_EP  : return "Legacy PCIe Endpoint";
+      PT_RCIEP     : return "Root Complex Integrated Endpoint";
+      PT_RCEC      : return "Root Complex Event Collector";
+      PT_RP        : return "Root Port";
+      PT_SW_USP    : return "Switch Upstream Port";
+      PT_SW_DSP    : return "Switch Downstream Port";
+      PT_PCIE2PCIX : return "PCIe-to-PCI/PCI-X Bridge";
+      PT_PCIX2PCIE : return "PCI/PCI-X-to-PCIe Bridge";
+      default      : return $sformatf("Unknown (0x%0h)", pt);
+    endcase
+  endfunction
+
+  /* Human-readable CXL Register Block ID */
+  virtual function string reg_blk_str(cxl_reg_blk_id_e id);
+    case (id)
+      NULL_REG_BLOCK  : return "Null Reg Block";
+      COMPONENT_REG   : return "Component Registers";
+      BAR_VIRT_ACL_REG: return "BAR Virtualization ACL Registers";
+      CXL_DEVICE_REG  : return "CXL Device Registers";
+      CPMU_REG        : return "CPMU Registers";
+      DVSEC_REG       : return "Designated Vendor-Specific";
+      default         : return "Unknown";
+    endcase
+  endfunction
+
   virtual task print_results;
     string msg;
-    msg = "\n+----------------------------------------------------------+\n";
-    msg = {msg,   "|              Enumeration Results Summary                 |\n"};
-    msg = {msg,   "+----------------------------------------------------------+\n"};
+    msg =       "\n+--------------------------------------------------------------------+\n";
+    msg = {msg,   "|                   Enumeration Results Summary                      |\n"};
+    msg = {msg,   "+--------------------------------------------------------------------+\n"};
     foreach (pdev[ii]) begin
       string cxl_tag;
       cxl_tag = pdev[ii].is_cxl_port ? " [CXL]" : "";
-      msg = {msg, $sformatf("  [%0d] %-10s%s\n", ii,
-                             pdev[ii].ptype.name(), cxl_tag)};
-      msg = {msg, $sformatf("      VENDOR ID:DEVICE ID = 0x%04h:0x%04h\n",
+      msg = {msg, $sformatf("  [%02h:%02h.%0h] Device/Port Type = %s%s\n",
+                             pdev[ii].bdf.b,
+                             pdev[ii].bdf.id.df.d,
+                             pdev[ii].bdf.id.df.f,
+                             ptype_str(pdev[ii].ptype), cxl_tag)};
+      msg = {msg, $sformatf("      Vendor ID:Device ID = 0x%04h:0x%04h\n",
                              pdev[ii].vendorid, pdev[ii].deviceid)};
       // Type 1 (bridge/RP): bus numbers and apertures
       if (pdev[ii].is_type1()) begin
-        msg = {msg, $sformatf("      PriBus=%0d  SecBus=%0d  SubBus=%0d\n",
+        msg = {msg, $sformatf("      PriBus=%0d | SecBus=%0d | SubBus=%0d\n",
                                pdev[ii].primary_bus,
                                pdev[ii].secondary_bus,
                                pdev[ii].subord_bus)};
         if (|pdev[ii].npmem_aper.sz)
-          msg = {msg, $sformatf("      NP-Mem Aper : 0x%08h  size=%0s\n",
-                                 pdev[ii].npmem_aper.base,
-                                 pdev[ii].npmem_aper.sz_str)};
+          msg = {msg, $sformatf("      NP-Mem Aper : size=%-6s at 0x%08h\n",
+                                 pdev[ii].npmem_aper.sz_str,
+                                 pdev[ii].npmem_aper.base)};
         if (|pdev[ii].pmem_aper.sz)
-          msg = {msg, $sformatf("      PF-Mem Aper : 0x%08h  size=%0s\n",
-                                 pdev[ii].pmem_aper.base,
-                                 pdev[ii].pmem_aper.sz_str)};
+          msg = {msg, $sformatf("      PF-Mem Aper : size=%-6s at 0x%08h\n",
+                                 pdev[ii].pmem_aper.sz_str,
+                                 pdev[ii].pmem_aper.base)};
         if (|pdev[ii].cxl_aper.sz)
-          msg = {msg, $sformatf("      CXL Aper    : 0x%08h  size=%0s\n",
-                                 pdev[ii].cxl_aper.base,
-                                 pdev[ii].cxl_aper.sz_str)};
+          msg = {msg, $sformatf("      CXL Aper    : size=%-6s at 0x%08h\n",
+                                 pdev[ii].cxl_aper.sz_str,
+                                 pdev[ii].cxl_aper.base)};
         if (|pdev[ii].io_aper.sz)
-          msg = {msg, $sformatf("      IO Aper     : 0x%08h  size=%0s\n",
-                                 pdev[ii].io_aper.base,
-                                 pdev[ii].io_aper.sz_str)};
+          msg = {msg, $sformatf("      IO Aper     : size=%-6s at 0x%08h\n",
+                                 pdev[ii].io_aper.sz_str,
+                                 pdev[ii].io_aper.base)};
       end
       // Memory BARs
       foreach (pdev[ii].membar[kk]) begin
-        msg = {msg, $sformatf("      BAR%0d : 0x%08h  size=%0s  (%s%s)\n",
+        msg = {msg, $sformatf("      %s%s MEM BAR%0d : size=%-6s at 0x%08h\n",
+                               pdev[ii].membar[kk].is_64    ? "64b-" : "32b-",
+                               pdev[ii].membar[kk].is_pftch ? "PF"   : "NP",
                                kk,
-                               pdev[ii].membar[kk].base,
                                pdev[ii].membar[kk].sz_str,
-                               pdev[ii].membar[kk].is_64    ? "64b " : "32b ",
-                               pdev[ii].membar[kk].is_pftch ? "pf"   : "np")};
+                               pdev[ii].membar[kk].base
+                               )};
       end
       // IO BARs
       foreach (pdev[ii].iobar[kk]) begin
-        msg = {msg, $sformatf("      BAR%0d (IO): 0x%08h  size=%0s\n",
+        msg = {msg, $sformatf("      IO BAR%0d : size=%-6s at 0x%08h\n",
                                kk,
-                               pdev[ii].iobar[kk].base,
-                               pdev[ii].iobar[kk].sz_str)};
+                               pdev[ii].iobar[kk].sz_str,
+                               pdev[ii].iobar[kk].base
+                             )};
       end
       // CXL HDM ranges (EP only)
       foreach (pdev[ii].cxl_hdm[kk]) begin
-        msg = {msg, $sformatf("      CXL HDM[%0d]: 0x%08h  size=%0s\n",
+        msg = {msg, $sformatf("      CXL HDM[%0d]: size=%-6s at 0x%08h\n",
                                kk,
-                               pdev[ii].cxl_hdm[kk].base,
-                               pdev[ii].cxl_hdm[kk].sz_str)};
+                               pdev[ii].cxl_hdm[kk].sz_str,
+                               pdev[ii].cxl_hdm[kk].base
+                             )};
       end
       // CXL register blocks
       foreach (pdev[ii].cxl_reg_blk[kk]) begin
         if (pdev[ii].cxl_reg_blk[kk].id != NULL_REG_BLOCK)
-          msg = {msg, $sformatf("      CXL Reg Blk[%0d]: 0x%08h  id=0x%02h\n",
+          msg = {msg, $sformatf("      CXL Reg Blk[%0d]: 0x%08h  ID=0x%02h (%0s)\n",
                                  kk,
                                  pdev[ii].cxl_reg_blk[kk].base,
-                                 pdev[ii].cxl_reg_blk[kk].id)};
+                                 pdev[ii].cxl_reg_blk[kk].id,
+                                 reg_blk_str(pdev[ii].cxl_reg_blk[kk].id)
+                               )};
       end
     end
-    msg = {msg, "+----------------------------------------------------------+"};
+    msg = {msg, "+--------------------------------------------------------------------+"};
     `uvm_info(get_type_name, msg, UVM_NONE)
   endtask
 endclass

@@ -26,8 +26,6 @@ class seq_cxl_cachemem_reqrwd_avery_rand extends seq_cxl_base;
     // Convert every AMD Transaction in the base class queue to an Avery Transaction
     /**************************************************************************/
     foreach(txn_q[i]) begin
-      // Reset the macro to prevent collision
-      `undef THISHEADER
       case(1)
         /*******************************/
         // Read Requests
@@ -36,24 +34,33 @@ class seq_cxl_cachemem_reqrwd_avery_rand extends seq_cxl_base;
           m = acxl_msg::type_id::create("m");
           m.kind                  = ACXL_MSG_m2s_req;
           if(m2sreq.flitmode == F68) begin
-            `define THISHEADER m2sreq.req68
-            m.u.m2s_req.addr51_5    = `THISHEADER.addr;
+            m.u.m2s_req.addr51_5    = m2sreq.req68.addr;
+            m.u.m2s_req.ldid        = m2sreq.req68.ldid;
+            m.u.m2s_req.tc          = m2sreq.req68.tc;
+            m.u.m2s_req.tag         = m2sreq.req68.tag;
+            m.u.m2s_req.metaField   = m2sreq.req68.metafield;
+            m.u.m2s_req.metaValue   = m2sreq.req68.metavalue;
+            m.u.m2s_req.snpType     = m2sreq.req68.snptype;
+            m.u.m2s_req.valid       = m2sreq.req68.val;
+            // memop and opcode enumeration encodings are the same. Reference:
+            // AMD CXL Enumeration: uvma_agents/cxl_nfi_agent/pkg.cxl31_tl_pkg.sv (only supports CXL 3.1)
+            // Avery CXL Enumeration: Avery's own acxl_enum.svh (definitions up through 3.2)
+            m.u.m2s_req.opcode      = m2sreq.req68.memop;
           end
           if(m2sreq.flitmode == F256) begin
-            `define THISHEADER m2sreq.req256
-            m.u.m2s_req.addr51_5    = {`THISHEADER.addr, 1'b0};
+            m.u.m2s_req.addr51_5    = {m2sreq.req256.addr, 1'b0};
+            m.u.m2s_req.ldid        = m2sreq.req256.ldid;
+            m.u.m2s_req.tc          = m2sreq.req256.tc;
+            m.u.m2s_req.tag         = m2sreq.req256.tag;
+            m.u.m2s_req.metaField   = m2sreq.req256.metafield;
+            m.u.m2s_req.metaValue   = m2sreq.req256.metavalue;
+            m.u.m2s_req.snpType     = m2sreq.req256.snptype;
+            m.u.m2s_req.valid       = m2sreq.req256.val;
+            // memop and opcode enumeration encodings are the same. Reference:
+            // AMD CXL Enumeration: uvma_agents/cxl_nfi_agent/pkg.cxl31_tl_pkg.sv (only supports CXL 3.1)
+            // Avery CXL Enumeration: Avery's own acxl_enum.svh (definitions up through 3.2)
+            m.u.m2s_req.opcode      = m2sreq.req256.memop;
           end
-          m.u.m2s_req.ldid        = `THISHEADER.ldid;
-          m.u.m2s_req.tc          = `THISHEADER.tc;
-          m.u.m2s_req.tag         = `THISHEADER.tag;
-          m.u.m2s_req.metaField   = `THISHEADER.metafield;
-          m.u.m2s_req.metaValue   = `THISHEADER.metavalue;
-          m.u.m2s_req.snpType     = `THISHEADER.snptype;
-          m.u.m2s_req.valid       = `THISHEADER.val;
-          // memop and opcode enumeration encodings are the same. Reference:
-          // AMD CXL Enumeration: uvma-agents/cxl_nfi_agent/pkg.cxl31_tl_pkg.sv (only supports CXL 3.1)
-          // Avery CXL Enumeration: Avery's own acxl_enum.svh (definitions up through 3.2)
-          m.u.m2s_req.opcode      = `THISHEADER.memop;
         end
         /*******************************/
         // Write Requests
@@ -62,26 +69,37 @@ class seq_cxl_cachemem_reqrwd_avery_rand extends seq_cxl_base;
           m = acxl_msg::type_id::create("m");
           m.kind                  = ACXL_MSG_m2s_reqdata;
           if(m2srwd.flitmode == F68) begin
-            `define THISHEADER m2srwd.hdr68
             m.u.m2s_reqdata.trp       = 0; // AMD hdr68 doesn't have a trp field
+            m.u.m2s_reqdata.addr51_6  = m2srwd.hdr68.addr;
+            m.u.m2s_reqdata.ldid      = m2srwd.hdr68.ldid;
+            m.u.m2s_reqdata.tc        = m2srwd.hdr68.tc;
+            m.u.m2s_reqdata.tag       = m2srwd.hdr68.tag;
+            m.u.m2s_reqdata.metaField = m2srwd.hdr68.metafield;
+            m.u.m2s_reqdata.metaValue = m2srwd.hdr68.metavalue;
+            m.u.m2s_reqdata.snpType   = m2srwd.hdr68.snptype;
+            m.u.m2s_reqdata.poison    = m2srwd.hdr68.poi;
+            m.u.m2s_reqdata.valid     = m2srwd.hdr68.val;
+            // memop and opcode enumeration encodings are the same. Reference:
+            // AMD CXL Enumeration: uvma_agents/cxl_nfi_agent/pkg.cxl31_tl_pkg.sv
+            // Avery CXL Enumeration: Avery's own acxl_enum.svh
+            m.u.m2s_reqdata.opcode    = m2srwd.hdr68.memop;
           end
           if(m2srwd.flitmode == F256) begin
-            `define THISHEADER m2srwd.hdr256
             m.u.m2s_reqdata.trp       = m2srwd.hdr256.trp;
+            m.u.m2s_reqdata.addr51_6  = m2srwd.hdr256.addr;
+            m.u.m2s_reqdata.ldid      = m2srwd.hdr256.ldid;
+            m.u.m2s_reqdata.tc        = m2srwd.hdr256.tc;
+            m.u.m2s_reqdata.tag       = m2srwd.hdr256.tag;
+            m.u.m2s_reqdata.metaField = m2srwd.hdr256.metafield;
+            m.u.m2s_reqdata.metaValue = m2srwd.hdr256.metavalue;
+            m.u.m2s_reqdata.snpType   = m2srwd.hdr256.snptype;
+            m.u.m2s_reqdata.poison    = m2srwd.hdr256.poi;
+            m.u.m2s_reqdata.valid     = m2srwd.hdr256.val;
+            // memop and opcode enumeration encodings are the same. Reference:
+            // AMD CXL Enumeration: uvma_agents/cxl_nfi_agent/pkg.cxl31_tl_pkg.sv
+            // Avery CXL Enumeration: Avery's own acxl_enum.svh
+            m.u.m2s_reqdata.opcode    = m2srwd.hdr256.memop;
           end
-          m.u.m2s_reqdata.addr51_6  = `THISHEADER.addr;
-          m.u.m2s_reqdata.ldid      = `THISHEADER.ldid;
-          m.u.m2s_reqdata.tc        = `THISHEADER.tc;
-          m.u.m2s_reqdata.tag       = `THISHEADER.tag;
-          m.u.m2s_reqdata.metaField = `THISHEADER.metafield;
-          m.u.m2s_reqdata.metaValue = `THISHEADER.metavalue;
-          m.u.m2s_reqdata.snpType   = `THISHEADER.snptype;
-          m.u.m2s_reqdata.poison    = `THISHEADER.poi;
-          m.u.m2s_reqdata.valid     = `THISHEADER.val;
-          // memop and opcode enumeration encodings are the same. Reference:
-          // AMD CXL Enumeration: uvma-agents/cxl_nfi_agent/pkg.cxl31_tl_pkg.sv
-          // Avery CXL Enumeration: Avery's own acxl_enum.svh
-          m.u.m2s_reqdata.opcode    = `THISHEADER.memop;
           // Load the data payload
           m.be          = m2srwd.be;
           m.bytes       = new[64];

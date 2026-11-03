@@ -67,25 +67,25 @@ class ecap_doe extends ecap_base;
     
   struct { 
     struct {
-      field_attr_t rsvd31to12        = {'h4, 31, 12, ACC_RSVDZ, ACC_UNSPEC, 'x, 'x, 'x};
-      field_attr_t doe_intr_msg_num  = {'h4, 11,  1, ACC_RO,    ACC_UNSPEC, 'x, 'x, 'x};
-      field_attr_t doe_intr_sup      = {'h4,  0,  0, ACC_RO,    ACC_UNSPEC, 'x, 'x, 'x};
+      field_attr_t rsvd31to12        = '{'h4, 31, 12, ACC_RSVDZ, ACC_UNSPEC, 'x, 'x, 'x};
+      field_attr_t doe_intr_msg_num  = '{'h4, 11,  1, ACC_RO,    ACC_UNSPEC, 'x, 'x, 'x};
+      field_attr_t doe_intr_sup      = '{'h4,  0,  0, ACC_RO,    ACC_UNSPEC, 'x, 'x, 'x};
     } cap;
     struct {
-      field_attr_t rsvd31to2         = {'h8, 31,  2, ACC_RSVDZ, ACC_UNSPEC, 'x, 'x, 'x};
-      field_attr_t doe_intr_en       = {'h8,  1,  1, ACC_RW,    ACC_UNSPEC, 'x, 'x, 'x};
-      field_attr_t doe_abort         = {'h8,  0,  0, ACC_RW,    ACC_UNSPEC, 'x, 'x, 'x};
+      field_attr_t rsvd31to2         = '{'h8, 31,  2, ACC_RSVDZ, ACC_UNSPEC, 'x, 'x, 'x};
+      field_attr_t doe_intr_en       = '{'h8,  1,  1, ACC_RW,    ACC_UNSPEC, 'x, 'x, 'x};
+      field_attr_t doe_abort         = '{'h8,  0,  0, ACC_RW,    ACC_UNSPEC, 'x, 'x, 'x};
     } control;
     struct {
-      field_attr_t rsvd31to2         = {'hC, 31,  2, ACC_RSVDZ, ACC_UNSPEC, 'x, 'x, 'x};
-      field_attr_t doe_error         = {'hC,  1,  1, ACC_RW1C,  ACC_UNSPEC, 'x, 'x, 'x};
-      field_attr_t doe_busy          = {'hC,  0,  0, ACC_RO,    ACC_UNSPEC, 'x, 'x, 'x};
+      field_attr_t rsvd31to2         = '{'hC, 31,  2, ACC_RSVDZ, ACC_UNSPEC, 'x, 'x, 'x};
+      field_attr_t doe_error         = '{'hC,  1,  1, ACC_RW1C,  ACC_UNSPEC, 'x, 'x, 'x};
+      field_attr_t doe_busy          = '{'hC,  0,  0, ACC_RO,    ACC_UNSPEC, 'x, 'x, 'x};
     } status;
     struct {
-      field_attr_t data              = {'h10, 31, 0, ACC_RW,    ACC_UNSPEC, 'x, 'x, 'x};
+      field_attr_t data              = '{'h10, 31, 0, ACC_RW,    ACC_UNSPEC, 'x, 'x, 'x};
     } wr_mbox;
     struct {
-      field_attr_t data              = {'h14, 31, 0, ACC_RO,    ACC_UNSPEC, 'x, 'x, 'x};
+      field_attr_t data              = '{'h14, 31, 0, ACC_RO,    ACC_UNSPEC, 'x, 'x, 'x};
     } rd_mbox;
   } attrs; 
 

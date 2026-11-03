@@ -3,7 +3,7 @@
 // Observes all external AXI interfaces at the cpm6_qdma module boundary:
 //   s_axi_mem   — descriptor fetch completions + DMA data (128-bit, CRITICAL)
 //   s_axi_reg   — register access (context writes, PIDX doorbells)
-//   m_axil_dbi  — DBI register access (ISR write-back, Bug F3 diagnosis)
+//   m_axil_dbi  — DBI register access (ISR write-back)
 //   msix        — MSI-X req/grant/error handshake
 //
 // Logs to shared cpm6_qdma_dbg.log via immediate $fdisplay+$fflush.
@@ -30,24 +30,12 @@ class qdma_periph_monitor extends uvm_monitor;
    int unsigned cnt_dbi_wr, cnt_dbi_b, cnt_dbi_rd, cnt_dbi_r;
    int unsigned cnt_tm_dsc_sts_vld;
    int unsigned cnt_msix_req, cnt_msix_grant, cnt_msix_error;
-   // Grant and error asserted in the SAME cycle. irq_mgr's IRQ_WAIT_GRANT tests
-   // grant before error (`if (msix_grant) ... else if (msix_error)`), so a
-   // coincident pair is scored as a successful delivery and mbox_irq_ack is
-   // raised for an interrupt that was never emitted. Nothing in the TB observed
-   // this before; a run could show 78 errors and 78 grants with zero complaint.
+   // Grant and error asserted in the SAME cycle (see sample_msix).
    int unsigned cnt_msix_grant_err_coincident;
 
-   // --- msix_error debug hook (2026-08-20) --------------------------------
-   // MSI-X enable lives in PCIe CONFIG SPACE, so it is readable by a config
-   // read -- no RTL bind into the hard block is needed. Once set it is not
-   // expected to clear, so reading it AT THE MOMENT OF THE ERROR answers
-   // directly whether CPM is refusing the request because the function's
-   // msix_enable is actually clear, or for some other reason.
-   //
-   // The monitor cannot issue a config read itself (no sequencer/API handle),
-   // so it publishes the failing function's identity and triggers an event;
-   // the test performs the read. Identity comes from msix_pend_*, latched at
-   // msix_req, because grant and error carry no identity of their own.
+   // --- msix_error hook ----------------------------------------------------
+   // On msix_error the failing function's identity (from msix_pend_*, latched
+   // at msix_req) is published here and msix_err_ev is triggered.
    event        msix_err_ev;
    bit          msix_err_is_vf;
    bit [2:0]    msix_err_pf;
@@ -86,9 +74,8 @@ class qdma_periph_monitor extends uvm_monitor;
 
    // ---- MSIX in-flight request identity ----
    // func/vfunc/vec are only valid on the request; grant and error carry no
-   // identity of their own. Latching at the request is what lets an error name
-   // the function it belongs to, which is the whole difference between "78
-   // errors happened" and "50 of them targeted PF0, which was never armed".
+   // identity of their own. Latching at the request lets an error name the
+   // function it belongs to.
    logic [2:0]  msix_pend_func;
    logic [7:0]  msix_pend_vfunc;
    logic [10:0] msix_pend_vec;
@@ -108,14 +95,12 @@ class qdma_periph_monitor extends uvm_monitor;
          `uvm_fatal("qdma_periph_monitor", "Failed to get qdma_periph_cfg from config_db")
       if (!uvm_config_db#(int)::get(this, "", "log_fd", log_fd))
          `uvm_fatal("qdma_periph_monitor", "Failed to get shared log_fd from config_db")
-      // Soft get: tm_dsc_sts observation is a separate bind
-      // (bind.tm_dsc_sts.sv) alongside the 4-interface design_1 bind — not
-      // fatal if absent, so this monitor keeps working on configurations that
-      // do not compile that bind file.
+      // Soft get: vif_tm is optional; tm_dsc_sts observation is disabled when
+      // it is not set.
       have_vif_tm = uvm_config_db#(virtual qdma_periph_tm_dsc_if)::get(this, "", "vif_tm", vif_tm);
       if (!have_vif_tm)
          `uvm_warning("qdma_periph_monitor",
-            "vif_tm_dsc_sts not found in config_db — bind.tm_dsc_sts.sv may not have run; tm_dsc_sts observation disabled for this run")
+            "vif_tm_dsc_sts not found in config_db — tm_dsc_sts observation disabled for this run")
    endfunction
 
    // ---- Emit one transaction and log it ----
@@ -155,8 +140,6 @@ class qdma_periph_monitor extends uvm_monitor;
          end
          [16'h0804:16'h0820]: begin
             // IND_CTXT_DATA_[0:7] at 0x804..0x820 (8 x 4B, 256-bit context data).
-            // Authoritative: qdma_base_test.sv, DRV_BIND_IND_CTXT_DATA0_OFFSET=0x804.
-            // Note 0x0A00 is unused — do not confuse this region with it.
             return $sformatf("[IND_CTXT_DATA_%0d]", (offset - 16'h0804) >> 2);
          end
          [16'h0824:16'h0840]: begin
@@ -185,29 +168,20 @@ class qdma_periph_monitor extends uvm_monitor;
    // differ only in bit 22) is in use.
    // ctrl0-vs-ctrl1 is read directly off addr[22], no external config needed.
    //
-   // Checked against the CPM6 QDMA register map (per-channel 512B block).
-   // +0x80/+0x8c resolve to DMA_STATUS (ISR polls STATUS!=RUNNING) and
-   // DMA_INT_CLEAR (ISR writes 0x3 = STOP+WATERMARK clear). The ISR clears
-   // STOP+WATERMARK but not ABORT, so an observed data=0x7 (covering
-   // STOP+WATERMARK+ABORT) vs. the doc's 0x3 example is a real, separately-
-   // tracked discrepancy, not a decode error. +0x84/+0x88 added for
-   // completeness (error-management / int-mask
-   // config paths).
-   // NOTE: the doc's own "LLP Programming Order" prose section states FNC at
-   // +0x28, contradicting its own register table (+0x38) — the table's +0x38
-   // is used here since it independently matches the RTL-derived
-   // FNC_START_ADDR citation above; flagging the doc's internal inconsistency
-   // rather than silently picking one.
+   // Per-channel 512B register block: +0x04/+0x10/+0x38 as named below.
+   // +0x80 is DMA_STATUS and +0x8c is DMA_INT_CLEAR (0x3 = STOP+WATERMARK,
+   // 0x7 = STOP+WATERMARK+ABORT). +0x84/+0x88 (error-management and
+   // interrupt-mask configuration) are decoded for completeness.
    //
    // Low channel indices additionally have a fixed, documented consumer
-   // identity (DMA Channel Index Map table); indices 4+ are the scheduler's
-   // dynamically-allocated free-channel pool with no static consumer.
+   // identity (DMA Channel Index Map table); indices 4+ are allocated
+   // dynamically and have no static consumer.
    local function string decode_dbi_ch_name(logic [6:0] ch);
       case (ch)
-         7'd0:    return "WRCH_0/wb_desc_writer";
-         7'd1:    return "RDCH_0/cmpt_desc_writer";
-         7'd2:    return "WRCH_1/dsc_fetch_engine";
-         7'd3:    return "RDCH_1/dsc_fetch_engine";
+         7'd0:    return "WRCH_0/status writeback";
+         7'd1:    return "RDCH_0/completion";
+         7'd2:    return "WRCH_1/descriptor fetch";
+         7'd3:    return "RDCH_1/descriptor fetch";
          default: return "";
       endcase
    endfunction
@@ -238,9 +212,8 @@ class qdma_periph_monitor extends uvm_monitor;
    // ================================================================
    // s_axi_mem sampling — CRITICAL for stall analysis
    //
-   // Bug #20 fix: AW and W channels are buffered independently and
-   // matched when both are available, since AXI permits W to arrive
-   // before AW.
+   // AW and W channels are buffered independently and matched when both
+   // are available, since AXI permits W to arrive before AW.
    // ================================================================
 
    // ---- Try to pair buffered AW and W entries ----
@@ -427,7 +400,7 @@ class qdma_periph_monitor extends uvm_monitor;
    endtask
 
    // ================================================================
-   // m_axil_dbi sampling — ISR write-back path (Bug F3 diagnosis)
+   // m_axil_dbi sampling — ISR write-back path
    // ================================================================
    local task sample_dbi();
       qdma_periph_txn txn;
@@ -446,7 +419,7 @@ class qdma_periph_monitor extends uvm_monitor;
             (txn.dbi_decode != "") ? {" ", txn.dbi_decode} : ""));
       end
 
-      // ---- B: write response (key F3 diagnosis — bvalid never asserts if undriven) ----
+      // ---- B: write response ----
       if (vif.dbi_bvalid && vif.dbi_bready) begin
          txn = qdma_periph_txn::type_id::create("qper_dbi_b");
          txn.txn_type     = qdma_periph_txn::DBI_B;
@@ -543,7 +516,7 @@ class qdma_periph_monitor extends uvm_monitor;
          emit(txn, $sformatf("error  %s", msix_pend_str()));
          if (cfg.checks_enable) begin
             `uvm_error("qdma_periph_monitor", $sformatf(
-               "MSI-X error asserted  %s  verdict=%s  cite=cpm6_msix_ctrl_logic checks user_function_is_enabled_reg (pf_cfg_status.msix_en / vf_cfg_status.vf_msix_en)",
+               "MSI-X error asserted  %s  verdict=%s  note=CPM6 checks the requesting function's MSI-X enable",
                msix_pend_str(),
                vif.msix_grant ? "GRANT_ERROR_COINCIDENT" : "ERROR_ONLY"))
             check_err_count++;
@@ -559,12 +532,8 @@ class qdma_periph_monitor extends uvm_monitor;
 
       // ---- Grant and error in the same cycle ----------------------------
       // CPM6 answers a request from a function whose msix_enable=0 by asserting
-      // BOTH. irq_mgr (IRQ_WAIT_GRANT, `if (msix_grant) ... else if (msix_error)`)
-      // therefore never reaches its error branch: it clears msix_req, raises
-      // mbox_irq_ack, and returns to IDLE, reporting a delivery that did not
-      // occur. The documented "halt in IRQ_ERROR, no retry" behaviour is
-      // unreachable whenever this fires, so this is the direct signature of a
-      // silently-swallowed interrupt rather than a benign race.
+      // BOTH. Grant is prioritised ahead of error in the interrupt handshake, so
+      // the interrupt is scored as delivered although no MSI-X write was emitted.
       if (vif.msix_grant && vif.msix_error &&
           !(msix_grant_prev && msix_error_prev)) begin
          cnt_msix_grant_err_coincident++;
@@ -595,7 +564,7 @@ class qdma_periph_monitor extends uvm_monitor;
 
    // ================================================================
    // tm_dsc_sts sampling — traffic-manager descriptor status
-   // (separate bind/interface — see bind.tm_dsc_sts.sv)
+   // (optional interface vif_tm, see build_phase)
    // ================================================================
    local task sample_tm_dsc_sts();
       qdma_periph_txn txn;
@@ -687,11 +656,7 @@ class qdma_periph_monitor extends uvm_monitor;
                   sample_reg();
                   sample_dbi();
                   sample_msix();
-                  // vif_tm shares the same underlying axi_aclk net as vif.clk
-                  // (both are the qdma core's AXI clock), so sampling it in
-                  // this same loop is safe -- no separate clock-domain fork
-                  // needed. Guarded: vif_tm is unbound when bind.tm_dsc_sts.sv
-                  // did not run (see build_phase's soft get).
+                  // Guarded: vif_tm is optional (see build_phase's soft get).
                   if (have_vif_tm) sample_tm_dsc_sts();
                end
             end
@@ -718,13 +683,13 @@ class qdma_periph_monitor extends uvm_monitor;
          $fdisplay(log_fd, "  m_axil_dbi: WR=%0d  B=%0d  RD=%0d  R=%0d",
             cnt_dbi_wr, cnt_dbi_b, cnt_dbi_rd, cnt_dbi_r);
          $fdisplay(log_fd, "  tm_dsc_sts: vld_fires=%0d%s", cnt_tm_dsc_sts_vld,
-            have_vif_tm ? "" : " (NOT MONITORED -- bind.tm_dsc_sts.sv did not run)");
+            have_vif_tm ? "" : " (NOT MONITORED -- vif_tm not set)");
          $fdisplay(log_fd, "  msix      : REQ=%0d  GRANT=%0d  ERROR=%0d  GRANT_ERR_COINCIDENT=%0d",
             cnt_msix_req, cnt_msix_grant, cnt_msix_error,
             cnt_msix_grant_err_coincident);
          if (cnt_msix_grant_err_coincident > 0)
             $fdisplay(log_fd,
-               "  msix      : %0d request(s) answered with grant AND error together -- irq_mgr scored these as delivered (mbox_irq_ack) though no MSI-X write was emitted",
+               "  msix      : %0d request(s) answered with grant AND error together -- scored as delivered though no MSI-X write was emitted",
                cnt_msix_grant_err_coincident);
          $fdisplay(log_fd, "  Checks    : %0d violation(s) detected", check_err_count);
          $fdisplay(log_fd, "%s", {80{"-"}});
