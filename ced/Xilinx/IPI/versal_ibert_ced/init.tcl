@@ -25,7 +25,7 @@ source -notrace "$currentDir/device.tcl"
 #  required for CED, return all versal parts
 #
 proc getSupportedParts {} {
-  set mylist [get_parts -quiet -filter {C_FAMILY =~ versal}]
+  set mylist [get_parts -quiet -filter {C_FAMILY =~ versal && GB_TRANSCEIVERS > 0}]
   set newlist [list]
   foreach item $mylist {
     set newitem versal{$item}
