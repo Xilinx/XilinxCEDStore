@@ -12,7 +12,7 @@ Steps to run CPM6 DMA+DDR (CTRL0) simulation
     their respective manuals.
     a. Vivado            - see your CPM6 IP release notes for the
                             recommended/qualified build
-    b. VCS / Verdi       - X-2025.06
+    b. VCS / Verdi       - Y-2026.03-SP1
     c. UVM Library       - 1.1
     d. Avery PLI         - 2025.3_1
     e. Avery apci-xactor - 2025.3_1
@@ -43,12 +43,12 @@ Steps to run CPM6 DMA+DDR (CTRL0) simulation
     Equivalently, load the module files that set these automatically:
          setenv MODULEPATH <path to avery modulefiles>:${MODULEPATH}
          setenv MODULEPATH <path to synopsys modulefiles>:${MODULEPATH}
-         module switch vcs/X-2025.06
+         module switch vcs/Y-2026.03-SP1
          module load averyvip/2025.3_1
          (this sets AVERY_PLI, AVERY_PCIE, AVERY_SIM, VCS_HOME)
 
     Verify:
-         echo $VCS_HOME       # should show X-2025.06 path
+         echo $VCS_HOME       # should show Y-2026.03-SP1 path
          echo $AVERY_PLI      # should show avery_pli-2025.3_1 path
          echo $AVERY_PCIE     # should show apcievip-2025.3_1 path
          echo $CPM6_SECUREIP  # should show your extracted path
@@ -68,7 +68,6 @@ Steps to run CPM6 DMA+DDR (CTRL0) simulation
       uvma_agents/    -- UVM agent sources (compiled by make c)
       lib/            -- C shared libraries (date.so, socket_dpi.so)
       avery_vcs.f     -- Avery VIP file list
-      cpm6_sip.f      -- CPM6 Secure IP file list
       uvma_agents.f   -- uvma_agents file list
 
 5.  Run simulation:
