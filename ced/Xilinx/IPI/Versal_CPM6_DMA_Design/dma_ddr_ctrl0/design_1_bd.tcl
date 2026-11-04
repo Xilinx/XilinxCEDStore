@@ -628,6 +628,9 @@ proc create_root_design { parentCell link_width lane_rate num_pfs ide_cap_en} {
   # Restore current instance
   current_bd_instance $oldCurInst
 
+  # Platform (PS peripherals, NoC ports, BRAM) is added by one shared file
+  source [file join $script_folder .. platform run.tcl]
+
   validate_bd_design
   save_bd_design
 }

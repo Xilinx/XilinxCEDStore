@@ -9,12 +9,12 @@
 | **Example Type** | IP Example Design (CED) |
 | **Target Audience** | Verification/FPGA engineers validating the CPM6 DMA Bridge datapath |
 | **Devices Supported** | Versal devices with CPM6 hard IP (`vsvc3340` package family) — `xc2vp3602-vsvc3340-3HP-e-S`, `xc2vp3602-vsvc3340-2LHP-e-S` |
-| **Tools Required** | Vivado 2026.1 (validated with build v2026.1.1), VCS/Verdi X-2025.06 with UVM 1.1, Avery PLI/apci-xactor 2025.3_1, CPM6 Secure IP package |
+| **Tools Required** | Vivado 2026.1 (validated with build v2026.1.1), VCS/Verdi Y-2026.03-SP1 with UVM 1.1, Avery PLI/apci-xactor 2025.3_1, CPM6 Secure IP package |
 | **Simulators Validated** | VCS (waveform viewing via Verdi or DVE) |
-| **Boards Validated** | N/A — no board is registered; this CED is part-only |
+| **Boards Validated** | VPK360 (hardware testing). No board is registered in the CED GUI; the CED is created part-only |
 | **Pre-Built Images** | Not available |
 | **Key Features Shown** | H2C/C2H DMA Bridge transfers, 128-channel (64 C2H + 64 H2C) DMA interrupt bus, MSI-X generation via round-robin arbitration (`pl_example`/`rr_arbiter_128`), selectable BRAM-only or LPDDR5-backed memory apertures, up to 8 PFs (DDR variant), PCIe Gen6 X8 link |
-| **Not Intended For** | Production deployment, performance benchmarking, hardware bring-up (no board/JTAG/PCIe-host flow) |
+| **Not Intended For** | Production deployment, performance benchmarking |
 | **Time to First Success** | ~20–25 minutes (compile + optimize + simulate, order of magnitude) — not independently measured for this CED; based on the same VCS/UVM/Avery tool stack as comparable CPM6 CEDs |
 
 ---
@@ -167,7 +167,7 @@ CPM6's **DMA Bridge** mode implements a descriptor-ring-based H2C/C2H DMA engine
 | 1 | `0x0500_0002_0000` | `0x0500_0003_FFFF` | `CPM_AXI_PL1` |
 | 2 | `0x0500_0004_0000` | `0x0500_0005_FFFF` | `CPM_AXI_PL2` |
 | 3 | `0x0500_0006_0000` | `0x0500_0007_FFFF` | `CPM_AXI_PL3` |
-| 4 | `0x0500_0008_0000` | `0x0500_0009_FFFF` | `PCIE_AXI_NOC0` → NoC → `axi_bram_ctrl_4` |
+| 4 | `0x201_0000_0000` | `0x201_0001_ffff` | `PCIE_AXI_NOC0` → NoC → `axi_bram_ctrl_4` |
 
 Each aperture is exposed to the host as a 256 KB PCIe BAR; the backing BRAM decodes only the first 64 KB (`0x1_0000`) of that window.
 
@@ -270,11 +270,11 @@ The generation flow then:
 ### Expected Outputs
 
 - A Vivado project containing the generated block design (`cpm6_dma`/`cpm6_dma` equivalent), imported RTL, and constraints.
-- A `sim/` directory in the generated project, staged for VCS/UVM simulation (no bitstream/hardware build target is exercised by this CED's intended flow).
+- A `sim/` directory in the generated project, staged for VCS/UVM simulation.
 
 ## Performance Considerations
 
-- **Link bandwidth**: default configuration is PCIe Gen6 x8 (`64.0_GT/s` × 8 lanes) — the theoretical maximum raw link bandwidth for this CED's default settings; lower lane rate/width options (down to Gen1 x1) are available via the CED GUI for constrained or bring-up scenarios.
+- **Link bandwidth**: default configuration is PCIe Gen6 x8 (`64.0_GT/s` × 8 lanes) — the theoretical maximum raw link bandwidth for this CED's default settings; lower lane rate/width options are available via the CED GUI for constrained or bring-up scenarios.
 - **Aperture window size caps single-transfer addressability**: non-DDR apertures decode only 64 KB behind each 256 KB BAR; DDR-variant BRAM apertures decode the full 128 KB behind each 128 KB BAR. Transfers must stay within the decoded window, not the full BAR size.
 - **DDR bandwidth ceiling**: the DDR variant's LPDDR5 controller is `LPDDR5X-8533` speed grade, single-channel/single-rank, 32-bit MC data width — this bounds the achievable C2H/H2C throughput for DDR-routed apertures below the raw PCIe link rate for large transfers.
 - **Shared DDR window across NoC ports**: both `PCIE_AXI_NOC0` and `PCIE_AXI_NOC1` apertures land in the *same* 1 GB LPDDR5 window in the DDR variant — concurrent transfers through both apertures contend for the same memory controller and rank.
@@ -283,7 +283,7 @@ The generation flow then:
 
 ## Validation Flow
 
-This CED provides a **simulation-only** validation flow; there is no hardware test bench, board bring-up procedure, or PCIe-host driver flow included.
+This CED supports both simulation-based and hardware validation. The simulation flow (VCS/UVM) is described below, and the design has also been tested on hardware on the **VPK360** board.
 
 ### Simulation Setup
 
@@ -311,7 +311,7 @@ This CED provides a **simulation-only** validation flow; there is no hardware te
      ```
    Verify:
    ```
-   echo $VCS_HOME       # should show X-2025.06 path
+   echo $VCS_HOME       # should show Y-2026.03-SP1 path
    echo $AVERY_PLI      # should show avery_pli-2025.3_1 path
    echo $AVERY_PCIE     # should show apcievip-2025.3_1 path
    echo $CPM6_SECUREIP  # should show your extracted path

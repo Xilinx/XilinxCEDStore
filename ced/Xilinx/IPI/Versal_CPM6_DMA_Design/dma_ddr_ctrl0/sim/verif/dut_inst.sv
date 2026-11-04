@@ -25,7 +25,7 @@ wire        ch0_lpddr5_0_reset_n;
 wire [3:0]  ch0_lpddr5_0_wck_c;
 wire [3:0]  ch0_lpddr5_0_wck_t;
 
-dma_ddr_top_sim_wrapper dma_ddr_top_i
+dma_ddr_top dma_ddr_top_i
 (
   .CTRL0_GT_0_grx_n        (ctrl0_gt_grx_n)
  ,.CTRL0_GT_0_grx_p        (ctrl0_gt_grx_p)

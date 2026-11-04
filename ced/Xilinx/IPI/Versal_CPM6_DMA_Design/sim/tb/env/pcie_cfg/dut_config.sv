@@ -220,7 +220,6 @@ class dut_config extends generic_config;
       // Remove any CHIPPIPE programming if running a PIPE sim
       if ($test$plusargs("PCIE_LINK_PIPE")) begin
         msg = "Running a PIPE sim: removing any CHIPPIPE programming from CDO to save sim time";
-        `uvm_info("FIXME::CDO_MOD", msg, UVM_NONE)
         msg = $sformatf("sed -i 's/^write 0xfcc/#write 0xfcc/' %0s", orig_cdo);
         if ($system(msg)) begin
           `uvm_fatal("ERRCALL", {"Return value non-zero: ", msg}) 

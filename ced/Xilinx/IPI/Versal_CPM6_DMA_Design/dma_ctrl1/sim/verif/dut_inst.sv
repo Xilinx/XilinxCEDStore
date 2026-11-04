@@ -13,7 +13,8 @@ wire [7:0] ctrl1_gt_grx_p;
 wire [7:0] ctrl1_gt_gtx_n;
 wire [7:0] ctrl1_gt_gtx_p;
 
-dma_top_sim_wrapper dma_top_i
+//dma_top_sim_wrapper dma_top_i
+dma_top dma_top_i
 (
   .CTRL1_GT_0_grx_n        (ctrl1_gt_grx_n)
  ,.CTRL1_GT_0_grx_p        (ctrl1_gt_grx_p)
