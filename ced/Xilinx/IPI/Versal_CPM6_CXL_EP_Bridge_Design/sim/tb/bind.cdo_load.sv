@@ -1,11 +1,11 @@
 // This module is translating between the Vivado generated CPM6 instance's
 // internal CDO loader to create information that's relevant to the sim.
-// 
-// This module is designed to be bound at the SIP instance-level and then 
-// navigate down to the hierarchy as displayed. 
+//
+// This module is designed to be bound at the SIP instance-level and then
+// navigate down to the hierarchy as displayed.
 module bind_cdo_load
   import uvm_pkg::*;
-// -- // 
+// -- //
 #(parameter string CDO_FILE)
 ();
 

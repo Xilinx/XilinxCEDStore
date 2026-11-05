@@ -12,7 +12,7 @@ module aximon_connect(cpm6_axi512_fab_mst_if vif_master, aximon_if vif_monitor);
     assign vif_monitor.awuser  = {'0, vif_master.awuser};
     assign vif_monitor.awvalid = {'0, vif_master.awvalid};
     assign vif_monitor.awready = {'0, vif_master.awready};
-    
+
     // Write Data Channel
     assign vif_monitor.wdata  = {'0, vif_master.wdata};
     assign vif_monitor.wstrb  = {'0, vif_master.wstrb};
@@ -20,14 +20,14 @@ module aximon_connect(cpm6_axi512_fab_mst_if vif_master, aximon_if vif_monitor);
     assign vif_monitor.wuser  = {'0, vif_master.wuser};
     assign vif_monitor.wvalid = {'0, vif_master.wvalid};
     assign vif_monitor.wready = {'0, vif_master.wready};
-    
+
     // Write Response Channel
     assign vif_monitor.bid    = {'0, vif_master.bid};
     assign vif_monitor.bresp  = {'0, vif_master.bresp};
     assign vif_monitor.buser  = {'0, vif_master.buser};
     assign vif_monitor.bvalid = {'0, vif_master.bvalid};
     assign vif_monitor.bready = {'0, vif_master.bready};
-    
+
     // Read Address Channel
     assign vif_monitor.araddr  = {'0, vif_master.araddr};
     assign vif_monitor.arburst = {'0, vif_master.arburst};
@@ -41,7 +41,7 @@ module aximon_connect(cpm6_axi512_fab_mst_if vif_master, aximon_if vif_monitor);
     assign vif_monitor.aruser  = {'0, vif_master.aruser};
     assign vif_monitor.arvalid = {'0, vif_master.arvalid};
     assign vif_monitor.arready = {'0, vif_master.arready};
-    
+
     // Read Data Channel
     assign vif_monitor.rdata  = {'0, vif_master.rdata};
     assign vif_monitor.rid    = {'0, vif_master.rid};

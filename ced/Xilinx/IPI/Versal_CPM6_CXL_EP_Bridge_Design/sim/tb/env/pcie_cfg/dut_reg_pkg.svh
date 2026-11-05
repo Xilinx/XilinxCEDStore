@@ -81,34 +81,6 @@ package dut_reg_pkg;
   const struct {
      PCIE0_CFG_block              PCIE0_CFG;
      PCIE1_CFG_block              PCIE1_CFG;
-/*   Add the below as needed
-     CPM6_INT_WRAP_BOT_CSR_block  CPM6_INT_WRAP_BOT_CSR;  
-     CPM6_PCIE_CORE0_block        CPM6_PCIE_CORE0;        
-     CPM6_PCIE_DOE_RAM0_block     CPM6_PCIE_DOE_RAM0;     
-     CPM6_PCIE_IDE0_IO_AES_block  CPM6_PCIE_IDE0_IO_AES;  
-     CPM6_PCIE_IDE0_IO_CSR_block  CPM6_PCIE_IDE0_IO_CSR;  
-     CPM6_PCIE_IDE0_INT_CSR_block CPM6_PCIE_IDE0_INT_CSR; 
-     CPM6_PCIE_APP0_block         CPM6_PCIE_APP0;         
-     CPM6_PL_BOT_CSR_block        CPM6_PL_BOT_CSR;        
-     CPM6_DMANOC_CSR_block        CPM6_DMANOC_CSR;        
-     CPM6_CLK_CORE0_block         CPM6_CLK_CORE0;         
-     CPM6_INT_WRAP_TOP_CSR_block  CPM6_INT_WRAP_TOP_CSR;  
-     CPM6_PCIE_CORE1_block        CPM6_PCIE_CORE1;        
-     CPM6_PCIE_DOE_RAM1_block     CPM6_PCIE_DOE_RAM1;     
-     CPM6_PCIE_IDE1_IO_AES_block  CPM6_PCIE_IDE1_IO_AES;  
-     CPM6_PCIE_IDE1_IO_CSR_block  CPM6_PCIE_IDE1_IO_CSR;  
-     CPM6_PCIE_IDE1_INT_CSR_block CPM6_PCIE_IDE1_INT_CSR; 
-     CPM6_PCIE_APP1_block         CPM6_PCIE_APP1;         
-     CPM6_PL_TOP_CSR_block        CPM6_PL_TOP_CSR;        
-     CPM6_CLK_CORE1_block         CPM6_CLK_CORE1;         
-     CPM6_CONFIG_BRIDGE_block     CPM6_CONFIG_BRIDGE;     
-     CPM6_CRX_block               CPM6_CRX;               
-     CPM6_SLCR_block              CPM6_SLCR;              
-     CPM6_SLCR_SECURE_block       CPM6_SLCR_SECURE;       
-     CPM6_SYSMON_block            CPM6_SYSMON;            
-     CPM6_INT_GPV_block           CPM6_INT_GPV;           
-     CPM6_PCSR_block              CPM6_PCSR;              
-*/
   } rr;
 
   `undef CFG0

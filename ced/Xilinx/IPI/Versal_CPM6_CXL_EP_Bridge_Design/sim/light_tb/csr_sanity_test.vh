@@ -1,27 +1,24 @@
 // ===========================================================================
 // csr_sanity_test.vh - `include`-d from board.sv's initial block, after the
 // `ps_vip_api` virtual interface has been fetched from config_db and the
-// bind_ps_vip reset/clock sequence has been given time to settle.
+// CPM6 CDO load is done.
 //
-// Uses the ps_vip_api_if API (../tb/ps_vip_api_pkg.svh - copied verbatim
-// from BMD) exactly the way base_cxl_ep_test.sv's cdo_write()/
-// cdo_mask_write() tasks do (see ../tb/test/base_cxl_ep_test.sv lines
-// ~204-230): set_routing_config(...,1) -> write/read_data_32 ->
-// set_routing_config(...,0).
+// Uses the ps_vip_api_if API (../tb/ps_vip_api_pkg.svh) the same way
+// ../tb/test/test_base.sv's cdo_write()/cdo_mask_write() tasks do:
+// set_routing_config(...,1) -> write/read_data_32 -> set_routing_config(...,0).
 //
 // Register offsets:
 //   0x000/0x004  SCRATCH_LO/HI          (RW)
-//   0x400        EP_CTRL_STS            (RO, mirrors `ep_status` input -
-//                                         UNCONNECTED in this BD (open
-//                                         item), so expect a read-back of 0)
+//   0x400        EP_CTRL_STS            (RO, mirrors the `ep_status` input -
+//                                         reads 0 here, the link never trains)
 //
 // ROUTING/ADDRESS/DATAWIDTH:
 //   - Route is M_AXI_LPD (NOT PS_CPM_CFG - that is the CPM6 PCIe config/ELBI
 //     path, a different physical route than this LPD_AXI_PL-routed CSR
 //     block).
 //   - Every address must be offset by CTRL_REG_EP_BASE (0x8000_0000) - this
-//     design's own ctrl1/design_1_bd.tcl assigns ctrl_reg_ep_0 at this
-//     exact offset (`assign_bd_address -offset 0x80000000 ... -target_
+//     design's ctrl0_cpi/ and ctrl1_cpi/ design_1_bd.tcl assign ctrl_reg_ep_0
+//     at this exact offset (`assign_bd_address -offset 0x80000000 ... -target_
 //     address_space [get_bd_addr_spaces ps_wizard_0/pmcps_0_psv_cortexr5_0]
 //     [get_bd_addr_segs ctrl_reg_ep_0/s_axil/reg0]`).
 //   - select_pl_datawidth(2'b00, "M_AXI_LPD") must be called before any
@@ -54,6 +51,6 @@ else
   `uvm_info("CSR_SANITY", $sformatf("PASS: SCRATCH_LO loopback OK (0x%h) via M_AXI_LPD", rdata), UVM_NONE)
 
 ps_vip_api.read_data_32(R5_API, CTRL_REG_EP_BASE + EP_CTRL_STS, rdata, rsp);
-`uvm_info("CSR_SANITY", $sformatf("INFO: EP_CTRL_STS = 0x%h (ep_status input unconnected in this BD - expect 0), RRESP=%0b", rdata, rsp), UVM_NONE)
+`uvm_info("CSR_SANITY", $sformatf("INFO: EP_CTRL_STS = 0x%h (link not trained - expect 0), RRESP=%0b", rdata, rsp), UVM_NONE)
 
 ps_vip_api.set_routing_config(R5_API, M_AXI_LPD, 1'b0);

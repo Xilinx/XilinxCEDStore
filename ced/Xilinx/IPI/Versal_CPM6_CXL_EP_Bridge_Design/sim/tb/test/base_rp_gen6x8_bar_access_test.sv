@@ -113,7 +113,7 @@ class seq_ps_pcie_enum_fixed_aper extends seq_ps_pcie_enum;
 endclass
 
 `ifdef CPM6_RTL
-// axi_mon_cb — SVT port monitor callback that fires transaction_ended() after every complete AXI transaction (write: BVALID/BREADY; read: RLAST).
+// axi_mon_cb - SVT port monitor callback that fires transaction_ended() after every complete AXI transaction (write: BVALID/BREADY; read: RLAST).
 class axi_mon_cb extends svt_axi_port_monitor_callback;
   `uvm_object_utils(axi_mon_cb)
   apci_tlp_sb sb;  
@@ -172,7 +172,7 @@ class base_rp_gen6x8_bar_access_test extends base_rp_test;
 `ifdef CPM6_RTL
   vip_tlp_cb                                     tlp_cb;   
   amd_tlp_converter_sb                           ep_sb;    
-  axi_mon_cb                                     mon_cb;   // SVT callback: transaction_ended() → ep_sb.write_axi_mon()
+  axi_mon_cb                                     mon_cb;   // SVT callback: transaction_ended() -> ep_sb.write_axi_mon()
 `endif
 
   function new(string name, uvm_component parent);
@@ -208,13 +208,13 @@ class base_rp_gen6x8_bar_access_test extends base_rp_test;
     super.connect_phase(phase);
     // Register SVT callback: transaction_ended() fires after BVALID/BREADY (wr) or RLAST (rd),then calls ep_sb.write_axi_mon()
     uvm_callbacks#(svt_axi_port_monitor, svt_axi_port_monitor_callback)::add(env.axi_env.master[M_AXIMM_PS_128].monitor, mon_cb);
-    tlp_cb.apci_tlp_wr_rd_req.connect(ep_sb.analysis_export);  // VIP TLPs → SB write_req/write_rsp
+    tlp_cb.apci_tlp_wr_rd_req.connect(ep_sb.analysis_export);  // VIP TLPs -> SB write_req/write_rsp
   endfunction
 `endif
 
   virtual function void start_of_simulation_phase(uvm_phase phase);
     cfgspc_cb_6bar cb;
-    super.start_of_simulation_phase(phase);  // calls env.shim.setup_vip() → registers base cfgspc_cb
+    super.start_of_simulation_phase(phase);  // calls env.shim.setup_vip() -> registers base cfgspc_cb
     cb         = new();
     cb.port_id = 0;    // controller 0, port 0
     cb.shim_id = 0;
@@ -257,7 +257,7 @@ class base_rp_gen6x8_bar_access_test extends base_rp_test;
 
     super.main_phase(phase);  // enumeration runs here; SB checks disabled during this
 `ifdef CPM6_RTL
-    ep_sb.check_enabled = 1;  // enable Check1/Check2 — all ECAM traffic is done
+    ep_sb.check_enabled = 1;  // enable Check1/Check2 - all ECAM traffic is done
     `uvm_info("bar_access", "SB checks enabled after enumeration", UVM_LOW)
 `endif
     phase.raise_objection(this);

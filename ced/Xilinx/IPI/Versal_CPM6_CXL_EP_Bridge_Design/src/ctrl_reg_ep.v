@@ -115,8 +115,7 @@ module ctrl_reg_ep
   // read of EP_CTRL_STS lags the live hardware status by 1 clock (both
   // this register and ep_status_concat_0's source pins share the same
   // pl0_ref_clk domain - see design_1_bd.tcl - so no CDC synchronizer is
-  // needed). Bit layout (previously documented in the now-retired
-  // src/ep_status_reg.v, which this replaced):
+  // needed). Bit layout:
   //   [0]      link_up
   //   [1]      io_en
   //   [2]      mem_en
@@ -129,8 +128,7 @@ module ctrl_reg_ep
   //   [10]     cxl_reset
   //   [11]     initiate_cxl_rst
   //   [12]     initiate_cache_wr_invld
-  //   [13]     reserved (was mld_hot_rst_active - ps_wizard will not
-  //            expose this pin in a future release, dropped here first)
+  //   [13]     reserved
   //   [14]     dev_rst_mem_clr_enable
   //   [15]     reserved
   //   [19:16]  vlsm_mc_state[3:0]  - nibble-aligned, reads as a single hex digit
@@ -143,7 +141,7 @@ module ctrl_reg_ep
   // bits [i*16 +: 16]): this is each PA's own cxl_mem_wrapper.v
   // cxl_debug_bus output, brought out through the PA_N hierarchy and
   // concatenated across all instantiated PAs in the BD (same
-  // pl0_ref_clk domain as s_axil_aclk — no CDC needed). Per-PA bit
+  // pl0_ref_clk domain as s_axil_aclk - no CDC needed). Per-PA bit
   // layout (matches cxl_mem_wrapper.v's own cxl_debug_bus comment):
   //   [i*16+0] a2f_req_is_valid   [i*16+1] a2f_data_is_valid
   //   [i*16+2] a2f_req_block      [i*16+3] a2f_data_block
@@ -156,11 +154,11 @@ module ctrl_reg_ep
   // Populates pa_cxl_cntrs (20 x 32-bit: PA0-3 AW/AR/B/R + TOT_AW/AR/B/R)
   // and ep_cpa_debug (EP-level AW/B/AR/R totals - the same TOT_* values)
   // and the Per-PA CPI Counters table (REQ/RWD/RSP/DAT x4 PA), all
-  // computed internally now - see "Per-PA + EP counters" below.
+  // computed internally - see "Per-PA + EP counters" below.
   input  [NUM_PA*16-1:0] pa_dbg_cxl_bus,
 
-  // cxl1_status_dev_mem_en from CPM6 — now registered directly in cxl_mem_wrapper
-  // (see cxl_mem_wrapper.v); ctrl_reg_ep no longer drives the PA enable pins.
+  // cxl1_status_dev_mem_en from CPM6 - registered directly in cxl_mem_wrapper
+  // (see cxl_mem_wrapper.v); ctrl_reg_ep does not drive the PA enable pins.
   input               cxl1_status_dev_mem_en
 );
 
@@ -174,7 +172,7 @@ module ctrl_reg_ep
   integer             byte_index;
   reg                 aw_en;
 
-  // One-cycle counter clear — write any value to CNT_CLR (0x550) to zero all
+  // One-cycle counter clear - write any value to CNT_CLR (0x550) to zero all
   // counters. Not exposed as a module output port (unconnected in the BD -
   // this design consumes it only internally, in the same reset condition as
   // the counter registers below).
@@ -263,12 +261,8 @@ module ctrl_reg_ep
 
   reg [31:0] cnt_tot_aw, cnt_tot_ar, cnt_tot_b, cnt_tot_r;
   // EP-level CPI totals (sum of the per-PA CPI counts above across all 4
-  // PAs) - replaces the former cxl_debug_bus-fed cnt_m2s_req/cnt_m2s_dat/
-  // cnt_s2m_rsp/cnt_s2m_dat, which read a ctrl_reg_ep_0/cxl_debug_bus port
-  // that was never wired to anything in the BD (confirmed unconnected /
-  // tied to 0 in both ctrl0 and ctrl1) and so always read
-  // 0. Computed the same way as cnt_tot_aw/ar/b/r above: summed directly
-  // from the per-PA pulses, not from the (now-removed) per-PA counters.
+  // PAs). Computed the same way as cnt_tot_aw/ar/b/r above: summed directly
+  // from the per-PA pulses.
   reg [31:0] cnt_tot_req, cnt_tot_rwd, cnt_tot_rsp, cnt_tot_dat;
 
   // Per-PA-slot qualified pulses this cycle (combinational; forced to 0
@@ -360,7 +354,7 @@ module ctrl_reg_ep
   wire [31:0] ep_axi_rd_start_cnt = cnt_tot_ar;
   wire [31:0] ep_axi_rd_compl_cnt = cnt_tot_r;
 
-  // ---- PA counter bus breakout (register-file-facing names, unchanged) ----
+  // ---- PA counter bus breakout (register-file-facing names) ----
   wire [31:0] pa0_aw = cnt_pa_aw[0];  wire [31:0] pa0_ar = cnt_pa_ar[0];
   wire [31:0] pa0_b  = cnt_pa_b[0];   wire [31:0] pa0_r  = cnt_pa_r[0];
   wire [31:0] pa1_aw = cnt_pa_aw[1];  wire [31:0] pa1_ar = cnt_pa_ar[1];
@@ -408,10 +402,7 @@ module ctrl_reg_ep
   localparam EP_AXI_RD_CP     = 12'h430;
 
   // EP-level CPI totals (sum of the per-PA CPI counts across all 4 PAs -
-  // see cnt_tot_req/rwd/rsp/dat above). These addresses previously read a
-  // cxl_debug_bus port that was never wired to anything in the BD and so
-  // always returned 0; repointed to the verified-correct per-PA-derived
-  // totals instead, same register map, same addresses.
+  // see cnt_tot_req/rwd/rsp/dat above).
   localparam CPI_M2S_REQ_CNT  = 12'h448;
   localparam CPI_M2S_DAT_CNT  = 12'h44C;
   localparam CPI_S2M_RSP_CNT  = 12'h450;
@@ -865,7 +856,7 @@ module ctrl_reg_ep
           PA3_RSP_CNT      : axi_rdata <= pa3_rsp;
           PA3_DAT_CNT      : axi_rdata <= pa3_dat;
 
-          // AXI transaction counters from debug_cxl_0 (same clock — direct read)
+          // AXI transaction counters from debug_cxl_0 (same clock - direct read)
           PA0_AW_CNT       : axi_rdata <= pa0_aw;
           PA0_AR_CNT       : axi_rdata <= pa0_ar;
           PA0_B_CNT        : axi_rdata <= pa0_b;
@@ -912,12 +903,12 @@ module ctrl_reg_ep
       // cxl_mem_base1 <= 64'h0;
     end else begin
       // cxl_mem_wrapper uses cxl_mem0_base as a range-check filter against the
-      // 52-bit CXL byte address (zero-padded to 64-bit). No shift needed —
+      // 52-bit CXL byte address (zero-padded to 64-bit). No shift needed -
       // the programmed value matches the CPI address format directly.
       cxl_mem_base0 <= ep_base0_full;
       // cxl_mem_base1 <= ep_base1_full;
 
-      // NOTE: num_pa-controlled PA-interleave shift — retained for future use.
+      // NOTE: num_pa-controlled PA-interleave shift - retained for future use.
       // The cxl_mem_wrapper receives the full 52-bit CXL byte address and uses
       // cxl_mem0_base only for range-checking, not address subtraction.
       // If a shift is needed in future (e.g. for a different IP), enable below:

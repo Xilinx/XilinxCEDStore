@@ -17,18 +17,18 @@ package ps_vip_api_pkg;
     PSCLK__PS_NOC_PCI_AXI0,
     PSCLK__PS_NOC_PCI_AXI1,
     PSCLK__PS_NOC_RPU_AXI0,
-    PSCLK__LPD_CPM_TOP_SW_CLK 
+    PSCLK__LPD_CPM_TOP_SW_CLK
   } ps_vip_clk_e;
-  
+
   // The only valid inputs to set_routing_config(<slv>,...
   typedef enum bit [3:0] {
     S_AXI_FPD,
     S_AXI_GP2,
     S_AXI_LPD,
-    NOC_FPD_CCI_0,  
-    NOC_FPD_CCI_1,  
-    NOC_FPD_AXI_0,  
-    NOC_FPD_AXI_1,  
+    NOC_FPD_CCI_0,
+    NOC_FPD_CCI_1,
+    NOC_FPD_AXI_0,
+    NOC_FPD_AXI_1,
     S_ACP_FPD,
     S_ACE_FPD,
     NOC_PMC_AXI_0,
@@ -39,14 +39,14 @@ package ps_vip_api_pkg;
     CPM_PS_AXI_0, //different
     CPM_PS_AXI_1  //different
   } ps_route_slv_e;
-  
+
   // The only valid inputs to set_routing_config(...,<mst>,...)
   typedef enum bit [3:0] {
     FPD_CCI_NOC,
     M_AXI_FPD,
     M_AXI_LPD,
-    FPD_AXI_NOC_0,  
-    FPD_AXI_NOC_1,  
+    FPD_AXI_NOC_0,
+    FPD_AXI_NOC_1,
     PS_NOC_PCI_AXI_0, //different
     PS_NOC_PCI_AXI_1, //different
     PMC_NOC_AXI_0,

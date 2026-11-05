@@ -8,10 +8,11 @@
 #   cd Versal_CPM6_CXL_EP_Bridge_Design/sim/light_tb
 #   vivado -mode batch -source build_project_light.tcl \
 #     -tclargs <workdir> [Controller_0|Controller_1] [CXL_3_1|CXL_2_0]
+# <workdir> must be outside this checkout.
 #
 # Then: cd <workdir>/design_1.sim/sim_1/behav/vcs && ./compile.sh &&
 # ./elaborate.sh && ./simulate.sh. No Avery VIP/uvma_agents/external
-# Makefile needed - only Vivado + a licensed simulator + $CPM6_SECUREIP.
+# Makefile needed - only Vivado + VCS with UVM 1.2.
 
 set script_dir  [file dirname [file normalize [info script]]]
 set design_root [file normalize [file join $script_dir .. ..]]
@@ -69,10 +70,6 @@ set tb_files [list \
   [file normalize "$sim_dst/light_tb/board.sv"] \
 ]
 import_files -norecurse -fileset $sim_obj $tb_files
-# xlnoc_glue.v is deliberately NOT imported into this fileset: it's a
-# parallel top with no structural reference from board.sv, so Vivado's
-# dependency-based compile.sh generation would silently exclude it.
-# Compiled instead by appending directly to compile.sh (see below).
 
 # board.sv is .sv (not .v) since it uses SystemVerilog-only constructs
 # (logic types, virtual interfaces, typedef struct, package imports).
@@ -80,8 +77,12 @@ import_files -norecurse -fileset $sim_obj $tb_files
 # get UVM support the way Vivado's IP-driven flow does, and board.sv needs
 # uvm_macros.svh/uvm_pkg.
 set_property -name {vcs.compile.vlogan.more_options} \
-  -value "-ntb_opts uvm-1.2 +define+LIGHT_TB_ROOT +incdir+$sim_dst/light_tb +incdir+$sim_dst/tb" \
+  -value "-ntb_opts uvm-1.2 +incdir+$sim_dst/light_tb +incdir+$sim_dst/tb" \
   -objects $sim_obj
+set_property -name {vcs.elaborate.vcs.more_options} -value "-ntb_opts uvm-1.2" \
+  -objects $sim_obj
+# The TB ends itself with $finish; this is only a cap.
+set_property -name {vcs.simulate.runtime} -value {500us} -objects $sim_obj
 
 set_property target_simulator VCS [current_project]
 # Both must be disabled BEFORE setting top, and in this order - otherwise
@@ -92,11 +93,6 @@ set_property top board [get_filesets sim_1]
 set_property top_lib xil_defaultlib [get_filesets sim_1]
 update_compile_order -fileset sim_1
 
-puts "DEBUG: sim_1 top            = [get_property top [get_filesets sim_1]]"
-puts "DEBUG: sim_1 top_lib        = [get_property top_lib [get_filesets sim_1]]"
-puts "DEBUG: sim_1 top_auto_set   = [get_property top_auto_set [get_filesets sim_1]]"
-puts "DEBUG: sim_1 file list      = [get_files -of_objects [get_filesets sim_1]]"
-
 # Compiled library location - site-specific, so it comes from
 # $VIVADO_CLIBS (checked above) rather than being hardcoded.
 set_property compxlib.vcs_compiled_library_dir $vcs_clibs_dir [current_project]
@@ -105,51 +101,28 @@ puts "INFO: sim_1 fileset configured, top=board, target_simulator=VCS"
 puts "INFO: generating simulation scripts only (no compile/elaborate/run here)..."
 launch_simulation -scripts_only
 
-# xlnoc.v (NoC sim model) only exists on disk after launch_simulation runs,
-# and xlnoc_glue.v is a parallel top with no reference from board.sv, so
-# neither can be wired in via a normal fileset import - append them to the
-# already-generated compile.sh/elaborate.sh directly instead.
-set xlnoc_sim_v "$workdir/design_1.gen/sim_1/bd/xlnoc/sim/xlnoc.v"
-set compile_sh  "$workdir/design_1.sim/sim_1/behav/vcs/compile.sh"
-if {![file exists $xlnoc_sim_v]} {
-  puts "WARNING: $xlnoc_sim_v not found after launch_simulation - xlnoc (NoC sim model) not wired in; xlnoc_glue.v will fail to elaborate (undefined module 'xlnoc')."
-} elseif {![file exists $compile_sh]} {
-  puts "WARNING: $compile_sh not found - cannot append xlnoc/xlnoc_glue compilation."
-} else {
-  set fh [open $compile_sh r]
-  set compile_content [read $fh]
-  close $fh
-  if {[string first "xlnoc_glue.v" $compile_content] == -1} {
-    set xlnoc_glue_v [file normalize "$sim_dst/tb/xlnoc_glue.v"]
-    append compile_content "\n# --- Appended: xlnoc (NoC Packet Switch sim model) + xlnoc_glue.v ---\n"
-    append compile_content "vlogan -full64 -sverilog -ntb_opts uvm-1.2 -timescale=1ns/1ps +define+LIGHT_TB_ROOT -work xil_defaultlib \"$xlnoc_sim_v\" \"$xlnoc_glue_v\" -l vlogan.xlnoc.log\n"
-    set fh [open $compile_sh w]
-    puts -nonewline $fh $compile_content
-    close $fh
-    puts "INFO: appended xlnoc.v + xlnoc_glue.v compilation to compile.sh"
-  }
+# -ntb_opts doesn't compile uvm_pkg: add it to compile.sh ahead of the
+# testbench ($VCS_HOME is set by compile.sh or the environment).
+set compile_sh "$workdir/design_1.sim/sim_1/behav/vcs/compile.sh"
+set fh [open $compile_sh r]
+set compile_content [read $fh]
+close $fh
+if {![regexp -indices -line {^(\S*)vlogan \$vlogan_opts} $compile_content first prefix]} {
+  puts "ERROR: no vlogan command found in $compile_sh"
+  exit 1
 }
-
-# xlnoc_glue.v is a parallel top with no ports - added as an additional
-# VCS elaboration target alongside `board`, not nested inside it.
-set elab_sh "$workdir/design_1.sim/sim_1/behav/vcs/elaborate.sh"
-if {[file exists $elab_sh]} {
-  set fh [open $elab_sh r]
-  set elab_content [read $fh]
-  close $fh
-  if {[string first "xlnoc_glue" $elab_content] == -1} {
-    set patched [string map {"xil_defaultlib.board xil_defaultlib.glbl" "xil_defaultlib.board xil_defaultlib.xlnoc_glue xil_defaultlib.glbl"} $elab_content]
-    if {[string equal $patched $elab_content]} {
-      puts "WARNING: could not patch elaborate.sh to add xlnoc_glue as a second -top - the expected 'xil_defaultlib.board xil_defaultlib.glbl' pattern was not found (Vivado may have changed its generated script format). Add 'xil_defaultlib.xlnoc_glue' to the vcs invocation's top-module list by hand."
-    } else {
-      set fh [open $elab_sh w]
-      puts -nonewline $fh $patched
-      close $fh
-      puts "INFO: patched elaborate.sh - added xil_defaultlib.xlnoc_glue as a second elaboration top"
-    }
-  }
-} else {
-  puts "WARNING: $elab_sh not found - cannot patch in xlnoc_glue as a second top."
-}
+set vlogan "[string range $compile_content {*}$prefix]vlogan"
+set uvm_dir {$VCS_HOME/etc/uvm-1.2}
+set uvm_cmd [join [list \
+  "$vlogan -full64 -sverilog -ntb_opts uvm-1.2 -timescale=1ns/1ps -work xil_defaultlib \\" \
+  "  +incdir+$uvm_dir/vcs +incdir+$uvm_dir/verdi \\" \
+  "  $uvm_dir/uvm_pkg.sv \\" \
+  "  $uvm_dir/vcs/uvm_custom_install_vcs_recorder.sv \\" \
+  "  $uvm_dir/verdi/uvm_custom_install_verdi_recorder.sv \\" \
+  "  2>&1 | tee -a compile.log"] "\n"]
+set at [lindex $first 0]
+set fh [open $compile_sh w]
+puts -nonewline $fh "[string range $compile_content 0 [expr {$at - 1}]]$uvm_cmd\n\n[string range $compile_content $at end]"
+close $fh
 
 puts "INFO: DONE - scripts generated under $workdir/design_1.sim/sim_1/behav/vcs/"

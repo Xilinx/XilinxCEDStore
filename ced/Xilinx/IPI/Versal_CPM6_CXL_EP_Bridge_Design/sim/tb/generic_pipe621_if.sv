@@ -1,16 +1,16 @@
 // - Written in accordance with PIPE spec Rev. 6.2.1, released May 2023
 // - There are two PIPE interfaces for PCIe: known as the "Original PIPE
-//   Architecture" (OP) and the "SerDes Architecture" (SA). The SA is newer 
+//   Architecture" (OP) and the "SerDes Architecture" (SA). The SA is newer
 //   and implements minimal digital logic compared to OP.
 // - The interface as a whole has common signals and signals ONLY present
 //   in the OP or the SA.
 interface generic_pipe621_if;
 
   // "PClk as PHY Output" not supported for >=PCIe5.0
-  logic        Pclk; 
+  logic        Pclk;
 
   // -----------------------------------------------
-  // Command Interface 
+  // Command Interface
   // -----------------------------------------------
   // - PHY inputs
   //   - common
@@ -35,31 +35,31 @@ interface generic_pipe621_if;
   logic [ 3:0] RxSyncHeader;
 
   // -----------------------------------------------
-  // Status Interface 
+  // Status Interface
   // -----------------------------------------------
   // - PHY inputs
   logic        PclkChangeAck;
   logic        AsyncPowerChangeAck;
   // - PHY outputs
-  logic        RxValid; 
+  logic        RxValid;
   logic        PhyStatus;
   logic        RxElecIdle;
   logic [ 2:0] RxStatus;
   logic        PclkChangeOk;
 
   // -----------------------------------------------
-  // Message Bus Interface 
+  // Message Bus Interface
   // M2P="MAC to PHY", P2M="PHY to MAC"
   // -----------------------------------------------
   // - PHY inputs
-  logic [7:0] M2P_MessageBus; 
+  logic [7:0] M2P_MessageBus;
   // - PHY outputs
   logic [7:0] P2M_MessageBus;
 
   // -----------------------------------------------
   // Data Interface
   // -----------------------------------------------
-  // - PHY Inputs 
+  // - PHY Inputs
   //   - common
   logic [79:0] TxData;
   logic        TxDataValid;

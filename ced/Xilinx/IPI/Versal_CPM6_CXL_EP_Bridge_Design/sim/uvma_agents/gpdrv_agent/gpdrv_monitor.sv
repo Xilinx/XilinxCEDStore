@@ -20,9 +20,8 @@ class gpdrv_monitor#(type CFG, type VIF, type TXN) extends base_monitor#(CFG,VIF
   // - class uvm_callbacks #(type T=uvm_object, type CB=uvm_callback)
   //   extends uvm_typed_callbacks#(T);
   // - static function bit m_register_pair(string tname="", cbname="");
-  // fixme
   `define gpdrv_register_cb(T,CB,Tname,CBname) \
-    static local bit m_register_cb_``NAME = uvm_callbacks#(T,CB)::m_register_pair(`"Tname`",`"CBname`");
+    static local bit m_register_cb_``CB = uvm_callbacks#(T,CB)::m_register_pair(`"Tname`",`"CBname`");
   // Register the CB
   `gpdrv_register_cb(this_type, cb_type, get_type_name, gpdrv_mon_cb::type_name)
 

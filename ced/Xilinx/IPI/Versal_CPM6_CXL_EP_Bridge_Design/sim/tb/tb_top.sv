@@ -13,7 +13,7 @@
 `include "cdo_loader_sim_if.sv"
 
 // Set +incdir to point to a location BEFORE this directory such that the project-
-// specific test package files are picked up instead of the empty ones. This 
+// specific test package files are picked up instead of the empty ones. This
 // method allows a standardized tb_top to be used but still have project-specific
 // tests.
 /* >>> pkg.proj_test_pkg.sv
@@ -38,12 +38,12 @@ module tb_top;
   import tb_params_pkg::*;
 
   // ------------------------------------------------------------------ //
-  // - These control the physical link connections; ergo you can enable 
-  //   a link for training if non-zero, connect a subset of lanes of a 
+  // - These control the physical link connections; ergo you can enable
+  //   a link for training if non-zero, connect a subset of lanes of a
   //   link, or disable a link entirely if zero
-  // - Cannot move these to module definition as it breaks SNPS VIP and 
+  // - Cannot move these to module definition as it breaks SNPS VIP and
   //   VCS sim for some reason
-  // - Examples 
+  // - Examples
   //   - Questa: vopt ... -G tb_top/LINK0_WIDTH=4
   //   - VCS   : vcs ... -pvalue tb_top.LINK0_WIDTH=4
   // ------------------------------------------------------------------ //
@@ -90,8 +90,8 @@ module tb_top;
   generic_pipe621_if gen_pipe_if[16]();
 
   // - Provide some common settings for both links
-  // - Provide PIPE clock rates and data widths for PIPE interface match the 
-  //   implementation by Versal CPIPE (CPM5+); Avery requires both sides "A" 
+  // - Provide PIPE clock rates and data widths for PIPE interface match the
+  //   implementation by Versal CPIPE (CPM5+); Avery requires both sides "A"
   //   and "B" match
   `define COMMON_MPIPE_DEF   \
     .NO_RXSTANDY       (1),  \
@@ -143,10 +143,10 @@ module tb_top;
   end
 
   // Converts from the generic PIPE interface to Avery-specific PIPE interface
-  
+
   `define RXDATA0(I) {dut_if0[lx].RxData9[I],dut_if0[lx].RxDataK[I],dut_if0[lx].RxData[I*8+:8]}
   `define TXDATA0(I) {dut_if0[lx].TxData9[I],dut_if0[lx].TxDataK[I],dut_if0[lx].TxData[I*8+:8]}
-  
+
   // *** LINK 0 *** //
   for (genvar lx=0; lx<LINK0_WIDTH; lx++) begin
     // --- PHY to MAC --- //
@@ -197,13 +197,13 @@ module tb_top;
   for (genvar lx=LINK0_WIDTH; lx<8; lx++) begin
     assign gen_pipe_if[lx].PhyStatus          = '0;
   end
-  
+
   `undef RXDATA0
   `undef TXDATA0
-  
+
   `define RXDATA1(I) {dut_if1[ly].RxData9[I],dut_if1[ly].RxDataK[I],dut_if1[ly].RxData[I*8+:8]}
   `define TXDATA1(I) {dut_if1[ly].TxData9[I],dut_if1[ly].TxDataK[I],dut_if1[ly].TxData[I*8+:8]}
-  
+
   // *** LINK 1 *** //
   for (genvar ly=0; ly<LINK1_WIDTH; ly++) begin
     // --- PHY to MAC --- //
@@ -250,11 +250,11 @@ module tb_top;
     assign dut_if1[ly].Pclk                     = gen_pipe_if[8+ly].Pclk;
     assign dut_if1[ly].Reset_                   = gen_pipe_if[8+ly].Reset_;
   end
-  // EDT-1093458 : MAC requires unused lanes driven low
+  // MAC requires unused lanes driven low
   for (genvar ly=LINK1_WIDTH; ly<8; ly++) begin
     assign gen_pipe_if[8+ly].PhyStatus          = '0;
   end
-  
+
   `undef RXDATA1
   `undef TXDATA1
 `else
@@ -262,8 +262,8 @@ module tb_top;
   apci_pipe_intf vip_if1[8]();
 
   // - Provide some common settings for both links
-  // - Provide PIPE clock rates and data widths for PIPE interface match the 
-  //   implementation by Versal CPIPE (CPM5+); Avery requires both sides "A" 
+  // - Provide PIPE clock rates and data widths for PIPE interface match the
+  //   implementation by Versal CPIPE (CPM5+); Avery requires both sides "A"
   //   and "B" match
   `define COMMON_PHY_DEF \
     .NO_RXSTANDY       (1),  \
@@ -299,7 +299,7 @@ module tb_top;
       .txn      (vip2dut_0_n),
       // Tie to 1 if unused
       .clkreq_n (1'b1)
-    );  
+    );
   end
 
   // Keep unused upper lanes disconnected
@@ -318,7 +318,7 @@ module tb_top;
       .txn      (vip2dut_1_n),
       // Tie to 1 if unused
       .clkreq_n (1'b1)
-    );  
+    );
   end
 
 `endif
@@ -330,7 +330,7 @@ module tb_top;
   initial if (LINK0_WIDTH) begin
     #($urandom_range(0,9)*1ns);
     #($urandom_range(0,999)*1ps);
-    forever refclk_0_p = #5ns !refclk_0_p; 
+    forever refclk_0_p = #5ns !refclk_0_p;
   end
   bit refclk_1_p, refclk_1_n;
   assign refclk_1_n = !refclk_1_p;
@@ -338,7 +338,7 @@ module tb_top;
   initial if (LINK1_WIDTH) begin
     #($urandom_range(0,9)*1ns);
     #($urandom_range(0,999)*1ps);
-    forever refclk_1_p = #5ns !refclk_1_p; 
+    forever refclk_1_p = #5ns !refclk_1_p;
   end
   `include "cpm6_vivado_binds.sv"
   `include "dut_inst.sv"

@@ -29,7 +29,7 @@ module bind_cpm_noc_axi
     cpm_noc_axi_if_0.awuser  = {'0, inst.m_axi0_ps_awuser};
     cpm_noc_axi_if_0.awvalid = {'0, inst.m_axi0_ps_awvalid};
     cpm_noc_axi_if_0.awready = {'0, inst.m_axi0_ps_awready};
-    
+
     // Write Data Channel
     cpm_noc_axi_if_0.wdata  = {'0, inst.m_axi0_ps_wdata};
     cpm_noc_axi_if_0.wstrb  = {'0, inst.m_axi0_ps_wstrb};
@@ -37,14 +37,14 @@ module bind_cpm_noc_axi
     cpm_noc_axi_if_0.wuser  = {'0, inst.m_axi0_ps_wuser};
     cpm_noc_axi_if_0.wvalid = {'0, inst.m_axi0_ps_wvalid};
     cpm_noc_axi_if_0.wready = {'0, inst.m_axi0_ps_wready};
-    
+
     // Write Response Channel
     cpm_noc_axi_if_0.bid    = {'0, inst.m_axi0_ps_bid};
     cpm_noc_axi_if_0.bresp  = {'0, inst.m_axi0_ps_bresp};
     cpm_noc_axi_if_0.buser  = {'0, inst.m_axi0_ps_buser};
     cpm_noc_axi_if_0.bvalid = {'0, inst.m_axi0_ps_bvalid};
     cpm_noc_axi_if_0.bready = {'0, inst.m_axi0_ps_bready};
-    
+
     // Read Address Channel
     cpm_noc_axi_if_0.araddr  = {'0, inst.m_axi0_ps_araddr};
     cpm_noc_axi_if_0.arburst = {'0, inst.m_axi0_ps_arburst};
@@ -58,7 +58,7 @@ module bind_cpm_noc_axi
     cpm_noc_axi_if_0.aruser  = {'0, inst.m_axi0_ps_aruser};
     cpm_noc_axi_if_0.arvalid = {'0, inst.m_axi0_ps_arvalid};
     cpm_noc_axi_if_0.arready = {'0, inst.m_axi0_ps_arready};
-    
+
     // Read Data Channel
     cpm_noc_axi_if_0.rdata  = {'0, inst.m_axi0_ps_rdata};
     cpm_noc_axi_if_0.rid    = {'0, inst.m_axi0_ps_rid};
@@ -81,7 +81,7 @@ module bind_cpm_noc_axi
     cpm_noc_axi_if_1.awuser  = {'0, inst.m_axi1_ps_awuser};
     cpm_noc_axi_if_1.awvalid = {'0, inst.m_axi1_ps_awvalid};
     cpm_noc_axi_if_1.awready = {'0, inst.m_axi1_ps_awready};
-    
+
     // Write Data Channel
     cpm_noc_axi_if_1.wdata  = {'0, inst.m_axi1_ps_wdata};
     cpm_noc_axi_if_1.wstrb  = {'0, inst.m_axi1_ps_wstrb};
@@ -89,14 +89,14 @@ module bind_cpm_noc_axi
     cpm_noc_axi_if_1.wuser  = {'0, inst.m_axi1_ps_wuser};
     cpm_noc_axi_if_1.wvalid = {'0, inst.m_axi1_ps_wvalid};
     cpm_noc_axi_if_1.wready = {'0, inst.m_axi1_ps_wready};
-    
+
     // Write Response Channel
     cpm_noc_axi_if_1.bid    = {'0, inst.m_axi1_ps_bid};
     cpm_noc_axi_if_1.bresp  = {'0, inst.m_axi1_ps_bresp};
     cpm_noc_axi_if_1.buser  = {'0, inst.m_axi1_ps_buser};
     cpm_noc_axi_if_1.bvalid = {'0, inst.m_axi1_ps_bvalid};
     cpm_noc_axi_if_1.bready = {'0, inst.m_axi1_ps_bready};
-    
+
     // Read Address Channel
     cpm_noc_axi_if_1.araddr  = {'0, inst.m_axi1_ps_araddr};
     cpm_noc_axi_if_1.arburst = {'0, inst.m_axi1_ps_arburst};
@@ -110,7 +110,7 @@ module bind_cpm_noc_axi
     cpm_noc_axi_if_1.aruser  = {'0, inst.m_axi1_ps_aruser};
     cpm_noc_axi_if_1.arvalid = {'0, inst.m_axi1_ps_arvalid};
     cpm_noc_axi_if_1.arready = {'0, inst.m_axi1_ps_arready};
-    
+
     // Read Data Channel
     cpm_noc_axi_if_1.rdata  = {'0, inst.m_axi1_ps_rdata};
     cpm_noc_axi_if_1.rid    = {'0, inst.m_axi1_ps_rid};

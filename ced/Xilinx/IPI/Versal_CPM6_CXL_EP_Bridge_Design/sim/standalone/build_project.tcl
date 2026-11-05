@@ -17,8 +17,7 @@
 # subsequent make/compile/elaborate/simulate steps must run against
 # <workdir>/sim/standalone/Makefile (the copy), not the original checkout,
 # so a build never reads live from the CED checkout. That copy compiles
-# the rest (Avery VIP + CPM6 SecureIP + UVM agents + our tb/verif) around
-# this DUT compile.
+# the rest (Avery VIP + UVM agents + our tb/verif) around this DUT compile.
 
 set script_dir  [file dirname [file normalize [info script]]]
 set design_root [file normalize [file join $script_dir .. ..]]
@@ -42,8 +41,8 @@ set cxl_width     [expr {[llength $argv] > 3 ? [lindex $argv 3] : "X8"}]
 
 # --- Copy this design's sim/ tree into the workdir ---
 # Compile/elaborate/simulate must never read live from the CED checkout -
-# copy the whole sim/ tree (avery_vcs.f, cpm6_sip.f, run.sh,
-# vcs_lib_map.setup, uvma_agents.f, lib/, uvma_agents/, tb/, verif/,
+# copy the whole sim/ tree (avery_vcs.f, vcs_lib_map.setup,
+# uvma_agents.f, lib/, uvma_agents/, tb/, verif/,
 # standalone/, light_tb/) into $workdir/sim first, then run everything
 # from there. Re-copied fresh on every invocation (delete-then-copy, not
 # an in-place merge) so a stale prior copy never silently shadows a newer

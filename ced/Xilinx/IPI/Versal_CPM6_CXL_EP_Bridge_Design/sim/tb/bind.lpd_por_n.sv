@@ -1,6 +1,6 @@
-// This module is translating between the Vivado generated CPM6 instance 
-// to the UVM interfaces used by this testbench for this 
-// reset . This is specifically designed to be bound at the CPM6 uni-sim 
+// This module is translating between the Vivado generated CPM6 instance
+// to the UVM interfaces used by this testbench for this
+// reset . This is specifically designed to be bound at the CPM6 uni-sim
 // instance level e.g.
 //   bind CPM6 bind_lpd_por_n bind_lpd_por_n();
 module bind_lpd_por_n

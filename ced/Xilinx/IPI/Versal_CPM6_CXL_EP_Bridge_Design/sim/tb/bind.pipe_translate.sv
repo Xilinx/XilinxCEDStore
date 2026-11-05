@@ -3,7 +3,7 @@
 // an upward referenced assignment to the top level generic PIPE interface and
 // aligns the signal naming conventions to the PIPE standard, so it is easy
 // to connect a link partner (usually a VIP).
-// 
+//
 // This module is designed to be bound at a higher level and then navigate
 // down to the hierarchy as displayed.  The hierarchy differs between RTL
 // and Vivado outputs.
@@ -30,16 +30,16 @@ module bind_pipe_translate;
 
   // clk-gen
   bit pipe_clk_0;
- 
+
   assign `DEST_MOD_0.tb_ref_pipe_clk = pipe_clk_0;
- 
+
   initial begin
     force `DEST_MOD_0.override = 1;
     forever pipe_clk_0 = #0.5ns !pipe_clk_0;
   end
- 
+
   // per-lane of link 0
-  for (genvar lx=0; lx<8; lx++) begin 
+  for (genvar lx=0; lx<8; lx++) begin
     // --- PHY to MAC --- //
     assign `DEST_MOD_0.tb_pipe_rx_clk[lx]        = gen_pipe_if[lx].RxCLK;
     assign `PIPE0.phy_mac_rxdata[lx*80+:80]      = gen_pipe_if[lx].RxData;
@@ -77,7 +77,7 @@ module bind_pipe_translate;
 
   // clk-gen
   bit pipe_clk_1;
-  
+
   assign `DEST_MOD_1.tb_ref_pipe_clk = pipe_clk_1;
 
   initial begin
@@ -86,7 +86,7 @@ module bind_pipe_translate;
   end
 
   // per-lane of link 1
-  for (genvar ly=0; ly<8; ly++) begin 
+  for (genvar ly=0; ly<8; ly++) begin
     // --- PHY to MAC --- //
     assign `DEST_MOD_1.tb_pipe_rx_clk[ly]        = gen_pipe_if[8+ly].RxCLK;
     assign `PIPE1.phy_mac_rxdata[ly*80+:80]      = gen_pipe_if[8+ly].RxData;
@@ -104,7 +104,7 @@ module bind_pipe_translate;
     assign gen_pipe_if[8+ly].TxDetectRxLoopback  = `PIPE1.mac_phy_txdetectrx_loopback[ly];
     assign gen_pipe_if[8+ly].TxDataValid         = `PIPE1.mac_phy_txdatavalid[ly];
     assign gen_pipe_if[8+ly].PowerDown           = `PIPE1.mac_phy_powerdown;
-    assign gen_pipe_if[8+ly].RxStandby           = `PIPE1.mac_phy_rxstandby[ly]; 
+    assign gen_pipe_if[8+ly].RxStandby           = `PIPE1.mac_phy_rxstandby[ly];
     assign gen_pipe_if[8+ly].M2P_MessageBus      = `PIPE1.mac_phy_messagebus[ly*8+:8];
     assign gen_pipe_if[8+ly].Width               = `PIPE1.mac_phy_width;
     assign gen_pipe_if[8+ly].RxWidth             = `PIPE1.mac_phy_rxwidth;

@@ -595,7 +595,7 @@ class seq_ps_pcie_enum extends seq_base_ps_axi32;
       // CXL Capability register is at base+0x0A (upper 16b of DWORD at base+0x08).
       // DWORD at base+0x08 = {CXL_Capability[15:0], DVSEC_ID[15:0]}
       //   bit 16 = Cache Capable, bit 17 = IO Capable, bit 18 = Mem Capable
-      // DWORD at base+0x0C = {CXL_Status[15:0], CXL_Control[15:0]}  ← write target
+      // DWORD at base+0x0C = {CXL_Status[15:0], CXL_Control[15:0]}  <- write target
       axi_rd(build_ecam_acc(usp_ecam_base, usp.ecap[ii].base+'h8), rdat);
       cache_cap = rdat[16]; // CXL Capability bit 0 (Cache Capable)
       mem_cap   = rdat[18]; // CXL Capability bit 2 (Mem Capable)
@@ -678,7 +678,7 @@ class seq_ps_pcie_enum extends seq_base_ps_axi32;
     logic [31:0] rdat;
     bit   [63:0] arr_base;
     bit   [7:0]  cap_count;
-    // CXL.cachemem Primary Range begins at comp_reg_base+0x1000 (CXL spec §8.2.4).
+    // CXL.cachemem Primary Range begins at comp_reg_base+0x1000 (CXL spec section 8.2.4).
     // The Capability Array header is at arr_base+0x0:
     //   [15:0]  = Array ID (must be 0x0001)
     //   [31:24] = Number of capability entries // changed as per spec
@@ -740,7 +740,7 @@ class seq_ps_pcie_enum extends seq_base_ps_axi32;
     cxl_find_hdm_cap(comp_blk.base, hdm_cap_base, found);
     if (!found) return;
     // HDM Decoder Capability Header (offset 0x00): bits[3:0] = decoder_cnt encoding
-    //   Encoding: 0→1, 1→2, 2→4, 3→6, 4→8 decoders (CXL spec Table 8-18)
+    //   Encoding: 0->1, 1->2, 2->4, 3->6, 4->8 decoders (CXL spec Table 8-18)
     axi_rd(hdm_cap_base[47:0], rdat);
     dec_cnt_enc = rdat[3:0];
     case (dec_cnt_enc)

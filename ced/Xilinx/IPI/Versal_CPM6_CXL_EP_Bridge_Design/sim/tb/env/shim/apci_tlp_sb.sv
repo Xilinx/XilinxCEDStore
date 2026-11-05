@@ -15,7 +15,7 @@ class apci_tlp_sb extends uvm_subscriber#(apci_tlp);
   // MWr TLP queue: write_req() pushes decoded MWr here; Thread 2 pops and checks.
   mwr_data_t mwr_q[$];
 
-  // Tag → address map: registered in write_req() (MRd), consumed in write_rsp() (CplD).
+  // Tag -> address map: registered in write_req() (MRd), consumed in write_rsp() (CplD).
   bit [63:0] mrd_tag_to_addr[bit[11:0]];
 
   // CplD address queue: write_rsp() pushes PCIe-derived address; Thread 3 pops it.
@@ -62,7 +62,7 @@ endtask
 
 virtual task write_data_check();
       forever begin
-	bit [63:0] act_addr;
+        bit [63:0] act_addr;
         mwr_data_t act_wr_tx;
         wait(mwr_q.size() > 0);
         act_wr_tx = mwr_q.pop_front();
@@ -77,8 +77,8 @@ virtual task write_data_check();
               chk1_pass++;
             end
           end else begin
-	  	`uvm_error("axi_apci_tlp_sb", $sformatf("Check1 addr received from AXI wr txn doesn't match with addr in VIP"))
-	  end
+                `uvm_error("axi_apci_tlp_sb", $sformatf("Check1 addr received from AXI wr txn doesn't match with addr in VIP"))
+          end
         end
       end
 endtask
@@ -133,9 +133,9 @@ endtask
     fork
       // Thread 1: unpack AXI write transaction beats into wr_data_mem[].
       expected_write_data();
-      // Thread 2: Check 1 — MWr TLP payload vs wr_data_mem[].
+      // Thread 2: Check 1 - MWr TLP payload vs wr_data_mem[].
       write_data_check();
-      // Thread 3: Check 2 — AXI rd base address vs PCIe CplD address,
+      // Thread 3: Check 2 - AXI rd base address vs PCIe CplD address,
       read_data_check();
     join_none
   endtask
@@ -217,14 +217,14 @@ endtask
     end
     `uvm_info("axi_apci_tlp_sb", msg, UVM_MEDIUM)
 
-    // MWr — decode into mwr_q[] for Check 1
+    // MWr - decode into mwr_q[] for Check 1
     if (t.kind == APCI_TLP_mwr) begin
       mwr_data_t mem_wr_vip;
       mem_wr_vip.addr    = tlp_addr;
       mem_wr_vip.payload = t.payload;  
       mwr_q.push_back(mem_wr_vip);
     end
-    // MRd — register tag→addr for Check 2
+    // MRd - register tag->addr for Check 2
     else if (t.kind == APCI_TLP_mrd) begin
       mrd_tag_to_addr[tlp_tag] = tlp_addr;
       `uvm_info("axi_apci_tlp_sb", $sformatf("MRd pending: tag=0x%03h addr=0x%016h", tlp_tag, tlp_addr), UVM_LOW)
@@ -276,7 +276,7 @@ endtask
   endfunction
 
   // ---------------------------------------------------------------------------
-  // check_phase — verify no stale state remains after run_phase ends
+  // check_phase - verify no stale state remains after run_phase ends
   // ---------------------------------------------------------------------------
   virtual function void check_phase(uvm_phase phase);
     super.check_phase(phase);
@@ -295,7 +295,7 @@ endtask
   endfunction
 
   // ---------------------------------------------------------------------------
-  // report_phase — summary statistics only, no functional checks
+  // report_phase - summary statistics only, no functional checks
   // ---------------------------------------------------------------------------
   virtual function void report_phase(uvm_phase phase);
     super.report_phase(phase);

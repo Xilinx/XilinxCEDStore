@@ -7,7 +7,7 @@ interface cdo_loader_sim_if(input clk);
   clocking cb @(posedge clk);
     output cdo_go;
     input  cdo_done;
-  endclocking 
+  endclocking
 
   initial cdo_go <= '0;
 

@@ -15,7 +15,7 @@ class base_cxl_ep_type3_hdm1_fm extends base_cxl_ep_test;
 
   // CXL-specific mailbox
   cseq_cxl_mbox cxl_mbox[0:1];
-  // DOE mailbox responder (CR-1268755 / DOE_MB_FIX)
+  // DOE mailbox responder
   cseq_cpm6_pcie_core_isr_src     doe_core_isr[0:1];
   cseq_core_doe_discovery_cfg_mb  doe_isr[0:1];
 
@@ -100,7 +100,7 @@ class base_cxl_ep_type3_hdm1_fm extends base_cxl_ep_test;
     cxl_mbox[1].set_ctrlr(1);
     cxl_mbox[1].set_trigger_mmio(CORR);
     env.ps_isr_seq.c_seq.push_back(cxl_mbox[1]);
-    // DOE_MB_FIX: two-level hierarchy (register_isr handles routing)
+    // Two-level hierarchy (register_isr handles routing)
     doe_core_isr[0] = cseq_cpm6_pcie_core_isr_src::type_id::create("doe_core_isr[0]");
     doe_core_isr[0].set_ctrlr(0); doe_core_isr[0].reg_trigger = CORR;
     doe_core_isr[0].bit_trigger = 'h6 << (0*6);

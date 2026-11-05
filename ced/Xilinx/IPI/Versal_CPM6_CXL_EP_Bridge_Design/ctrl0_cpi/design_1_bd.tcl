@@ -44,7 +44,7 @@ set script_folder [_tcl::get_script_folder]
 # source cpm6_cxl_ep_brg_script.tcl
 
 
-# The design that will be created by this Tcl script contains the following 
+# The design that will be created by this Tcl script contains the following
 # module references:
 # ctrl_reg_ep
 
@@ -106,7 +106,7 @@ if { ${design_name} eq "" } {
    set errMsg "Design <$design_name> already exists in your project, please set the variable <design_name> to another value."
    set nRet 1
 } elseif { [get_files -quiet ${design_name}.bd] ne "" } {
-   # USE CASES: 
+   # USE CASES:
    #    6) Current opened design, has components, but diff names, design_name exists in project.
    #    7) No opened design, design_name exists in project.
 
@@ -274,8 +274,8 @@ proc create_hier_cell_PA_3 { parentCell nameHier } {
     CONFIG.C_DDR_BASE {0x000000C000000000} \
     CONFIG.C_M0_AXI_HDM_BASEADDR {0x000000C000000000} \
     CONFIG.C_M0_AXI_HDM_HIGHADDR {0x000000C3FFFFFFFF} \
-    CONFIG.C_MEM0_CPI_A2F_MAX_CREDIT {256} \
-    CONFIG.C_MEM0_CPI_F2A_MAX_CREDIT {256} \
+    CONFIG.C_MEM0_CPI_A2F_MAX_CREDIT {128} \
+    CONFIG.C_MEM0_CPI_F2A_MAX_CREDIT {128} \
     CONFIG.C_NUM_PA {4} \
   ] $cxl_mem_wrapper_0
 
@@ -283,12 +283,8 @@ proc create_hier_cell_PA_3 { parentCell nameHier } {
   # writable on this cell's m0_axi_hdm pin - everything else (widths,
   # HAS_*, PROTOCOL, ID_WIDTH, NUM_READ/WRITE_OUTSTANDING,
   # MAX_BURST_LENGTH, etc.) is locked read-only, derived from the RTL's
-  # own port declarations at IP-packaging time (component.xml) -
-  # attempting to set them threw CRITICAL WARNING [BD 41-737] "It is
-  # read-only" (confirmed empirically against the full 28-property list
-  # previously set here). Trimmed to the confirmed-writable subset to
-  # eliminate that warning; no functional effect since the dropped
-  # properties were already unconditionally ignored.
+  # own port declarations at IP-packaging time (component.xml); setting
+  # them raises CRITICAL WARNING [BD 41-737] "It is read-only".
   set_property -dict [list \
     CONFIG.FREQ_HZ {320000000} \
     CONFIG.NUM_READ_THREADS {1} \
@@ -414,8 +410,8 @@ proc create_hier_cell_PA_2 { parentCell nameHier } {
     CONFIG.C_DDR_BASE {0x000000C000000000} \
     CONFIG.C_M0_AXI_HDM_BASEADDR {0x000000C000000000} \
     CONFIG.C_M0_AXI_HDM_HIGHADDR {0x000000C3FFFFFFFF} \
-    CONFIG.C_MEM0_CPI_A2F_MAX_CREDIT {256} \
-    CONFIG.C_MEM0_CPI_F2A_MAX_CREDIT {256} \
+    CONFIG.C_MEM0_CPI_A2F_MAX_CREDIT {128} \
+    CONFIG.C_MEM0_CPI_F2A_MAX_CREDIT {128} \
     CONFIG.C_NUM_PA {4} \
   ] $cxl_mem_wrapper_0
 
@@ -423,12 +419,8 @@ proc create_hier_cell_PA_2 { parentCell nameHier } {
   # writable on this cell's m0_axi_hdm pin - everything else (widths,
   # HAS_*, PROTOCOL, ID_WIDTH, NUM_READ/WRITE_OUTSTANDING,
   # MAX_BURST_LENGTH, etc.) is locked read-only, derived from the RTL's
-  # own port declarations at IP-packaging time (component.xml) -
-  # attempting to set them threw CRITICAL WARNING [BD 41-737] "It is
-  # read-only" (confirmed empirically against the full 28-property list
-  # previously set here). Trimmed to the confirmed-writable subset to
-  # eliminate that warning; no functional effect since the dropped
-  # properties were already unconditionally ignored.
+  # own port declarations at IP-packaging time (component.xml); setting
+  # them raises CRITICAL WARNING [BD 41-737] "It is read-only".
   set_property -dict [list \
     CONFIG.FREQ_HZ {320000000} \
     CONFIG.NUM_READ_THREADS {1} \
@@ -554,8 +546,8 @@ proc create_hier_cell_PA_1 { parentCell nameHier } {
     CONFIG.C_DDR_BASE {0x000000C000000000} \
     CONFIG.C_M0_AXI_HDM_BASEADDR {0x000000C000000000} \
     CONFIG.C_M0_AXI_HDM_HIGHADDR {0x000000C3FFFFFFFF} \
-    CONFIG.C_MEM0_CPI_A2F_MAX_CREDIT {256} \
-    CONFIG.C_MEM0_CPI_F2A_MAX_CREDIT {256} \
+    CONFIG.C_MEM0_CPI_A2F_MAX_CREDIT {128} \
+    CONFIG.C_MEM0_CPI_F2A_MAX_CREDIT {128} \
     CONFIG.C_NUM_PA {4} \
   ] $cxl_mem_wrapper_0
 
@@ -563,12 +555,8 @@ proc create_hier_cell_PA_1 { parentCell nameHier } {
   # writable on this cell's m0_axi_hdm pin - everything else (widths,
   # HAS_*, PROTOCOL, ID_WIDTH, NUM_READ/WRITE_OUTSTANDING,
   # MAX_BURST_LENGTH, etc.) is locked read-only, derived from the RTL's
-  # own port declarations at IP-packaging time (component.xml) -
-  # attempting to set them threw CRITICAL WARNING [BD 41-737] "It is
-  # read-only" (confirmed empirically against the full 28-property list
-  # previously set here). Trimmed to the confirmed-writable subset to
-  # eliminate that warning; no functional effect since the dropped
-  # properties were already unconditionally ignored.
+  # own port declarations at IP-packaging time (component.xml); setting
+  # them raises CRITICAL WARNING [BD 41-737] "It is read-only".
   set_property -dict [list \
     CONFIG.FREQ_HZ {320000000} \
     CONFIG.NUM_READ_THREADS {1} \
@@ -694,8 +682,8 @@ proc create_hier_cell_PA_0 { parentCell nameHier } {
     CONFIG.C_DDR_BASE {0x000000C000000000} \
     CONFIG.C_M0_AXI_HDM_BASEADDR {0x000000C000000000} \
     CONFIG.C_M0_AXI_HDM_HIGHADDR {0x000000C3FFFFFFFF} \
-    CONFIG.C_MEM0_CPI_A2F_MAX_CREDIT {256} \
-    CONFIG.C_MEM0_CPI_F2A_MAX_CREDIT {256} \
+    CONFIG.C_MEM0_CPI_A2F_MAX_CREDIT {128} \
+    CONFIG.C_MEM0_CPI_F2A_MAX_CREDIT {128} \
     CONFIG.C_NUM_PA {4} \
   ] $cxl_mem_wrapper_0
 
@@ -703,12 +691,8 @@ proc create_hier_cell_PA_0 { parentCell nameHier } {
   # writable on this cell's m0_axi_hdm pin - everything else (widths,
   # HAS_*, PROTOCOL, ID_WIDTH, NUM_READ/WRITE_OUTSTANDING,
   # MAX_BURST_LENGTH, etc.) is locked read-only, derived from the RTL's
-  # own port declarations at IP-packaging time (component.xml) -
-  # attempting to set them threw CRITICAL WARNING [BD 41-737] "It is
-  # read-only" (confirmed empirically against the full 28-property list
-  # previously set here). Trimmed to the confirmed-writable subset to
-  # eliminate that warning; no functional effect since the dropped
-  # properties were already unconditionally ignored.
+  # own port declarations at IP-packaging time (component.xml); setting
+  # them raises CRITICAL WARNING [BD 41-737] "It is read-only".
   set_property -dict [list \
     CONFIG.FREQ_HZ {320000000} \
     CONFIG.NUM_READ_THREADS {1} \
@@ -840,6 +824,14 @@ proc create_root_design { parentCell {cxl_protocol CXL_3_1} {cxl_width X8} } {
 
   # Create instance: ps_wizard_0, and set properties
   set ps_wizard_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:ps_wizard:1.0 ps_wizard_0 ]
+  set cxl_part [get_property PART [current_project]]
+  set cxl_pipeline_cfg {}
+  if {[string match "*-3HP-*" $cxl_part]} {
+    puts "INFO: Part $cxl_part: CPM6_CXL0_PIPELINE_EN not set"
+  } else {
+    puts "INFO: Part $cxl_part: CPM6_CXL0_PIPELINE_EN set"
+    set cxl_pipeline_cfg [list CONFIG.CPM6_CONFIG(CPM6_CXL0_PIPELINE_EN) {1}]
+  }
   set_property -dict [list \
     CONFIG.CPM6_CONFIG(CPM6_BOARD) VPK360 \
     CONFIG.CPM6_CONFIG(CPM6_AXI_PL0_IF) {1} \
@@ -859,7 +851,7 @@ proc create_root_design { parentCell {cxl_protocol CXL_3_1} {cxl_width X8} } {
     CONFIG.CPM6_CONFIG(CPM6_CTRL0_ECRC_CAP_EN) {0} \
     CONFIG.CPM6_CONFIG(CPM6_CTRL0_ELBI_IF) {0} \
     CONFIG.CPM6_CONFIG(CPM6_CTRL0_EXT_CFG_SPACE_EN) {1} \
-    CONFIG.CPM6_CONFIG(CPM6_CTRL0_FLR_EN) {0} \
+    CONFIG.CPM6_CONFIG(CPM6_CTRL0_FLR_EN) {1} \
     CONFIG.CPM6_CONFIG(CPM6_CTRL0_IDE_CAP_EN) {0} \
     CONFIG.CPM6_CONFIG(CPM6_CTRL0_INBOUND_REGION0_BAR_NUM) {BAR_2} \
     CONFIG.CPM6_CONFIG(CPM6_CTRL0_INBOUND_REGION0_FUNC) {PF_0} \
@@ -890,6 +882,7 @@ proc create_root_design { parentCell {cxl_protocol CXL_3_1} {cxl_width X8} } {
     CONFIG.CPM6_CONFIG(CPM6_CXL0_INTF) CPI \
     CONFIG.CPM6_CONFIG(CPM6_CXL0_MEM_HWINIT_MODE) {1} \
     CONFIG.CPM6_CONFIG(CPM6_CXL0_NUM_AGENTS) {4} \
+    {*}$cxl_pipeline_cfg \
     CONFIG.CPM6_CONFIG(CPM6_CXL0_RANGE1_SIZE) {0x0000_0004_0000_0000} \
     CONFIG.CPM6_CONFIG(CPM6_CXL0_RESET_CAP_EN) {1} \
     CONFIG.CPM6_CONFIG(CPM6_CXL0_RST_MEMCLR_CAP_EN) {1} \
@@ -906,7 +899,7 @@ proc create_root_design { parentCell {cxl_protocol CXL_3_1} {cxl_width X8} } {
     CONFIG.PS_PMC_CONFIG(CPM6_CTRL1_LINK_WIDTH) {X8} \
     CONFIG.PS_PMC_CONFIG(CPM6_CTRL1_MODE) {None} \
     CONFIG.PS_PMC_CONFIG(CPM6_CTRL1_PROTOCOL) {Disabled} \
-    CONFIG.PS_PMC_CONFIG(PMC_CRP_PL0_REF_CTRL_FREQMHZ) {333} \
+    CONFIG.PS_PMC_CONFIG(PMC_CRP_PL0_REF_CTRL_FREQMHZ) {334} \
     CONFIG.PS_PMC_CONFIG(PMC_CRP_PL1_REF_CTRL_FREQMHZ) {250} \
     CONFIG.PS_PMC_CONFIG(PS_GEN_IPI0_ENABLE) {1} \
     CONFIG.PS_PMC_CONFIG(PS_GEN_IPI0_MASTER) {R5_0} \
@@ -988,16 +981,11 @@ proc create_root_design { parentCell {cxl_protocol CXL_3_1} {cxl_width X8} } {
 
   # Create instance: ep_status_concat_0 (+ 3 reserved-bit tie-offs) - packs
   # ps_wizard_0's cxl0_status_* pins into ctrl_reg_ep_0's EP_CTRL_STS layout
-  # via a plain BD-level concat (was previously a custom RTL module,
-  # src/ep_status_reg.v, that concatenated AND registered the bus itself -
-  # replaced because ctrl_reg_ep_0 already registers ep_status once into
-  # ep_ctrl_sts on its own s_axil_aclk/s_axil_aresetn - see ctrl_reg_ep.v -
-  # so a second, separate register stage here was redundant; ilconcat is
-  # purely combinational, no clk/aresetn pins needed). Reserved gaps at
-  # bit[13] (previously mld_hot_rst_active - dropped, ps_wizard will not
-  # expose this pin in a future release), bit[15], and bits[23:20] are
-  # tied to 0 via ilconstant so the EP_CTRL_STS bit-map is unchanged for
-  # everything at bit[14] and above (no bit-shifting/renumbering).
+  # via a plain BD-level concat. ilconcat is purely combinational (no
+  # clk/aresetn pins needed); ctrl_reg_ep_0 registers ep_status once into
+  # ep_ctrl_sts on its own s_axil_aclk/s_axil_aresetn - see ctrl_reg_ep.v.
+  # Reserved bits [13], [15] and [23:20] are tied to 0 via ilconstant so the
+  # EP_CTRL_STS bit-map stays fixed (no bit-shifting/renumbering).
   set ep_status_concat_0 [ create_bd_cell -type inline_hdl -vlnv xilinx.com:inline_hdl:ilconcat:1.0 ep_status_concat_0 ]
   set_property -dict [list \
     CONFIG.NUM_PORTS {18} \
@@ -1245,8 +1233,7 @@ proc create_root_design { parentCell {cxl_protocol CXL_3_1} {cxl_width X8} } {
   ] $axi_noc2_c0
 
   # DDRMC5_SKIPCAL skips the real DDR calibration/training sequence - this
-  # must NEVER be set for a real hardware/PDI build (it broke real-board DDR
-  # calibration when it was previously left unconditional). Only set it for
+  # must NEVER be set for a real hardware/PDI build. Only set it for
   # simulation, where skipping the multi-second calibration state machine
   # keeps the same fast-sim benefit as the SIM_QUICK_MEM_INIT axi_memory_init
   # ADDR_SIZE overrides elsewhere in this file - this only fires when
@@ -1260,7 +1247,7 @@ proc create_root_design { parentCell {cxl_protocol CXL_3_1} {cxl_width X8} } {
 
   set_property -dict [ list \
    CONFIG.DATA_WIDTH {512} \
-   CONFIG.CONNECTIONS {MC_0 {read_bw {500} write_bw {500} read_avg_burst {4} write_avg_burst {4} }} \
+   CONFIG.CONNECTIONS {MC_0 {read_bw {6000} write_bw {6000} read_avg_burst {4} write_avg_burst {4} }} \
    CONFIG.DEST_IDS {} \
    CONFIG.NOC_PARAMS {} \
  ] [get_bd_intf_pins $axi_noc2_c0/S00_AXI]
@@ -1403,8 +1390,7 @@ proc create_root_design { parentCell {cxl_protocol CXL_3_1} {cxl_width X8} } {
   ] $axi_noc2_c1
 
   # DDRMC5_SKIPCAL skips the real DDR calibration/training sequence - this
-  # must NEVER be set for a real hardware/PDI build (it broke real-board DDR
-  # calibration when it was previously left unconditional). Only set it for
+  # must NEVER be set for a real hardware/PDI build. Only set it for
   # simulation, where skipping the multi-second calibration state machine
   # keeps the same fast-sim benefit as the SIM_QUICK_MEM_INIT axi_memory_init
   # ADDR_SIZE overrides elsewhere in this file - this only fires when
@@ -1418,7 +1404,7 @@ proc create_root_design { parentCell {cxl_protocol CXL_3_1} {cxl_width X8} } {
 
   set_property -dict [ list \
    CONFIG.DATA_WIDTH {512} \
-   CONFIG.CONNECTIONS {MC_0 {read_bw {500} write_bw {500} read_avg_burst {4} write_avg_burst {4} }} \
+   CONFIG.CONNECTIONS {MC_0 {read_bw {6000} write_bw {6000} read_avg_burst {4} write_avg_burst {4} }} \
    CONFIG.DEST_IDS {} \
    CONFIG.NOC_PARAMS {} \
  ] [get_bd_intf_pins $axi_noc2_c1/S00_AXI]
@@ -1564,8 +1550,7 @@ proc create_root_design { parentCell {cxl_protocol CXL_3_1} {cxl_width X8} } {
   ] $axi_noc2_c4
 
   # DDRMC5_SKIPCAL skips the real DDR calibration/training sequence - this
-  # must NEVER be set for a real hardware/PDI build (it broke real-board DDR
-  # calibration when it was previously left unconditional). Only set it for
+  # must NEVER be set for a real hardware/PDI build. Only set it for
   # simulation, where skipping the multi-second calibration state machine
   # keeps the same fast-sim benefit as the SIM_QUICK_MEM_INIT axi_memory_init
   # ADDR_SIZE overrides elsewhere in this file - this only fires when
@@ -1579,7 +1564,7 @@ proc create_root_design { parentCell {cxl_protocol CXL_3_1} {cxl_width X8} } {
 
   set_property -dict [ list \
    CONFIG.DATA_WIDTH {512} \
-   CONFIG.CONNECTIONS {MC_0 {read_bw {500} write_bw {500} read_avg_burst {4} write_avg_burst {4} }} \
+   CONFIG.CONNECTIONS {MC_0 {read_bw {6000} write_bw {6000} read_avg_burst {4} write_avg_burst {4} }} \
    CONFIG.DEST_IDS {} \
    CONFIG.NOC_PARAMS {} \
  ] [get_bd_intf_pins $axi_noc2_c4/S00_AXI]
@@ -1722,8 +1707,7 @@ proc create_root_design { parentCell {cxl_protocol CXL_3_1} {cxl_width X8} } {
   ] $axi_noc2_c5
 
   # DDRMC5_SKIPCAL skips the real DDR calibration/training sequence - this
-  # must NEVER be set for a real hardware/PDI build (it broke real-board DDR
-  # calibration when it was previously left unconditional). Only set it for
+  # must NEVER be set for a real hardware/PDI build. Only set it for
   # simulation, where skipping the multi-second calibration state machine
   # keeps the same fast-sim benefit as the SIM_QUICK_MEM_INIT axi_memory_init
   # ADDR_SIZE overrides elsewhere in this file - this only fires when
@@ -1737,7 +1721,7 @@ proc create_root_design { parentCell {cxl_protocol CXL_3_1} {cxl_width X8} } {
 
   set_property -dict [ list \
    CONFIG.DATA_WIDTH {512} \
-   CONFIG.CONNECTIONS {MC_0 {read_bw {500} write_bw {500} read_avg_burst {4} write_avg_burst {4} }} \
+   CONFIG.CONNECTIONS {MC_0 {read_bw {6000} write_bw {6000} read_avg_burst {4} write_avg_burst {4} }} \
    CONFIG.DEST_IDS {} \
    CONFIG.NOC_PARAMS {} \
  ] [get_bd_intf_pins $axi_noc2_c5/S00_AXI]
