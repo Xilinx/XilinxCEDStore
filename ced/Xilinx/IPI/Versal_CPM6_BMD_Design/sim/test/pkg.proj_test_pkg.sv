@@ -114,20 +114,34 @@ package proj_test_pkg;
     `include "tests/base/test_bmd.sv"
 
     // Extended
+        // IDE
+    `include "tests/ext/ide/bmd_ide_tlps.sv"
+    `include "tests/ext/ide/test_bmd_ide_basic.sv"
+    `include "tests/ext/ide/test_bmd_ide_traffic.sv"
         // Capabilities
             // Interrupts
     `include "tests/ext/capabilities/interrupts/test_bmd_intx.sv"
     `include "tests/ext/capabilities/interrupts/test_bmd_msi.sv"
     `include "tests/ext/capabilities/interrupts/test_bmd_msix.sv"
             // Other
+    `include "tests/ext/capabilities/other/test_bmd_ama.sv"
     `include "tests/ext/capabilities/other/test_bmd_vdm_w_data.sv"
     `include "tests/ext/capabilities/other/test_bmd_vdm.sv"
+            // PL Extended Configuration
+    `include "tests/ext/capabilities/pl_ext_cfg/test_bmd_vsec.sv"
             // Prefixes
     `include "tests/ext/capabilities/prefix/test_bmd_tph.sv"
     `include "tests/ext/capabilities/prefix/test_bmd_pasid.sv"
     `include "tests/ext/capabilities/prefix/test_bmd_pasid_tph.sv"
             // Tags
+    `include "tests/ext/capabilities/tags/test_bmd_5b_tag.sv"
+    `include "tests/ext/capabilities/tags/test_bmd_8b_tag.sv"
     `include "tests/ext/capabilities/tags/test_bmd_10b_tag.sv"
+        // Error
+    `include "tests/ext/error/test_bmd_inject_bad_data.sv"
+    `include "tests/ext/error/test_bmd_larger_than_mps.sv"
+    `include "tests/ext/error/test_bmd_read_out_of_range.sv"
+    `include "tests/ext/error/test_bmd_send_ur.sv"
         // Traffic
             // Byte Enable
     `include "tests/ext/traffic/be/test_bmd_all_zero_byte_enables.sv"

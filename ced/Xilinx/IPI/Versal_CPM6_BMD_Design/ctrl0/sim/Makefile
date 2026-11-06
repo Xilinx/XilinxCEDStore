@@ -36,9 +36,17 @@
 ##   test_bmd_msix
 ##
 ## Capabilities:
+##   test_bmd_ama           test_bmd_dmwr
 ##   test_bmd_vdm           test_bmd_vdm_w_data
+##   test_bmd_vsec
 ##   test_bmd_pasid         test_bmd_pasid_tph       test_bmd_tph
-##   test_bmd_10b_tag
+##   test_bmd_5b_tag        test_bmd_8b_tag          test_bmd_10b_tag
+##
+## Error:
+##   test_bmd_inject_bad_data
+##   test_bmd_larger_than_mps
+##   test_bmd_read_out_of_range
+##   test_bmd_send_ur
 ## ----------------------------------------------------------------------------
 TEST  ?= test_bmd_write_read_custom
 DUMP  ?= 0
@@ -126,7 +134,7 @@ h help:
 	@echo "   2. Load Avery module     : module load averyvip/2025.3_1"
 	@echo "                              (sets AVERY_PLI, AVERY_PCIE, AVERY_SIM)"
 	@echo "   3. Set CPM6 Secure IP   : setenv CPM6_SECUREIP <path>"
-	@echo "                              (download separately, see ../README.md)"
+	@echo "                              (download separately, see README)"
 	@echo "   4. Create project from CED in Vivado"
 	@echo "   5. Set Compiled Libraries Dir in Vivado (2026.1 clibs)"
 	@echo "   6. Run launch_simulation -scripts_only in Vivado"
@@ -300,6 +308,7 @@ s sim: _check_env _check_simv _check_setup
 	@echo "run" >> uclirun.do
 	@ODIR=$(TEST)_$$(date +"%m%d%y_%Hh%Mm%Ss"); \
 	 mkdir -p $$ODIR; \
+	 cp $(VIVADO_SIM)/nocattrs.dat $$ODIR/ 2>/dev/null || true; \
 	 export SYNOPSYS_SIM_SETUP=$(SIM_SETUP); \
 	 cd $$ODIR && ../simv \
 	    -no_save \

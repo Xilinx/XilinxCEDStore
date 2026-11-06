@@ -110,7 +110,7 @@ logic elbi_start_timeout_cntr, elbi_cntr_timeout;
    `XPREG(elbi2axil_clk, elbi2axil_rstn, lbc_ext_cs_ord_reg, lbc_ext_cs_ord_wire, 'd0)
    `XPREG(elbi2axil_clk, elbi2axil_rstn, lbc_ext_valid_ord_reg, lbc_ext_valid_ord_wire, 'd0)
 
-   // EDT-1079061: new requests will be qualified via the valid and cs rising edge.
+   // New requests will be qualified via the valid and cs rising edge.
    assign valid_incoming_req = (lbc_ext_cs_ord_wire && ~lbc_ext_cs_ord_reg)
                             && (lbc_ext_valid_ord_wire && ~lbc_ext_valid_ord_reg)
                             && (w_st==IDLE);
@@ -422,7 +422,7 @@ logic elbi_start_timeout_cntr, elbi_cntr_timeout;
    /* Send output Ack */
    assign pl_pcie1_elbi_if.ext_lbc_ack = int_ack_override_en ? o_ack_ovrd : {8{~elbi_cntr_timeout}} & pfnum_reg;
    // assign pl_pcie1_elbi_if.ext_lbc_override_en = o_en_elbi_override_en;
-   assign pl_pcie1_elbi_if.ext_lbc_override_en = error_re_reg; // as per EDT-1079061. since this pin is not used by the core anymore,
+   assign pl_pcie1_elbi_if.ext_lbc_override_en = error_re_reg; // since this pin is not used by the core anymore,
                                                                // its behaviour in cpm has been modified to indicate error.
    assign pl_pcie1_elbi_if.ext_lbc_din = elbi_din_reg;
 

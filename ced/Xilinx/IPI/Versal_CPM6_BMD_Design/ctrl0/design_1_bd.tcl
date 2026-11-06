@@ -142,7 +142,7 @@ if { $bCheckIPsPassed != 1 } {
 
 # Procedure to create entire design; Provide argument to make
 # procedure reusable. If parentCell is "", will use root.
-proc create_root_design { parentCell link_width lane_rate } {
+proc create_root_design { parentCell link_width lane_rate ddr_enabled ide_enabled } {
 
   variable script_folder
   variable design_name
@@ -201,6 +201,7 @@ proc create_root_design { parentCell link_width lane_rate } {
   set pcie0_rstn_0 [ create_bd_port -dir O -type rst pcie0_rstn_0 ]
 
   # Create instance: ps_wizard_0, and set properties
+  set ide_val [expr {[string is true -strict $ide_enabled] ? 1 : 0}]
   set ps_wizard_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:ps_wizard:1.0 ps_wizard_0 ]
   set_property -dict [list \
     CONFIG.CPM6_CONFIG(CPM6_BOARD) {VPK_360} \
@@ -212,9 +213,9 @@ proc create_root_design { parentCell link_width lane_rate } {
     CONFIG.CPM6_CONFIG(CPM6_CTRL0_DSN_CAP_EN) {0} \
     CONFIG.CPM6_CONFIG(CPM6_CTRL0_ECRC_CAP_EN) {0} \
     CONFIG.CPM6_CONFIG(CPM6_CTRL0_FLR_EN) {1} \
-    CONFIG.CPM6_CONFIG(CPM6_CTRL0_IDE_CAP_EN) {0} \
+    CONFIG.CPM6_CONFIG(CPM6_CTRL0_IDE_CAP_EN) $ide_val \
     CONFIG.CPM6_CONFIG(CPM6_CTRL0_LANE_RATE) $lane_rate \
-    CONFIG.CPM6_CONFIG(CPM6_CTRL0_LINK_IDE_STREAM_EN) {1} \
+    CONFIG.CPM6_CONFIG(CPM6_CTRL0_LINK_IDE_STREAM_EN) $ide_val \
     CONFIG.CPM6_CONFIG(CPM6_CTRL0_LINK_WIDTH) $link_width \
     CONFIG.CPM6_CONFIG(CPM6_CTRL0_MCAP_EN) {1} \
     CONFIG.CPM6_CONFIG(CPM6_CTRL0_PASID_CAP_EN) {1} \
@@ -237,7 +238,7 @@ proc create_root_design { parentCell link_width lane_rate } {
     CONFIG.CPM6_CONFIG(CPM6_CTRL0_PRI_OST_PR_CAPACITY) {4} \
     CONFIG.CPM6_CONFIG(CPM6_CTRL0_PROTOCOL) PCIE_6_1 \
     CONFIG.CPM6_CONFIG(CPM6_CTRL0_PTM_CAP_EN) {0} \
-    CONFIG.CPM6_CONFIG(CPM6_CTRL0_SELECTIVE_IDE_STREAM_EN) {1} \
+    CONFIG.CPM6_CONFIG(CPM6_CTRL0_SELECTIVE_IDE_STREAM_EN) $ide_val \
     CONFIG.CPM6_CONFIG(CPM6_CTRL0_TPH_CAP_EN) {0} \
     CONFIG.CPM6_CONFIG(CPM6_CTRL0_VPD_CAP_EN) {0} \
     CONFIG.PS_PMC_CONFIG(CPM6_CTRL0_LINK_WIDTH) $link_width \
@@ -272,6 +273,10 @@ proc create_root_design { parentCell link_width lane_rate } {
   # Restore current instance
   current_bd_instance $oldCurInst
 
+  # Platform (PS peripherals, NoC, BRAM and, if requested, LPDDR5) is added by one shared file
+  set ::platform_ddr $ddr_enabled
+  source [file join $script_folder .. platform run.tcl]
+
   validate_bd_design
   save_bd_design
 }
@@ -282,6 +287,6 @@ proc create_root_design { parentCell link_width lane_rate } {
 # MAIN FLOW
 ##################################################################
 
-create_root_design "" $link_width $lane_rate
+create_root_design "" $link_width $lane_rate [expr {[info exists ddr_enabled] ? $ddr_enabled : 0}] [expr {[info exists ide_enabled] ? $ide_enabled : 0}]
 
 

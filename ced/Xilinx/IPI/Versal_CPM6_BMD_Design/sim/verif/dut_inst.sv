@@ -14,6 +14,8 @@
 // under the License.
 ////////////////////////////////////////////////////////////////////////
 
+`define XLNOC_DUT_INST tb_top.ctrl_inst.dut_inst
+
 generate
     if (tb_top.LINK0_WIDTH != 0 && tb_top.LINK1_WIDTH != 0) begin : ctrl_inst
         dual_ctrl_bmd_ep dut_inst (

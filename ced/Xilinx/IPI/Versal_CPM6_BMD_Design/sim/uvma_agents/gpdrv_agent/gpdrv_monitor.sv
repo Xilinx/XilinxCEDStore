@@ -13,14 +13,6 @@ class gpdrv_monitor#(type CFG, type VIF, type TXN) extends base_monitor#(CFG,VIF
                                    ")"};
   virtual function string get_type_name(); return type_name; endfunction
 
-  // `uvm_register_cb cannot handle parameterized objects, so we must
-  // copy what it's done and make our own
-  // - `define uvm_register_cb(T,CB) \
-  //     static local bit m_register_cb_``CB = uvm_callbacks#(T,CB)::m_register_pair(`"T`",`"CB`");
-  // - class uvm_callbacks #(type T=uvm_object, type CB=uvm_callback)
-  //   extends uvm_typed_callbacks#(T);
-  // - static function bit m_register_pair(string tname="", cbname="");
-  // fixme
   `define gpdrv_register_cb(T,CB,Tname,CBname) \
     static local bit m_register_cb_``NAME = uvm_callbacks#(T,CB)::m_register_pair(`"Tname`",`"CBname`");
   // Register the CB

@@ -20,3 +20,7 @@ bind CPM6                  bind_cxl#(CONTROLLER_0_CXL_MODE,
                                      TOP_PL_MUX_MODE)            bind_cxl();
 bind CPM6                  bind_cpm_pl_axi                       bind_cpm_pl_axi();
 bind CPM6                  bind_cpm_noc_axi                      bind_cpm_noc_axi();
+// Bound INSIDE the DUT instance specified in dut_inst.sv (Vivado logical NoC)
+`ifdef XLNOC_DUT_INST
+bind `XLNOC_DUT_INST       xlnoc_top                             bind_xlnoc_top();
+`endif

@@ -248,7 +248,7 @@ end
 assign write_tx.tx_parity       = '0;
 assign write_tx.tx_starttype    = {2'b00, 2'b00, 2'b00};
 assign write_tx.tx_startnpinfo  = {3'b000, 3'b000, 3'b000};
-assign write_tx.tx_end_error    = 9'b0; // TBD
+assign write_tx.tx_end_error    = 9'b0; // end-error signaling not used
 // Create a template header for our P headers
 tx_data_p p_hdr;
 assign p_hdr.fmt            = { mwr_fmt_r, mwr_64b_en_r };

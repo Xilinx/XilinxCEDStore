@@ -1,6 +1,3 @@
-// Not all methods are implemented here (yet). To find the APIs, refer to 
-// the PSX VIP Confluence page or go to a Vivado project's source file:
-//   <project>.gen/.../versal_cips_ps_vip_v1_0_1*_apis.sv
 interface ps_vip_api_if
   import uvm_pkg::*;
   import ps_vip_api_pkg::*;
