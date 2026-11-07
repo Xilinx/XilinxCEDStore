@@ -100,8 +100,8 @@ that can be sourced for common data pattern loading.
 
 REQUIREMENTS
 ------------
-  * Vivado (matching this CED's supported release) with CPM6 + CXL RP TL IP
-    license.
+  * Vivado (matching this CED's supported release) with CPM6 + CXL RP TL IP license.
+    Contact IP marketing for a time-limited evaluation license.
   * A Versal Premium Gen2 board (VPK360) with CPM6, JTAG-accessible via hw_server/xsdb.
   * A downstream CXL Type 3 device attached to the link for full hardware
     exercise (traffic generation, performance measurement, HDM setup).
