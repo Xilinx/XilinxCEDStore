@@ -1,6 +1,5 @@
 # Versal_CPM6_CXL_EP_Design
 Please refer [PG463](https://account.amd.com/content/dam/account/en/member/cpm6-simulation/pg463-versal-cpm6-pcie-cxl_WtMkX.pdf) and [PG464](https://account.amd.com/content/dam/account/en/member/cpm6-simulation/pg464-cxl-transaction-ip_WtMkX.pdf) for detailed understanding of the Versal CPM6 CXL capabilities and some of the features and acronyms being discussed here.
-This CED already applies the AR000040791 required for CXL EP Designs out of the 2026.1.1 Vivado release.
 
 ## Introduction
 
@@ -10,8 +9,8 @@ This CED already applies the AR000040791 required for CXL EP Designs out of the 
 | **Configurations** | x8 or x4 link configuration with DDR/LPDDR5-backed memory backend, selectable on either CPM6 controller |
 | **Example Type** | IP Example Design (CED) |
 | **Target Audience** | Verification/FPGA engineers validating the CPM6 CXL datapath |
-| **Devices Supported** | Versal devices with CPM6 hard IP (`vsvc3340` package family) — `xc2vp3602-vsvc3340-3HP-e-S` |
-| **Tools Required** | Vivado 2026.1 (validated with build v2026.1.1), VCS/Verdi X-2025.06 with UVM 1.1, Avery PLI/apci-xactor 2025.3_1, CPM6 Secure IP package |
+| **Devices Supported** | Versal devices with CPM6 hard IP (`vsvc3340` package family) — `xc2vp3602-vsvc3340-3HP-e-S`, `xc2vp3602-vsvc3340-2MHP-e-S`, `xc2vp3602-vsvc3340-2MP-e-S` |
+| **Tools Required** | Vivado 2026.2, VCS/Verdi (same version as the Vivado precompiled simulation libraries) with UVM 1.2, Avery PLI/apci-xactor 2025.3_1 |
 | **Simulators Validated** | VCS (waveform viewing via Verdi or DVE) |
 | **Boards Validated** | N/A — no board is registered; this CED is part-only but the constraints applied work for VPK360 board|
 | **Pre-Built Images** | Not available |
@@ -26,15 +25,15 @@ This CED already applies the AR000040791 required for CXL EP Designs out of the 
 This example design demonstrates the CXL Type-3 Endpoint capability of the Versal CPM6 hard IP. It supports selectable link width and CXL mode (68B or 256B HBR flit mode) connected to LPDDR5-backed DDR variant — chosen via the CED GUI alongside the CPM6 controller.
 
 By working through this example design, you will learn how to:
-- Configure the CPM6 CXL Type-3 Endpoint lane rate (`32.0`/`64.0_GT/s`) and link width (`X4`/`X8`)
-- Selection of 32.0 GT/s default to CXL2.0 68B flit mode and selection of 64 GT/s defaults to CXL3 256B HBR flit mode.
+- Configure the CPM6 CXL Type-3 Endpoint protocol mode (`68B`/`256B` flit) and link width (`X4`/`X8`)
+- The protocol mode sets the lane rate: CXL2.0 68B flit mode uses 32.0 GT/s and CXL3 256B HBR flit mode uses 64.0 GT/s.
 - x8 Gen5 defaults to NFI2, x4 Gen5 defaults to NFI1 while x8 Gen6 defaults to NFI3 and x4 Gen6 to NFI2 mode
 - Drive CXL Type-3 traffic against the CPM6 hard IP through a UVM testbench, and observe the responses from the PL logic which also includes a DDR responder for simulation needs.
 - Build and run the simulation using VCS, with optional Verdi/DVE waveform viewing
 
 ### Included Features
 
-- **CXL Type-3** — M2S transactions targetted to LPDDR5-backed apertures and responses on S2M interface.
+- **CXL Type-3** — M2S transactions targeted to LPDDR5-backed apertures and responses on S2M interface.
 - **Selectable CXL configuration** — CXL2 68B flit or CXL3 256B flit; design automatically switches to use the correct mode based on link negotiation. For example, a CXL3 x8 Gen6 design when connected to a host with CXL2 capability only, switches to 68B flit encode/decode automatically.
 
 
@@ -42,12 +41,12 @@ By working through this example design, you will learn how to:
 
 - CPM6 hard IP, selected controller, configured as a **CXL Type-3** endpoint.
 - User-selectable CXL Protocol Mode (`68B` / `256B` Flit Mode) and link width (`X4`/`X8`) via the CED GUI.
-- VCS/UVM + Avery PCIe VIP simulation environment with a smoke test and a set of DMA/DMA-flavored regression tests per variant.
-- CED GUI driving a single parameterized build flow that assembles the correct sub-design, regenerates link parameters, and stages simulation files automatically.
+- VCS/UVM + Avery PCIe VIP simulation environment with a sanity test (PCIe enumeration, CXL link-up, CXL.mem write/readback).
+- CED GUI driving a single parameterized build flow that assembles the correct sub-design for the selected controller, protocol mode and link width.
 
 ## Design Architecture
 
-At a high level, the design provides a single CXL Type-3 endpoint (either CPM6 controller) advetizing a total of 16GB HDM to host. Inbound M2S requests are striped across 4 CPI interfaces. Each CPI interface connects to independent protocol agents each with a dedicated 4G memory bank. 
+At a high level, the design provides a single CXL Type-3 endpoint (either CPM6 controller) advertising a total of 16GB HDM to host. Inbound M2S requests are striped across 4 CPI interfaces. Each CPI interface connects to independent protocol agents each with a dedicated 4G memory bank.
 
 ```mermaid
 sequenceDiagram
@@ -68,14 +67,14 @@ sequenceDiagram
     FED-->>CPM6: NFI
     CPM6-->>Host: S2M DRS
 ```
-### Cxl.mem M2S Request Path
+### CXL.mem M2S Request Path
 
 1. Host sends supported CXL Type-3 M2S request opcodes to device.
 2. The CXL raw flit is made available from CPM6 hard IP to Flit Encode-Decode engine (included as part of Vivado CPM6 PS Wizard IP).
 3. The CPI interface carries this request which is converted to AXI transaction by protocol agent.
 4. The AXI interface is connected to memory via NoC.
 
-### Cxl.mem S2M Path
+### CXL.mem S2M Path
 
 1. The AXI response from memory is converted to response on CPI channel by protocol agent.
 2. The Flit encode engine creates the CXL flit with appropriate packing per specification.
@@ -91,12 +90,16 @@ sequenceDiagram
 | Block design cell | IP | Role |
 |---|---|---|
 | `ps_wizard_0` | Processing System Wizard (CIPS) | Hosts the CPM6 hard-IP configuration (`CPM6_CONFIG`) for the selected controller (CXL Type-3 endpoint) plus PMC/PS configuration. The unselected controller is left `Disabled`/`None` in this CED. |
-| `axi_noc2_0` | AXI NoC | Routes the `M_AXI` master interfaces from CXL Protocol Agent in fabric to the DDR memory controller. |
-| `ddrmc5_responder_0` | DDR memory controller/PHY responder |
-| `axi_bram_ctrl_0` | AXI BRAM Controller  | 512-bit, single-port AXI-to-BRAM bridge behind each `CPM_AXI_PLn` interface (for the cxl.io AXI Bridge interface). |
-| `emb_mem_gen_0` | Embedded Memory Generator | Backing block-RAM storage for each `axi_bram_ctrl` instance. |
-| `proc_sys_reset_0` | Processor System Reset | Synchronizes resets for the design's clock domains. |
-| `cpa` (Encrypted RTL currently) | Custom PL logic | Consumes the CPI interface and converts to AXI. |
+| `cxl_mem_wrapper_0` (in each of `PA_0`..`PA_3`) | `cpa` custom PL logic (Encrypted RTL currently) | Protocol agent, one per CPI interface. Consumes the CPI interface and converts to AXI. |
+| `axi_memory_init_N` (in each `PA_N`) | AXI Memory Init | Writes an initial value to the agent's 4G memory bank after reset, before CXL.mem traffic reaches the DDR. |
+| `axi_noc2_c0`, `axi_noc2_c1`, `axi_noc2_c4`, `axi_noc2_c5` | AXI NoC | One per protocol agent. Routes its `M_AXI` master to the LPDDR5 memory controller (channels C0, C1, C4, C5). |
+| `ddrmc5_responder_c0`, `ddrmc5_responder_c1`, `ddrmc5_responder_c4`, `ddrmc5_responder_c5` | DDR memory controller/PHY responder | Simulation-only responder on each LPDDR5 channel. Does not affect synthesis or implementation. |
+| `axi_noc2_0` | AXI NoC | Routes the CPM6 `cpm_axi_pl0` master (cxl.io AXI Bridge interface) to `axi_bram_ctrl_1`. |
+| `axi_bram_ctrl_1` | AXI BRAM Controller | 512-bit, single-port AXI-to-BRAM bridge behind the `CPM_AXI_PL0` interface (the other `CPM_AXI_PLn` interfaces are disabled). |
+| `axi_bram_ctrl_1_bram` | Embedded Memory Generator | Backing block-RAM storage for `axi_bram_ctrl_1`. |
+| `ctrl_reg_ep_0` | `ctrl_reg_ep` RTL module (`src/ctrl_reg_ep.v`) | AXI-Lite control/status registers used by the firmware: HDM base for the protocol agents, CXL controller status, interrupt and power-management sideband, per-agent debug counters. |
+| `smartconnect_0` | AXI SmartConnect | Connects the PS `LPD_AXI_PL` port to `ctrl_reg_ep_0`. |
+| `proc_sys_reset_0`, `proc_sys_reset_1` | Processor System Reset | Synchronizes resets for the design's clock domains. |
 
 ## Device Firmware
 The device side firmware (elf files available under `fw` directory) executes on RPU (R5 core) on Processing Subsystem. This firmware is responsible for the following-
@@ -104,7 +107,7 @@ The device side firmware (elf files available under `fw` directory) executes on 
 2. Managing the CXL Device status registers (including the basic required commands via the primary mailbox)
 3. CXL CDAT structure as required by specification via DOE mailbox capability in PCIe configuration space 
 4. Programming the host assigned HDM address to fabric based protocol agent for address remapping i.e. HDM address to device private memory address.
-The prebuilt elf provided follow the naming convention `zephyr_cX_cxlY.elf` where X indicates controller (`0` or `1`) and Y indicates CXL protocol mode (`2` for 68B and `3` for 256B mode). Use appropriate elf for designs.
+The prebuilt elf files provided follow the naming convention `zephyr_cX_cxlY.elf`, where X indicates the controller (`0` or `1`) and Y indicates the CXL protocol mode (`2` for 68B and `3` for 256B mode). Use the appropriate elf for your design.
 
 | ELF Name | Controller | CXL Protocol Mode | Design Configuration |
 |---|---|---|---|
@@ -130,7 +133,7 @@ This CED provides a pre-built elf to be used for hardware testing. The source co
 
 ### What Happens on Generation
 
-`run.tcl`/`init.tcl` maps the GUI selections to one of four sub-designs:
+`run.tcl`/`init.tcl` maps the GUI selections to one of two sub-designs (`ctrl0_cpi` or `ctrl1_cpi`, selected by `CTRL_CONFIG`); link width and protocol mode are passed to the CPM6 configuration, which determines the NFI mode:
 
 | `CTRL_CONFIG` | `Width` | `CXL Protocol` | NFI Mode |
 |---|---|---|---|
@@ -146,19 +149,19 @@ This CED provides a pre-built elf to be used for hardware testing. The source co
 
 The generation flow then:
 
-1. Sources the matching sub-design's `design_1_bd.tcl` to build the block design and import its `src/` RTL.
-2. Adds `constrs/` to the constraints fileset.
-3. Copies the shared `sim/` testbench tree into the project directory and overlays the selected variant's `sim/verif` DUT-instantiation on top of it.
-4. Configures the `sim_1` fileset for VCS (`generate_scripts_only`), targeting the variant's top module.
+1. Adds the local IP repository (`ip/`, containing the `cpa` IP) and imports `src/ctrl_reg_ep.v`.
+2. Adds the DDR pin constraints (`constrs/ddr_c0c1c4c5.xdc`) to the constraints fileset.
+3. Sources the matching sub-design's `design_1_bd.tcl` to build the block design.
+4. Generates the HDL wrapper and sets it as the synthesis top.
 
 ### Expected Outputs
 
-- A Vivado project containing the generated block design, imported RTL, and constraints.
-- A `sim/` directory in the generated project, staged for VCS/UVM simulation (no bitstream/hardware build target is exercised by this CED's intended flow).
+- A Vivado project containing the generated block design and its wrapper, `ctrl_reg_ep.v`, and the constraints, ready for synthesis and implementation.
+- No simulation setup is created by generation; the simulation flows under Validation Flow create their own project.
 
 ## Performance Considerations
 
-- Performance depends on multiple factors; a few examples are the latency of the device (inlcuding the memory access latency), CXL credits advertized by the device, the slot on the host system, link bandwidth etc. CED advertizes 128 M2S Request and M2S data credits. Increase in number of these credits comes at a cost of increase in buffering and subsequent timing challenges.
+- Performance depends on multiple factors; a few examples are the latency of the device (including the memory access latency), CXL credits advertised by the device, the slot on the host system, link bandwidth etc. CED advertises 128 M2S Request and M2S data credits. Increase in number of these credits comes at a cost of increase in buffering and subsequent timing challenges.
 - Standard tools can be used to do a performance benchmark. Notably `memtester` is used for memory integrity and `Memory Latency Checker (MLC)` for latency and bandwidth measurements.
 
 ## Validation Flow
@@ -169,16 +172,18 @@ This CED provides a **simulation and board level** validation flow.
 
 ```
 sim/
-  avery_vcs.f, cpm6_sip.f, uvma_agents.f, vcs_lib_map.setup   <- generic filelists
+  avery_vcs.f, uvma_agents.f, vcs_lib_map.setup               <- generic filelists
   lib/                                                        <- date.so, socket_dpi.so
   uvma_agents/                                                <- 8 generic UVM agents
   tb/                                                          <- tb_top.sv, binds, env/, generic test/
   verif/
     dut_inst.sv           <- DUT wrapper instantiation (CTRL1 default, CTRL0 via +define+CXL_BRDG_CTRL0)
-    pkg.proj_test_pkg.sv  <- includes verif/test/*.sv
+    pkg.proj_test_pkg.sv  <- includes verif/test/*.sv and verif/test/seq/*.sv
     setup_env_cfg.sv      <- env agent PASSIVE/ACTIVE overrides
     test/cxl_ep_brdg_sanity.sv
-  run.sh                                                        <- convenience wrapper for run.tcl
+    test/seq/             <- sequences used by the test (post-CDO register setup, CXL.mem write/readback)
+  standalone/                                                 <- Makefile, build_project.tcl - full-fidelity flow (Avery VIP + UVM), see 1 below
+  light_tb/                                                   <- board.sv, build_project_light.tcl, ... - lightweight flow (no Avery VIP), see 2 below
 ```
 
 Two concrete sub-paths exist for simulation - standalone and self-contained,
@@ -186,9 +191,7 @@ with no external regression-harness dependency:
 
 ### 1. Full-fidelity (Avery VIP + UVM) - `sim/standalone/`
 
-1. Download and unzip the CPM6 Secure IP package (provided separately) from https://account.amd.com/en/member/cpm6-simulation.html
-
-2. Environment (every new shell - none of this persists). Make sure `vcs`
+1. Environment (every new shell - none of this persists). Make sure `vcs`
    (matching the VCS build Vivado's own clibs were compiled against - see
    `compxlib.vcs_compiled_library_dir` in `build_project.tcl`) and the Avery
    VIP tools are already reachable on your `$PATH`/`$LD_LIBRARY_PATH`, then
@@ -198,10 +201,15 @@ with no external regression-harness dependency:
      tcsh: setenv CDOUTIL_PATH <path to your cdoutil install>
      bash: export CDOUTIL_PATH=<path to your cdoutil install>
      ```
-   - `CPM6_SECUREIP` -- directory where the CPM6 Secure IP package was extracted
+   - `AVERY_PCIE` -- Avery PCIe VIP install location
      ```
-     tcsh: setenv CPM6_SECUREIP <path to extracted cpm6 secureip>
-     bash: export CPM6_SECUREIP=<path to extracted cpm6 secureip>
+     tcsh: setenv AVERY_PCIE <path to avery pcie vip install>
+     bash: export AVERY_PCIE=<path to avery pcie vip install>
+     ```
+   - `AVERY_SIM` -- Avery simulation library install location
+     ```
+     tcsh: setenv AVERY_SIM <path to avery sim install>
+     bash: export AVERY_SIM=<path to avery sim install>
      ```
    - `AVERY_PLI` -- Avery PLI binary location
      ```
@@ -213,7 +221,12 @@ with no external regression-harness dependency:
      tcsh: setenv SNPSLMD_LICENSE_FILE <your VCS license server list>
      bash: export SNPSLMD_LICENSE_FILE=<your VCS license server list>
      ```
-   - `VIVADO_CLIBS` -- Vivado's own precompiled simlib dir matching the VCS build above
+   - `VCS_HOME` -- VCS install location matching the VCS build above (UVM 1.2 is compiled from `$VCS_HOME/etc/uvm-1.2`)
+     ```
+     tcsh: setenv VCS_HOME <path to your VCS install>
+     bash: export VCS_HOME=<path to your VCS install>
+     ```
+   - `VIVADO_CLIBS` -- Vivado's own precompiled simlib dir (includes the CPM6 SecureIP) matching the VCS build above
      ```
      tcsh: setenv VIVADO_CLIBS <path to your precompiled vcs clibs>
      bash: export VIVADO_CLIBS=<path to your precompiled vcs clibs>
@@ -224,7 +237,7 @@ with no external regression-harness dependency:
      bash: export SIM_QUICK_MEM_INIT=1
      ```
 
-3. Build + run - safe to run from a scratch/build directory outside this
+2. Build + run - safe to run from a scratch/build directory outside this
    checkout; `sim/standalone/Makefile` resolves all paths relative to its own
    location, and Vivado/VCS build outputs use disjoint top-level names so
    nothing collides:
@@ -267,20 +280,16 @@ a mismatch between the two still runs.
 
 ```bash
 export VIVADO_CLIBS=<path-to-this-site's-precompiled-vcs-clibs>  # same as path 1 above
-cd sim/light_tb
-vivado -mode batch -source build_project_light.tcl -tclargs ./proj Controller_1 CXL_3_1
-```
-Then, in Vivado: Project Manager -> Settings -> Simulation -> set Target
-simulator = VCS (or Questa) + Compiled Library Location -> check "Generate
-Simulation scripts only" -> Flow Navigator -> Run Simulation. Then:
-```bash
-cd proj/design_1.sim/sim_1/behav/vcs
+vivado -mode batch -source <path-to-this-CED-checkout>/sim/light_tb/build_project_light.tcl \
+  -tclargs <workdir> Controller_1 CXL_3_1
+cd <workdir>/design_1.sim/sim_1/behav/vcs
 ./compile.sh && ./elaborate.sh && ./simulate.sh
 ```
-No Avery VIP, no `uvma_agents`, no external framework Makefile - just
-Vivado + a simulator license + `$CPM6_SECUREIP`. Scope is limited: this
-proves elaboration, PS-VIP reset sequencing, and `ctrl_reg_ep`'s AXI-Lite
-CSR map - it does not generate CXL.mem traffic or train the link.
+`<workdir>` must be outside this checkout. No Avery VIP, no `uvma_agents`, no
+external framework Makefile - just Vivado + VCS with UVM 1.2. Scope is limited:
+this proves elaboration, PS-VIP reset sequencing, the CPM6 CDO load and
+`ctrl_reg_ep`'s AXI-Lite CSR map - it does not generate CXL.mem traffic or
+train the link. A passing run prints `PASS: SCRATCH_LO loopback OK`.
 
 ### 3. End-to-end: build → simulate → open the waveform in DVE or Verdi
 
@@ -321,10 +330,16 @@ Finding the signal you want: DUT hierarchy is under
 path).
 
 #### Hardware Testing
-1. Download the boot.pdi and pld.pdi to program the FPGA. Select R5_0 as target and download the appropriate elf and run it. Instructions for OSPI bin file be available in a future release of the CED.
+1. Download the boot.pdi and pld.pdi to program the FPGA. Select R5_0 as target and download the appropriate elf and run it. Instructions for the OSPI bin file will be available in a future release of the CED.
 2. Recommend starting the host system from a cold boot.
 3. Boot up the system and see if the device is detected in `lspci` and `cxl list` for CXL HDM detection and HDM commit status.
 4. Check `numactl -H` to see if the CXL attached memory is already setup as a NUMA node. 
 5. If CXL attached memory is not setup as a NUMA node, check if DAX node exists under `/dev/`.
-6. If DAX node exists then use daxctl utility to inline the memory. As an example, if dax0.0 exists then `daxctl online-memory dax0.0` would show the CXL device as a separate NUMA node. This applies when there is a single CXL card connected to the host system.
+6. If a DAX node exists, use the daxctl utility to online the memory. As an example, if dax0.0 exists then `daxctl online-memory dax0.0` would show the CXL device as a separate NUMA node. This applies when there is a single CXL card connected to the host system.
 7. Use standard utilities (like `memtester` for memory sweep) for cxl traffic test.
+
+## Revision History
+| `Vivado Release` | `Notes` |
+|---|---|
+| `2026.2` | `Added support for -2 speed grade` |
+| `2026.1.1` | `Initial CXL-EP CED release` |

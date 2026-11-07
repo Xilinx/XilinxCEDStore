@@ -47,7 +47,7 @@ package shim_pkg;
   `include "amd_mem_tlp.sv"
   `include "amd_cxlbase_tlp.sv"
   `include "amd_cxlmem_tlp.sv"
-  // Scoreboards and VIP callbacks — RTL mode only (use svt_axi_transaction, SVT VIP types)
+  // Scoreboards and VIP callbacks - RTL mode only (use svt_axi_transaction, SVT VIP types)
 `ifdef CPM6_RTL
   `include "vip_tlp_cb.sv"
   `include "apci_tlp_sb.sv"

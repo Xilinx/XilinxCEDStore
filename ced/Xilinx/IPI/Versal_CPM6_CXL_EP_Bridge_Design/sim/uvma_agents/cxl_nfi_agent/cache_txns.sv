@@ -7,7 +7,7 @@ class h2dreq_c extends base_txn;
   flit_mode_t flitmode;
 
   // if a field === 'x, copy over from the source, else just leave alone 
-  // this allows me to do a sort of "partial" copy fo the req
+  // this allows a "partial" copy of the req
   bit copy_over_x_only = 1'b1; 
 
          h2dreq68_t req68 = 'x;        h2dreq256_t req256 = 'x;
@@ -136,7 +136,7 @@ class h2drsp_c extends base_txn;
   flit_mode_t flitmode;
 
   // if a field === 'x, copy over from the source, else just leave alone
-  // this allows me to do a sort of "partial" copy
+  // this allows a "partial" copy
   bit copy_over_x_only = 1'b1; 
 
          h2drsp68_t rsp68 = 'x;        h2drsp256_t rsp256 = 'x;
@@ -273,7 +273,7 @@ class h2ddat_c extends base_txn;
   flit_mode_t flitmode;
 
   // if a field === 'x, copy over from the source, else just leave alone
-  // this allows me to do a sort of "partial" copy
+  // this allows a "partial" copy
   bit copy_over_x_only = 1'b1; 
 
          h2ddat68_hdr_t hdr68 = 'x;        h2ddat256_hdr_t hdr256 = 'x;
@@ -437,7 +437,7 @@ class d2hreq_c extends base_txn;
   flit_mode_t flitmode;
 
   // if a field === 'x, copy over from the source, else just leave alone
-  // this allows me to do a sort of "partial" copy
+  // this allows a "partial" copy
   bit copy_over_x_only = 1'b1; 
 
          d2hreq68_t req68 = 'x;        d2hreq256_t req256 = 'x;
@@ -578,7 +578,7 @@ class d2hrsp_c extends base_txn;
   flit_mode_t flitmode;
 
   // if a field === 'x, copy over from the source, else just leave alone
-  // this allows me to do a sort of "partial" copy
+  // this allows a "partial" copy
   bit copy_over_x_only = 1'b1; 
 
          d2hrsp68_t rsp68 = 'x;        d2hrsp256_t rsp256 = 'x;
@@ -699,7 +699,7 @@ class d2hdat_c extends base_txn;
   flit_mode_t flitmode;
 
   // if a field === 'x, copy over from the source, else just leave alone
-  // this allows me to do a sort of "partial" copy
+  // this allows a "partial" copy
   bit copy_over_x_only = 1'b1; 
 
          d2hdat68_hdr_t hdr68 = 'x;        d2hdat256_hdr_t hdr256 = 'x;

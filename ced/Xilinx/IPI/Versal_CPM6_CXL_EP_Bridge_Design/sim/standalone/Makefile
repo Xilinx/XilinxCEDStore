@@ -3,8 +3,8 @@
 # harness or sim-framework dependency). SIM=questa is not implemented (VCS-only).
 #
 # Requires: $AVERY_PCIE/$AVERY_SIM (Avery VIP install+license), $AVERY_PLI
-# (Avery VCS PLI table+lib), $CPM6_SECUREIP (CPM6 SecureIP netlist),
-# VCS X-2025.06(-SP2).
+# (Avery VCS PLI table+lib), $VIVADO_CLIBS (Vivado precompiled simlib, includes
+# the CPM6 SecureIP), VCS matching $VIVADO_CLIBS.
 
 # Path-derived (not CURDIR-relative) so `make -C <builddir> -f <path>` works
 # from any CWD; build artifacts land in CWD, not the checked-in tree.
@@ -57,8 +57,8 @@ endif
 # Vivado-generated DUT compile/elaborate scripts (from build_project.tcl).
 DUT_SIM_DIR := $(PROJ_DIR)/design_1.sim/sim_1/behav/vcs
 
-# Vivado's separate "xlnoc" NoC block-design sim source (see xlnoc_glue.v).
-XLNOC_SIM_V := $(PROJ_DIR)/design_1.gen/sim_1/bd/xlnoc/sim/xlnoc.v
+# Vivado's separate "xlnoc" NoC block-design sim source (location differs by release).
+XLNOC_SIM_V := $(firstword $(wildcard $(PROJ_DIR)/design_1.gen/sim_1/bd/xlnoc/sim/rtl/xlnoc.v $(PROJ_DIR)/design_1.gen/sim_1/bd/xlnoc/sim/xlnoc.v))
 
 INCDIRS := +incdir+$(SIM_ROOT)/verif \
            +incdir+$(SIM_ROOT)/verif/test \
@@ -111,15 +111,14 @@ TB_ORPHAN_FILES := $(SIM_ROOT)/tb/env/seq/axi_mst/cxl_mbox/cxl_mbox_pkg.svh \
                     $(SIM_ROOT)/tb/test/other/socket_dpi_pkg.sv \
                     $(SIM_ROOT)/tb/test/test_pkg.svh \
                     $(SIM_ROOT)/tb/generic_pipe621_if.sv \
-                    $(SIM_ROOT)/tb/bind.pipe_translate.sv \
-                    $(SIM_ROOT)/tb/bind.fast_sim.sv
+                    $(SIM_ROOT)/tb/bind.pipe_translate.sv
 
 compile c: $(DUT_SIM_DIR)/compile.sh
 	@echo "--- [1/2] Compiling DUT (Vivado-generated compile.sh) ---"
 	cd $(DUT_SIM_DIR) && ./compile.sh
-	@echo "--- [2/2] Compiling Avery VIP + CPM6 SecureIP + UVM agents + this testbench ---"
+	@echo "--- [2/2] Compiling Avery VIP + UVM agents + this testbench ---"
 	# uvma_agents.f needs -F (rebases its nested per-agent filelists);
-	# cpm6_sip.f/avery_vcs.f use $ENV_VAR-anchored paths, so -f is fine.
+	# avery_vcs.f uses $ENV_VAR-anchored paths, so -f is fine.
 	# uvm_pkg.sv must be compiled explicitly before anything that imports it.
 	vlogan -full64 -sverilog -ntb_opts uvm-1.2 -timescale=1ns/1ps \
 	  +define+PCIE_LINK_$(PCIE_LINK) \
@@ -128,16 +127,20 @@ compile c: $(DUT_SIM_DIR)/compile.sh
 	  $(VCS_HOME)/etc/uvm-1.2/uvm_pkg.sv \
 	  $(VCS_HOME)/etc/uvm-1.2/vcs/uvm_custom_install_vcs_recorder.sv \
 	  $(VCS_HOME)/etc/uvm-1.2/verdi/uvm_custom_install_verdi_recorder.sv \
-	  -f $(SIM_ROOT)/cpm6_sip.f \
 	  -f $(SIM_ROOT)/avery_vcs.f \
 	  -F $(SIM_ROOT)/uvma_agents.f \
 	  $(TB_ORPHAN_FILES) \
 	  $(SIM_ROOT)/tb/tb_top.sv \
 	  -l vlogan.tb.log
-	@echo "--- [2b/2] Compiling xlnoc (NoC Packet Switch sim model) + its glue - see xlnoc_glue.v ---"
+	@echo "--- [2b/2] Compiling xlnoc (NoC Packet Switch sim model) + its glue (generated from xlnoc_top.v) ---"
+	# xlnoc_top.v is Vivado's parallel-top NoC wiring: rename its module and re-root
+	# its design_1_wrapper paths at tb_top.dut_inst.
+	sed -e 's/^module xlnoc_top/module xlnoc_glue/' \
+	    -e 's/design_1_wrapper\.design_1_i\./tb_top.dut_inst.design_1_i./g' \
+	    $(PROJ_DIR)/design_1.srcs/sources_1/common/hdl/xlnoc_top.v > xlnoc_glue_gen.v
 	vlogan -full64 -sverilog -timescale=1ns/1ps \
 	  $(XLNOC_SIM_V) \
-	  $(SIM_ROOT)/tb/xlnoc_glue.v \
+	  xlnoc_glue_gen.v \
 	  -l vlogan.xlnoc.log
 
 optimize o elaborate:
@@ -148,7 +151,7 @@ optimize o elaborate:
 	# through to the stale precompiled version in VIVADO_CLIBS's
 	# OTHERS= chain (Error-[CFCIL-NS]).
 	@if [ -z "$(VIVADO_CLIBS)" ]; then \
-	  echo "ERROR: VIVADO_CLIBS is not set - see ../README.md"; \
+	  echo "ERROR: VIVADO_CLIBS is not set - see the CED README.md"; \
 	  exit 1; \
 	fi
 	@( echo "LIBRARY_SCAN=TRUE"; \
@@ -209,4 +212,4 @@ simulate s:
 cos: compile elaborate simulate
 
 clean cln:
-	rm -rf csrc simv* vc_hdrs.h *.log *.vpd DVEfiles ucli.key work AN.DB tb_top_opt*
+	rm -rf csrc simv* vc_hdrs.h *.log *.vpd DVEfiles ucli.key work AN.DB tb_top_opt* xlnoc_glue_gen.v

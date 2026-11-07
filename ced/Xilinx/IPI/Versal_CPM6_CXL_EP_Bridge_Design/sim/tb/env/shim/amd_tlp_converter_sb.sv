@@ -39,7 +39,7 @@ class amd_tlp_converter_sb extends apci_tlp_sb;
       lbe    = vip_tlp.u.mem64.lbe;
     end
 
-    // Payload present → write; no payload → read
+    // Payload present -> write; no payload -> read
     if (vip_tlp.payload.size() > 0)
       amd.build_wr(addr, length, vip_tlp.payload, fbe, lbe);
     else

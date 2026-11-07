@@ -1,6 +1,6 @@
-// This module is translating between the Vivado generated CPM6 instance 
-// to the UVM interfaces used by this testbench for CXL. This 
-// is specifically designed to be bound at the CPM6 uni-sim instance level 
+// This module is translating between the Vivado generated CPM6 instance
+// to the UVM interfaces used by this testbench for CXL. This
+// is specifically designed to be bound at the CPM6 uni-sim instance level
 // e.g.
 //   bind CPM6 bind_cxl#(CONTROLLER_0_CXL_MODE, BOT_PL_MUX_MODE,
 //                       CONTROLLER_1_CXL_MODE, TOP_PL_MUX_MODE) bind_cxl();
@@ -19,7 +19,7 @@ import uvm_pkg::*;
     if (CTRL1_CXL_MODE=="ON"&&TOP_PL_MUX_MODE!="CXL")
       `uvm_fatal("CPM6_PARAMS", "Parameters incorrect | Controller 1=CXL mode, TOP_PL_MUX!=CXL mode")
   end
-  
+
   cxl_nfi_agent_if    nfi_tx_0(), nfi_tx_1();
   cxl_nfi_agent_if    nfi_rx_0(), nfi_rx_1();
   cxl_credit_agent_if crd_tx_0(), crd_tx_1();
@@ -48,18 +48,18 @@ import uvm_pkg::*;
   end
 
   // ----------------
-  // Controller 0 
+  // Controller 0
   // ----------------
 
   if (CTRL0_CXL_MODE == "ON") begin
 
     // CXL Remote Credit (from link partner)
-    assign crd_rx_0.clk = inst.cxl0_clk; 
+    assign crd_rx_0.clk = inst.cxl0_clk;
     assign crd_rx_0.vld = inst.cxl0_rx_credit_valid;
     assign crd_rx_0.req = inst.cxl0_rx_credit_req;
     assign crd_rx_0.dat = inst.cxl0_rx_credit_data;
     assign crd_rx_0.rsp = inst.cxl0_rx_credit_rsp;
-    
+
     // CXL Local Credit (to link partner) - flit_handler_ep_wrap_0 drives
     // this for real via BD wiring (tx_lclc_valid/req/dat/rsp ->
     // cxl0_tx_credit_*); only monitored here, not forced, so that real
@@ -69,7 +69,7 @@ import uvm_pkg::*;
     assign crd_tx_0.req = inst.cxl0_tx_credit_req;
     assign crd_tx_0.dat = inst.cxl0_tx_credit_data;
     assign crd_tx_0.rsp = inst.cxl0_tx_credit_rsp;
-    
+
     // Config/Status Bus
     assign cfgsts_0.clk        = inst.cxl0_clk;
     assign cfgsts_0.sig[ 0+:2] = inst.cxl0_flit_mode;
@@ -88,7 +88,7 @@ import uvm_pkg::*;
     assign cfgsts_0.sig[42+:1] = inst.cxl0_emd_enable;
     assign cfgsts_0.sig[43+:4] = inst.cxl0_vlsm_mc_state;
     assign cfgsts_0.sig[47+:8] = inst.cxl0_mld_hot_rst_active;
-    
+
     // CXL Power Mgmt (out)
     assign pm_out_0.clk       = inst.cxl0_clk;
     assign pm_out_0.sig[32:0] = inst.cxl0_pm_out;
@@ -99,29 +99,29 @@ import uvm_pkg::*;
 
     // NFI Rx (from link)
     assign nfi_rx_0.clk     = inst.cxl0_clk;
-    assign nfi_rx_0.data    = inst.cxl0_rx_data;   
+    assign nfi_rx_0.data    = inst.cxl0_rx_data;
     assign nfi_rx_0.parity  = inst.cxl0_rx_parity;
-    assign nfi_rx_0.valid   = inst.cxl0_rx_valid; 
-    assign nfi_rx_0.viral   = inst.cxl0_rx_viral; 
-    assign nfi_rx_0.adf     = inst.cxl0_rx_adf;   
+    assign nfi_rx_0.valid   = inst.cxl0_rx_valid;
+    assign nfi_rx_0.viral   = inst.cxl0_rx_viral;
+    assign nfi_rx_0.adf     = inst.cxl0_rx_adf;
     // - Slotset 2
-    assign nfi_rx_0.dec_sop[2] = inst.cxl0_rx_dec_assists[(2*16+12)+:4]; 
-    assign nfi_rx_0.dec_eop[2] = inst.cxl0_rx_dec_assists[(2*16+ 8)+:4]; 
-    assign nfi_rx_0.dec_be [2] = inst.cxl0_rx_dec_assists[(2*16+ 4)+:4]; 
-    assign nfi_rx_0.dec_mem[2] = inst.cxl0_rx_dec_assists[(2*16+ 0)+:4]; 
+    assign nfi_rx_0.dec_sop[2] = inst.cxl0_rx_dec_assists[(2*16+12)+:4];
+    assign nfi_rx_0.dec_eop[2] = inst.cxl0_rx_dec_assists[(2*16+ 8)+:4];
+    assign nfi_rx_0.dec_be [2] = inst.cxl0_rx_dec_assists[(2*16+ 4)+:4];
+    assign nfi_rx_0.dec_mem[2] = inst.cxl0_rx_dec_assists[(2*16+ 0)+:4];
     // - Slotset 1
-    assign nfi_rx_0.dec_sop[1] = inst.cxl0_rx_dec_assists[(1*16+12)+:4]; 
-    assign nfi_rx_0.dec_eop[1] = inst.cxl0_rx_dec_assists[(1*16+ 8)+:4]; 
-    assign nfi_rx_0.dec_be [1] = inst.cxl0_rx_dec_assists[(1*16+ 4)+:4]; 
-    assign nfi_rx_0.dec_mem[1] = inst.cxl0_rx_dec_assists[(1*16+ 0)+:4]; 
+    assign nfi_rx_0.dec_sop[1] = inst.cxl0_rx_dec_assists[(1*16+12)+:4];
+    assign nfi_rx_0.dec_eop[1] = inst.cxl0_rx_dec_assists[(1*16+ 8)+:4];
+    assign nfi_rx_0.dec_be [1] = inst.cxl0_rx_dec_assists[(1*16+ 4)+:4];
+    assign nfi_rx_0.dec_mem[1] = inst.cxl0_rx_dec_assists[(1*16+ 0)+:4];
     // - Slotset 0
-    assign nfi_rx_0.dec_sop[0] = inst.cxl0_rx_dec_assists[(0*16+12)+:4]; 
-    assign nfi_rx_0.dec_eop[0] = inst.cxl0_rx_dec_assists[(0*16+ 8)+:4]; 
-    assign nfi_rx_0.dec_be [0] = inst.cxl0_rx_dec_assists[(0*16+ 4)+:4]; 
-    assign nfi_rx_0.dec_mem[0] = inst.cxl0_rx_dec_assists[(0*16+ 0)+:4]; 
+    assign nfi_rx_0.dec_sop[0] = inst.cxl0_rx_dec_assists[(0*16+12)+:4];
+    assign nfi_rx_0.dec_eop[0] = inst.cxl0_rx_dec_assists[(0*16+ 8)+:4];
+    assign nfi_rx_0.dec_be [0] = inst.cxl0_rx_dec_assists[(0*16+ 4)+:4];
+    assign nfi_rx_0.dec_mem[0] = inst.cxl0_rx_dec_assists[(0*16+ 0)+:4];
     // Agent cannot backpressure CPM6, but agent monitor requires this
     assign nfi_rx_0.ready = '1;
-    
+
     // NFI Tx (towards link)
     assign nfi_tx_0.clk   = inst.cxl0_clk;
     assign nfi_tx_0.ready = inst.cxl0_tx_ready;
@@ -144,18 +144,18 @@ import uvm_pkg::*;
   end
 
   // ----------------
-  // Controller 1 
+  // Controller 1
   // ----------------
 
   if (CTRL1_CXL_MODE == "ON") begin
 
     // CXL Remote Credit (from link partner)
-    assign crd_rx_1.clk = inst.cxl1_clk; 
+    assign crd_rx_1.clk = inst.cxl1_clk;
     assign crd_rx_1.vld = inst.cxl1_rx_credit_valid;
     assign crd_rx_1.req = inst.cxl1_rx_credit_req;
     assign crd_rx_1.dat = inst.cxl1_rx_credit_data;
     assign crd_rx_1.rsp = inst.cxl1_rx_credit_rsp;
-    
+
     // CXL Local Credit (to link partner) - flit_handler_ep_wrap_0 drives
     // this for real via BD wiring (tx_lclc_valid/req/dat/rsp ->
     // cxl1_tx_credit_*); only monitored here, not forced, so that real
@@ -165,7 +165,7 @@ import uvm_pkg::*;
     assign crd_tx_1.req = inst.cxl1_tx_credit_req;
     assign crd_tx_1.dat = inst.cxl1_tx_credit_data;
     assign crd_tx_1.rsp = inst.cxl1_tx_credit_rsp;
-    
+
     // Config/Status Bus
     assign cfgsts_1.clk        = inst.cxl1_clk;
     assign cfgsts_1.sig[ 0+:2] = inst.cxl1_flit_mode;
@@ -184,7 +184,7 @@ import uvm_pkg::*;
     assign cfgsts_1.sig[42+:1] = inst.cxl1_emd_enable;
     assign cfgsts_1.sig[43+:4] = inst.cxl1_vlsm_mc_state;
     assign cfgsts_1.sig[47+:8] = inst.cxl1_mld_hot_rst_active;
-    
+
     // CXL Power Mgmt (out)
     assign pm_out_1.clk       = inst.cxl1_clk;
     assign pm_out_1.sig[32:0] = inst.cxl1_pm_out;
@@ -195,29 +195,29 @@ import uvm_pkg::*;
 
     // NFI Rx (from link)
     assign nfi_rx_1.clk     = inst.cxl1_clk;
-    assign nfi_rx_1.data    = inst.cxl1_rx_data;   
+    assign nfi_rx_1.data    = inst.cxl1_rx_data;
     assign nfi_rx_1.parity  = inst.cxl1_rx_parity;
-    assign nfi_rx_1.valid   = inst.cxl1_rx_valid; 
-    assign nfi_rx_1.viral   = inst.cxl1_rx_viral; 
-    assign nfi_rx_1.adf     = inst.cxl1_rx_adf;   
+    assign nfi_rx_1.valid   = inst.cxl1_rx_valid;
+    assign nfi_rx_1.viral   = inst.cxl1_rx_viral;
+    assign nfi_rx_1.adf     = inst.cxl1_rx_adf;
     // - Slotset 2
-    assign nfi_rx_1.dec_sop[2] = inst.cxl1_rx_dec_assists[(2*16+12)+:4]; 
-    assign nfi_rx_1.dec_eop[2] = inst.cxl1_rx_dec_assists[(2*16+ 8)+:4]; 
-    assign nfi_rx_1.dec_be [2] = inst.cxl1_rx_dec_assists[(2*16+ 4)+:4]; 
-    assign nfi_rx_1.dec_mem[2] = inst.cxl1_rx_dec_assists[(2*16+ 0)+:4]; 
+    assign nfi_rx_1.dec_sop[2] = inst.cxl1_rx_dec_assists[(2*16+12)+:4];
+    assign nfi_rx_1.dec_eop[2] = inst.cxl1_rx_dec_assists[(2*16+ 8)+:4];
+    assign nfi_rx_1.dec_be [2] = inst.cxl1_rx_dec_assists[(2*16+ 4)+:4];
+    assign nfi_rx_1.dec_mem[2] = inst.cxl1_rx_dec_assists[(2*16+ 0)+:4];
     // - Slotset 1
-    assign nfi_rx_1.dec_sop[1] = inst.cxl1_rx_dec_assists[(1*16+12)+:4]; 
-    assign nfi_rx_1.dec_eop[1] = inst.cxl1_rx_dec_assists[(1*16+ 8)+:4]; 
-    assign nfi_rx_1.dec_be [1] = inst.cxl1_rx_dec_assists[(1*16+ 4)+:4]; 
-    assign nfi_rx_1.dec_mem[1] = inst.cxl1_rx_dec_assists[(1*16+ 0)+:4]; 
+    assign nfi_rx_1.dec_sop[1] = inst.cxl1_rx_dec_assists[(1*16+12)+:4];
+    assign nfi_rx_1.dec_eop[1] = inst.cxl1_rx_dec_assists[(1*16+ 8)+:4];
+    assign nfi_rx_1.dec_be [1] = inst.cxl1_rx_dec_assists[(1*16+ 4)+:4];
+    assign nfi_rx_1.dec_mem[1] = inst.cxl1_rx_dec_assists[(1*16+ 0)+:4];
     // - Slotset 0
-    assign nfi_rx_1.dec_sop[0] = inst.cxl1_rx_dec_assists[(0*16+12)+:4]; 
-    assign nfi_rx_1.dec_eop[0] = inst.cxl1_rx_dec_assists[(0*16+ 8)+:4]; 
-    assign nfi_rx_1.dec_be [0] = inst.cxl1_rx_dec_assists[(0*16+ 4)+:4]; 
-    assign nfi_rx_1.dec_mem[0] = inst.cxl1_rx_dec_assists[(0*16+ 0)+:4]; 
+    assign nfi_rx_1.dec_sop[0] = inst.cxl1_rx_dec_assists[(0*16+12)+:4];
+    assign nfi_rx_1.dec_eop[0] = inst.cxl1_rx_dec_assists[(0*16+ 8)+:4];
+    assign nfi_rx_1.dec_be [0] = inst.cxl1_rx_dec_assists[(0*16+ 4)+:4];
+    assign nfi_rx_1.dec_mem[0] = inst.cxl1_rx_dec_assists[(0*16+ 0)+:4];
     // Agent cannot backpressure CPM6, but agent monitor requires this
     assign nfi_rx_1.ready = '1;
-    
+
     // NFI Tx (towards link)
     assign nfi_tx_1.clk   = inst.cxl1_clk;
     assign nfi_tx_1.ready = inst.cxl1_tx_ready;

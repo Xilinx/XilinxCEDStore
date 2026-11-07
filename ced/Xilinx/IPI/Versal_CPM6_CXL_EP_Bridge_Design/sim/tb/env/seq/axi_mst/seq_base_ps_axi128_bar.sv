@@ -29,7 +29,7 @@ class seq_base_ps_axi128_bar extends seq_base_ps_axi128;
     endcase
     wr.atomic_type     = svt_axi_transaction::NORMAL;
     wr.addr            = addr;
-    wr.addr_user       = BAR_USER;  // AWUSER — routes through PCIe BAR aperture
+    wr.addr_user       = BAR_USER;  // AWUSER - routes through PCIe BAR aperture
     wr.burst_length    = 1;
     wr.data            = new[1];
     wr.wstrb           = new[1];
@@ -77,7 +77,7 @@ class seq_base_ps_axi128_bar extends seq_base_ps_axi128;
     endcase
     rd.atomic_type     = svt_axi_transaction::NORMAL;
     rd.addr            = addr;
-    rd.addr_user       = BAR_USER;  // ARUSER — routes through PCIe BAR aperture
+    rd.addr_user       = BAR_USER;  // ARUSER - routes through PCIe BAR aperture
     rd.burst_length    = 1;
     rd.data            = new[1];
     rd.rresp           = new[1];

@@ -428,9 +428,9 @@ package shim_enum_pkg;
   // - TPH
   // - PASID
   // - IDE
-  typedef struct packed { bit [23:0] fixme; } pfx_tph_t;
-  typedef struct packed { bit [23:0] fixme; } pfx_pasid_t;
-  typedef struct packed { bit [23:0] fixme; } pfx_ide_t;
+  typedef struct packed { bit [23:0] data; } pfx_tph_t;
+  typedef struct packed { bit [23:0] data; } pfx_pasid_t;
+  typedef struct packed { bit [23:0] data; } pfx_ide_t;
   
   // OHC-E: an End-to-End TLP Prefix
   typedef struct packed {

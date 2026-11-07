@@ -39,5 +39,6 @@ package proj_test_pkg;
   `include "seq/cseq_cxl_dvsec_next_cap.sv"
   `include "seq/cseq_irq_enables.sv"
   `include "seq/cseq_fix_cxl_hdm_dec_caps.sv"
+  `include "seq/cseq_unlock_wprot.sv"
   `include "cxl_ep_brdg_sanity.sv"
 endpackage

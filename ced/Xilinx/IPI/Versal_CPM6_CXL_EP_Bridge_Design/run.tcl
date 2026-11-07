@@ -68,16 +68,6 @@ proc createDesign {design_name options} {
   }
   set sub_name [dict get $ctrl_dir_map $ctrl_config]
 
-  # gen6x8 uses a dedicated clocking BD (clkx5_wiz-derived fabric clock;
-  # see ctrl{0,1}_cpi_gen6x8/design_1_bd.tcl) - route to it only for
-  # CXL_3_1 (gen6) + X8, leaving gen5x8/x4 untouched.
-  if {$cxl_protocol eq "CXL_3_1" && $cxl_width eq "X8"} {
-    set gen6x8_sub_name "${sub_name}_gen6x8"
-    if {[file isdirectory ${currentDir}/${gen6x8_sub_name}]} {
-      set sub_name $gen6x8_sub_name
-    }
-  }
-
   set local_ip_root "${currentDir}/ip"
   set src_dir     "${currentDir}/${sub_name}"
   puts "INFO: Sourcing BD from ${src_dir}/design_1_bd.tcl"
@@ -92,11 +82,6 @@ proc createDesign {design_name options} {
 
   # Add ctrl_reg_ep RTL (module-referenced in the block design)
   import_files -norecurse -fileset sources_1 ${currentDir}/src/ctrl_reg_ep.v
-
-  # ep_status_reg.v (formerly imported here) is retired - the block design
-  # now builds ctrl_reg_ep_0/ep_status directly via a BD-level ilconcat
-  # (ep_status_concat_0, see design_1_bd.tcl) instead of a dedicated RTL
-  # module, so no separate import is needed.
 
   # Add DDR PHY pin constraints
   add_files    -fileset constrs_1 -norecurse ${currentDir}/constrs/ddr_c0c1c4c5.xdc
@@ -117,6 +102,30 @@ proc createDesign {design_name options} {
   update_compile_order -fileset sources_1
 
   set_property strategy Performance_AggressiveExplore [get_runs impl_1]
+
+  set cxl_part [get_property PART [current_project]]
+  set cxl_vdef [get_property verilog_define [get_filesets sources_1]]
+  if {[string match "*-3HP-*" $cxl_part]} {
+    puts "INFO: Part $cxl_part: CXL_PIPELINE_EN not set"
+  } else {
+    if {[lsearch -exact $cxl_vdef CXL_PIPELINE_EN] < 0} { lappend cxl_vdef CXL_PIPELINE_EN }
+    set_property verilog_define $cxl_vdef [get_filesets sources_1]
+    puts "INFO: Part $cxl_part: CXL_PIPELINE_EN set"
+  }
+
+  # -2 parts with 256B flit (Gen6) and x8 need these strategies to meet timing.
+  if {![string match "*-3HP-*" $cxl_part] && $cxl_protocol eq "CXL_3_1" && $cxl_width eq "X8"} {
+    set cxl_strats {synth_1 Flow_PerfThresholdCarry}
+    if {[string match "*-2MP-*" $cxl_part]} { lappend cxl_strats impl_1 Performance_ExplorePostRoutePhysOpt }
+    foreach {cxl_run cxl_strat} $cxl_strats {
+      if {[lsearch -exact [list_property_value strategy [get_runs $cxl_run]] $cxl_strat] >= 0} {
+        set_property strategy $cxl_strat [get_runs $cxl_run]
+        puts "INFO: Part $cxl_part: $cxl_run strategy set to $cxl_strat"
+      } else {
+        puts "WARNING: strategy $cxl_strat is not available for $cxl_run, keeping [get_property strategy [get_runs $cxl_run]]"
+      }
+    }
+  }
 
   puts "INFO: CXL EP Bridge design generation completed successfully"
 }

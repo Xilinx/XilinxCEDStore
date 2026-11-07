@@ -23,10 +23,10 @@
 //   +0x000   Array Header  (cap_id=1, cap_ver=1, cm_ver=1, 3 entries)
 //   +0x004   RAS  cap entry (id=2, ver=3, ptr=0x100)
 //   +0x008   Link cap entry (id=4, ver=4, ptr=0x200)
-//   +0x00C   HDM  cap entry (id=5, ver=3, ptr=0x250)  ← found by enum
+//   +0x00C   HDM  cap entry (id=5, ver=3, ptr=0x250)  <- found by enum
 //
 //   +0x250   HDM Decoder Capability (at ptr 0x250 from arr_base):
-//     +0x00  cap   (decoder_count[3:0]=0 → 1 decoder; coherency[22:21]=2)
+//     +0x00  cap   (decoder_count[3:0]=0 -> 1 decoder; coherency[22:21]=2)
 //     +0x04  global_ctl
 //     +0x08  rsvd0
 //     +0x0C  rsvd1
@@ -44,8 +44,8 @@ class cxl_cm_reg_cb extends apci_callbacks;
 
   // -------------------------------------------------------------------------
   // BAR3/BAR4 tracking (64-bit Component Register BAR)
-  //   BAR3 → lower 32 bits (config offset 0x1C, reg_no = 7)
-  //   BAR4 → upper 32 bits (config offset 0x20, reg_no = 8)
+  //   BAR3 -> lower 32 bits (config offset 0x1C, reg_no = 7)
+  //   BAR4 -> upper 32 bits (config offset 0x20, reg_no = 8)
   // -------------------------------------------------------------------------
   bit [63:0] bar_base;        // 64-bit base once host programs BAR3/BAR4
   bit        bar_base_valid;  // set when BAR4 upper half is written non-all-1s
@@ -74,14 +74,14 @@ class cxl_cm_reg_cb extends apci_callbacks;
   } hdm_dec;
 
   // -------------------------------------------------------------------------
-  // Shadow memory — the VIP calls read_mem_cb / write_mem_cb for every
+  // Shadow memory - the VIP calls read_mem_cb / write_mem_cb for every
   // MemRd / MemWr TLP directed at the EP's BAR space.
   // -------------------------------------------------------------------------
   bit [31:0] mem[bit [63:0]];
   string     default_rsp = "ZEROES";
 
   // =========================================================================
-  // Constructor — initialise capability structures to sensible defaults
+  // Constructor - initialise capability structures to sensible defaults
   // =========================================================================
   function new();
     init_cxl_cm_regs();
@@ -96,15 +96,15 @@ class cxl_cm_reg_cb extends apci_callbacks;
     // Array header: CXL Cap ID=1, Cap Ver=1, CXL.cache+mem Ver=1, 3 entries
     //   {4'd3 (entries in [27:24]), 4'd1 (cm_ver in [23:20]),
     //    4'd1 (cap_ver in [19:16]), 16'd1 (cap_id in [15:0])}
-    //   → 28-bit value zero-extended to 32 bits
+    //   -> 28-bit value zero-extended to 32 bits
     cap_hdr.hdr         = {4'd3, 4'd1, 4'd1, 16'd1};
     // Capability entries: {ptr[31:20], ver[19:16], id[15:0]}
     cap_hdr.cxl_ras     = {12'h100, 4'd3, 16'd2}; // RAS  (id=2) at offset 0x100
     cap_hdr.cxl_link    = {12'h200, 4'd4, 16'd4}; // Link (id=4) at offset 0x200
     cap_hdr.cxl_hdm_dec = {12'h250, 4'd3, 16'd5}; // HDM  (id=5) at offset 0x250
     // HDM Decoder Capability header
-    //   decoder_count[3:0] = 0 → 1 decoder
-    //   coherency[22:21]   = 2b10 → Bi-directional coherency supported
+    //   decoder_count[3:0] = 0 -> 1 decoder
+    //   coherency[22:21]   = 2b10 -> Bi-directional coherency supported
     hdm_dec.cap        = (2'b10 << 21) | (4'h0 << 0);
     hdm_dec.global_ctl = '0;
     `uvm_info(id, "init_cxl_cm_regs: capability structs initialised", UVM_LOW)
@@ -210,7 +210,7 @@ class cxl_cm_reg_cb extends apci_callbacks;
     // MemWr: detect Commit bit (bit 9) on an HDM Decoder Control register.
     //   hdm_dec_base = bar_base[15:0] + 0x1000 + ptr (0x250)
     //   Decoder N control is at hdm_dec_base + 0x20 + N*0x20
-    //     → offset from hdm_dec_base is a non-zero multiple of 0x20
+    //     -> offset from hdm_dec_base is a non-zero multiple of 0x20
     //   write_mem_cb will store the write in mem[]; we wait for that
     //   and then back-door set Committed (bit 10) in the shadow.
     // -----------------------------------------------------------------------
@@ -237,7 +237,7 @@ class cxl_cm_reg_cb extends apci_callbacks;
                            (waddr - hdm_dec_base) / 'h20, {waddr_u, waddr});
           `uvm_info(id, msg, UVM_LOW)
           // Fork: wait for write_mem_cb to land the data in mem[], then
-          // back-door set Committed (bit 10) — same pattern as test_cxlmem.sv.
+          // back-door set Committed (bit 10) - same pattern as test_cxlmem.sv.
           fork
             begin
               automatic bit [63:0] ctl_addr = {waddr_u, waddr};

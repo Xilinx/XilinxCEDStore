@@ -41,8 +41,6 @@ module tb_top;
   // - These control the physical link connections; ergo you can enable 
   //   a link for training if non-zero, connect a subset of lanes of a 
   //   link, or disable a link entirely if zero
-  // - Cannot move these to module definition as it breaks SNPS VIP and 
-  //   VCS sim for some reason
   // - Examples 
   //   - Questa: vopt ... -G tb_top/LINK0_WIDTH=4
   //   - VCS   : vcs ... -pvalue tb_top.LINK0_WIDTH=4
@@ -250,7 +248,7 @@ module tb_top;
     assign dut_if1[ly].Pclk                     = gen_pipe_if[8+ly].Pclk;
     assign dut_if1[ly].Reset_                   = gen_pipe_if[8+ly].Reset_;
   end
-  // EDT-1093458 : MAC requires unused lanes driven low
+  //  MAC requires unused lanes driven low
   for (genvar ly=LINK1_WIDTH; ly<8; ly++) begin
     assign gen_pipe_if[8+ly].PhyStatus          = '0;
   end
@@ -340,8 +338,8 @@ module tb_top;
     #($urandom_range(0,999)*1ps);
     forever refclk_1_p = #5ns !refclk_1_p; 
   end
-  `include "cpm6_vivado_binds.sv"
   `include "dut_inst.sv"
+  `include "cpm6_vivado_binds.sv"
 
   // The agent is a SV class object that can function as a multi-port RC or single port RP/EP
   // The UVM env will grab the virtual interface and attach it to the respective object

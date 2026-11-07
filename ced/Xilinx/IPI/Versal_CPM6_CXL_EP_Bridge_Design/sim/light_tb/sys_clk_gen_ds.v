@@ -18,14 +18,14 @@
 
 module sys_clk_gen_ds (sys_clk_p, sys_clk_n);
 
-output	         sys_clk_p;
-output	         sys_clk_n;
+output           sys_clk_p;
+output           sys_clk_n;
 
 parameter        offset = 0;
 parameter        halfcycle = 500;
 
 
-sys_clk_gen 	#(
+sys_clk_gen     #(
 
                  .offset( offset ),
                  .halfcycle( halfcycle )

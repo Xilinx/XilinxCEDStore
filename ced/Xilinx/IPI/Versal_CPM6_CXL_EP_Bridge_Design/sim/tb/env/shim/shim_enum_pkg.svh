@@ -399,8 +399,8 @@ package shim_enum_pkg;
     bit [15: 0] st;   //Steering Tag
     bit [ 1: 0] ph;   //Processing Hint
     bit [ 1: 0] hv;   //Hints Valid
-    bit [ 2: 0] ama;  //??? RSVD if av=0
-    bit         av;   //???
+    bit [ 2: 0] ama;
+    bit         av;
   } ohc_b_s;
   
   // OHC-C
@@ -425,12 +425,10 @@ package shim_enum_pkg;
   typedef enum bit [3:0] {TPH, PASID, IDE, VEND_PFX_E0=4'hE, VEND_PFX_E1
   } e2e_pfx_t;
   
-  // - TPH
-  // - PASID
-  // - IDE
-  typedef struct packed { bit [23:0] fixme; } pfx_tph_t;
-  typedef struct packed { bit [23:0] fixme; } pfx_pasid_t;
-  typedef struct packed { bit [23:0] fixme; } pfx_ide_t;
+  // 24-bit payloads of the TPH, PASID and IDE prefixes (raw bits, not decoded)
+  typedef bit [23:0] pfx_tph_t;
+  typedef bit [23:0] pfx_pasid_t;
+  typedef bit [23:0] pfx_ide_t;
   
   // OHC-E: an End-to-End TLP Prefix
   typedef struct packed {

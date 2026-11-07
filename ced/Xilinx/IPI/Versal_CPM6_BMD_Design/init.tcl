@@ -6,17 +6,21 @@ set currentFile [file normalize [info script]]
 variable currentDir [file dirname $currentFile]
 source "$currentDir/run.tcl"
 
-proc getSupportedParts {} { return [get_parts xc2vp3602*] }
+proc getSupportedParts {} { return [get_parts -filter {SPEED == -2LHP || SPEED == -2MP || SPEED == -2MHP || SPEED == -3HP} xc2vp3*] }
 
 proc getSupportedBoards {} { }
 
 # --------------------------------------------------------------------
 # addOptions: Controller config + lane rate + link width
 # --------------------------------------------------------------------
-proc addOptions {DESIGNOBJ PROJECT_PARAM.BOARD_PART} {
+proc addOptions {DESIGNOBJ PROJECT_PARAM.PART} {
+  # DDR (LPDDR5) is only available on the VPK360 (vsvc3340) part
+  set ddr_ok [string match "*vsvc3340*" ${PROJECT_PARAM.PART}]
   return [list \
     [dict create name "CTRL_CONFIG" type "string" value "Controller_1" enabled true \
       value_list {Controller_0 Controller_1 Dual_Controller}] \
+    [dict create name "IDE" type "boolean" value "false" enabled [expr {$ddr_ok ? "true" : "false"}]] \
+    [dict create name "DDR_EN" type "boolean" value "false" enabled [expr {$ddr_ok ? "true" : "false"}]] \
     [dict create name "CTRL_LANE_RATE" type "string" value "64.0_GT/s" enabled true \
       value_list {64.0_GT/s 32.0_GT/s 16.0_GT/s} ] \
     [dict create name "CTRL_LINK_WIDTH" type "string" value "X4" enabled true \
@@ -27,11 +31,26 @@ proc addOptions {DESIGNOBJ PROJECT_PARAM.BOARD_PART} {
 # --------------------------------------------------------------------
 # addGUILayout
 # --------------------------------------------------------------------
-proc addGUILayout {DESIGNOBJ PROJECT_PARAM.BOARD_PART} {
+proc addGUILayout {DESIGNOBJ PROJECT_PARAM.PART} {
     set designObj $DESIGNOBJ
     set page [ced::add_page  -name "Configuration" -display_name "CPM6 BMD Configuration" -designObject $designObj]    
     ced::add_param -name CTRL_CONFIG -display_name "Controller selection" -parent $page -designObject $designObj -widget radioGroup -layout horizontal
+    ced::add_param -name IDE -display_name "IDE (Integrity and Data Encryption)" -parent $page -designObject $designObj -widget checkBox
+    ced::add_param -name DDR_EN -display_name "Use DDR" -parent $page -designObject $designObj -widget checkBox
     set panel [ced::add_panel -name panel -parent $page -designObject $designObj -layout horizontal]
     ced::add_param -name CTRL_LANE_RATE -display_name "Link Speed" -parent $panel -designObject $designObj -widget comboBox
     ced::add_param -name CTRL_LINK_WIDTH -display_name "Link width" -parent $panel -designObject $designObj -widget comboBox
+}
+
+# There is no Dual_Controller design with IDE: IDE removes Dual_Controller from the controller choices, and Dual_Controller greys IDE out.
+# IDE always has DDR (its NoC/LPDDR5 come from the SoC platform): IDE turns DDR_EN on and greys it out.
+# IDE and DDR are only available on the VPK360 (vsvc3340) part.
+gui_updater {CTRL_CONFIG.VALUE IDE.VALUE DDR_EN.VALUE PROJECT_PARAM.PART} {CTRL_CONFIG.RANGE IDE.ENABLEMENT DDR_EN.VALUE DDR_EN.ENABLEMENT} {
+  set ddr_ok [string match "*vsvc3340*" ${PROJECT_PARAM.PART}]
+  set range {{Controller_0 Controller_0} {Controller_1 Controller_1}}
+  if {!${IDE.VALUE}} { lappend range {Dual_Controller Dual_Controller} }
+  set CTRL_CONFIG.RANGE $range
+  set IDE.ENABLEMENT [expr {$ddr_ok && ${CTRL_CONFIG.VALUE} ne "Dual_Controller"}]
+  if {${IDE.VALUE}} { set DDR_EN.VALUE true }
+  set DDR_EN.ENABLEMENT [expr {$ddr_ok && !${IDE.VALUE}}]
 }

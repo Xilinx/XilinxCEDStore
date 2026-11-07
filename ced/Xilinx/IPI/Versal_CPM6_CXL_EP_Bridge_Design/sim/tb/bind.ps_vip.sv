@@ -1,5 +1,5 @@
-// Not all methods are implemented here (yet). To find the APIs, refer to
-// the PSX VIP Confluence page or go to a Vivado project's source file:
+// Not all methods are implemented here (yet). To find the APIs, go to a
+// Vivado project's PS VIP source file:
 //   <project>.gen/.../versal_cips_ps_vip_v1_0_1*_apis.sv
 interface ps_vip_api_if
   import uvm_pkg::*;
@@ -46,15 +46,15 @@ interface ps_vip_api_if
   // slave at all, but that's just how the PS VIP works.
   task set_routing_config(ps_route_slv_e slv, ps_route_mst_e mst, bit en);
     string slv_str, mst_str;
-    if (slv.name()=="") 
+    if (slv.name()=="")
       `uvm_fatal("ps_vip_api_if::set_routing_config", "Argument 'slv' is an enumerated type; invalid value given")
-    case (slv) 
-      NOC_PS_PCI_AXI_0 : slv_str = "NOCPSPCIAXI0";  
+    case (slv)
+      NOC_PS_PCI_AXI_0 : slv_str = "NOCPSPCIAXI0";
       CPM_PS_AXI_0     : slv_str = "CPMPSAXI0";
       CPM_PS_AXI_1     : slv_str = "CPMPSAXI1";
       default          : slv_str = slv.name;
     endcase
-    if (mst.name()=="") 
+    if (mst.name()=="")
       `uvm_fatal("ps_vip_api_if::set_routing_config", "Argument 'mst' is an enumerated type; invalid value given")
     case (mst)
       PS_NOC_PCI_AXI_0 : mst_str = "PSNOCPCIAXI0";
@@ -87,8 +87,8 @@ interface ps_vip_api_if
     inst.en_pmc_alias_region;
   endtask
 
-  task write_data_32(ps_route_slv_e mst, bit [43:0] addr, logic [31:0] data, output logic [1:0] rsp); 
-    if (mst.name()=="") 
+  task write_data_32(ps_route_slv_e mst, bit [43:0] addr, logic [31:0] data, output logic [1:0] rsp);
+    if (mst.name()=="")
       `uvm_fatal("ps_vip_api_if::write_data_32", "Argument 'mst' is an enumerated type; invalid value given")
     else if (!(mst inside {NOC_API, A72_API, R5_API}))
       `uvm_fatal("ps_vip_api_if::write_data_32", "Argument 'mst' must be NOC_API, A72_API, or R5_API")
@@ -96,8 +96,8 @@ interface ps_vip_api_if
       inst.write_data_32(mst.name(), addr, data, rsp);
   endtask
 
-  task read_data_32(ps_route_slv_e mst, bit [43:0] addr, output logic [31:0] data, output logic [1:0] rsp); 
-    if (mst.name()=="") 
+  task read_data_32(ps_route_slv_e mst, bit [43:0] addr, output logic [31:0] data, output logic [1:0] rsp);
+    if (mst.name()=="")
       `uvm_fatal("ps_vip_api_if::read_data_32", "Argument 'mst' is an enumerated type; invalid value given")
     else if (!(mst inside {NOC_API, A72_API, R5_API}))
       `uvm_fatal("ps_vip_api_if::read_data_32", "Argument 'mst' must be NOC_API, A72_API, or R5_API")
@@ -105,8 +105,8 @@ interface ps_vip_api_if
       inst.read_data_32(mst.name(), addr, data, rsp);
   endtask
 
-  task write_data_128(ps_route_slv_e mst, bit [43:0] addr, logic [127:0] data, output logic [1:0] rsp, input bit [4:0] nbytes = 16); 
-    if (mst.name()=="") 
+  task write_data_128(ps_route_slv_e mst, bit [43:0] addr, logic [127:0] data, output logic [1:0] rsp, input bit [4:0] nbytes = 16);
+    if (mst.name()=="")
       `uvm_fatal("ps_vip_api_if::write_data_128", "Argument 'mst' is an enumerated type; invalid value given")
     else if (!(mst inside {NOC_API, A72_API, R5_API}))
       `uvm_fatal("ps_vip_api_if::write_data_128", "Argument 'mst' must be NOC_API, A72_API, or R5_API")
@@ -114,8 +114,8 @@ interface ps_vip_api_if
       inst.write_data(mst.name(), addr, nbytes, data, rsp);
   endtask
 
-  task read_data_128(ps_route_slv_e mst, bit [43:0] addr, output logic [127:0] data, output logic [1:0] rsp, input bit [4:0] nbytes = 16); 
-    if (mst.name()=="") 
+  task read_data_128(ps_route_slv_e mst, bit [43:0] addr, output logic [127:0] data, output logic [1:0] rsp, input bit [4:0] nbytes = 16);
+    if (mst.name()=="")
       `uvm_fatal("ps_vip_api_if::read_data_128", "Argument 'mst' is an enumerated type; invalid value given")
     else if (!(mst inside {NOC_API, A72_API, R5_API}))
       `uvm_fatal("ps_vip_api_if::read_data_128", "Argument 'mst' must be NOC_API, A72_API, or R5_API")
@@ -125,8 +125,8 @@ interface ps_vip_api_if
 
 endinterface
 
-// This module is designed to be bound into the PSX VIP module. The
-// embedded ps_vip_api_if acts as a passthrough container to the PSX
+// This module is designed to be bound into the PS VIP module. The
+// embedded ps_vip_api_if acts as a passthrough container to the PS
 // VIP's built-in APIs so that a UVM TB can call them. This module
 // also calls some of the APIs in a common manner. The bind definition
 // should be:
@@ -144,7 +144,7 @@ module bind_ps_vip
   ps_vip_api_if ps_vip_api();
 
   initial
-    uvm_config_db#(virtual ps_vip_api_if)::set(null, "*", "ps_vip_api", ps_vip_api); 
+    uvm_config_db#(virtual ps_vip_api_if)::set(null, "*", "ps_vip_api", ps_vip_api);
 
   real freq[4];
   initial begin
@@ -169,7 +169,7 @@ module bind_ps_vip
     `uvm_info("PS_VIP_API", "Setting PS VIP internal clock=1000MHz", UVM_NONE)
     ps_vip_api.gen_cips_ps_vip_clock(1000); //selected at random
     #1us;
-    ps_vip_api.por_reset(1);                                  //deassert PS VIP internal reset     
+    ps_vip_api.por_reset(1);                                  //deassert PS VIP internal reset
     `uvm_info("PS_VIP_API", "Setting LPDCPMINREFCLK=60MHz", UVM_NONE)
     ps_vip_api.cpm_gen_clock(60);                             //LPDCPMINREFCLK (27-60 MHz; CPM6 PLL refclk)
     `uvm_info("PS_VIP_API", "Setting CPMOSCCLKDIV2=230MHz", UVM_NONE)

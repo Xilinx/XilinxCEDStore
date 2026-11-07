@@ -1,4 +1,3 @@
-// Copied from /everest/pvs_xsj/Avery_Products/VICS_2025.2_0808/src.uvm/pcie/apci_uvm_test_pkg.sv
 package apci_cosim_env_pkg;
 
   import avery_pkg::*;

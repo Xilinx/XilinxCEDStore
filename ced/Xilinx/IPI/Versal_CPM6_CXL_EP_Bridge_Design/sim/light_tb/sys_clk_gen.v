@@ -18,19 +18,19 @@
 
 module sys_clk_gen (sys_clk);
 
-output	sys_clk;
+output  sys_clk;
 
-reg		sys_clk;
+reg             sys_clk;
 
 parameter        offset = 0;
 parameter        halfcycle = 500;
 
 initial begin
 
-	sys_clk = 0;
-	#(offset);
+        sys_clk = 0;
+        #(offset);
 
-	forever #(halfcycle) sys_clk = ~sys_clk;
+        forever #(halfcycle) sys_clk = ~sys_clk;
 
 end
 

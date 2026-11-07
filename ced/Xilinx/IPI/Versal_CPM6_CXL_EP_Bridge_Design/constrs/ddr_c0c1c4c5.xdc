@@ -1,11 +1,11 @@
-# DDR constraints for VPK360 LPDDR5X — 4 channels: C0, C1, C4, C5
+# DDR constraints for VPK360 LPDDR5X - 4 channels: C0, C1, C4, C5
 # Each channel: 32-bit CH0 interface, LPDDR5X-8533 @ 320 MHz sys_clk
 # IOSTANDARD / SLEW / OUTPUT_IMPEDANCE values from board design requirements
 
-# DDRMC5E site LOC constraints — fixes each single-MC NOC to the correct channel.
+# DDRMC5E site LOC constraints - fixes each single-MC NOC to the correct channel.
 # Without these, Vivado auto-places all 4 NOC instances at the same site, causing
 # MIG "port locations changed" errors on CA/CK/CS (which are fixed per-site pins).
-# Site-to-channel mapping: DDRMC5E_XnY0 → channel n (confirmed from working impl).
+# Site-to-channel mapping: DDRMC5E_XnY0 -> channel n.
 # Absolute path - the BD instance name (cpm6_cxl_ep_brg_i) is fixed by this CED's
 # own design.xml/xitem.json registration for every invocation path (GUI and
 # console), not user-editable, so this applies identically across all combos.
@@ -14,31 +14,31 @@ set_property LOC DDRMC5E_X1Y0 [get_cells {cpm6_cxl_ep_brg_i/axi_noc2_c1/inst/MC0
 set_property LOC DDRMC5E_X4Y0 [get_cells {cpm6_cxl_ep_brg_i/axi_noc2_c4/inst/MC0_ddrc/inst/noc_ddr5_phy/inst/DDRMC5_COMP}]
 set_property LOC DDRMC5E_X5Y0 [get_cells {cpm6_cxl_ep_brg_i/axi_noc2_c5/inst/MC0_ddrc/inst/noc_ddr5_phy/inst/DDRMC5_COMP}]
 
-# ── IOSTANDARD / SLEW / OUTPUT_IMPEDANCE ────────────────────────────────────
+# -- IOSTANDARD / SLEW / OUTPUT_IMPEDANCE ------------------------------------
 # C? matches this design's 4 populated channels (C0/C1/C4/C5); reset_n
 # has no [0] bit-select since the generated top-level wrapper declares
 # *_reset_n as a plain scalar port.
 
-# ── IOSTANDARD ────────────────────────────────────────────────────────────────
+# -- IOSTANDARD ----------------------------------------------------------------
 # Differential signals: CK, RDQS, WCK
 set_property IOSTANDARD DIFF_LVSTL05_10 [get_ports {C?_CH0_LPDDR5_0_ck_* C?_CH0_LPDDR5_0_rdqs_* C?_CH0_LPDDR5_0_wck_*}]
-# Single-ended: CS, reset_n → LVCMOS10
+# Single-ended: CS, reset_n -> LVCMOS10
 set_property IOSTANDARD LVCMOS10 [get_ports {C?_CH0_LPDDR5_0_cs[*] C?_CH0_LPDDR5_0_reset_n}]
-# CA, DQ, DMI → LVSTL05_10
+# CA, DQ, DMI -> LVSTL05_10
 set_property IOSTANDARD LVSTL05_10 [get_ports {C?_CH0_LPDDR5_0_ca[*] C?_CH0_LPDDR5_0_dmi[*] C?_CH0_LPDDR5_0_dq[*]}]
 
 # Sys clocks: LVDS12 (2 physical oscillators, each shared by 2 DDRMC channels via util_ds_buf)
 set_property IOSTANDARD LVDS12 [get_ports {sys_clk0_0_clk_p}]
 set_property IOSTANDARD LVDS12 [get_ports {sys_clk4_0_clk_p}]
 
-# ── SLEW ──────────────────────────────────────────────────────────────────────
+# -- SLEW ----------------------------------------------------------------------
 set_property SLEW FAST [get_ports {C?_CH0_LPDDR5_0_ca[*] C?_CH0_LPDDR5_0_ck_* C?_CH0_LPDDR5_0_cs[*] C?_CH0_LPDDR5_0_dmi[*] C?_CH0_LPDDR5_0_dq[*] C?_CH0_LPDDR5_0_reset_n C?_CH0_LPDDR5_0_wck_*}]
 
-# ── OUTPUT_IMPEDANCE ──────────────────────────────────────────────────────────
+# -- OUTPUT_IMPEDANCE ----------------------------------------------------------
 set_property OUTPUT_IMPEDANCE RDRV_40_40 [get_ports {C?_CH0_LPDDR5_0_ca[*] C?_CH0_LPDDR5_0_ck_* C?_CH0_LPDDR5_0_dmi[*] C?_CH0_LPDDR5_0_dq[*] C?_CH0_LPDDR5_0_wck_*}]
 
 
-# ── C0 ──────────────────────────────────────────────────────────────────────
+# -- C0 ----------------------------------------------------------------------
 set_property PACKAGE_PIN AN6  [get_ports {C0_CH0_LPDDR5_0_dq[3]}]
 set_property PACKAGE_PIN AN7  [get_ports {C0_CH0_LPDDR5_0_dq[1]}]
 set_property PACKAGE_PIN AN9  [get_ports {C0_CH0_LPDDR5_0_wck_t[0]}]
@@ -94,7 +94,7 @@ set_property PACKAGE_PIN BB6  [get_ports {C0_CH0_LPDDR5_0_dq[21]}]
 set_property PACKAGE_PIN BE9  [get_ports {sys_clk0_0_clk_p}]
 set_property PACKAGE_PIN BF8  [get_ports {sys_clk0_0_clk_n}]
 
-# ── C1 ──────────────────────────────────────────────────────────────────────
+# -- C1 ----------------------------------------------------------------------
 set_property PACKAGE_PIN BG2  [get_ports {C1_CH0_LPDDR5_0_dq[28]}]
 set_property PACKAGE_PIN BG3  [get_ports {C1_CH0_LPDDR5_0_dq[29]}]
 set_property PACKAGE_PIN BG5  [get_ports {C1_CH0_LPDDR5_0_dq[27]}]
@@ -148,7 +148,7 @@ set_property PACKAGE_PIN BU6  [get_ports {C1_CH0_LPDDR5_0_dq[11]}]
 set_property PACKAGE_PIN BU7  [get_ports {C1_CH0_LPDDR5_0_wck_t[1]}]
 set_property PACKAGE_PIN BV7  [get_ports {C1_CH0_LPDDR5_0_dq[9]}]
 
-# ── C4 ──────────────────────────────────────────────────────────────────────
+# -- C4 ----------------------------------------------------------------------
 set_property PACKAGE_PIN BK27 [get_ports {C4_CH0_LPDDR5_0_dq[25]}]
 set_property PACKAGE_PIN BK29 [get_ports {C4_CH0_LPDDR5_0_dq[27]}]
 set_property PACKAGE_PIN BK30 [get_ports {C4_CH0_LPDDR5_0_dq[26]}]
@@ -204,7 +204,7 @@ set_property PACKAGE_PIN BK33 [get_ports {C4_CH0_LPDDR5_0_dmi[0]}]
 set_property PACKAGE_PIN BU36 [get_ports {sys_clk4_0_clk_p}]
 set_property PACKAGE_PIN BV37 [get_ports {sys_clk4_0_clk_n}]
 
-# ── C5 ──────────────────────────────────────────────────────────────────────
+# -- C5 ----------------------------------------------------------------------
 set_property PACKAGE_PIN BL39 [get_ports {C5_CH0_LPDDR5_0_dmi[2]}]
 set_property PACKAGE_PIN BL40 [get_ports {C5_CH0_LPDDR5_0_dq[20]}]
 set_property PACKAGE_PIN BL42 [get_ports {C5_CH0_LPDDR5_0_rdqs_t[2]}]
@@ -258,9 +258,9 @@ set_property PACKAGE_PIN BJ41 [get_ports {C5_CH0_LPDDR5_0_dq[12]}]
 set_property PACKAGE_PIN BK38 [get_ports {C5_CH0_LPDDR5_0_rdqs_c[1]}]
 set_property PACKAGE_PIN BK39 [get_ports {C5_CH0_LPDDR5_0_dq[13]}]
 
-# ── CA/CK/CS/RESET — from mc_vpx working impl (site-selector pins for DDRMC5E) ──
+# -- CA/CK/CS/RESET (site-selector pins for DDRMC5E) --
 # MIG uses these to determine which DDRMC5E_XnY0 site to place each controller at.
-# ── C0 ──────────────────────────────────────────────────────────────────────
+# -- C0 ----------------------------------------------------------------------
 set_property PACKAGE_PIN AY4  [get_ports {C0_CH0_LPDDR5_0_ca[0]}]
 set_property PACKAGE_PIN BA6  [get_ports {C0_CH0_LPDDR5_0_ca[1]}]
 set_property PACKAGE_PIN BB7  [get_ports {C0_CH0_LPDDR5_0_ca[2]}]
@@ -273,7 +273,7 @@ set_property PACKAGE_PIN BA3  [get_ports {C0_CH0_LPDDR5_0_ck_c[0]}]
 set_property PACKAGE_PIN AR5  [get_ports {C0_CH0_LPDDR5_0_cs[0]}]
 set_property PACKAGE_PIN AT4  [get_ports {C0_CH0_LPDDR5_0_cs[1]}]
 set_property PACKAGE_PIN AT1  [get_ports {C0_CH0_LPDDR5_0_reset_n}]
-# ── C1 ──────────────────────────────────────────────────────────────────────
+# -- C1 ----------------------------------------------------------------------
 set_property PACKAGE_PIN BP3  [get_ports {C1_CH0_LPDDR5_0_ca[0]}]
 set_property PACKAGE_PIN BJ10 [get_ports {C1_CH0_LPDDR5_0_ca[1]}]
 set_property PACKAGE_PIN BH10 [get_ports {C1_CH0_LPDDR5_0_ca[2]}]
@@ -286,7 +286,7 @@ set_property PACKAGE_PIN BM4  [get_ports {C1_CH0_LPDDR5_0_ck_c[0]}]
 set_property PACKAGE_PIN BL4  [get_ports {C1_CH0_LPDDR5_0_cs[0]}]
 set_property PACKAGE_PIN BL3  [get_ports {C1_CH0_LPDDR5_0_cs[1]}]
 set_property PACKAGE_PIN BK5  [get_ports {C1_CH0_LPDDR5_0_reset_n}]
-# ── C4 ──────────────────────────────────────────────────────────────────────
+# -- C4 ----------------------------------------------------------------------
 set_property PACKAGE_PIN BL33 [get_ports {C4_CH0_LPDDR5_0_ca[0]}]
 set_property PACKAGE_PIN BU31 [get_ports {C4_CH0_LPDDR5_0_ca[1]}]
 set_property PACKAGE_PIN BT30 [get_ports {C4_CH0_LPDDR5_0_ca[2]}]
@@ -299,7 +299,7 @@ set_property PACKAGE_PIN BJ29 [get_ports {C4_CH0_LPDDR5_0_ck_c[0]}]
 set_property PACKAGE_PIN BE27 [get_ports {C4_CH0_LPDDR5_0_cs[0]}]
 set_property PACKAGE_PIN BF28 [get_ports {C4_CH0_LPDDR5_0_cs[1]}]
 set_property PACKAGE_PIN BG30 [get_ports {C4_CH0_LPDDR5_0_reset_n}]
-# ── C5 ──────────────────────────────────────────────────────────────────────
+# -- C5 ----------------------------------------------------------------------
 set_property PACKAGE_PIN BT38 [get_ports {C5_CH0_LPDDR5_0_ca[0]}]
 set_property PACKAGE_PIN BK42 [get_ports {C5_CH0_LPDDR5_0_ca[1]}]
 set_property PACKAGE_PIN BK41 [get_ports {C5_CH0_LPDDR5_0_ca[2]}]

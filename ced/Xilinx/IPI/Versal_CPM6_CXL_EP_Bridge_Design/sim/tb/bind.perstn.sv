@@ -1,6 +1,6 @@
-// This module is translating between the Vivado generated CPM6 instance 
+// This module is translating between the Vivado generated CPM6 instance
 // to the UVM interface used by this testbench for the perstn
-// signals for both controllers. This is specifically designed to be bound 
+// signals for both controllers. This is specifically designed to be bound
 // at the CPM6 uni-sim instance level e.g.
 //   bind CPM6 bind_perstn bind_perstn();
 module bind_perstn
@@ -13,7 +13,7 @@ module bind_perstn
   // PERST for each controller
   // --------------------
   reset_if perstn_if[0:1]();
-  
+
   initial begin
     force inst.perst0n = perstn_if[0].reset;
     force inst.perst1n = perstn_if[1].reset;

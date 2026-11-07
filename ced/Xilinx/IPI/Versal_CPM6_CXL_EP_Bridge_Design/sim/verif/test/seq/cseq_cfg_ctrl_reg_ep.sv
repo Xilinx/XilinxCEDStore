@@ -1,43 +1,27 @@
 // ===========================================================================
 // cseq_cfg_ctrl_reg_ep.sv - Versal CPM6 CXL EP Bridge Design
 //
-// Programs this design's ctrl_reg_ep.v with the CXL-negotiated HDM base
-// address, via EP_BASE_0_LO/HI (offsets 0x404/0x408). This is REQUIRED for
-// this design specifically (unlike a single-PA CXL EP that can rely purely
-// on the standard CXL DVSEC HDM decoder hardware): direct read of
-// ctrl1/design_1_bd.tcl confirms ctrl_reg_ep_0's `cxl_mem_base0` output is
-// wired to ALL FOUR PA hierarchies simultaneously
-// (`connect_bd_net -net ctrl_reg_ep_0_cxl_mem_base0 [get_bd_pins
-// ctrl_reg_ep_0/cxl_mem_base0] [get_bd_pins PA_0/cxl_mem0_base] [get_bd_pins
-// PA_1/cxl_mem0_base] [get_bd_pins PA_2/cxl_mem0_base] [get_bd_pins
-// PA_3/cxl_mem0_base]` - one shared net, `cxl_mem_base1` unused/unconnected
-// anywhere in this BD) - i.e. every PA needs this CSR programmed with the
-// actual negotiated HDM base before any of them can correctly decode
-// CXL.mem traffic.
+// Programs ctrl_reg_ep.v with the CXL-negotiated HDM base address via
+// EP_BASE_0_LO/HI (offsets 0x404/0x408). Required for this design: the
+// ctrl0_cpi/ and ctrl1_cpi/ design_1_bd.tcl wire ctrl_reg_ep_0's
+// cxl_mem_base0 output to all four PA hierarchies (PA_0..PA_3), so every PA
+// decodes CXL.mem against this CSR-broadcast base.
 //
 // Route: R5_API -> M_AXI_LPD -> LPD_AXI_PL -> smartconnect_0 ->
-// ctrl_reg_ep.s_axil. CTRL_REG_EP_BASE (0x8000_0000) matches this design's
-// own ctrl1/design_1_bd.tcl (`assign_bd_address -offset 0x80000000 ...
-// [get_bd_addr_spaces ps_wizard_0/pmcps_0_psv_cortexr5_0] [get_bd_addr_segs
-// ctrl_reg_ep_0/s_axil/reg0]`). select_pl_datawidth(2'b00, "M_AXI_LPD") is
-// required before any 32-bit R5_API access on this route - the PS VIP's
-// internal BFM otherwise defaults to 128-bit. Register offsets (0x400/
-// 0x404/0x408) match this design's own ../../../src/ctrl_reg_ep.v.
+// ctrl_reg_ep.s_axil. CTRL_REG_EP_BASE (0x8000_0000) is the ctrl_reg_ep_0
+// address assignment in both design_1_bd.tcl files; register offsets match
+// src/ctrl_reg_ep.v. select_pl_datawidth(2'b00, "M_AXI_LPD") is required
+// before any 32-bit R5_API access on this route (the PS VIP's internal BFM
+// otherwise defaults to 128-bit).
 //
-// Extends seq_base_ps_axi32 purely for its `p_sequencer`
-// (`` `uvm_declare_p_sequencer(ps_vip_vsequencer)``) scaffolding so this can
-// run on env.ps_vip_vsqr - its own axi_wr/axi_rd helpers (CPM6 config-space
-// routes only) are NOT used here; this sequence's body() talks to
-// ctrl_reg_ep directly via p_sequencer.ps_vip_api, same as the reference.
+// Extends seq_base_ps_axi32 only for its p_sequencer scaffolding, so this
+// runs on env.ps_vip_vsqr; body() talks to ctrl_reg_ep directly via
+// p_sequencer.ps_vip_api.
 //
-// env.ps_sem locking: the PS VIP's R5_API master port only supports one
-// active destination route at a time - tb_env.sv also runs a background,
-// independently-forked periodic PS-IRQ recheck task that routes R5_API to
-// PS_CPM_CFG on its own timer, with no coordination with whatever route a
-// test sequence currently holds. env.ps_sem is held across the
-// M_AXI_LPD-routed section below to prevent that background task from
-// switching routes while this sequence's route is still open, same
-// env.ps_sem.get(1)/.put(1) bracketing pattern as test_ide_basic.sv.
+// env.ps_sem is held across the M_AXI_LPD-routed section: the PS VIP's R5_API
+// master port supports one active destination route at a time, and tb_env.sv
+// forks a background PS-IRQ recheck task that routes R5_API to PS_CPM_CFG on
+// its own timer.
 // ===========================================================================
 class cseq_cfg_ctrl_reg_ep extends seq_base_ps_axi32;
   `uvm_object_utils(cseq_cfg_ctrl_reg_ep)

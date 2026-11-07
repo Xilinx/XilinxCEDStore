@@ -7,7 +7,7 @@ class m2sreq_c extends base_txn;
   flit_mode_t flitmode;
 
   // if a field === 'x, copy over from the source, else just leave alone
-  // this allows me to do a sort of "partial" copy of the req
+  // this allows a "partial" copy of the req
   bit copy_over_x_only = 1'b1; 
 
          m2sreq68_t req68 = 'x;        m2sreq256_t req256 = 'x;
@@ -206,7 +206,7 @@ class m2srwd_c extends base_txn;
   flit_mode_t flitmode;
 
   // if a field === 'x, copy over from the source, else just leave alone
-  // this allows me to do a sort of "partial" copy of the hdr
+  // this allows a "partial" copy of the hdr
   bit copy_over_x_only = 1'b1; 
 
          m2srwd68_hdr_t hdr68 = 'x;        m2srwd256_hdr_t hdr256 = 'x;
@@ -634,7 +634,7 @@ class m2sbirsp_c extends base_txn;
   flit_mode_t flitmode;
 
   // if a field === 'x, copy over from the source, else just leave alone
-  // this allows me to do a sort of "partial" copy of the birsp
+  // this allows a "partial" copy of the birsp
   bit copy_over_x_only = 1'b1; 
 
          m2sbirsp256_t birsp256 = 'x;
@@ -739,7 +739,7 @@ class s2mndr_c extends base_txn;
   flit_mode_t flitmode;
 
   // if a field === 'x, copy over from the source, else just leave alone
-  // this allows me to do a sort of "partial" copy of the ndr
+  // this allows a "partial" copy of the ndr
   bit copy_over_x_only = 1'b1; 
 
          s2mndr68_t ndr68 = 'x;        s2mndr256_t ndr256 = 'x;
@@ -908,7 +908,7 @@ class s2mdrs_c extends base_txn;
   flit_mode_t flitmode;
 
   // if a field === 'x, copy over from the source, else just leave alone
-  // this allows me to do a sort of "partial" copy of the hdr
+  // this allows a "partial" copy of the hdr
   bit copy_over_x_only = 1'b1; 
 
          s2mdrs68_hdr_t hdr68 = 'x;        s2mdrs256_hdr_t hdr256 = 'x;
@@ -1200,7 +1200,7 @@ class s2mbisnp_c extends base_txn;
   flit_mode_t flitmode;
 
   // if a field === 'x, copy over from the source, else just leave alone
-  // this allows me to do a sort of "partial" copy of the bisnp
+  // this allows a "partial" copy of the bisnp
   bit copy_over_x_only = 1'b1; 
 
          s2mbisnp256_t bisnp256 = 'x;

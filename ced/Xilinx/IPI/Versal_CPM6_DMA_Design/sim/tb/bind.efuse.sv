@@ -6,7 +6,6 @@ module bind_efuse
 
   initial begin
     force CPM_INST.EFUSECPMCCIXDIS = 1'b0;
-    `uvm_info("FIXME::PORT_DRIVE", "Driving CPM_INST.EFUSECPMCCIXDIS = 1'b0", UVM_NONE)
   end
 
 endmodule

@@ -21,7 +21,7 @@ class gpmon_monitor#(type CFG, type VIF, type TXN) extends base_monitor#(CFG,VIF
   //   extends uvm_typed_callbacks#(T);
   // - static function bit m_register_pair(string tname="", cbname="");
   `define gpmon_register_cb(T,CB,Tname,CBname) \
-    static local bit m_register_cb_``NAME = uvm_callbacks#(T,CB)::m_register_pair(`"Tname`",`"CBname`");
+    static local bit m_register_cb_``CB = uvm_callbacks#(T,CB)::m_register_pair(`"Tname`",`"CBname`");
   // Register the CB
   `gpmon_register_cb(this_type, cb_type, get_type_name, gpmon_mon_cb::type_name)
 

@@ -89,7 +89,7 @@ class cxl_credit_pool_seq extends uvm_sequence#(cxl_credit_bus_txn);
     forever begin
       // Wait until there is at least 1 credit to return
       while (!p_sequencer.shr.any_credits) p_sequencer.wait_cycles(1);
-      // Not sure why any other sequence would have the sqr, but grab it anyways
+      // No other sequence is expected to hold the sqr, but grab it anyway
       p_sequencer.grab(this);
       // Send the txn
       start_item(t);

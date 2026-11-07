@@ -1,28 +1,21 @@
 // ===========================================================================
 // cxl_ep_brdg_sanity.sv - Versal CPM6 CXL EP Bridge Design
 //
-// Project-specific sanity test. Extends base_cxl_ep_type3_hdm1_fm (sim/tb/
-// test/base_cxl_ep_type3_hdm1_fm.sv, itself extending base_cxl_ep_test):
-// configures VIP as CXL RP / DUT as CXL EP, Type 3, flit mode, 1 HDM range
-// advertised via DVSEC, links up in CXL mode, checks negotiated speed.
-//
-// Base class choice (base_cxl_ep_type3_hdm1_fm, not the plain
-// base_cxl_ep_test used previously): this design's ctrl1/
-// design_1_bd.tcl (CTRL1 build) and ctrl0/design_1_bd.tcl (CTRL0
-// build) both wire ctrl_reg_ep_0's single cxl_mem_base0 output to ALL
-// FOUR PA hierarchies via one shared net (cxl_mem_base1 absent in either
-// variant - confirmed identical topology in both) - i.e. the whole design
-// decodes CXL.mem against ONE combined HDM range regardless of which
-// controller is CXL-active, which is exactly "1 HDM range" semantics, not
-// a per-PA range each needing its own decoder commit.
+// Sanity test. Extends base_cxl_ep_type3_hdm1_fm (sim/tb/test/, itself
+// extending base_cxl_ep_test): VIP as CXL RP, DUT as CXL EP, Type 3, flit
+// mode, one HDM range advertised via DVSEC, link up in CXL mode, negotiated
+// speed checked. The one-HDM-range base class fits because ctrl0_cpi/ and
+// ctrl1_cpi/ design_1_bd.tcl both wire ctrl_reg_ep_0's single cxl_mem_base0
+// output to all four PA hierarchies, so the whole design decodes CXL.mem
+// against one combined HDM range.
 //
 // After enumeration and the base class's CXL-mode/speed check
-// (post_enum_seq(), inherited via base_cxl_ep_test), this test:
+// (post_enum_seq()), this test:
 //   1. Programs ctrl_reg_ep's EP_BASE_0 with the CXL-negotiated HDM base
-//      (cseq_cfg_ctrl_reg_ep, on env.ps_vip_vsqr) - required because this
-//      design's PAs decode against that CSR-broadcast base, unlike a design
-//      that relies purely on standard CXL HDM decoder hardware.
-//   2. Runs a CXL.mem write/readback sanity check across 4 consecutive
+//      (cseq_cfg_ctrl_reg_ep, on env.ps_vip_vsqr) - the PAs decode against
+//      that CSR-broadcast base rather than relying only on the standard
+//      CXL HDM decoder hardware.
+//   2. Runs a CXL.mem write/readback check across 4 consecutive
 //      cacheline-aligned addresses within that HDM range
 //      (cxl_mem_wr_rd_4consec_seq, on env.shim.vsqr).
 // ===========================================================================
@@ -76,7 +69,11 @@ class cxl_ep_brdg_sanity extends base_cxl_ep_type3_hdm1_fm;
     cseq_irq_enables fix_irq_seq;
     // Programs CXL Extended Capability Header registers - see cseq_fix_cxl_hdm_dec_caps.sv.
     cseq_fix_cxl_hdm_dec_caps fix_hdm_dec_seq;
+    // Unlocks the CPM6 write-protect registers the CDO locks - see cseq_unlock_wprot.sv.
+    cseq_unlock_wprot unlock_seq;
     super.post_cdo_load();
+    unlock_seq = cseq_unlock_wprot::type_id::create("unlock_seq");
+    unlock_seq.start(env.ps_vip_vsqr);
     fix_seq = cseq_app_req_retry_en::type_id::create("fix_seq");
     fix_seq.start(env.ps_vip_vsqr);
     fix_dvsec_seq = cseq_cxl_dvsec_next_cap::type_id::create("fix_dvsec_seq");
@@ -96,9 +93,8 @@ class cxl_ep_brdg_sanity extends base_cxl_ep_type3_hdm1_fm;
   // command itself.
   //
   // cxl_dev_reg_if_base ('h1_0000, PF0/BAR0) is this CXL core's fixed Device
-  // Register Interface base, same across every sibling test - only
-  // cxl_mbox[CXL_ACTIVE_CTRL] is seeded here since this design only uses one
-  // controller at a time.
+  // Register Interface base - only cxl_mbox[CXL_ACTIVE_CTRL] is seeded here
+  // since this design only uses one controller at a time.
 
   // CXL.mem credit seed value used below (comfortably more than this
   // test's own 8 total CXL.mem transactions - 4 writes + 4 reads - ever

@@ -1343,7 +1343,7 @@ connect_bd_net [get_bd_pins VCU_hier/vcu2_0/c0_enc_mcu_m_axi_noc_clk] [get_bd_pi
   # Create instance: ps_wizard_0, and set properties
   set_property -dict [list \
     CONFIG.PS11_CONFIG(PL_FPD_IRQ_USAGE) {CH0 0 CH1 1 CH2 1 CH3 1 CH4 0 CH5 1 CH6 1 CH7 0} \
-    CONFIG.PS11_CONFIG(PL_LPD_IRQ_USAGE) {CH0 0 CH1 0 CH2 0 CH3 0 CH4 0 CH5 0 CH6 0 CH7 0 CH8 0 CH9 0 CH10 0 CH11 0 CH12 0 CH13 0 CH14 0 CH15 0 CH16 0 CH17 0 CH18 0 CH19 0 CH20 0 CH21 1 CH22 1 CH23 1} \
+    CONFIG.PS11_CONFIG(PL_LPD_IRQ_USAGE) {CH0 1 CH1 1 CH2 1 CH3 0 CH4 0 CH5 0 CH6 0 CH7 0 CH8 0 CH9 0 CH10 0 CH11 0 CH12 0 CH13 0 CH14 0 CH15 0 CH16 0 CH17 0 CH18 0 CH19 0 CH20 0 CH21 0 CH22 0 CH23 0} \
   ] [get_bd_cells ps_wizard_0]
  
  
@@ -1445,13 +1445,13 @@ set_property -dict [list \
   connect_bd_net -net hdmi_ss_RX_TI_ENABLE  [get_bd_pins hdmi_ss/RX_TI_ENABLE] \
   [get_bd_ports RX_TI_ENABLE]
   connect_bd_net -net hdmi_ss_hdmi_tx_irq  [get_bd_pins hdmi_ss/hdmi_tx_irq] \
-  [get_bd_pins ps_wizard_0/pl_lpd_irq22]
+  [get_bd_pins ps_wizard_0/pl_lpd_irq1]
   connect_bd_net -net hdmi_ss_iic_irq  [get_bd_pins hdmi_ss/iic_irq] \
   [get_bd_pins ps_wizard_0/pl_fpd_irq6]
   connect_bd_net -net hdmi_ss_timer_irq  [get_bd_pins hdmi_ss/timer_irq] \
-  [get_bd_pins ps_wizard_0/pl_lpd_irq21]
+  [get_bd_pins ps_wizard_0/pl_lpd_irq0]
   connect_bd_net -net hdmi_ss_vphy_irq  [get_bd_pins hdmi_ss/vphy_irq] \
-  [get_bd_pins ps_wizard_0/pl_lpd_irq23]
+  [get_bd_pins ps_wizard_0/pl_lpd_irq2]
   connect_bd_net -net net_bdry_in_IDT8T49N241_LOL_IN  [get_bd_ports IDT8T49N241_LOL_IN] \
   [get_bd_pins hdmi_ss/IDT8T49N241_LOL_IN]
   connect_bd_net -net net_bdry_in_TX_HPD_IN  [get_bd_ports TX_HPD_IN] \

@@ -10,7 +10,7 @@
 ##   make clean                   -- clean sim outputs
 ##   make aclean                  -- clean everything (keep clibs)
 ##   make fullclean                -- factory reset
-##   make distclean                                 -- wipe all compiled libs (uvm, avery, uvma_agents, cpm6_secip, Vivado vcs_lib), full rebuild
+##   make distclean                                 -- wipe all compiled libs (uvm, avery, uvma_agents, Vivado vcs_lib), full rebuild
 ## =============================================================================
 
 ## ----------------------------------------------------------------------------
@@ -129,7 +129,7 @@ h help:
 	@echo "======================================================="
 	@echo ""
 	@echo " Prerequisites:"
-	@echo "   1. Load VCS module       : module switch vcs/X-2025.06"
+	@echo "   1. Load VCS module       : module switch vcs/Y-2026.03-SP1"
 	@echo "   2. Load Avery module     : module load averyvip/2025.3_1"
 	@echo "                              (sets AVERY_PLI, AVERY_PCIE, AVERY_SIM)"
 	@echo "   3. Set CPM6 Secure IP   : setenv CPM6_SECUREIP <path>"
@@ -220,16 +220,12 @@ c compile: _check_env _check_vivado
 	fi
 	@echo "    Generating VCS library setup ..."
 	@$(MAKE) --no-print-directory _gen_sim_setup
-	@if [ ! -d $(CLIBS)/cpm6_secip ]; then \
-	    mkdir -p $(CLIBS)/cpm6_secip; \
+	@if [ ! -f $(VIVADO_SIM)/vcs_lib/xil_defaultlib/glbl.compiled ]; then \
 	    SYNOPSYS_SIM_SETUP=$(SIM_SETUP) \
-	    vlogan -full64 -sverilog -work cpm6_secip \
-	           -timescale=1ns/1ps -kdb \
-	           -l $(CLIBS)/vlogan.cpm6_secip.log \
-	           -F cpm6_sip.f; \
-	    echo "    cpm6_secip compiled"; \
-	else \
-	    echo "    cpm6_secip already compiled -- skipping"; \
+	    vlogan -full64 -work xil_defaultlib -timescale=1ns/1ps \
+	           -l $(CLIBS)/vlogan.glbl.log $(VIVADO_SIM)/glbl.v \
+	    && touch $(VIVADO_SIM)/vcs_lib/xil_defaultlib/glbl.compiled; \
+	    echo "    glbl compiled into xil_defaultlib"; \
 	fi
 	@echo ""
 	@echo "=== COMPILE STEP 3/3: Top-level Testbench ==="
@@ -256,7 +252,6 @@ _gen_sim_setup:
 	@echo "uvm         : $(CLIBS)/uvm"                     >> sim_setup.setup
 	@echo "avery       : $(CLIBS)/avery"       >> sim_setup.setup
 	@echo "uvma_agents : $(CLIBS)/uvma_agents" >> sim_setup.setup
-	@echo "cpm6_secip  : $(CLIBS)/cpm6_secip"  >> sim_setup.setup
 	@for lib in $(VIVADO_SIM)/vcs_lib/*/; do \
 	    libname=$$(basename $$lib); \
 	    echo "$$libname : $$(realpath $$lib)"              >> sim_setup.setup; \
@@ -275,9 +270,9 @@ o opt: _check_env _check_setup
 	@echo ""
 	@echo "=== OPTIMIZE STEP 2/3: Linking ==="
 	SYNOPSYS_SIM_SETUP=$(SIM_SETUP) \
-	vcs -j4 -full64 +nospecify -xlrm uniq_prior_final -ntb_opts uvm-1.1 \
+	vcs -j4 -full64 +nospecify -xlrm uniq_prior_final -xlrm module_xmr -ntb_opts uvm-1.1 \
 	    -l vcs.opt.log \
-	    work.tb_top xil_defaultlib.glbl \
+	    work.tb_top xil_defaultlib.xlnoc_top xil_defaultlib.glbl \
 	    +warn=noCNST-PPRW,noRT-NCMUCS,noUNGB \
 	    -debug_access+all \
 	    $(AVERY_PLI)/lib.linux/libtb_vcs64.a \
@@ -398,7 +393,7 @@ fullclean:
 distclean: fullclean
 	@echo "======================================================="
 	@echo " DIST CLEAN -- removes ALL generated/compiled libraries"
-	@echo " (uvm, avery, uvma_agents, cpm6_secip, Vivado vcs_lib)"
+	@echo " (uvm, avery, uvma_agents, Vivado vcs_lib)"
 	@echo " Next 'make cos' will recompile everything from scratch"
 	@echo "======================================================="
 	@rm -rf clibs work.lib++
@@ -426,7 +421,7 @@ _check_env:
 	    echo ""; echo "ERROR: VCS_HOME not set. Load VCS module."; echo ""; exit 1; \
 	elif [ ! -d "$(VCS_HOME)/etc/uvm-1.1" ]; then \
 	    echo ""; echo "ERROR: $(VCS_HOME)/etc/uvm-1.1 does not exist -- VCS_HOME points to an"; \
-	    echo "       incomplete/incompatible VCS install. Load VCS module (vcs/X-2025.06)."; echo ""; exit 1; fi
+	    echo "       incomplete/incompatible VCS install. Load VCS module (vcs/Y-2026.03-SP1)."; echo ""; exit 1; fi
 	@if [ -z "$(CPM6_SECUREIP)" ]; then \
 	    echo ""; echo "ERROR: CPM6_SECUREIP not set."; \
 	    echo "       Download CPM6 Secure IP and set: setenv CPM6_SECUREIP <path>"; echo ""; exit 1; fi

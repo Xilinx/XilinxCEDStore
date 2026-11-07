@@ -1,6 +1,6 @@
-// This module is translating between the Vivado generated CPM6 instance 
-// to the UVM interfaces used by this testbench for ELBI. This 
-// is specifically designed to be bound at the CPM6 uni-sim instance level 
+// This module is translating between the Vivado generated CPM6 instance
+// to the UVM interfaces used by this testbench for ELBI. This
+// is specifically designed to be bound at the CPM6 uni-sim instance level
 // e.g.
 //   bind CPM6 bind_elbi bind_elbi();
 module bind_elbi
@@ -17,7 +17,7 @@ module bind_elbi
   end
 
   // -------------
-  // Controller 0 
+  // Controller 0
   // -------------
 
   initial begin
@@ -43,7 +43,7 @@ module bind_elbi
   assign elbi_0.lbc_ext_vfunc_active     = inst.pcie0_elbi_vfunc_active;
 
   // -------------
-  // Controller 1 
+  // Controller 1
   // -------------
 
   initial begin

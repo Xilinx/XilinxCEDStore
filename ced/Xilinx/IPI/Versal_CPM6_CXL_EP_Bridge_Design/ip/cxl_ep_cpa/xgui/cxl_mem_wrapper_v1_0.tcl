@@ -206,46 +206,41 @@ set_property value 6 ${MODELPARAM_VALUE.C_M0_AXI_HDM_ID_WIDTH}
 
 proc update_MODELPARAM_VALUE.C_M0_AXI_HDM_AWUSER_WIDTH { MODELPARAM_VALUE.C_M0_AXI_HDM_AWUSER_WIDTH } {
 	# Procedure called to set VHDL generic/Verilog parameter value(s) based on TCL parameter value
-	# No longer a customizable user parameter - hardcoded to what this design's
-	# M0_AXI_HDM bus-interface pin declares (see design_1_bd.tcl), not the RTL's
-	# own bare default, since this proc (not the component.xml default alone) is
-	# what actually feeds the generated Verilog instantiation.
+	# Fixed to what this design's M0_AXI_HDM bus-interface pin declares (see
+	# design_1_bd.tcl), not the RTL's own default: this proc (not the
+	# component.xml default alone) feeds the generated Verilog instantiation.
 set_property value 24 ${MODELPARAM_VALUE.C_M0_AXI_HDM_AWUSER_WIDTH}
 }
 
 proc update_MODELPARAM_VALUE.C_M0_AXI_HDM_WUSER_WIDTH { MODELPARAM_VALUE.C_M0_AXI_HDM_WUSER_WIDTH } {
 	# Procedure called to set VHDL generic/Verilog parameter value(s) based on TCL parameter value
-	# No longer a customizable user parameter - hardcoded to what this design's
-	# M0_AXI_HDM bus-interface pin declares (see design_1_bd.tcl), not the RTL's
-	# own bare default, since this proc (not the component.xml default alone) is
-	# what actually feeds the generated Verilog instantiation.
+	# Fixed to what this design's M0_AXI_HDM bus-interface pin declares (see
+	# design_1_bd.tcl), not the RTL's own default: this proc (not the
+	# component.xml default alone) feeds the generated Verilog instantiation.
 set_property value 4 ${MODELPARAM_VALUE.C_M0_AXI_HDM_WUSER_WIDTH}
 }
 
 proc update_MODELPARAM_VALUE.C_M0_AXI_HDM_BUSER_WIDTH { MODELPARAM_VALUE.C_M0_AXI_HDM_BUSER_WIDTH } {
 	# Procedure called to set VHDL generic/Verilog parameter value(s) based on TCL parameter value
-	# No longer a customizable user parameter - hardcoded to what this design's
-	# M0_AXI_HDM bus-interface pin declares (see design_1_bd.tcl), not the RTL's
-	# own bare default, since this proc (not the component.xml default alone) is
-	# what actually feeds the generated Verilog instantiation.
+	# Fixed to what this design's M0_AXI_HDM bus-interface pin declares (see
+	# design_1_bd.tcl), not the RTL's own default: this proc (not the
+	# component.xml default alone) feeds the generated Verilog instantiation.
 set_property value 4 ${MODELPARAM_VALUE.C_M0_AXI_HDM_BUSER_WIDTH}
 }
 
 proc update_MODELPARAM_VALUE.C_M0_AXI_HDM_ARUSER_WIDTH { MODELPARAM_VALUE.C_M0_AXI_HDM_ARUSER_WIDTH } {
 	# Procedure called to set VHDL generic/Verilog parameter value(s) based on TCL parameter value
-	# No longer a customizable user parameter - hardcoded to what this design's
-	# M0_AXI_HDM bus-interface pin declares (see design_1_bd.tcl), not the RTL's
-	# own bare default, since this proc (not the component.xml default alone) is
-	# what actually feeds the generated Verilog instantiation.
+	# Fixed to what this design's M0_AXI_HDM bus-interface pin declares (see
+	# design_1_bd.tcl), not the RTL's own default: this proc (not the
+	# component.xml default alone) feeds the generated Verilog instantiation.
 set_property value 24 ${MODELPARAM_VALUE.C_M0_AXI_HDM_ARUSER_WIDTH}
 }
 
 proc update_MODELPARAM_VALUE.C_M0_AXI_HDM_RUSER_WIDTH { MODELPARAM_VALUE.C_M0_AXI_HDM_RUSER_WIDTH } {
 	# Procedure called to set VHDL generic/Verilog parameter value(s) based on TCL parameter value
-	# No longer a customizable user parameter - hardcoded to what this design's
-	# M0_AXI_HDM bus-interface pin declares (see design_1_bd.tcl), not the RTL's
-	# own bare default, since this proc (not the component.xml default alone) is
-	# what actually feeds the generated Verilog instantiation.
+	# Fixed to what this design's M0_AXI_HDM bus-interface pin declares (see
+	# design_1_bd.tcl), not the RTL's own default: this proc (not the
+	# component.xml default alone) feeds the generated Verilog instantiation.
 set_property value 5 ${MODELPARAM_VALUE.C_M0_AXI_HDM_RUSER_WIDTH}
 }
 

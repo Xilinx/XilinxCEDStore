@@ -2,8 +2,8 @@
 //
 // Writes 4 CXL.mem cachelines (base, +64, +128, +192) with distinct data
 // patterns, then reads each back and verifies against the expected value.
-// Uses 4 fixed addresses (not randomized like sibling HDM sequences) so
-// every mismatch is unambiguous about which address failed.
+// Uses 4 fixed addresses so every mismatch is unambiguous about which
+// address failed.
 class cxl_mem_wr_rd_4consec_seq extends uvm_sequence;
 
   `uvm_object_utils(cxl_mem_wr_rd_4consec_seq)
