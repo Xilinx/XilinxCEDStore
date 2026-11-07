@@ -14,6 +14,7 @@
 set design_script_dir [file dirname [file normalize [info script]]]
 
 source [file join $design_script_dir pkg_help.tcl]
+source [file join $design_script_dir pkg_args.tcl]
 source [file join $design_script_dir design_pkg.tcl]
 source [file join $design_script_dir design_xsdb.tcl]
 source [file join $design_script_dir design_addrmap.tcl]

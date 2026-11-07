@@ -1,0 +1,213 @@
+# Variables that can be overwritten by parent Makefile are conditional variables
+# Parent Makefile should define default test using TEST variable
+GUI ?= 0
+SIM ?= questa
+TEST_DIR ?= ./
+VERBOSITY ?= MEDIUM
+TOP_FILE ?= tb_top
+TOP_NAME ?= $(TOP_FILE)
+COMPILE_OTHER ?=
+OPT_OTHER ?=
+
+# Validate and set SIM
+SIM_ALLOWED := questa vcs
+ifdef DEFAULT_SIM
+ SIM=$(DEFAULT_SIM)
+endif
+BAD_SIM:=$(if $(filter $(SIM),$(SIM_ALLOWED)),0,1)
+
+# Validate VERBOSITY
+VERBOSITY_ALLOWED := NONE LOW MEDIUM HIGH DEBUG
+BAD_VERBOSITY:=$(if $(filter $(VERBOSITY),$(VERBOSITY_ALLOWED)),0,1)
+
+# Define some special chars
+comma=,
+mpty= 
+plus=+
+spc=$(mpty) $(mpty)
+
+# Default action is submit jobs to LSF. A user can specify LSF as an argument or
+# they can set the LSF submission with the DEFAULT_LSF environment variable
+ifndef LSF
+ ifdef DEFAULT_LSF
+  LSF=$(DEFAULT_LSF)
+ else
+  LSF=1
+ endif
+endif
+
+# Default LSF Options
+# - Can also try different "span" options i.e. span[hosts=1,block=value,ptile=value]
+# - Memory requested
+ifeq ($(SIM),questa)
+ OPT_MEM_REQ ?= 2
+ SIM_MEM_REQ ?= 2
+else
+ OPT_MEM_REQ ?= 2
+ SIM_MEM_REQ ?= 2
+endif
+
+ifndef SEED
+ ifeq ($(SIM),questa)
+  SEED=random
+  FSEARCH='Sv_Seed = [0-9]+'
+  FSTRING=$(spc)
+ else
+  VCSSEED=+ntb_random_seed_automatic
+  FSEARCH='random seed used: [0-9]+'
+  FSTRING=$(spc)
+ endif
+else ifeq ($(SIM),vcs)
+ VCSSEED=+ntb_random_seed=$(SEED)
+ FSEARCH='ntb_random_seed=[0-9]+'
+ FSTRING= =#variable set to equal sign
+else
+ FSEARCH='sv_seed [0-9]+'
+ FSTRING=$(spc)
+endif
+
+# Comma separated list of addl. compilation defines
+ifdef DEFINES
+ CDEF=+define+$(subst $(comma),$(spc)+define+,$(DEFINES))
+endif
+
+ifdef PLUSARGS
+ PARG:=+$(strip $(PARG)$(subst $(comma),$(spc)$(plus),$(PLUSARGS)))
+endif
+
+ifeq ($(SIM),questa)
+ ifeq ($(GUI),0)
+  VIEWMODE = -batch
+  DOCMD = run -a; quit;
+ else
+  VIEWMODE = -gui -onfinish stop -classdebug
+  DOCMD = $(GUI_DO)
+ endif
+else
+ ifeq ($(GUI),0)
+  VIEWMODE = -ucli
+  DOCMD += dofile/vcsrun.do
+ else
+  VIEWMODE = -gui
+  DOCMD += $(GUI_DO)
+ endif
+endif
+
+h help:
+	@echo "---Targets"
+	@echo "    - c, compile"
+	@echo "    - o, opt"
+	@echo "    - s, sim"
+	@echo "    - cos             (alias to c, o, s)"
+	@echo "    - cln, clean"
+	@echo "    - lst             (list all tests)"
+	@echo "    - lst TEST=<name> (print test description)"
+	@echo "---Options"
+	@echo "    - TEST      (default = $(TEST))"
+	@echo "    - GUI       (default = $(GUI); [0,1])"
+	@echo "    - SIM       (default = $(SIM) [questa,vcs])"
+	@echo "    - SEED      (default = random; [int])"
+	@echo "    - VERBOSITY (default = $(VERBOSITY))"
+	@echo "    - DEFINES   (default = none); [comma separated list]"
+	@echo "    - PLUSARGS  (default = none); [comma separated list]"
+ifdef ADDL_HELP_PRINT
+	@echo ""
+	@echo "---Custom Print"
+	@printf "%s\n" $(ADDL_HELP_PRINT)
+endif
+
+c compile: --chk_sim
+ifeq ($(SIM),questa)
+	vlog -64 -incr -work work -l vlog.log \
+	  -F $(ROOT_PATH)/base_agent/base.F $(COMP_FILES) \
+	  $(TOP_FILE).sv $(CDEF) $(COMPILE_OTHER)
+	 
+else ifeq ($(SIM),vcs)
+	vlogan -full64 -sverilog -ntb_opts uvm-1.1
+	vlogan -full64 -sverilog -ntb_opts uvm-1.1 -l vlogan.log -kdb \
+	  -F $(ROOT_PATH)/base_agent/base.F $(COMP_FILES) \
+	  -timescale=1ns/1ps \
+	  $(TOP_FILE).sv $(CDEF) $(COMPILE_OTHER)
+endif
+
+o opt: --chk_sim
+ifeq ($(SIM),questa)
+	vopt -64 +acc -work work -l vopt.log $(TOP_NAME) -o $(TOP_NAME)_opt $(OPT_OTHER)
+else ifeq ($(SIM),vcs)
+	vcs -full64 -ntb_opts uvm-1.1 -l vcsopt.log work.$(TOP_NAME) +warn=noCNST-PPRW -debug_access+all $(OPT_OTHER)
+endif
+
+s sim: --chk_sim --chk_verb
+	@$(PRE_SIM_CMD)
+ifeq ($(SIM),questa)
+	@vsim -64 -work work $(TOP_NAME)_opt -l vsim.log -sv_seed $(SEED) \
+      +UVM_VERBOSITY=UVM_$(VERBOSITY) $(PARG) +UVM_TESTNAME=$(TEST) $(VIEWMODE) \
+      -solvefaildebug=2 -do "$(DOCMD)"
+	@$(MAKE) --no-print-directory LOGFILE=vsim.log -- --print_results
+else ifeq ($(SIM),vcs)
+	./simv -l simv.log -no_save -licqueue -licwait 1 $(VCSSEED) +UVM_TESTNAME=$(TEST) \
+      $(PARG) $(VIEWMODE) +UVM_VERBOSITY=$(VERBOSITY) -do "$(DOCMD)"
+	@$(MAKE) --no-print-directory LOGFILE=simv.log -- --print_results
+endif
+
+lst:
+	@if [ ! -d $(TEST_DIR) ]; then \
+	  echo "ERROR: Test directory $(TEST_DIR) does not exist"; \
+	  exit 1; \
+	fi
+ifdef PRINT_DESC
+	@if [ -f $(TEST_DIR)/$(TEST).sv ]; then \
+	  if head -1 $(TEST_DIR)/$(TEST).sv | grep -q '^/\*'; then \
+	    ENDLINE=`grep -n '\*/' $(TEST_DIR)/$(TEST).sv | head -1 | cut -f1 -d:`; \
+	    if [ -z "$$ENDLINE" ]; then \
+	      echo "DESCRIPTION: None"; \
+	    else \
+	      sed -n "2,$${ENDLINE}p" $(TEST_DIR)/$(TEST).sv; \
+	    fi; \
+	  else \
+	    echo "DESCRIPTION: None"; \
+	  fi; \
+	else \
+	  echo "ERROR: File $(TEST_DIR)/$(TEST).sv does not exist"; \
+	fi
+else
+	@echo -n "// "; printf "%.0s-" {1..80}; echo " //"
+	@echo -e "// Potential tests to run, listed from directory: $(TEST_DIR)"
+	@echo -e "// Specify using TEST argument when running s/sim target"
+	@echo -e "// Get the description of a specific test with: make lst TEST=<name>"
+	@echo -n "// "; printf "%.0s-" {1..80}; echo " //"
+	@ls $(TEST_DIR) | grep '$(TEST)' | sed 's/\.sv/ (default)/' | sed 's/^/\* /'
+	@ls $(TEST_DIR) | grep -v -e 'base' -e '$(TEST)' | grep 'test.sv' | sed 's/\.sv//' | sed 's/^/\* /'
+	@echo -e ""
+endif
+
+cos : c o s
+
+cln clean:
+	rm -f simv.log v*log vsim.wlf vsim_stacktrace.vstf ucli.key vc_hdrs.h simv novas* inter.fsdb
+	rm -rf csrc simv.daidir verdiLog work AN.DB work.lib++ sysBusyPLog simv.cst
+
+# DESCRIPTION
+# This prints all relevant test run information and then calls the python script 
+# that parses the logfile for error strings and summarizes the test results to 
+# the terminal
+--print_results: TESTSEED=$(shell grep -i -o -E $(FSEARCH) $(LOGFILE) | sed 's/.*$(FSTRING)\([[:digit:]]\+\)/\1/')
+--print_results:
+	@echo -n "// "; printf "%.0s-" {1..80}; echo " //"
+	@echo "// TEST NAME    = $(TEST)"
+	@echo "// LOGFILE      = $(LOGFILE)"
+	@echo "// SEED         = $(TESTSEED)"
+	@echo "// RUN AGAIN    = make s TEST=$(TEST) SEED=$(TESTSEED) SIM=$(SIM) GUI=1"
+	@echo -n '// ';
+	@$(ROOT_PATH)/common/sim_parselog.py $(LOGFILE)
+	@echo -n "// "; printf "%.0s-" {1..80}; echo " //"
+
+--chk_sim:
+ifeq ($(BAD_SIM),1)
+	$(error Invalid value for SIM: "$(SIM)". Allowed options are: $(SIM_ALLOWED))
+endif
+
+--chk_verb:
+ifeq ($(BAD_VERBOSITY),1)
+	$(error Invalid value for VERBOSITY: "$(VERBOSITY)". Allowed options are: $(VERBOSITY_ALLOWED))
+endif

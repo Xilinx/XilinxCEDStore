@@ -5,7 +5,7 @@
           "infra": {
             "name": "Versal_CPM6_CXL_RP",
             "display": "Versal CPM6 Compute Express Link (CXL) Root Port (RP)",
-            "revision": "1.0",
+            "revision": "2.0",
             "description": "",
             "company": "xilinx.com",
             "company_display": "Xilinx",
@@ -16,7 +16,7 @@
                 "url": "www.xilinx.com"
               }
             ],
-            "category": "Versal",
+            "category": "PCIe",
             "website": "www.xilinx.com",
             "is_active" : true, 
             "search-keywords": [

@@ -33,7 +33,8 @@ DESIGN OVERVIEW
     resets wired into this design: bit 0 (cxl1_rstn) resets every
     datapath's CXL/AXI-side logic plus the perf-monitor viral block; bit 2
     (axil_rstn) resets every custom_axi_tg's CSR side plus the shared GPIO
-    block used for synchronized multi-datapath triggering.
+    block used for synchronized multi-datapath triggering and the external
+    GPIO block (gpio_ext_axil_0).
 
 ADDRESS MAP
 ------------
@@ -55,7 +56,9 @@ Per-CPI PL register windows (systematically assigned, base + index*stride):
                                  (idx = cpi*4 + iface, iface in
                                  f2a_req=0, f2a_data=1, a2f_data=2, a2f_rsp=3)
 axil_gpio4_0 (shared multi-datapath trigger GPIO) has its own single base
-address. All of the above are read out of the generated project's .hwh, not
+address.
+gpio_ext_axil_0 (board LEDs, pushbuttons, DIP switches; register map in
+src/gpio_ext_axil_slave.sv) is at 0x0201_0025_0000, 4 KB. All of the above are read out of the generated project's .hwh, not
 hardcoded - see the address-map discovery pass described below.
 
 CONTROLLING THE GENERATED HARDWARE: THE xsdb_scripts TCL PACKAGES
@@ -75,6 +78,8 @@ Once the block diagram above has been generated into a project, xsdb_scripts/
               and bandwidth (GB/s), to stdout or to a file.
   ecam::    - reads/decodes PCIe config space and CXL DVSECs at the RP/EP
               windows above; sets up EP BARs and CXL HDM memory ranges.
+  gpio::    - controls the board's 8 LEDs (static/blink/PWM), reads the 4
+              pushbuttons and 4 DIP switches, and their input events.
 
 QUICK START (from an xsdb prompt connected to the JTAG port after generating the design)
 ------------------------------------------------------------------------------
@@ -86,12 +91,16 @@ QUICK START (from an xsdb prompt connected to the JTAG port after generating the
   xsdb% ecam::setup_ep_bars ;# required to access CXL.$mem Component Registers
   xsdb% ecam::setup_hdm decoder ;# set up HDM range(s) via HDM Decoder Cap. structure
   xsdb% hwtg::connect
-  xsdb% hwtg::load_append 0 "WRITE addr=0x8000000000 repeat=7 addr_k=12 addr_stride=64" ;# 8 CL writes
-  xsdb% hwtg::load_append 0 "READ  addr=0x8000000000 repeat=7 addr_k=12 addr_stride=64" ;# 8 CL reads
+  xsdb% hwtg::load_append 0 "WRITE addr=0x800_0000_0000 repeat=7 addr_k=12 addr_stride=64" ;# 8 CL writes
+  xsdb% hwtg::load_append 0 "READ  addr=0x800_0000_0000 repeat=7 addr_k=12 addr_stride=64" ;# 8 CL reads
   xsdb% hwtg::start 0
   xsdb% hwtg::wait_done 0
+  xsdb% if {[hwtg::has_errors 0]} {hwtg::parse_errors 0}  ;# details only if an error was flagged
   xsdb% perf::connect
   xsdb% perf::report    ;# real latency/bandwidth numbers from hardware CPI interfaces
+  xsdb% gpio::connect
+  xsdb% gpio::led_blink 4 500ms   ;# LED 4 blinks with a 500 ms period
+  xsdb% gpio::read                ;# pushbuttons, DIP switches, input events
 
 Every package documents itself: run "<pkg>::help" for a command list, or
 "<pkg>::help <command>" for detailed usage. Full command reference:

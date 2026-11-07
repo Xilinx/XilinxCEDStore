@@ -1,11 +1,12 @@
 # xsdb_scripts: board bring-up and hardware-exercise library
 
-Five TCL packages give an interactive `xsdb` session full control over this
+Six TCL packages give an interactive `xsdb` session full control over this
 CED's (`Versal_CPM6_CXL_RP`) CXL Root Port hardware over JTAG: board
 bring-up and shared design discovery (`design::`), raw register transport
 and PL reset-pin control (`control::`), traffic-generator control
-(`hwtg::`), performance-counter readout (`perf::`), and PCIe/CXL
-configuration-space access (`ecam::`). This directory is copied into the
+(`hwtg::`), performance-counter readout (`perf::`), PCIe/CXL
+configuration-space access (`ecam::`), and the board's external LEDs,
+pushbuttons and DIP switches (`gpio::`). This directory is copied into the
 generated Vivado project (alongside `p.gen`, `p.sim`, ... -- see `run.tcl`),
 so it travels with every project this CED produces.
 
@@ -28,30 +29,35 @@ xsdb% ecam::connect
 xsdb% ecam::setup_ep_bars
 xsdb% ecam::setup_hdm decoder
 xsdb% hwtg::connect
-xsdb% hwtg::load_append 0 "WRITE addr=0x8000000000 repeat=7 addr_k=12 addr_stride=64"
-xsdb% hwtg::load_append 0 "READ  addr=0x8000000000 repeat=7 addr_k=12 addr_stride=64"
+xsdb% hwtg::load_append 0 "WRITE addr=0x800_0000_0000 repeat=7 addr_k=12 addr_stride=64"
+xsdb% hwtg::load_append 0 "READ  addr=0x800_0000_0000 repeat=7 addr_k=12 addr_stride=64"
 xsdb% hwtg::start 0
 xsdb% hwtg::wait_done 0
+xsdb% if {[hwtg::has_errors 0]} {hwtg::parse_errors 0}  ;# details only if an error was flagged
 xsdb% perf::connect
 xsdb% perf::report
+xsdb% gpio::connect
+xsdb% gpio::led_blink 4 500ms
+xsdb% gpio::read
 ```
 
 `source xsdb_scripts/all.tcl` is the only command needed to load everything
--- it sources `design.tcl`, `control.tcl`, `hwtg.tcl`, `perf.tcl`, and
-`ecam.tcl` in that dependency order. Each of those individual files can
+-- it sources `design.tcl`, `control.tcl`, `hwtg.tcl`, `perf.tcl`,
+`ecam.tcl`, and `gpio.tcl` in that dependency order. Each of those individual files can
 also be sourced on its own (they each check their own dependencies and
 error with the exact `source` command to run if something's missing), but
 `all.tcl` is the normal entry point.
 
 **Dependency order:** `design::` -> `control::` -> {`hwtg::`, `perf::`,
-`ecam::`} (the last three don't depend on each other). `design::` has no
+`ecam::`, `gpio::`} (the last four don't depend on each other). `design::` has no
 dependency on anything else -- it's the foundation:
 - **There is no single, shared "connect" command.** Every package has its
-  own `::connect` (`design::`/`ecam::`/`hwtg::`/`perf::`), each selecting
-  whichever xsdb target *that package's own* register accesses actually
-  need: a board/root pattern for `design::`, the DPC for `hwtg::`/`perf::`,
-  the Cortex-A72 #0 (APU) for `ecam::`. xsdb only has ONE current target at
-  a time, and these four `::connect` commands don't coordinate with each
+  own `::connect` (`design::`/`ecam::`/`hwtg::`/`perf::`/`gpio::`), each
+  selecting whichever xsdb target *that package's own* register accesses
+  actually need: a board/root pattern for `design::`, the DPC for
+  `hwtg::`/`perf::`/`gpio::`, the Cortex-A72 #0 (APU) for `ecam::`. xsdb
+  only has ONE current target at a time, and these five `::connect`
+  commands don't coordinate with each
   other -- calling one silently changes the target another package's
   accesses were relying on. Call whichever package's `::connect` you need
   immediately before using that package's commands (see the quick start
@@ -68,7 +74,7 @@ and pass whichever form matches it if the default (`*Versal*xc2vp*`)
 doesn't work for your setup: a `-filter` name-match pattern, e.g.
 `design::connect {*xcvp1902*}`, or a plain integer target index, e.g.
 `design::connect 1` (does `targets -set 1` directly, no filter). Every
-`::connect` command (`design::`/`ecam::`/`hwtg::`/`perf::`) prints the
+`::connect` command (`design::`/`ecam::`/`hwtg::`/`perf::`/`gpio::`) prints the
 specific target index and name it landed on, e.g. `INFO: perf connected to
 target 2 (DPC)` -- parsed from `targets`' own listing, since `targets -set
 -filter ...` itself returns nothing useful to print.
@@ -107,10 +113,13 @@ package reads from.
 
 | command | summary |
 | --- | --- |
-| `design::discover {?proj_dir_or_hwh_path?}` | parse the generated `.hwh` once: `custom_axi_tg`/`axil_gpio4`/`uram_sdp_4Kx44` base addresses + `cxl1_clk` frequency |
+| `design::discover {?proj_dir_or_hwh_path?}` | parse the generated `.hwh` once: `custom_axi_tg`/`axil_gpio4`/`gpio_ext_axil`/`uram_sdp_4Kx44` base addresses + `cxl1_clk` and `gpio_ext_axil` clock frequencies |
 | `design::set_clk_hz hz` | manually set/override the CXL clock frequency |
 | `design::get_tg_base cpi` | `custom_axi_tg` base address for a datapath |
-| `design::get_gpio_base` | `axil_gpio4_0` base address |
+| `design::get_trig_gpio_base` | `axil_gpio4_0` (multi-datapath trigger GPIO) base address |
+| `design::get_ext_gpio_base` | `gpio_ext_axil_0` (board LEDs/buttons/switches) base address |
+| `design::get_ext_gpio_clk_hz` | the discovered/set `gpio_ext_axil_0` clock frequency in Hz |
+| `design::set_ext_gpio_clk_hz hz` | manually set/override the `gpio_ext_axil_0` clock frequency |
 | `design::get_uram_base cpi iface` | `uram_sdp_4Kx44` base address for a (cpi, interface) pair |
 | `design::get_clk_hz` | the discovered/set `cxl1_clk` frequency in Hz |
 | `design::get_num_cpi` | number of datapaths discovered |
@@ -177,7 +186,7 @@ the PMC's `RST_PL` fabric-reset register.
 design actually wires: bit 0 (`cxl1_rstn`) resets every `cxl_datapath_N`'s
 CXL/AXI-side logic (the bridge and the traffic generator's `m_axi` side)
 plus the perf-monitor viral block; bit 2 (`axil_rstn`) resets every
-`custom_axi_tg_N`'s CSR-side logic plus `axil_gpio4_0`. Bits 1 and 3 exist
+`custom_axi_tg_N`'s CSR-side logic plus `axil_gpio4_0` and `gpio_ext_axil_0`. Bits 1 and 3 exist
 in the register but aren't connected to anything here. `pl_rst_pulse_all`
 pulses all 4 bits (0-3) together -- a quick way to reset the traffic
 generator/perf-monitor datapath without a full `design::program` PDI
@@ -241,7 +250,8 @@ authoritative bit layout):
 | `hwtg::read_cmd cpi idx` | disassemble one committed command |
 | `hwtg::read_all cpi` | print+disassemble every committed command (`0..TG_DONE_PTR-1`) |
 | `hwtg::dump_to_file cpi path` | `read_all`, written in `load_from_file` format |
-| `hwtg::parse_errors cpi` | decode `TG_BRESP_ERROR`'s sticky bits plus any per-command SLVERR/invalid-response entries |
+| `hwtg::has_errors [cpi]` | silent 0/1: did the given datapath (or any, if omitted) flag an error? Call after `wait_done` |
+| `hwtg::parse_errors cpi` | decode `TG_BRESP_ERROR`'s sticky bits plus any per-command SLVERR/DECERR entries |
 | `hwtg::clear_errors cpi` | clear the sticky `TG_BRESP_ERROR` log (W1C) |
 | `hwtg::start cpi` / `hwtg::stop cpi` / `hwtg::soft_reset cpi` | run control |
 | `hwtg::status cpi` | human-readable `TG_STATUS` dump |
@@ -445,6 +455,52 @@ EP : Remote Access | ECAM Base: 0xE0100000
 -------------------------------------------
   (unavailable: ecam target 'ep' reads all-Fs at offset 0 -- no device present (link down, or nothing attached for 'ep'))
 ```
+
+## `gpio::` -- external LEDs, pushbuttons and DIP switches
+
+Controls `gpio_ext_axil_0` (`src/gpio_ext_axil_slave.sv`): 8 LEDs with
+static, blink and PWM modes, 4 debounced pushbuttons, 4 debounced DIP
+switches, sticky edge-event status for the inputs, and a soft reset. Requires
+`design::discover` to have found the block's base address and clock
+frequency. This is a different block from `axil_gpio4_0` (the
+multi-datapath trigger GPIO behind `hwtg::ext_trigger`).
+
+| command | summary |
+| --- | --- |
+| `gpio::connect` | select the DPC xsdb target |
+| `gpio::dump` | print every readable register, by offset |
+| `gpio::led_write value` | write all 8 LED values (or enables) at once |
+| `gpio::led_set led on\|off` | turn one LED on or off (or enable/disable its blink/PWM) |
+| `gpio::led_mode led static\|blink\|pwm` | set one LED's mode |
+| `gpio::led_blink led period` | blink one LED; `period` is `<x>ms` or `<y>s` (unit required) |
+| `gpio::led_pwm led duty` | drive one LED with a PWM duty cycle; `duty` is `<n>%`, n 0..100 (the `%` is required) |
+| `gpio::led_off` | all LEDs off and back to static mode |
+| `gpio::btn` / `gpio::sw` | return the 4 debounced pushbuttons / DIP switches as an integer |
+| `gpio::read` | print the debounced inputs and their pending event status |
+| `gpio::irq_config btn\|sw edges ?enable_mask?` | choose which edges latch an event per input, and the interrupt enables |
+| `gpio::irq_status btn\|sw` | return the sticky event status bits (does not clear them) |
+| `gpio::irq_clear btn\|sw mask` | clear sticky event status bits |
+| `gpio::soft_reset` | reset the block's registers, LED engine and debouncers |
+
+```
+xsdb% gpio::connect
+INFO: gpio connected to target 2 (DPC)
+xsdb% gpio::led_blink 4 500ms
+INFO: LED 4 mode = blink
+INFO: LED 4 on
+INFO: LED 4 blinking, period 500 ms (requested 500ms, LED_CNT4 = 62499999)
+xsdb% gpio::led_pwm 5 25%
+xsdb% gpio::irq_config btn rise
+xsdb% gpio::irq_status btn
+```
+
+`led_blink` programs the block's blink counter in steps of 2 clocks of its
+own clock (the `CLK_FREQ_HZ` parameter `run.tcl` sets from the `axil_clk`
+frequency), and prints the period it actually programmed. The pushbutton and
+DIP switch interrupt outputs (`btn_irq`, `switch_irq`, `any_irq`) are not
+connected to anything in this design, so read events with `gpio::irq_status`.
+`gpio::soft_reset` is a hardware soft reset of the block, separate from the
+`RST_PL` bit 2 reset (`control::pl_rst_*`) that also resets it.
 
 ## Known limitation
 

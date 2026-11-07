@@ -45,7 +45,9 @@ namespace eval ecam {
   set CMD_HELP(cfg_read) [join {
     {Args:}
     {  target -- "rp" or "ep"}
-    {  offset -- byte offset into that target's config space}
+    {  offset -- byte offset into that target's config space; must be a}
+    {            multiple of 4 in 0x0..0xFFC (anything else is rejected}
+    {            before any access)}
     {}
     {Raw 32-bit config-space read via control::rd32.}
   } "\n"]
@@ -53,8 +55,11 @@ namespace eval ecam {
   set CMD_HELP(cfg_write) [join {
     {Args:}
     {  target -- "rp" or "ep"}
-    {  offset -- byte offset into that target's config space}
-    {  value  -- 32-bit value to write}
+    {  offset -- byte offset into that target's config space; must be a}
+    {            multiple of 4 in 0x0..0xFFC (anything else is rejected}
+    {            before any access)}
+    {  value  -- 32-bit value to write (0x0..0xFFFFFFFF; "_" separators}
+    {            such as 0xFFFF_0000 are accepted)}
     {}
     {Raw 32-bit config-space write via control::wr32.}
   } "\n"]
@@ -115,10 +120,11 @@ namespace eval ecam {
 
   set CMD_HELP(find_cxl) [join {
     {Args:}
-    {  target     -- "rp" or "ep"}
+    {  target     -- "rp" or "ep" ("both" is not accepted: the result is}
+    {                a single target's list)}
     {  [ext_caps] -- a pre-fetched walk_ext_caps result; normally omitted}
-    {               (avoids walking, and printing, the extended capability}
-    {               list a second time if you already have one)}
+    {                (avoids walking, and printing, the extended capability}
+    {                list a second time if you already have one)}
     {}
     {Filters the extended capability list down to Designated}
     {Vendor-Specific Extended Capabilities (cap_id 0x0023) whose DVSEC}
@@ -134,11 +140,11 @@ namespace eval ecam {
     {Args:}
     {  [target]     -- "rp", "ep", or "both". Default: both.}
     {  [dvsec_spec] -- if given, only the matching CXL DVSEC(s) are shown.}
-    {                 A value that's a valid CXL DVSEC ID (0x0, 0x2-0x5,}
-    {                 0x7-0xA) is looked up by DVSEC ID; anything else is}
-    {                 treated as a raw dvsec_offset (real offsets are}
-    {                 always >= 0x100, so there's no ambiguity). Default:}
-    {                 every CXL DVSEC found.}
+    {                  A value that's a valid CXL DVSEC ID (0x0, 0x2-0x5,}
+    {                  0x7-0xA) is looked up by DVSEC ID; anything else is}
+    {                  treated as a raw dvsec_offset (real offsets are}
+    {                  always >= 0x100, so there's no ambiguity). Must be an}
+    {                  integer in 0..0xFFF. Default: every CXL DVSEC found.}
     {}
     {Verbose DWORD-by-DWORD dump of every CXL DVSEC on the target(s): a}
     {summary block (DVSEC ID/name, revision, length) followed by every}
@@ -184,7 +190,8 @@ namespace eval ecam {
 
   set CMD_HELP(setup_hdm) [join {
     {Args:}
-    {  mode -- "range" or "decoder" (required).}
+    {  mode -- "range" or "decoder" (required, lowercase; checked before any}
+    {          hardware access).}
     {}
     {Sets up CXL Host-managed Device Memory on the ep, well above the 1 TB a}
     {device typically advertises so the assigned range never overlaps host}

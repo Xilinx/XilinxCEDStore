@@ -507,7 +507,10 @@ proc ecam::setup_hdm_decoder {} {
 # Entry point
 #----------------------------------------------------------------------------
 proc ecam::setup_hdm {args} {
+  ::chk::nargs ecam::setup_hdm $args 1 1 "range|decoder"
   lassign $args mode
+  # Mode is checked before require_present so a bad mode never touches hardware.
+  ::chk::oneof ecam::setup_hdm mode $mode {range decoder}
   require_present ep
   switch -- $mode {
     range   { setup_hdm_range }

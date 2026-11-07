@@ -1310,7 +1310,7 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>ce34a407</spirit:value>
+            <spirit:value>1e21c405</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -1326,7 +1326,7 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>ce34a407</spirit:value>
+            <spirit:value>1e21c405</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -1346,6 +1346,19 @@
       </spirit:view>
     </spirit:views>
     <spirit:ports>
+      <spirit:port>
+        <spirit:name>fatal_err</spirit:name>
+        <spirit:wire>
+          <spirit:direction>out</spirit:direction>
+          <spirit:wireTypeDefs>
+            <spirit:wireTypeDef>
+              <spirit:typeName>std_logic</spirit:typeName>
+              <spirit:viewNameRef>xilinx_anylanguagesynthesis</spirit:viewNameRef>
+              <spirit:viewNameRef>xilinx_anylanguagebehavioralsimulation</spirit:viewNameRef>
+            </spirit:wireTypeDef>
+          </spirit:wireTypeDefs>
+        </spirit:wire>
+      </spirit:port>
       <spirit:port>
         <spirit:name>s_axi_aclk</spirit:name>
         <spirit:wire>
@@ -4377,7 +4390,7 @@
       <spirit:file>
         <spirit:name>rtl/pl_axi_cpi_bridge_ip.sv</spirit:name>
         <spirit:fileType>systemVerilogSource</spirit:fileType>
-        <spirit:userFileType>CHECKSUM_379f45bf</spirit:userFileType>
+        <spirit:userFileType>CHECKSUM_882aa2e4</spirit:userFileType>
       </spirit:file>
     </spirit:fileSet>
     <spirit:fileSet>
@@ -4575,14 +4588,14 @@
       <xilinx:displayName>pl_axi_cpi_bridge</xilinx:displayName>
       <xilinx:definitionSource>package_project</xilinx:definitionSource>
       <xilinx:coreRevision>1</xilinx:coreRevision>
-      <xilinx:coreCreationDateTime>2026-09-24T17:31:01Z</xilinx:coreCreationDateTime>
+      <xilinx:coreCreationDateTime>2026-10-12T18:35:56Z</xilinx:coreCreationDateTime>
     </xilinx:coreExtensions>
     <xilinx:packagingInfo>
       <xilinx:xilinxVersion>2026.1.1</xilinx:xilinxVersion>
       <xilinx:checksum xilinx:scope="busInterfaces" xilinx:value="ad080a18"/>
       <xilinx:checksum xilinx:scope="memoryMaps" xilinx:value="171bebf6"/>
-      <xilinx:checksum xilinx:scope="fileGroups" xilinx:value="f542b3d6"/>
-      <xilinx:checksum xilinx:scope="ports" xilinx:value="d3b48d25"/>
+      <xilinx:checksum xilinx:scope="fileGroups" xilinx:value="efb64bc6"/>
+      <xilinx:checksum xilinx:scope="ports" xilinx:value="f7d3f17e"/>
       <xilinx:checksum xilinx:scope="hdlParameters" xilinx:value="bbd7d069"/>
       <xilinx:checksum xilinx:scope="parameters" xilinx:value="4bf5a94b"/>
     </xilinx:packagingInfo>

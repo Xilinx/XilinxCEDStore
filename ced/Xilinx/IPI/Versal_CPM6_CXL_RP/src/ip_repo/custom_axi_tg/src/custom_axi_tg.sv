@@ -7,7 +7,7 @@
 // (external pin or CSR) then runs the program from entry 0 to TG_DONE_PTR-1,
 // dispatching WRITE commands to a write dispatcher and READ commands to a read
 // dispatcher.  Per-command status - fully_requested, fully_responded and the
-// first non-OKAY response with its AXI ID and per-ID ordinal - is read back over
+// first SLVERR/DECERR response with its AXI ID and per-ID ordinal - is read back over
 // the same AXI-Lite port.
 //
 // DETAILS:

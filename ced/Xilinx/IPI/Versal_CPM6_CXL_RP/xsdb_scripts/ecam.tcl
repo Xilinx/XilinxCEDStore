@@ -23,6 +23,7 @@ if {![llength [info commands ::control::rd32]]} {
 }
 
 source [file join $ecam_script_dir pkg_help.tcl]
+source [file join $ecam_script_dir pkg_args.tcl]
 source [file join $ecam_script_dir ecam_pkg.tcl]
 source [file join $ecam_script_dir ecam_cmds.tcl]
 source [file join $ecam_script_dir ecam_hdm.tcl]

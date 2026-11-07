@@ -82,7 +82,7 @@ namespace eval ecam {
   variable ALLOC_BASE_LOW  0x600000000
   variable ALLOC_SIZE_LOW  0x200000000  ;# 8 GB
   variable ALLOC_BASE_HIGH 0x8000000000
-  variable ALLOC_SIZE_HIGH 0x4000000000 ;# 256 GB
+  variable ALLOC_SIZE_HIGH 0x1000000000 ;# 64 GB
 
   # Set by ecam::setup_ep_bars on success; checked by ecam::require_ep_bars_
   # setup, which ecam::setup_hdm's "decoder" mode calls before anything else

@@ -445,4 +445,13 @@ package cpi_pkg;
     } dsp;
   } rsp_hdr_u;
 
+  // Compare {data, parity (even)} and return 1 if it passes
+  //  - function is maximally sized for the largest CPI header field; smaller
+  //    data inputs will zero extend to no effect
+  //  - this is NOT sized to support adding *_spid and *_dpid to the
+  //    *_cmd_parity calculation because logic does not support PBR flits
+  function automatic logic even_parity_pass(logic parity, logic [86:0] data);
+    even_parity_pass = (^{parity, data} == 1'b0);
+  endfunction
+
 endpackage

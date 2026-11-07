@@ -12,11 +12,11 @@
 
 <Description>This example design is provided to showcase the capability of the Versal Premium Series Gen 2 adaptive SoC to operate as a Compute Express Link (CXL) Root Port (RP). The provided design employs the CPM6 hard-IP, utilizing Controller 1 within CPM6, and is paired with the license-locked CXL RP Transaction Layer (TL) IP. There are AXI traffic generators in the PL to emulate traffic and saturate the link bandwidth, and also performance measurement devices in the PL that can be used to post-process latency and bandwidth. 
   
-The generated Vivado project can be taken directly to hardware with the included traffic-generating and performance-measuring scripts.
+  The generated Vivado project can be taken directly to hardware with the included traffic-generating and performance-measuring scripts. A comprehensive SystemVerilog UVM testbench can also be generated to showcase the features of the system, which requires usig a 3rd party VIP as a PCIe/CXL link partner.
   
 For additional information, generate this example design and investigate README.txt file delivered with the project.</Description>
 
-<Version>1.0</Version>
+<Version>2.0</Version>
 
 <Design>init.tcl</Design>
 

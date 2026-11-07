@@ -1,0 +1,4 @@
+radix define prot_id {
+  4'b???0 "CACHE"
+  4'b???1 "MEM"
+}
