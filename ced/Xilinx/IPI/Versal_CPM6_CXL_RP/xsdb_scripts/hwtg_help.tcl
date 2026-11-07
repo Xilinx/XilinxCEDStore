@@ -9,7 +9,7 @@ namespace eval hwtg {
     connect
     load_append load_at load_interactive load_from_file
     read_cmd read_all dump_to_file
-    parse_errors clear_errors
+    has_errors parse_errors clear_errors
     start stop soft_reset status wait_done tg_cfg
     ext_trigger ext_trigger_all
   }
@@ -23,7 +23,8 @@ namespace eval hwtg {
     read_cmd         "disassemble one committed command"
     read_all         "print+disassemble every committed command (0..TG_DONE_PTR-1)"
     dump_to_file     "read_all, written in load_from_file format"
-    parse_errors     "decode TG_BRESP_ERROR's sticky bits plus any per-command SLVERR/invalid-response entries"
+    has_errors       "silent 0/1: did any datapath (or the given one) report an error?"
+    parse_errors     "decode TG_BRESP_ERROR's sticky bits plus any per-command SLVERR/DECERR entries"
     clear_errors     "clear the sticky TG_BRESP_ERROR log (W1C)"
     start            "start the datapath (must be IDLE or ALL_RESPONDED)"
     stop             "request stop (state moves to STOPPING until drain completes)"
@@ -43,10 +44,15 @@ namespace eval hwtg {
     return [join {
       {Command line grammar: "OPCODE key=val key=val ..." (opcode required;}
       {unknown key/opcode is a hard error). Values are decimal or}
-      {0x-prefixed hex. Opcodes: WRITE, READ, WAIT. "addr" is REQUIRED on}
+      {0x-prefixed hex; single underscores between digits are allowed for}
+      {readability (e.g. addr=0x800_0000_0000). Opcodes: WRITE, READ, WAIT.}
+      {"addr" is REQUIRED on}
       {WRITE/READ (a hard error if omitted); every other key is optional --}
       {defaulting to 0, EXCEPT "be_k" on WRITE, which defaults to 7 (always}
-      {full WSTRB) instead of 0.}
+      {full WSTRB) instead of 0. A value that is negative or does not fit}
+      {its field's bit width (widths below) is rejected with an error naming}
+      {the field -- it is never silently truncated. Quote the whole line as}
+      {ONE argument, e.g. hwtg::load_append 0 "WRITE addr=0x1000".}
       {}
       {WRITE fields:}
       {  addr         REQUIRED. 48-bit start address (packed into}
@@ -56,7 +62,8 @@ namespace eval hwtg {
       {  id_mode      1-bit; 0=stride, 1=lfsr8}
       {  repeat       12-bit repeat_count}
       {  addr_k       5-bit; moving-address-bits count, legal range 0..26}
-      {               (27..31 silently clamp to 26 at commit)}
+      {               (27..31 fit the field but clamp to 26 at commit, with a}
+      {               WARNING; 32+ is rejected)}
       {  addr_stride  32-bit; addr_next = addr + addr_stride (when addr_mode=0)}
       {  addr_mode    1-bit; 0=stride, 1=lfsr27}
       {  be_k         3-bit; default 7 (always full WSTRB) if omitted.}
@@ -79,6 +86,7 @@ namespace eval hwtg {
       {}
       {Examples:}
       {  WRITE addr=0x1000 id=0 id_stride=1 repeat=100 addr_k=4 addr_stride=64 be_k=7 poison=0 data_start=0x0 data_stride=1}
+      {  WRITE addr=0x800_0000_0000 repeat=7 addr_k=12 addr_stride=64}
       {  READ  addr=0x2000 id=1 id_stride=1 repeat=50 addr_k=0 addr_stride=64 aruser_cmd=0}
       {  WAIT}
     } "\n"]
@@ -99,23 +107,27 @@ namespace eval hwtg {
 
   set CMD_HELP(load_append) [join [list \
     "Args:" \
-    "  cpi   -- datapath index (must exist per design::discover; see" \
-    "           design::get_cxl_indices)" \
-    "  line  -- mnemonic command line, see grammar below" \
+    "  cpi  -- datapath index (must exist per design::discover; see" \
+    "          design::get_cxl_indices)" \
+    "  line -- mnemonic command line (quote it as ONE argument), see" \
+    "          grammar below" \
     "" \
     "Programs at the next free (unprogrammed) index on that datapath;" \
     "errors if the iRAM is full (MAX_COMMANDS=32) or the datapath isn't" \
-    "IDLE." \
+    "IDLE. The line is checked (opcode, keys, value ranges) before any" \
+    "hardware access." \
     "" \
     [field_grammar_text] \
   ] "\n"]
 
   set CMD_HELP(load_at) [join [list \
     "Args:" \
-    "  cpi   -- datapath index" \
-    "  idx   -- iRAM index to program (0..MAX_COMMANDS-1); must be the" \
-    "           next contiguous index (idx-1 already programmed), or 0" \
-    "  line  -- mnemonic command line, see grammar below" \
+    "  cpi  -- datapath index" \
+    "  idx  -- iRAM index to program (integer 0..MAX_COMMANDS-1, checked" \
+    "          before any hardware access); must be the next contiguous" \
+    "          index (idx-1 already programmed), or 0" \
+    "  line -- mnemonic command line (quote it as ONE argument), see" \
+    "          grammar below" \
     "" \
     "Reprogramming an already-programmed idx is allowed (as long as it's a" \
     "committed, contiguous slot); the datapath must be IDLE." \
@@ -136,12 +148,14 @@ namespace eval hwtg {
 
   set CMD_HELP(load_from_file) [join [list \
     "Args:" \
-    "  cpi   -- datapath index" \
-    "  path  -- file containing one mnemonic command per line (blank lines" \
-    "           and lines starting with '#' are skipped)" \
+    "  cpi  -- datapath index" \
+    "  path -- file containing one mnemonic command per line (blank lines" \
+    "          and lines starting with '#' are skipped)" \
     "" \
     "Each line is loaded in file order via hwtg::load_append (i.e. always" \
-    "appended, never at an explicit index)." \
+    "appended, never at an explicit index). The file must exist and every" \
+    "line is assembled first, so a bad line is reported with its line number" \
+    "and nothing is loaded." \
     "" \
     [field_grammar_text] \
   ] "\n"]
@@ -149,7 +163,8 @@ namespace eval hwtg {
   set CMD_HELP(read_cmd) [join {
     {Args:}
     {  cpi -- datapath index}
-    {  idx -- iRAM index to read back (0..TG_DONE_PTR-1)}
+    {  idx -- iRAM index to read back: an integer 0..MAX_COMMANDS-1 (only}
+    {         0..TG_DONE_PTR-1 hold committed commands)}
     {}
     {Returns the disassembled mnemonic line for that index (same grammar as}
     {load_append/load_at -- see "hwtg::help load_append"). Requires the}
@@ -169,10 +184,21 @@ namespace eval hwtg {
   set CMD_HELP(dump_to_file) [join {
     {Args:}
     {  cpi  -- datapath index}
-    {  path -- output file path (overwritten)}
+    {  path -- output file path (overwritten); its directory must exist and}
+    {          be writable -- checked before the iRAM is read}
     {}
     {Writes the result of hwtg::read_all, one mnemonic line per line, in}
     {the same format hwtg::load_from_file expects.}
+  } "\n"]
+
+  set CMD_HELP(has_errors) [join {
+    {Args:}
+    {  [cpi] -- datapath index; omit to check every discovered datapath}
+    {}
+    {Prints nothing. Returns 1 if TG_BRESP_ERROR has any sticky bit set, or}
+    {TG_STATUS reports start_busy_err or any_cmd_err (SLVERR/DECERR on}
+    {any command); otherwise 0. Two CSR reads per datapath. Call after}
+    {hwtg::wait_done; use hwtg::parse_errors to see what the error was.}
   } "\n"]
 
   set CMD_HELP(parse_errors) [join {
@@ -183,8 +209,9 @@ namespace eval hwtg {
     {ERR_RSVD_OPCODE, ERR_BUSY_IRAM, ERR_IDX_RANGE, ERR_ASSY_IDX,}
     {ERR_UNMAPPED, ERR_RSVD_SLICE, ERR_DONE_PTR_RANGE, ERR_START_BUSY,}
     {ERR_SOFT_RST_BUSY -- plus the first-error index/code -- plus, for}
-    {every committed command 0..TG_DONE_PTR-1, any per-command SLVERR (with}
-    {the first invalid transaction # and AXI ID) or non-OKAY response seen.}
+    {every committed command 0..TG_DONE_PTR-1, any SLVERR/DECERR response seen,}
+    {reported as SLVERR or DECERR with the first invalid transaction # and}
+    {AXI ID.}
     {Returns the list of active sticky error names.}
   } "\n"]
 
@@ -234,8 +261,9 @@ namespace eval hwtg {
 
   set CMD_HELP(wait_done) [join {
     {Args:}
-    {  cpi          -- datapath index}
-    {  [timeout_s]  -- seconds to poll before raising an error. Default: 5.}
+    {  cpi         -- datapath index}
+    {  [timeout_s] -- seconds (a number > 0) to poll before raising an error.}
+    {                 Default: 5.}
     {}
     {Polls hwtg::run_state_name every 50ms until it reports ALL_RESPONDED}
     {or IDLE, or the timeout elapses.}
@@ -254,9 +282,10 @@ namespace eval hwtg {
   set CMD_HELP(ext_trigger) [join {
     {Args:}
     {  cpi_list -- list of datapath indices to trigger (e.g. {0 2}); each}
-    {             must be 0..3, axil_gpio4's 4 output bits. Required --}
-    {             errors if omitted/empty (use ext_trigger_all for every}
-    {             discovered datapath).}
+    {              must be an integer 0..3 (axil_gpio4's 4 output bits) and a}
+    {              discovered datapath, checked before any write. Required --}
+    {              errors if omitted/empty (use ext_trigger_all for every}
+    {              discovered datapath).}
     {}
     {Pulses tg_start on every listed datapath on the SAME clock edge via}
     {axil_gpio4's external i_start pins (GPIO_MODE/GPIO_GPIO), instead of}

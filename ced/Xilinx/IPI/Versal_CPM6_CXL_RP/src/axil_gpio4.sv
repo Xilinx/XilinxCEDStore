@@ -95,6 +95,11 @@ module axil_gpio4 #(
 
   logic [3:0] gpio_out;
 
+  logic [3:0] reg_mode;        // 0=level, 1=pulse, per gpio_out bit
+  logic [3:0] reg_stretch [4]; // per-gpio pulse stretch; total pulse width
+                               // in cycles is reg_stretch[i]+1
+  logic [3:0] pulse_cnt   [4]; // extra cycles left to hold gpio_out[i] high
+
   assign gpio_out_0 = gpio_out[0];
   assign gpio_out_1 = gpio_out[1];
   assign gpio_out_2 = gpio_out[2];
@@ -130,8 +135,7 @@ module axil_gpio4 #(
       s_axi_bvalid <= 1'b0;
   end
 
-  logic  slv_reg_rden;
-  assign slv_reg_rden = s_axi_arready;
+  wire slv_reg_rden = s_axi_arready;
 
   always_ff @(posedge s_axi_aclk) begin
     if (!s_axi_aresetn)
@@ -149,8 +153,10 @@ module axil_gpio4 #(
       {s_axi_rvalid, s_axi_rresp} <= {1'b1, OKAY};
       case (s_axi_araddr)
         ADDR_MODE:    s_axi_rdata <= {28'h0, reg_mode};
-        ADDR_STRETCH: s_axi_rdata <= {4'h0, reg_stretch[3], 4'h0, reg_stretch[2],
-                                       4'h0, reg_stretch[1], 4'h0, reg_stretch[0]};
+        ADDR_STRETCH: s_axi_rdata <= {4'h0, reg_stretch[3], 
+                                      4'h0, reg_stretch[2],
+                                      4'h0, reg_stretch[1], 
+                                      4'h0, reg_stretch[0]};
         ADDR_GPIO:    s_axi_rdata <= {28'h0, gpio_out};
         default:      s_axi_rdata <= 32'hFEED_DEAD;
       endcase
@@ -158,11 +164,6 @@ module axil_gpio4 #(
     else if (s_axi_rvalid && s_axi_rready)
       s_axi_rvalid <= 1'b0;
   end
-
-  logic [3:0] reg_mode;        // 0=level, 1=pulse, per gpio_out bit
-  logic [3:0] reg_stretch [4]; // per-gpio pulse stretch; total pulse width
-                                // in cycles is reg_stretch[i]+1
-  logic [3:0] pulse_cnt   [4]; // extra cycles left to hold gpio_out[i] high
 
   wire gpio_wr_en    = slv_reg_wren && (s_axi_awaddr==ADDR_GPIO);
   wire mode_wr_en    = slv_reg_wren && (s_axi_awaddr==ADDR_MODE);

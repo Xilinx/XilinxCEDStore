@@ -10,7 +10,11 @@
 # "addr" is required for WRITE/READ (a hard error if omitted). Every other
 # key is optional and defaults to 0, EXCEPT "be_k" on WRITE, which defaults
 # to 7 (always full WSTRB) instead. Unknown keys/opcode are a hard error.
-# Values may be plain decimal or 0x-prefixed hex.
+# Values may be plain decimal or 0x-prefixed hex. Single underscores may
+# separate digits for readability (e.g. addr=0x800_0000_0000); they are
+# stripped before parsing. A value that is negative or does not fit its
+# field's bit width (addr 48, id 4, repeat 12, ... -- see hwtg_pkg.tcl FIELDS)
+# is a hard error naming the field, never silently truncated.
 #
 # "addr" (48-bit) and "id" (4-bit) are user-facing aliases composed from the
 # physical addr_hi/addr_lo and start_id fields respectively; every other key
@@ -29,13 +33,46 @@ namespace eval hwtg {
 }
 
 proc hwtg::parse_int {s} {
-  if {[regexp {^0[xX]([0-9a-fA-F]+)$} $s -> hex]} {
-    return [expr "0x$hex"]
+  if {[regexp {^0[xX]([0-9a-fA-F]+(_[0-9a-fA-F]+)*)$} $s -> hex]} {
+    return [expr "0x[string map {_ {}} $hex]"]
   }
-  if {[regexp {^-?[0-9]+$} $s]} {
-    return [expr {$s + 0}]
+  # Decimal: strip leading zeros so "010" is ten (Tcl would read it as octal)
+  # and "08" is not an invalid-octal error.
+  if {[regexp {^(-?)0*([0-9]+(_[0-9]+)*)$} $s -> sign digits]} {
+    return [expr {"$sign[string map {_ {}} $digits]" + 0}]
   }
   error "not an integer: '$s'"
+}
+
+# Bit width of a user-facing key: addr is the composed 48-bit address, id is
+# the physical start_id field; every other key maps 1:1 onto FIELDS.
+proc hwtg::key_width {key} {
+  variable FIELDS
+  switch -- $key {
+    addr    { return 48 }
+    id      { return [lindex $FIELDS(start_id) 2] }
+    default { return [lindex $FIELDS($key) 2] }
+  }
+}
+
+# Largest value for a width, formatted for an error message.
+proc hwtg::fmt_max {width} {
+  set max [expr {(1 << $width) - 1}]
+  if {$max > 0xFFFF} { return [format 0x%X $max] }
+  return $max
+}
+
+# Formats a non-negative integer as 0x-prefixed hex with an underscore
+# between each 16-bit (4 hex digit) group, e.g. 0x800_0000_0000. parse_int
+# accepts the result unchanged.
+proc hwtg::format_hex16 {v} {
+  set hex [format %X $v]
+  set out ""
+  while {[string length $hex] > 4} {
+    set out "_[string range $hex end-3 end]$out"
+    set hex [string range $hex 0 end-4]
+  }
+  return "0x$hex$out"
 }
 
 # Sets a physical field within a 6-element slice list (passed by name so the
@@ -68,7 +105,7 @@ proc hwtg::assemble {line} {
 
   set toks [regexp -all -inline {\S+} $line]
   if {[llength $toks] == 0} {
-    error "empty command line"
+    error "empty command line -- expected an opcode (WRITE, READ or WAIT) followed by key=value fields"
   }
   set opcode [string toupper [lindex $toks 0]]
   if {![info exists ASM_KEYS($opcode)]} {
@@ -83,7 +120,14 @@ proc hwtg::assemble {line} {
     if {[lsearch -exact $ASM_KEYS($opcode) $key] < 0} {
       error "field '$key' is not valid for opcode $opcode (valid: $ASM_KEYS($opcode))"
     }
-    set kv($key) [parse_int $val]
+    if {[catch {parse_int $val} num]} {
+      error "field '$key'='$val' is not an integer -- use decimal or 0x hex (single '_' separators allowed)"
+    }
+    set width [key_width $key]
+    if {$num < 0 || $num >= (1 << $width)} {
+      error "field '$key'=$val does not fit in its $width-bit field (valid: 0..[fmt_max $width])"
+    }
+    set kv($key) $num
   }
 
   if {[lsearch -exact $ASM_KEYS($opcode) addr] >= 0 && ![info exists kv(addr)]} {
@@ -137,7 +181,7 @@ proc hwtg::disassemble {slices} {
         set lo [decode_field $slices addr_lo]
         set hi [decode_field $slices addr_hi]
         set a [expr {($hi << 32) | $lo}]
-        lappend parts "addr=[format 0x%X $a]"
+        lappend parts "addr=[format_hex16 $a]"
       }
       id {
         set v [decode_field $slices start_id]

@@ -10,6 +10,9 @@
 # bits of the register are preserved.
 #-----------------------------------------------------------------------------
 proc design::rmw {addr mask value} {
+  set addr  [chk::int design::rmw addr  $addr  0 0xFFFFFFFFFFFF]
+  set mask  [chk::int design::rmw mask  $mask  0 0xFFFFFFFF]
+  set value [chk::int design::rmw value $value 0 0xFFFFFFFF]
   set cur [mrd -force -value $addr]
   mwr -force $addr [expr {($cur & ~$mask) | ($value & $mask)}]
 }
@@ -21,14 +24,12 @@ proc design::rmw {addr mask value} {
 
 # Sets up a MIO pin (0-51) as GPIO. If dir=out, dfault must be provided.
 proc design::setup_mio_as_gpio {pin dir {dfault -1}} {
-  if {$pin < 0 || $pin > 51} {
-    error "setup_mio_as_gpio: pin $pin is out of range (valid: 0-51)"
-  }
-  if {$dir ne "in" && $dir ne "out"} {
-    error "setup_mio_as_gpio: dir '$dir' is invalid (valid: in, out)"
-  }
+  # Validate everything before the first register write
+  set pin [chk::int design::setup_mio_as_gpio pin $pin 0 51]
+  chk::oneof design::setup_mio_as_gpio dir $dir {in out}
+  set dfault [chk::int design::setup_mio_as_gpio dfault $dfault -1 1]
   if {$dir eq "out" && $dfault == -1} {
-    error "setup_mio_as_gpio: dfault must be provided when dir=out"
+    error "design::setup_mio_as_gpio: dfault (0 or 1) must be provided when dir=out"
   }
 
   # Setup Level 3 muxes to drive pin from GPIO
@@ -87,16 +88,12 @@ proc design::setup_mio_as_gpio {pin dir {dfault -1}} {
 # erroring out on a mismatch. value=-1 (default) skips this check. Returns 1
 # if all checks pass, 0 on any failure (prints the reason to stdout).
 proc design::verify_mio {pin dir {value -1}} {
-  if {$pin < 0 || $pin > 51} {
-    puts "verify_mio: pin $pin is out of range (valid: 0-51)"
-    return 0
-  }
-  if {$dir ni {in out}} {
-    puts "verify_mio: dir '$dir' is invalid (valid: in, out)"
-    return 0
-  }
-  if {$value ni {-1 0 1}} {
-    puts "verify_mio: value '$value' is invalid (valid: -1, 0, 1)"
+  if {[catch {
+    set pin [chk::int design::verify_mio pin $pin 0 51]
+    chk::oneof design::verify_mio dir $dir {in out}
+    set value [chk::int design::verify_mio value $value -1 1]
+  } err]} {
+    puts $err
     return 0
   }
 
@@ -168,17 +165,13 @@ proc design::verify_mio {pin dir {value -1}} {
 
 # Drives a MIO pin that has already been configured as a GPIO output via
 # setup_mio_as_gpio. Calls verify_mio first to confirm the pin is ready.
-# action: hi, lo, pulse_hi (lo->hi), pulse_lo (hi->lo)
+# action: hi, lo, pulse_hi (hi->wait->lo), pulse_lo (lo->wait->hi)
 proc design::drive_mio {pin action} {
-  if {$pin < 0 || $pin > 51} {
-    error "drive_mio: pin $pin is out of range (valid: 0-51)"
-  }
-  if {$action ni {hi lo pulse_hi pulse_lo}} {
-    error "drive_mio: action '$action' is invalid (valid: hi, lo, pulse_hi, pulse_lo)"
-  }
+  set pin [chk::int design::drive_mio pin $pin 0 51]
+  chk::oneof design::drive_mio action $action {hi lo pulse_hi pulse_lo}
 
   if {![verify_mio $pin out]} {
-    error "drive_mio: pin $pin is not properly configured as an output (see above)"
+    error "design::drive_mio: pin $pin is not properly configured as an output (see above)"
   }
 
   set bank [expr {$pin < 26 ? 0 : 1}]
@@ -343,16 +336,16 @@ proc design::program {} {
   device program ./pld.pdi
   after 100
 
-  puts "Assert PERSTN externally (to EP)..."
+  puts "Assert PERSTN externally on PMC_MIO41 (to EP)..."
   drive_mio 41 lo
 
-  puts "Toggle PERSTN internally to initialize RP..."
+  puts "Toggle PERSTN internally to initialize RP on PS_MIO19..."
   ############################################################
   # Drive dedicated external PERST pin that ties to PS IRQ
   # Note: this is actually an input on the VPK360, but we can
   #       still drive it so that we can trigger internal IRQ.
   #       even when we configure it as an output in Vivado, the
-  #       generated PDI still sets as input
+  #       generated PDI may still set as input
   ############################################################
   rmw 0xFF0B0204 0x80000 0x80000 ;# PS_GPIO.DIRM_0           (MIO[25:0])
   rmw 0xFF0B0208 0x80000 0x80000 ;# PS_GPIO.OEN_0            (MIO[25:0])
@@ -360,11 +353,11 @@ proc design::program {} {
   rmw 0xFF0B0224 0x80000 0x00000 ;# PS_GPIO.INT_ANY_0        (MIO[25:0])
  #rmw 0xFF080204 0x80000 0x00000 ;# LPD_IO_SLCR.MIO_MST_TRI0 (MIO[25:0])
   ############################################################
-  mwr -force 0xFF0B0004 0xFFF70000  ;# drive MIO19 LOW
-  mwr -force 0xFF0B0004 0xFFF70008  ;# drive MIO19 HIGH -> IRQ on rising edge -> PLM ExecuteProc(0x2)
+  mwr -force 0xFF0B0004 0xFFF70000  ;# drive PS_MIO19 LOW
+  mwr -force 0xFF0B0004 0xFFF70008  ;# drive PS_MIO19 HIGH -> IRQ on rising edge -> PLM ExecuteProc(0x2)
   after 2000 ;# alternatively: poll something
 
-  puts "Deassert PERSTN externally (to EP)..."
+  puts "Deassert PERSTN externally on PMC_MIO41 (to EP)..."
   drive_mio 41 hi
   after 100
 

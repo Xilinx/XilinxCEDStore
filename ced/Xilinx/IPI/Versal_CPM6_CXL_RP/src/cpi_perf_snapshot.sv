@@ -14,6 +14,6 @@ module cpi_perf_snapshot #(
   assign write  = ENABLE_CAPTURE ? valid : 1'b0;
   // tag[15:12] uniquely identifies the instance, which is already
   // accounted for by attaching a snapshot to each RD/WR and Bridge
-  assign concat = {cnt, tag[11:0]};
+  assign concat = ENABLE_CAPTURE ? {cnt, tag[11:0]} : '0;
 
 endmodule

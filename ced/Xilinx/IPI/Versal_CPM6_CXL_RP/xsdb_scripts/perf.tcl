@@ -11,11 +11,12 @@
 #   ecam::setup_ep_bars             ;# REQUIRED before any real traffic
 #   ecam::setup_hdm decoder         ;# REQUIRED before any real traffic
 #   hwtg::connect
-#   hwtg::load_append 0 "WRITE addr=0x8000000000 repeat=10 addr_stride=64"
+#   hwtg::load_append 0 "WRITE addr=0x800_0000_0000 repeat=10 addr_stride=64"
 #   hwtg::start 0
 #   hwtg::wait_done 0               ;# generate some real traffic first --
 #                                   ;# perf:: only reports on data that's
 #                                   ;# actually been captured in the URAMs
+#   if {[hwtg::has_errors 0]} {hwtg::parse_errors 0}  ;# details only if an error was flagged
 #   perf::connect
 #   perf::capture 0
 #   perf::report
@@ -30,6 +31,7 @@ if {![llength [info commands ::control::rd32]]} {
 }
 
 source [file join $perf_script_dir pkg_help.tcl]
+source [file join $perf_script_dir pkg_args.tcl]
 source [file join $perf_script_dir perf_pkg.tcl]
 source [file join $perf_script_dir perf_cmds.tcl]
 source [file join $perf_script_dir perf_help.tcl]

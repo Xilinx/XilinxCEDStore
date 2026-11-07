@@ -1,0 +1,14 @@
+LIBRARY_SCAN=TRUE
+work > default
+default : workvcs
+avery : clibs/vcs/avery
+avery_cosim : clibs/vcs/avery_cosim
+svt_axi : clibs/vcs/svt_axi
+chippipe_lmb_bram_if_cntlr_v4_0 : clibs/vcs/chippipe_lmb_bram_if_cntlr_v4_0
+cpm6_rtl : clibs/vcs/cpm6_rtl
+cpm6_dmamux : clibs/vcs/cpm6_dmamux
+cpm6_dma_noc : clibs/vcs/cpm6_dma_noc
+cpm6_demux : clibs/vcs/cpm6_demux
+cpm6_pl_top : clibs/vcs/cpm6_pl_top
+uvm : clibs/vcs/uvm
+uvma_agents : clibs/vcs/uvma_agents

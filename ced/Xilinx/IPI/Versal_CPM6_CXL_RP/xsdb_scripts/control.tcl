@@ -13,6 +13,7 @@ if {![llength [info commands ::design::connect]]} {
 }
 
 source [file join $control_script_dir pkg_help.tcl]
+source [file join $control_script_dir pkg_args.tcl]
 source [file join $control_script_dir control_pkg.tcl]
 source [file join $control_script_dir control_xsdb.tcl]
 source [file join $control_script_dir control_cmds.tcl]

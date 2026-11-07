@@ -1,3 +1,46 @@
 ######### Versal CPM6 CXL RP example design change log ##############
-2026.1.1 Changes 
-Initial version
+2026.2 Changes
+- CED version bumped from 1.0 to 2.0 (xitem.json and design.xml).
+- Added optional simulation support ("Enable Simulation" checkbox on a new
+  "Simulation" CED page): imports a SystemVerilog UVM testbench, the
+  uvma-pcie-sim-framework, and CED-specific tests that connect CPM6 to the
+  Siemens Avery PCIe/CXL VIP. QuestaSim and VCS are selectable, and
+  pre-compiled simulation libraries can be pointed to. A Makefile is provided
+  to run the tests. Not supported on Windows.
+- Added board GPIO block (gpio_ext_axil_0) at 0x0201_0025_0000 for LEDs,
+  pushbuttons and DIP switches, with debouncing and pin constraints
+  (src/constr/gpio_ext_pins.xdc). The CXL viral monitor
+  (axil_cxl_pm_viral_0) moved from 0x0201_0025_0000 to 0x0201_0026_0000.
+- Added xsdb gpio:: package to control the LEDs (static/blink/PWM) and read
+  the pushbuttons, DIP switches and input events.
+- Fixed CPM6 controller 1 outbound region 4 limit address
+  (0x0007_0000_0000 -> 0x0007_FFFF_0000).
+- Configured PMC MIO40 as an output GPIO (default high).
+- Explicitly set the block design wrapper as the top module so Vivado no
+  longer can pick a module-reference RTL file.
+- Fixed reference scripts and examples that targeted the wrong HDM address
+  (off by a nibble). Reads previously returned non-existent memory and writes
+  were silently dropped, which made latency/bandwidth numbers look better than
+  real. They now use ecam::HDM_BASE (8 TB).
+- Reduced the default high HDM allocation size from 256 GB to 64 GB.
+- Traffic generator now flags only SLVERR/DECERR responses as errors; EXOKAY
+  is no longer reported as an invalid response.
+- Performance snapshot capture data is now zero when capture is disabled.
+- Added argument validation to all xsdb TCL packages (design::, control::,
+  hwtg::, perf::, ecam::) through shared checkers (pkg_args.tcl). Bad calls
+  are rejected with a message naming the command and argument before any
+  hardware access.
+- hwtg:: command values now accept "_" digit separators (e.g.
+  addr=0x800_0000_0000) and are range checked against field widths instead of
+  being silently truncated.
+- Replaced the max{rd,wr,concur}_test.tcl reference scripts with const,
+  incr, nxm (non-existent memory) and rand access-pattern variants. The read
+  and write tests accept OVERWRITE_NUM_RD/OVERWRITE_NUM_WR to send fewer than
+  the performance monitor maximum of 4096 transactions.
+- basic_test.tcl reference script now fails if the datapath reports errors.
+- Improved command printing in the xsdb TCL packages and updated README
+  files.
+- Updated block diagram and added a dark-mode version.
+- Changed CED catalog category from "Versal" to "PCIe".
+2026.1.1 Changes
+- Initial version

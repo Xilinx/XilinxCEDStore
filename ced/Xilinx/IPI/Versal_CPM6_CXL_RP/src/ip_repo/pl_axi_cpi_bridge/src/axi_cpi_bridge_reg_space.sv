@@ -9,12 +9,17 @@ module axi_cpi_bridge_reg_space #(
   // destination domain
   input                        dest_clk,
   // monitor any errors
+  input                        fatal_err,
   input                        f2a_req_block_err,
   input                        f2a_dat_block_err,
   input                        a2f_rsp_block_err,
   input                        a2f_dat_block_err,
   input                        a2f_rsp_id_err,
   input                        a2f_dat_id_err,
+  input                        a2f_dat_cmd_par_err,
+  input                        a2f_dat_bdy_par_err,
+  input [7:0]                  a2f_dat_ele_par_err,
+  input                        a2f_rsp_cmd_par_err,
   // monitor the AXI interface
   input                        awvalid,
   input                        awready,
@@ -380,6 +385,10 @@ module axi_cpi_bridge_reg_space #(
         // -------------------------------------------------------- //
         12'h300 : {capture_rresp, capture_rdata} <= {
                     OKAY,
+                    31'h0,      //31:1
+                    fatal_err}; //0
+        12'h304 : {capture_rresp, capture_rdata} <= {
+                    OKAY,
                     24'h0,             //31:8
                     f2a_req_block_err, //7
                     f2a_dat_block_err, //6
@@ -388,6 +397,16 @@ module axi_cpi_bridge_reg_space #(
                     2'h0,              //3:2
                     a2f_rsp_id_err,    //1
                     a2f_dat_id_err};   //0
+        12'h308 : {capture_rresp, capture_rdata} <= {
+                    OKAY,
+                    4'h0,                 //31:28
+                    a2f_dat_ele_par_err,  //27:20
+                    3'h0,                 //19:17
+                    a2f_dat_bdy_par_err,  //16
+                    11'h0,                //15:5
+                    a2f_dat_cmd_par_err,  //4
+                    3'h0,                 //3:1
+                    a2f_rsp_cmd_par_err}; //0
         // -------------------------------------------------------- //
         /* Status */
         // -------------------------------------------------------- //

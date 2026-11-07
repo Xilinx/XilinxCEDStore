@@ -3,8 +3,10 @@
 # The user-facing verbs: load/read/dump commands, parse/clear errors,
 # start/stop/soft-reset, status/poll, and a synchronized multi-datapath
 # trigger built on axil_gpio4. Every proc here takes a datapath index (cpi)
-# first and resolves it through design::get_tg_base, so a bad index is
-# rejected before any hardware access is attempted.
+# first. Argument counts, the cpi, and every other argument (iRAM index,
+# command line, file path, timeout, ...) are validated up front via the shared
+# ::chk helpers (pkg_args.tcl), so a bad call is rejected with a message
+# naming the command and the offending argument before any hardware access.
 
 #----------------------------------------------------------------------------
 # DPC xsdb target connect
@@ -23,16 +25,42 @@ proc hwtg::connect {} {
 # Every public command below takes cpi as its first argument via a bare
 # `lassign $args ...` (so a missing argument silently becomes ""), which
 # would otherwise surface many calls deep as a confusing blank-cpi error
-# from design::get_tg_base. Called as the first line of every such command,
-# right after its own lassign, so a missing cpi is rejected immediately
-# with a message naming the command that needs it.
+# from design::get_tg_base. Called right after each command's own
+# ::chk::nargs/lassign, so a missing or unknown cpi is rejected immediately
+# with a message naming the command that needs it and the valid indices.
 proc hwtg::require_cpi {cpi caller} {
-  if {$cpi ne ""} { return }
-  set indices [design::get_cxl_indices]
-  if {[llength $indices] == 0} {
-    error "$caller requires a cpi (datapath index) argument -- no datapaths discovered yet, call design::discover first"
+  if {$cpi eq ""} {
+    set indices [design::get_cxl_indices]
+    if {[llength $indices] == 0} {
+      error "$caller requires a cpi (datapath index) argument -- no datapaths discovered yet, call design::discover first"
+    }
+    error "$caller requires a cpi (datapath index) argument -- valid indices: $indices"
   }
-  error "$caller requires a cpi (datapath index) argument -- valid indices: $indices"
+  ::chk::cpi $caller $cpi
+  return
+}
+
+# iRAM command index: integer in 0..MAX_COMMANDS-1. Returns the plain integer.
+proc hwtg::check_idx {caller idx} {
+  variable MAX_COMMANDS
+  return [::chk::int $caller idx $idx 0 [expr {$MAX_COMMANDS - 1}]]
+}
+
+# Assembles a mnemonic line, prefixing any assembler error with the command
+# that was given the bad line. Returns the 6 slice words.
+proc hwtg::assemble_for {caller line} {
+  check_line $caller $line
+  if {[catch {assemble $line} slices]} {
+    error "$caller: $slices"
+  }
+  return $slices
+}
+
+# The mnemonic line must be a non-blank string (usually quoted by the caller).
+proc hwtg::check_line {caller line} {
+  if {[string trim $line] eq ""} {
+    error "$caller: command line is empty -- expected a quoted mnemonic such as \"WRITE addr=0x1000 repeat=7\" (see hwtg::help [namespace tail $caller])"
+  }
 }
 
 #----------------------------------------------------------------------------
@@ -129,9 +157,11 @@ proc hwtg::commit_slices {cpi idx slices} {
 }
 
 proc hwtg::load_at {args} {
+  ::chk::nargs hwtg::load_at $args 3 3 {cpi idx "OPCODE key=val ..."}
   lassign $args cpi idx line
   require_cpi $cpi hwtg::load_at
-  set slices [assemble $line]
+  set idx [check_idx hwtg::load_at $idx]
+  set slices [assemble_for hwtg::load_at $line]
   warn_addr_k_clamp $slices
   commit_slices $cpi $idx $slices
   puts "INFO: datapath $cpi idx $idx <= $line"
@@ -139,24 +169,42 @@ proc hwtg::load_at {args} {
 }
 
 proc hwtg::load_append {args} {
+  ::chk::nargs hwtg::load_append $args 2 2 {cpi "OPCODE key=val ..."}
   lassign $args cpi line
   require_cpi $cpi hwtg::load_append
+  # Dry-run the assembler so a malformed line is rejected before the iRAM is
+  # read to find the append point (load_at assembles again for real).
+  assemble_for hwtg::load_append $line
   set idx [next_free_index $cpi]
   return [load_at $cpi $idx $line]
 }
 
 proc hwtg::load_from_file {args} {
+  ::chk::nargs hwtg::load_from_file $args 2 2 {cpi path}
   lassign $args cpi path
   require_cpi $cpi hwtg::load_from_file
+  ::chk::file_readable hwtg::load_from_file path $path
+  # Read and assemble the whole file first, so a bad line is reported with its
+  # line number before any command has been written to the iRAM.
   set fh [open $path r]
-  set n 0
+  set cmds {}
+  set lineno 0
   while {[gets $fh line] >= 0} {
+    incr lineno
     set trimmed [string trim $line]
     if {$trimmed eq "" || [string index $trimmed 0] eq "#"} { continue }
+    if {[catch {assemble $trimmed} err]} {
+      close $fh
+      error "hwtg::load_from_file: $path line $lineno: $err -- nothing was loaded"
+    }
+    lappend cmds $trimmed
+  }
+  close $fh
+  set n 0
+  foreach trimmed $cmds {
     load_append $cpi $trimmed
     incr n
   }
-  close $fh
   puts "INFO: loaded $n command(s) from $path onto datapath $cpi"
   return $n
 }
@@ -164,6 +212,7 @@ proc hwtg::load_from_file {args} {
 # Prompts on stdin for an index (blank = append), an opcode, then each field
 # valid for that opcode (blank = default 0).
 proc hwtg::load_interactive {args} {
+  ::chk::nargs hwtg::load_interactive $args 1 1 cpi
   lassign $args cpi
   require_cpi $cpi hwtg::load_interactive
   variable ASM_KEYS
@@ -195,8 +244,10 @@ proc hwtg::load_interactive {args} {
 # Read / dump
 #----------------------------------------------------------------------------
 proc hwtg::read_cmd {args} {
+  ::chk::nargs hwtg::read_cmd $args 2 2 {cpi idx}
   lassign $args cpi idx
   require_cpi $cpi hwtg::read_cmd
+  set idx [check_idx hwtg::read_cmd $idx]
   # Port B (the AXI-Lite readback path) is borrowed from the sequencer only
   # while IDLE -- see custom_axi_tg_csr.sv's header comment.
   require_idle $cpi "read idx $idx"
@@ -208,6 +259,7 @@ proc hwtg::read_cmd {args} {
 }
 
 proc hwtg::read_all {args} {
+  ::chk::nargs hwtg::read_all $args 1 1 cpi
   lassign $args cpi
   require_cpi $cpi hwtg::read_all
   set done [csr_read $cpi TG_DONE_PTR]
@@ -221,8 +273,10 @@ proc hwtg::read_all {args} {
 }
 
 proc hwtg::dump_to_file {args} {
+  ::chk::nargs hwtg::dump_to_file $args 2 2 {cpi path}
   lassign $args cpi path
   require_cpi $cpi hwtg::dump_to_file
+  ::chk::file_writable hwtg::dump_to_file path $path
   set lines [read_all $cpi]
   set fh [open $path w]
   foreach line $lines { puts $fh $line }
@@ -235,6 +289,7 @@ proc hwtg::dump_to_file {args} {
 # Errors
 #----------------------------------------------------------------------------
 proc hwtg::parse_errors {args} {
+  ::chk::nargs hwtg::parse_errors $args 1 1 cpi
   lassign $args cpi
   require_cpi $cpi hwtg::parse_errors
   variable ERR_NAMES
@@ -257,28 +312,53 @@ proc hwtg::parse_errors {args} {
   set done [csr_read $cpi TG_DONE_PTR]
   for {set idx 0} {$idx < $done} {incr idx} {
     set sw [control::rd32 [get_stat_addr $cpi $idx]]
-    if {($sw >> 3) & 1} {
+    if {($sw >> 2) & 1} {
       set inv_num [expr {($sw >> 8) & 0xFFF}]
       set inv_id  [expr {($sw >> 20) & 0xF}]
-      puts "  idx $idx: SLVERR seen (first invalid transaction #$inv_num, AXI ID $inv_id)"
-    } elseif {($sw >> 2) & 1} {
-      puts "  idx $idx: non-OKAY (EXOKAY) response seen"
+      set kind    [expr {(($sw >> 3) & 1) ? "SLVERR" : "DECERR"}]
+      puts "  idx $idx: $kind seen (first invalid transaction #$inv_num, AXI ID $inv_id)"
     }
   }
   return $active
 }
 
 proc hwtg::clear_errors {args} {
+  ::chk::nargs hwtg::clear_errors $args 1 1 cpi
   lassign $args cpi
   require_cpi $cpi hwtg::clear_errors
   csr_write $cpi TG_BRESP_ERROR 0x3FF
   puts "INFO: cleared sticky TG_BRESP_ERROR on datapath $cpi"
 }
 
+# Silent pass/fail check, meant to be called after traffic completes.
+# Returns 1 if any error indicator is set on the given datapath (or on any
+# datapath when cpi is omitted), else 0. Two CSR reads per datapath:
+#   TG_BRESP_ERROR[9:0]  sticky command/programming errors
+#   TG_STATUS[22]        start_busy_err (sticky, W1C)
+#   TG_STATUS[23]        any_cmd_err: some command saw an SLVERR/DECERR response
+# Use hwtg::parse_errors for the detail behind a 1.
+proc hwtg::has_errors {args} {
+  ::chk::nargs hwtg::has_errors $args 0 1 ?cpi?
+  lassign $args cpi
+  if {$cpi eq ""} {
+    set cpi_list [design::get_cxl_indices]
+  } else {
+    require_cpi $cpi hwtg::has_errors
+    set cpi_list [list $cpi]
+  }
+  foreach c $cpi_list {
+    set sticky [expr {[csr_read $c TG_BRESP_ERROR] & 0x3FF}]
+    set st     [csr_read $c TG_STATUS]
+    if {$sticky || (($st >> 22) & 0x3)} { return 1 }
+  }
+  return 0
+}
+
 #----------------------------------------------------------------------------
 # Start / stop / soft-reset
 #----------------------------------------------------------------------------
 proc hwtg::start {args} {
+  ::chk::nargs hwtg::start $args 1 1 cpi
   lassign $args cpi
   require_cpi $cpi hwtg::start
   set state [run_state_name $cpi]
@@ -290,6 +370,7 @@ proc hwtg::start {args} {
 }
 
 proc hwtg::stop {args} {
+  ::chk::nargs hwtg::stop $args 1 1 cpi
   lassign $args cpi
   require_cpi $cpi hwtg::stop
   csr_write $cpi TG_CTRL 0x0
@@ -297,6 +378,7 @@ proc hwtg::stop {args} {
 }
 
 proc hwtg::soft_reset {args} {
+  ::chk::nargs hwtg::soft_reset $args 1 1 cpi
   lassign $args cpi
   require_cpi $cpi hwtg::soft_reset
   set state [run_state_name $cpi]
@@ -311,6 +393,7 @@ proc hwtg::soft_reset {args} {
 # Status / poll
 #----------------------------------------------------------------------------
 proc hwtg::status {args} {
+  ::chk::nargs hwtg::status $args 1 1 cpi
   lassign $args cpi
   require_cpi $cpi hwtg::status
   set w [csr_read $cpi TG_STATUS]
@@ -331,9 +414,14 @@ proc hwtg::status {args} {
 }
 
 proc hwtg::wait_done {args} {
+  ::chk::nargs hwtg::wait_done $args 1 2 {cpi ?timeout_s?}
   lassign $args cpi timeout_s
   require_cpi $cpi hwtg::wait_done
-  if {$timeout_s eq ""} { set timeout_s 5 }
+  if {$timeout_s eq ""} {
+    set timeout_s 5
+  } else {
+    ::chk::posnum hwtg::wait_done timeout_s $timeout_s
+  }
   set deadline [expr {[clock seconds] + $timeout_s}]
   while {1} {
     set state [run_state_name $cpi]
@@ -348,6 +436,7 @@ proc hwtg::wait_done {args} {
 # Live read of TG_CFG, in case MAX_COMMANDS/AXI_ID_WIDTH/etc. ever diverge
 # from the hwtg_pkg.tcl defaults.
 proc hwtg::tg_cfg {args} {
+  ::chk::nargs hwtg::tg_cfg $args 1 1 cpi
   lassign $args cpi
   require_cpi $cpi hwtg::tg_cfg
   set w [csr_read $cpi TG_CFG]
@@ -366,7 +455,22 @@ proc hwtg::tg_cfg {args} {
 # write pulses every listed tg_start on the SAME clock edge, instead of N
 # separate, skewed AXI-Lite transactions).
 #----------------------------------------------------------------------------
+# Validates every element of a trigger list (integer 0..3 and a discovered
+# datapath) and returns the axil_gpio4 bit mask. No hardware access.
+proc hwtg::trigger_mask {caller cpi_list} {
+  set mask 0
+  foreach cpi $cpi_list {
+    if {[catch {::chk::int $caller "cpi_list element" $cpi 0 3} n]} {
+      error "$n -- axil_gpio4 only has 4 output bits (0..3)"
+    }
+    ::chk::cpi $caller $n
+    set mask [expr {$mask | (1 << $n)}]
+  }
+  return $mask
+}
+
 proc hwtg::ext_trigger {args} {
+  ::chk::nargs hwtg::ext_trigger $args 1 1 cpi_list
   lassign $args cpi_list
   variable GPIO_MODE
   variable GPIO_GPIO
@@ -374,15 +478,10 @@ proc hwtg::ext_trigger {args} {
     error "hwtg::ext_trigger requires a cpi_list argument (e.g. {0 2}) -- use hwtg::ext_trigger_all to trigger every discovered datapath instead"
   }
 
-  set mask 0
-  foreach cpi $cpi_list {
-    if {$cpi < 0 || $cpi > 3} {
-      error "axil_gpio4 only has 4 output bits (0..3); got cpi=$cpi"
-    }
-    set mask [expr {$mask | (1 << $cpi)}]
-  }
+  # Validate the whole list before any GPIO write.
+  set mask [trigger_mask hwtg::ext_trigger $cpi_list]
 
-  set base [design::get_gpio_base]
+  set base [design::get_trig_gpio_base]
   # Make sure the bits we're about to drive are in pulse mode (self-clearing
   # after STRETCH+1 cycles) so the caller doesn't need a separate "release
   # i_start" step. Bits outside $mask are left exactly as they were.
@@ -400,7 +499,14 @@ proc hwtg::ext_trigger {args} {
 # Convenience wrapper: same as ext_trigger, but defaults cpi_list to every
 # discovered datapath instead of requiring one.
 proc hwtg::ext_trigger_all {args} {
+  ::chk::nargs hwtg::ext_trigger_all $args 0 1 ?cpi_list?
   lassign $args cpi_list
-  if {[llength $cpi_list] == 0} { set cpi_list [design::get_cxl_indices] }
+  if {[llength $cpi_list] == 0} {
+    set cpi_list [design::get_cxl_indices]
+    if {[llength $cpi_list] == 0} {
+      error "hwtg::ext_trigger_all: no datapaths discovered yet -- call design::discover first"
+    }
+  }
+  trigger_mask hwtg::ext_trigger_all $cpi_list
   ext_trigger $cpi_list
 }

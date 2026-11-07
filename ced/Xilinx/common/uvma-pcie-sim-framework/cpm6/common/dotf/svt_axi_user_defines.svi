@@ -1,0 +1,46 @@
+   
+/* Hard AXI Interfaces with CPM6 */
+// - CPM6/PS - 2x.AXI-MM.128b.1000MHz
+//  - PS0
+//    - ARUSER: 32b  - AWUSER: 32b
+//    -  RUSER: 18b  -  WUSER: 18b
+//                   -  BUSER:  1b
+//  - PS1
+//    - ARUSER: 38b  - AWUSER: 18b
+//    -  RUSER: 17b  -  WUSER: 17b
+//                   -  BUSER: 17b
+// - PS/CPM6 - 1x.AXI-MM.128b.1000MHz
+//    - ARUSER: 18b  - AWUSER: 18b
+//    -  RUSER: 17b  -  WUSER: 17b
+//                   -  BUSER: 16b
+// - PS/CPM6 - 1x.AXI-L.32b.200MHz (Cfg)
+//    - ARUSER: 16b  - AWUSER: 16b
+//    -  RUSER:  6b  -  WUSER:  6b
+//                   -  BUSER:  1b
+
+/* PL AXI Interfaces with CPM6 (accessed through MPIO) */
+// - CPM6/PL - 4x.AXI-MM.512b.pl_aximm_clk(250MHz)
+//  - ARUSER: 56b  - AWUSER: 147b
+//  -  RUSER: 68b  -  WUSER:  64b
+//                 -  BUSER:   3b
+// - PL/CPM6 - 1x.AXI-MM.512b.pl_aximm_clk(250MHz)
+//  - ARUSER: 149b - AWUSER: 228b
+//  -  RUSER: 186b -  WUSER:  65b
+//                 -  BUSER: 122b
+// - PL/CPM6 - 2x.AXI-L.32b.pl_dbi_clk(250MHz)
+
+/* Summarizing the above, we take the maximum values for defines */
+// - Masters=5
+`define SVT_AXI_MAX_NUM_MASTERS_5
+// - Slaves=6
+`define SVT_AXI_MAX_NUM_SLAVES_6
+// - Making this up for now: 64
+`define SVT_AXI_MAX_ADDR_WIDTH 64
+// - Taking this from verif team
+`define SVT_AXI_MAX_ID_WIDTH 16
+// From PL Interfaces
+`define SVT_AXI_MAX_DATA_WIDTH 512
+// ARUSER/AWUSER: PS1 has 38b ARUSER (widest); PS/CPM6 128b has 18b; PS/CPM6 CFG has 16b
+`define SVT_AXI_MAX_ADDR_USER_WIDTH 18
+// WUSER/RUSER: PS0 has 18b WUSER (widest PS); using 18 to cover PS/CPM6 interfaces
+`define SVT_AXI_MAX_DATA_USER_WIDTH 18

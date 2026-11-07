@@ -5,14 +5,13 @@
 # and 2); bits 1 and 3 exist in the register but aren't wired to anything
 # here.
 
-proc control::validate_rst_bit {bit} {
+proc control::validate_rst_bit {caller bit} {
   variable RST_PL_BITS
-  if {$bit < 0 || $bit > 3} {
-    error "bit $bit out of range for RST_PL (valid: 0-3)"
-  }
+  set bit [chk::int $caller bit $bit 0 3]
   if {$bit ni {0 2}} {
     puts "WARNING: RST_PL bit $bit is not wired to any net in this design ($RST_PL_BITS($bit)) -- this write will have no observable effect"
   }
+  return $bit
 }
 
 proc control::pl_rst_status {} {
@@ -28,17 +27,20 @@ proc control::pl_rst_status {} {
 }
 
 proc control::pl_rst_set {args} {
+  chk::nargs control::pl_rst_set $args 1 1 "bits(0x0..0xF)"
   lassign $args bits
   variable RST_PL_ADDR
-  wr32 $RST_PL_ADDR [expr {$bits & 0xF}]
-  puts [format "INFO: RST_PL <= 0x%X" [expr {$bits & 0xF}]]
+  set bits [chk::int control::pl_rst_set bits $bits 0 0xF]
+  wr32 $RST_PL_ADDR $bits
+  puts [format "INFO: RST_PL <= 0x%X" $bits]
   return [pl_rst_status]
 }
 
 proc control::pl_rst_assert {args} {
+  chk::nargs control::pl_rst_assert $args 1 1 "bit(0-3)"
   lassign $args bit
   variable RST_PL_ADDR
-  validate_rst_bit $bit
+  set bit [validate_rst_bit control::pl_rst_assert $bit]
   set cur [rd32 $RST_PL_ADDR]
   wr32 $RST_PL_ADDR [expr {$cur | (1 << $bit)}]
   set rb [rd32 $RST_PL_ADDR]
@@ -47,9 +49,10 @@ proc control::pl_rst_assert {args} {
 }
 
 proc control::pl_rst_deassert {args} {
+  chk::nargs control::pl_rst_deassert $args 1 1 "bit(0-3)"
   lassign $args bit
   variable RST_PL_ADDR
-  validate_rst_bit $bit
+  set bit [validate_rst_bit control::pl_rst_deassert $bit]
   set cur [rd32 $RST_PL_ADDR]
   wr32 $RST_PL_ADDR [expr {$cur & ~(1 << $bit)}]
   set rb [rd32 $RST_PL_ADDR]
@@ -61,7 +64,9 @@ proc control::pl_rst_deassert {args} {
 # deassert writes is already slow enough relative to the reset logic to
 # act as an adequate pulse.
 proc control::pl_rst_pulse {args} {
+  chk::nargs control::pl_rst_pulse $args 1 1 "bit(0-3)"
   lassign $args bit
+  set bit [chk::int control::pl_rst_pulse bit $bit 0 3]
   pl_rst_assert $bit
   pl_rst_deassert $bit
   puts "INFO: RST_PL bit $bit pulsed"

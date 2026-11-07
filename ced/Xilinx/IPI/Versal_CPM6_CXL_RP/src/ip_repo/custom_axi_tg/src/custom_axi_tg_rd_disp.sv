@@ -131,7 +131,12 @@ module custom_axi_tg_rd_disp
   logic [  NUM_IDS-1:0] id_oh_q;
   logic [         11:0] rem;
   logic                 last_txn_r;
-  logic                 active, ar_pend;
+  logic                 active;
+  logic                 ar_pend;
+
+  // Initial value is for simulation only (avoids X on ARVALID before the
+  // first reset edge); the synchronous reset still controls it
+  initial ar_pend = 1'b0;
 
   //--- generator outputs ----------------------------------------------------
   logic [         47:0] addr_next;
@@ -205,7 +210,7 @@ module custom_axi_tg_rd_disp
   // (=ar_pend, which DOES reset) is low, and load_new always writes them
   // fresh before ar_pend can next assert.  They are intentionally left out of
   // reset.
-  always_ff @(posedge clk) begin
+  always @(posedge clk) begin
     if (!rstn) begin
       active        <= 1'b0;
       ar_pend       <= 1'b0;
@@ -294,7 +299,8 @@ module custom_axi_tg_rd_disp
     rid_q2      <= rid_q;
 
     err_vld     <= 1'b0;
-    if (ring_dec_vld && ring_dec_hit && (rresp_q2 != RESP_OKAY)) begin
+    // RESP[1] set = SLVERR or DECERR; OKAY and EXOKAY are not errors
+    if (ring_dec_vld && ring_dec_hit && rresp_q2[1]) begin
       err_vld    <= 1'b1;
       err_idx    <= ring_dec_cmd_idx;
       err_slverr <= (rresp_q2 == RESP_SLVERR);  // the only other is DECERR

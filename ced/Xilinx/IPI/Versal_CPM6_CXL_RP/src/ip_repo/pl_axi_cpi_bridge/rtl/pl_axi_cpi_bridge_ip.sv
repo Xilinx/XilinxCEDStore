@@ -73,6 +73,7 @@ module pl_axi_cpi_bridge_ip
   localparam RSP_HDR_WIDTH   = 41,
   localparam DAT_PARITY_W    = 8
 )(
+  output                         fatal_err,
   /*** AMBA AXI H.c Revision Interface - Slave Port ***/
   input                          s_axi_aclk,
   input                          s_axi_aresetn,
@@ -387,6 +388,7 @@ module pl_axi_cpi_bridge_ip
     .WROB_DEPTH              (WROB_DEPTH),
     .RROB_DEPTH              (RROB_DEPTH)
   ) i_pl_axi_cpi_bridge (
+    .fatal_err     (fatal_err),
     /*** Clock/Reset ***/
     .s_axi_aclk    (s_axi_aclk),
     .s_axi_aresetn (s_axi_aresetn),

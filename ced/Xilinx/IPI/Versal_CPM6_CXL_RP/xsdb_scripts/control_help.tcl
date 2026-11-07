@@ -21,7 +21,7 @@ namespace eval control {
 
   set CMD_HELP(rd32) [join {
     {Args:}
-    {  addr -- register address}
+    {  addr -- register address (integer, 0..0xFFFFFFFFFFFF)}
     {}
     {Reads one 32-bit word via `mrd -force $addr 1`. Requires}
     {design::connect to have been called.}
@@ -29,8 +29,8 @@ namespace eval control {
 
   set CMD_HELP(wr32) [join {
     {Args:}
-    {  addr  -- register address}
-    {  value -- 32-bit value to write}
+    {  addr  -- register address (integer, 0..0xFFFFFFFFFFFF)}
+    {  value -- 32-bit value to write (integer, 0..0xFFFFFFFF)}
     {}
     {Writes one 32-bit word via `mwr -force`. Requires design::connect to}
     {have been called.}
@@ -44,15 +44,17 @@ namespace eval control {
     {covers every cxl_datapath_N's CXL/AXI-side reset (the bridge and the}
     {traffic generator's m_axi side) plus the perf-monitor viral block;}
     {bit 2 (axil_rstn) covers every custom_axi_tg_N's CSR-side reset plus}
-    {axil_gpio4_0; bits 1 and 3 are unconnected in this design.}
+    {axil_gpio4_0 and gpio_ext_axil_0; bits 1 and 3 are unconnected in this}
+    {design.}
   } "\n"]
 
   set CMD_HELP(pl_rst_set) [join {
     {Args:}
-    {  bits -- full 4-bit RST_PL value to write directly}
+    {  bits -- full 4-bit RST_PL value to write directly (integer, 0x0..0xF;}
+    {          anything outside that range is rejected, not masked)}
     {}
-    {No safety checks beyond masking to 4 bits -- prefer pl_rst_assert/}
-    {pl_rst_deassert/pl_rst_pulse for single-bit operations.}
+    {No other safety checks -- prefer pl_rst_assert/pl_rst_deassert/}
+    {pl_rst_pulse for single-bit operations.}
   } "\n"]
 
   set CMD_HELP(pl_rst_assert) [join {
