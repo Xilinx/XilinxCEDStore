@@ -106,6 +106,7 @@ package test_pkg;
   // cpm6/ctrl1ep_g6x8_dma_1pf) -- see sim/tb/test/dma/ for sources.
   `include "dma/rc_mem_callback.sv"
   `include "dma/test_dma_tasks.sv"
+  `include "dma/test_dma_tasks_8pf.sv"
   // Controller-0 (plaxi, non-DDR) variant tests -- ported from the
   // same verified-passing source, see dma_ctrl0/sim/README.txt.
   `include "dma/test_s_dma_plaxi_ctrlr0.sv"

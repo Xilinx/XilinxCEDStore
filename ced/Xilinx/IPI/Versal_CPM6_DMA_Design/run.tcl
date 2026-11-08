@@ -67,6 +67,17 @@ proc createDesign {design_name options} {
   }
   set src_dir "${currentDir}/${sub_name}"
 
+  # 8-PF support: only the DDR designs (Controller_0 and Controller_1) have the 8-PF PL (axil_slave / cpm_user_aligner /
+  # 8-PF pl_example) and BD additions (DBI, SmartConnect, S00_AXI_0/M00_AXI_0/cpm_axi_pl0_0 ports). Their RTL lives in
+  # <sub-design>/src_8pf/; design_1_bd.tcl switches on $num_pfs.
+  set sub_src "src"
+  if {$num_pfs == 8} {
+    if {$sub_name ne "dma_ddr_ctrl1" && $sub_name ne "dma_ddr_ctrl0"} {
+      error "NUM_PFS=8 is only supported for DDR_EN=true (Controller_0 or Controller_1) (got ${ctrl_config}/${ddr_en})"
+    }
+    set sub_src "src_8pf"
+  }
+
   if {[string equal [get_filesets -quiet sources_1] ""]} {
     create_fileset -srcset sources_1
   }
@@ -74,7 +85,7 @@ proc createDesign {design_name options} {
   set src_fileset [get_filesets sources_1]
   # Import all source files from the selected sub-design
   import_files -norecurse -fileset sources_1 ${currentDir}/src
-  import_files -norecurse -fileset sources_1 ${src_dir}/src
+  import_files -norecurse -fileset sources_1 ${src_dir}/${sub_src}
 # Add DDR pin constraints for DDR_ENABLED (same pattern as Versal_MMI_PCIe_EP_Design)
 if { $ddr_en eq "DDR_ENABLED" } {
     add_files -fileset constrs_1 -norecurse $currentDir/constrs/noc_ddr5_phy_phy.xdc
@@ -145,7 +156,13 @@ if { $ddr_en eq "DDR_ENABLED" } {
     update_compile_order -fileset sources_1
     update_compile_order -fileset sim_1
     if {[info exists ::env(VIVADO_CLIBS)]} {
-      set_property compxlib.vcs_compiled_library_dir $::env(VIVADO_CLIBS) [current_project]
+      # synopsys_sim.setup lives in the clibs "lib" subdirectory; accept either the lib dir or its parent
+      set clibs_dir $::env(VIVADO_CLIBS)
+      if {![file exists [file join $clibs_dir synopsys_sim.setup]] && [file exists [file join $clibs_dir lib synopsys_sim.setup]]} {
+        set clibs_dir [file join $clibs_dir lib]
+        puts "INFO: VIVADO_CLIBS has no synopsys_sim.setup, using $clibs_dir"
+      }
+      set_property compxlib.vcs_compiled_library_dir $clibs_dir [current_project]
     } else {
       puts "WARNING: \$VIVADO_CLIBS is not set -- Vivado will fall back to its default compiled library path"
     }

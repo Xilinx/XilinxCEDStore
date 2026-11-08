@@ -1,4 +1,4 @@
-class test_s_dma_ddr_ctrlr0_multipf extends test_dma_tasks;
+class test_s_dma_ddr_ctrlr0_multipf extends test_dma_tasks_8pf;
 //class test_s_dma_aximm extends test_basic;
 
   `uvm_component_utils(test_s_dma_ddr_ctrlr0_multipf);
@@ -27,6 +27,7 @@ class test_s_dma_ddr_ctrlr0_multipf extends test_dma_tasks;
   logic 	 msix_int;
     bit [1:0] dut_ctrlr_en;
     int pf;
+    int num_iter;
    
   virtual function void end_of_elaboration_phase(uvm_phase phase);
     super.end_of_elaboration_phase(phase);
@@ -57,6 +58,20 @@ class test_s_dma_ddr_ctrlr0_multipf extends test_dma_tasks;
      ps_vip_api.set_routing_config(CPM_PS_AXI_1, PS_NOC_PCI_AXI_1, 1'b1);
   endfunction
 
+`ifdef CPM6_VIVADO
+  // The 8PF_32VF design's CDO leaves CPM6_PCIE_CORE0.ATTR_REG_0.app_req_retry_en (bit 6) SET, so the controller
+  // completes every config request with CRS and bus enumeration never finishes (the 8PF design's CDO clears it).
+  // On hardware the firmware releases it; nothing does in simulation, so clear it after the CDO load. No-op on
+  // designs whose CDO already clears it. Same hook as the Controller_1 test_s_dma_ddr_Ctrl1_8pf_32vf; +KEEP_CFG_RETRY keeps the CDO value.
+  virtual task post_cdo_load();
+    super.post_cdo_load();
+    if (!$test$plusargs("KEEP_CFG_RETRY")) begin
+      cdo_mask_write(32'hFC840100, 32'h0000_0040, 32'h0000_0000);
+      `uvm_info("CFGRETRY", "ATTR_REG_0.app_req_retry_en (bit 6) cleared after CDO load; +KEEP_CFG_RETRY keeps the CDO value", UVM_NONE)
+    end
+  endtask
+`endif
+
    virtual function void connect_phase(uvm_phase phase);
       phase.raise_objection(this);
       super.connect_phase(phase);
@@ -80,6 +95,8 @@ class test_s_dma_ddr_ctrlr0_multipf extends test_dma_tasks;
     for (int pf_num = 0; pf_num < num_pfs_cfg; pf_num++) begin
         TSK_PROGRAM_MSIX_VEC_TABLE(pf_num);
     end
+    `uvm_info(get_type_name, $sformatf("MSI-X vector table update COMPLETE for all %0d functions (PF table @ BAR0+0x%0h)",
+              num_pfs_cfg, PF_MSIX_VEC_OFFSET), UVM_NONE)
 
     // Program DMA context for 4 channels (channel 0-3, one per PF).
     dma_ctxt_init_prog(4);
@@ -91,34 +108,47 @@ class test_s_dma_ddr_ctrlr0_multipf extends test_dma_tasks;
     msix_int = 1;
 
     host_addr     = {$urandom, 6'h0};        // Host address
-    fpga_dev_addr = 64'h0500_0001_0000;       // PL-AXI 0
+    // PL-AXI 1 (CPM6 DMA aperture 1, 8KB axi_bram_ctrl_1). Not PL-AXI 0 (0x0500_0001_0000): on the 8PF_32VF design the
+    // M00_AXI_0/Reg window on that port is 256KB (BRAM0 moved to 0xC000_0000), so 0x0500_0001_0000 hits the register slave.
+    fpga_dev_addr = 64'h0500_0002_0000;       // PL-AXI 1
 
     // Test H2C and C2H for PF0 through PF3.
     // PF N is mapped to channel N via func_to_chn table in pl_example.sv.
-    // Doorbell offsets are channel-relative:
+    // PL register map in BAR1 (axil_slave.sv):
+    //   C2H bank: 0x10 size, 0x14 src_lo, 0x18 src_hi, 0x1C dst_lo, 0x20 dst_hi (TRIGGER)
+    //   H2C bank: 0x30 size, 0x34 src_lo, 0x38 src_hi, 0x3C dst_lo, 0x40 dst_hi (TRIGGER)
+    //   0x28 / 0x48: any write requests the C2H / H2C interrupt clear (PL holds the
+    //                channel interrupt until the host does this)
+    // Doorbell offsets for the status-poll fallback are channel-relative:
     //   H2C: 0x200 + (N * 0x400) + 0x04
     //   C2H:          (N * 0x400) + 0x04
-    for (int iter=0; iter<40; iter++) begin
+    // Number of iterations over PF0..PF3 (default 40 as in the reference); +NUM_ITER=<n> shortens the run for a quick check
+    num_iter = 40;
+    void'($value$plusargs("NUM_ITER=%d", num_iter));
+    `uvm_info(get_type_name, $sformatf("DMA iterations = %0d", num_iter), UVM_NONE)
+    for (int iter=0; iter<num_iter; iter++) begin
     for (int pf=0; pf<4; pf++) begin
-      `uvm_info("---- H2C DMA ---- ", $sformatf("PF%0d -> channel %0d", pf, pf), UVM_NONE)
-      bar_write(pf, 1, 32'h0_0000, 4, 32'h100);              // Size
-      bar_write(pf, 1, 32'h0_0004, 4, host_addr[31:0]);      // Src addr lo
-      bar_write(pf, 1, 32'h0_0008, 4, host_addr[63:32]);     // Src addr hi
-      bar_write(pf, 1, 32'h0_000c, 4, fpga_dev_addr[31:0]);  // Dst addr lo
-      bar_write(pf, 1, 32'h0_0010, 4, fpga_dev_addr[63:32]); // Dst addr hi (triggers DMA)
+      `uvm_info("---- H2C DMA ---- ", $sformatf("iter %0d PF%0d -> channel %0d (trigger = BAR1+0x40)", iter, pf, pf), UVM_NONE)
+      bar_write(pf, 1, 32'h30, 4, 32'h100);              // H2C Size
+      bar_write(pf, 1, 32'h34, 4, host_addr[31:0]);      // H2C Src addr lo
+      bar_write(pf, 1, 32'h38, 4, host_addr[63:32]);     // H2C Src addr hi
+      bar_write(pf, 1, 32'h3c, 4, fpga_dev_addr[31:0]);  // H2C Dst addr lo
+      bar_write(pf, 1, 32'h40, 4, fpga_dev_addr[63:32]); // H2C Dst addr hi (triggers DMA)
 
       // Wait for H2C transfer to complete via MSI-X interrupt.
       s_dma_chk_txfr_done(H2C, 32'h200 + (pf * 32'h400) + 32'h04, msi_int, msix_int);
+      bar_write(pf, 1, 32'h48, 4, 32'h1);                // H2C interrupt clear request
 
-      `uvm_info("---- C2H DMA ---- ", $sformatf("PF%0d -> channel %0d", pf, pf), UVM_NONE)
-      bar_write(pf, 1, 32'h0_0100, 4, 32'h100);              // Size
-      bar_write(pf, 1, 32'h0_0104, 4, fpga_dev_addr[31:0]);  // Src addr lo
-      bar_write(pf, 1, 32'h0_0108, 4, fpga_dev_addr[63:32]); // Src addr hi
-      bar_write(pf, 1, 32'h0_010c, 4, host_addr[31:0]);      // Dst addr lo
-      bar_write(pf, 1, 32'h0_0110, 4, host_addr[63:32]);     // Dst addr hi (triggers DMA, is_c2h=1)
+      `uvm_info("---- C2H DMA ---- ", $sformatf("iter %0d PF%0d -> channel %0d (trigger = BAR1+0x20)", iter, pf, pf), UVM_NONE)
+      bar_write(pf, 1, 32'h10, 4, 32'h100);              // C2H Size
+      bar_write(pf, 1, 32'h14, 4, fpga_dev_addr[31:0]);  // C2H Src addr lo
+      bar_write(pf, 1, 32'h18, 4, fpga_dev_addr[63:32]); // C2H Src addr hi
+      bar_write(pf, 1, 32'h1c, 4, host_addr[31:0]);      // C2H Dst addr lo
+      bar_write(pf, 1, 32'h20, 4, host_addr[63:32]);     // C2H Dst addr hi (triggers DMA, is_c2h=1)
 
       // Wait for C2H transfer to complete via MSI-X interrupt.
       s_dma_chk_txfr_done(C2H, (pf * 32'h400) + 32'h04, msi_int, msix_int);
+      bar_write(pf, 1, 32'h28, 4, 32'h1);                // C2H interrupt clear request
     end
     end
 

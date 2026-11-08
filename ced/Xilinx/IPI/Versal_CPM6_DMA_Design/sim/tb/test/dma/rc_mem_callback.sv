@@ -11,6 +11,11 @@ class rc_mem_callback extends apci_callbacks;
    logic [7:0]  bad_byte;
    bit 		int_msi_set = 0;
    bit 		int_msix_set = 0;
+   // debug counters (used by the bounded MSI/MSI-X waits in test_dma_tasks_8pf)
+   int          dbg_rd_cnt   = 0;  // EP->host memory reads seen
+   int          dbg_wr_cnt   = 0;  // EP->host memory writes seen
+   int          dbg_msi_cnt  = 0;
+   int          dbg_msix_cnt = 0;
    
    
    apci_device bfm_handle;
@@ -67,6 +72,7 @@ class rc_mem_callback extends apci_callbacks;
             input avery_data_base src         );
 
       rd_addr = addr;
+      dbg_rd_cnt++;
         `uvm_info("RC_MEM", $psprintf("read me cb: Data Read from Host ADDR %0h, NDW %0h, FBE %0h, LBE  %0h,", addr, ndw, first_be, last_be), UVM_LOW);
         for(int j=0; j <ndw; j++) begin
 	   randomize(pattern);
@@ -86,13 +92,16 @@ class rc_mem_callback extends apci_callbacks;
             input avery_data_base src         );
 
       wr_addr= addr;
+      dbg_wr_cnt++;
       `uvm_info("RC_MEM", $psprintf("Write mem cb: Data write to host %h, ADDR %0h, FBE %0h, LBE  %0h,", is_host_mem, addr, first_be, last_be), UVM_LOW);
       if (addr[63:56] == 8'hff) begin   // This is a MSI interrupt writes
 	      int_msi_set = 1'b1;
+	      dbg_msi_cnt++;
 	      `uvm_info("MSI Interrupt", $psprintf("Write mem cb: Int ADDR 0x%0h, Ind Data 0x%0h,", addr, va[0]), UVM_LOW);
       end
       else if (addr[63:52] == 12'hadd) begin   // This is a MSIX interrupt writes
 	      int_msix_set = 1'b1;
+	      dbg_msix_cnt++;
 	      `uvm_info("MSIX Interrupt", $psprintf("Write mem cb: Int ADDR 0x%0h, Ind Data 0x%0h,", addr, va[0]), UVM_LOW);
       end
       else begin
