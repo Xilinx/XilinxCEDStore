@@ -79,6 +79,14 @@ endif
 
 ifeq ($(NUM_PFS),8)
   TEST ?= test_s_dma_ddr_ctrlr0_multipf
+  # The full 8-PF test (40 iterations) needs ~2.5h of wall time; raise the default per-test timeout to 4h
+  ifeq ($(origin REGR_TIMEOUT),file)
+    REGR_TIMEOUT := 14400
+  endif
+  # NUM_ITER=<n> shortens the DMA loop for a quick check (passed as +NUM_ITER)
+  ifneq ($(NUM_ITER),)
+    PARG_NUM_ITER := +NUM_ITER=$(NUM_ITER)
+  endif
 else
   TEST ?= test_s_dma_ddr_ctrlr0
 endif
@@ -115,7 +123,13 @@ PARG  := +CTRLR0_EN=1
 PARG  += +CTRLR1_EN=0
 PARG  += +CTRLR0_SPEED=$(CTRLR0_SPEED)
 PARG  += +CTRLR0_FM=$(CTRLR0_FM)
-PARG  += +SIM_TIMEOUT=5000us
+ifeq ($(NUM_PFS),8)
+  # 8-PF test: CDO load (~270us) plus 8 PFs x H2C/C2H DMA iterations need far more than 5000us
+  PARG  += +SIM_TIMEOUT=20000us
+else
+  PARG  += +SIM_TIMEOUT=5000us
+endif
+PARG  += $(PARG_NUM_ITER)
 PARG  += +CPM6_VIVADO
 PARG  += +PCIE_LINK_PIPE
 ifneq ($(PL0_CLK),)

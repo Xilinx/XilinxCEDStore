@@ -3,7 +3,9 @@ class seq_enum extends vseq_base;
   `uvm_object_utils(seq_enum)
   `uvm_register_cb(seq_enum, seq_enum_callback)
 
-  time enum_timeout = 250us;
+  // Enumeration time depends on the random seed (link training + 8-PF config space walk); 250us was too tight for some seeds.
+  // +ENUM_TIMEOUT=<n>us overrides.
+  time enum_timeout = 1000us;
 
   // provide handles to common objects that callbacks can use
   tb_env_cfg     env_cfg;
@@ -66,6 +68,8 @@ class seq_enum extends vseq_base;
   // - RP VIP : Use the API to initiate enumeration
   // - EP DUT : N/A
   virtual task rp_vip_enum;
+    int enum_to_us;
+    if ($value$plusargs("ENUM_TIMEOUT=%d", enum_to_us)) enum_timeout = enum_to_us * 1us;
     // initiate enumeration
     p_sequencer.vip.wait_event("bus_enum_done", 
                                enum_timeout, 

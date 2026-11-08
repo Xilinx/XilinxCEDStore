@@ -9,7 +9,7 @@
 | **Example Type** | IP Example Design (CED) |
 | **Target Audience** | Verification/FPGA engineers validating the CPM6 DMA Bridge datapath |
 | **Devices Supported** | Versal devices with CPM6 hard IP (`vsvc3340` package family) — `xc2vp3602-vsvc3340-3HP-e-S`, `xc2vp3602-vsvc3340-2LHP-e-S` |
-| **Tools Required** | Vivado 2026.1 (validated with build v2026.1.1), VCS/Verdi Y-2026.03-SP1 with UVM 1.1, Avery PLI/apci-xactor 2025.3_1, CPM6 Secure IP package |
+| **Tools Required** | Vivado 2026.2 (validated with build v2026.1.1), VCS/Verdi Y-2026.03-SP1 with UVM 1.1, Avery PLI/apci-xactor 2025.3_1, CPM6 Secure IP package |
 | **Simulators Validated** | VCS (waveform viewing via Verdi or DVE) |
 | **Boards Validated** | VPK360 (hardware testing). No board is registered in the CED GUI; the CED is created part-only |
 | **Pre-Built Images** | Not available |
@@ -244,7 +244,7 @@ Top-level ports added for the DDR variant: `CH0_LPDDR5_0` (LPDDR5 PHY interface:
 5. On the **CPM6 DMA Configuration** page, choose:
    - **Controller selection** (`CTRL_CONFIG`): `Controller_0` or `Controller_1`.
    - **DDR Mode** (`DDR_EN`): enable for the LPDDR5-backed variant.
-   - **Num of PFs** (`NUM_PFS`): `1` or `8` (DDR variant only allows `8`).
+   - **Num of PFs** (`NUM_PFS`): `1` or `8` (`8` is supported only with DDR enabled (`Controller_0` or `Controller_1`); it uses `<sub-design>/src_8pf/` and the 8-PF additions in `<sub-design>/design_1_bd.tcl`).
    - **Link Speed** (`CTRL_LANE_RATE`) and **Link Width** (`CTRL_LINK_WIDTH`).
 6. Review the summary page and click **Finish**.
 
