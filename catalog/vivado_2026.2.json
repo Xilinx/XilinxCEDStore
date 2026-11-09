@@ -232,14 +232,20 @@
       {
         "name": "Versal_CPM6_CXL_RP",
         "display": "Versal CPM6 Compute Express Link (CXL) Root Port (RP)",
-        "latest_revision": "1.0",
-        "commit_id": "d394a88e8e59263d681c0a06aea44f1403128d9e",
+        "latest_revision": "2.0",
+        "commit_id": "6991dabff57093e172d1a45bdf0eb1d4ceb91cf6",
         "revisions": [
           {
             "revision": "1.0",
             "commit_id": "d394a88e8e59263d681c0a06aea44f1403128d9e",
             "date": "25-09-2026:04:51:43",
             "history": "Added board Versal CPM6 Compute Express Link (CXL) Root Port (RP) v1.0"
+          },
+          {
+            "revision": "2.0",
+            "commit_id": "6991dabff57093e172d1a45bdf0eb1d4ceb91cf6",
+            "date": "09-11-2026:14:13:30",
+            "history": "Added board Versal CPM6 Compute Express Link (CXL) Root Port (RP) v2.0"
           }
         ],
         "config": {
