@@ -214,11 +214,11 @@
         "name": "cpm6_cxl_ep_brg",
         "display": "Versal CPM6 CXL EP Bridge Design",
         "latest_revision": "1.0",
-        "commit_id": "82fe5e780cc18c03878ada649e7a97da48582a3a",
+        "commit_id": "4253629e9d5a8ca9fb77de35d183b513a37e5985",
         "revisions": [
           {
             "revision": "1.0",
-            "commit_id": "82fe5e780cc18c03878ada649e7a97da48582a3a",
+            "commit_id": "4253629e9d5a8ca9fb77de35d183b513a37e5985",
             "date": "25-09-2026:04:51:43",
             "history": "Added board Versal CPM6 CXL EP Bridge Design v1.0"
           }
