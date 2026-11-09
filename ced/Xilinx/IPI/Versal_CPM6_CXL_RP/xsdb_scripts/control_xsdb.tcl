@@ -14,6 +14,7 @@
 # below if it doesn't.
 
 proc control::rd32 {addr} {
+  set addr [chk::int control::rd32 addr $addr 0 0xFFFFFFFFFFFF]
   set result [mrd -force $addr 1]
   set tok [lindex $result end]
   regsub {^0x} $tok {} tok
@@ -21,6 +22,8 @@ proc control::rd32 {addr} {
 }
 
 proc control::wr32 {addr value} {
+  set addr  [chk::int control::wr32 addr  $addr  0 0xFFFFFFFFFFFF]
+  set value [chk::int control::wr32 value $value 0 0xFFFFFFFF]
   mwr -force $addr [format 0x%08X $value]
   return
 }

@@ -40,6 +40,9 @@ proc ecam::connect {} {
 proc ecam::get_base {target} {
   variable BASE
   if {[info exists BASE($target)]} { return $BASE($target) }
+  if {$target eq ""} {
+    error "ecam target is required (expected one of: $::ecam::TARGET_NAMES)"
+  }
   error "unknown ecam target '$target' (expected one of: $::ecam::TARGET_NAMES)"
 }
 
@@ -54,13 +57,31 @@ proc ecam::resolve_targets {target} {
 
 proc ecam::get_cfg_addr {target offset} { return [expr {[get_base $target] + $offset}] }
 
+# Validates a config-space byte offset: one function's config space is
+# 0..0xFFF, and every access is a 32-bit DWORD so it must be 4-byte aligned.
+# Returns the offset as an integer.
+proc ecam::check_cfg_offset {caller offset} {
+  set off [::chk::int $caller offset $offset 0 0xFFF]
+  if {$off & 0x3} {
+    error [format "%s: offset 0x%X is not 4-byte aligned -- config accesses are 32-bit DWORDs (valid: 0x0..0xFFC, multiples of 4)" $caller $off]
+  }
+  return $off
+}
+
 proc ecam::cfg_read {args} {
+  ::chk::nargs ecam::cfg_read $args 2 2 "target offset"
   lassign $args target offset
+  get_base $target
+  set offset [check_cfg_offset ecam::cfg_read $offset]
   return [control::rd32 [get_cfg_addr $target $offset]]
 }
 
 proc ecam::cfg_write {args} {
+  ::chk::nargs ecam::cfg_write $args 3 3 "target offset value"
   lassign $args target offset value
+  get_base $target
+  set offset [check_cfg_offset ecam::cfg_write $offset]
+  set value  [::chk::int ecam::cfg_write value $value 0 0xFFFFFFFF]
   control::wr32 [get_cfg_addr $target $offset] $value
   puts "INFO: $target config offset 0x[format %03X $offset] <= 0x[format %08X $value]"
 }
@@ -109,6 +130,7 @@ proc ecam::require_present {target} {
 # Vendor/Device ID
 #----------------------------------------------------------------------------
 proc ecam::id {args} {
+  ::chk::nargs ecam::id $args 0 1 "?rp|ep|both?"
   lassign $args target
   set targets [resolve_targets $target]
   set multi [expr {[llength $targets] > 1}]
@@ -145,6 +167,7 @@ proc ecam::decode_bar {raw} {
 # (HDM decoder ranges) lives in the CXL Device DVSEC on the ep side, via
 # ecam::show_cxl, not here.
 proc ecam::read_bars {args} {
+  ::chk::nargs ecam::read_bars $args 0 1 "?rp|ep|both?"
   lassign $args target
   set targets [resolve_targets $target]
   set multi [expr {[llength $targets] > 1}]
@@ -179,6 +202,7 @@ proc ecam::read_bars {args} {
 # Standard PCI capability list (offset 0x34 -> linked list via next-ptr byte)
 #----------------------------------------------------------------------------
 proc ecam::walk_caps {args} {
+  ::chk::nargs ecam::walk_caps $args 0 1 "?rp|ep|both?"
   lassign $args target
   set targets [resolve_targets $target]
   set multi [expr {[llength $targets] > 1}]
@@ -215,6 +239,7 @@ proc ecam::walk_caps {args} {
 # next-offset field in each 32-bit DW0 header)
 #----------------------------------------------------------------------------
 proc ecam::walk_ext_caps {args} {
+  ::chk::nargs ecam::walk_ext_caps $args 0 1 "?rp|ep|both?"
   lassign $args target
   set targets [resolve_targets $target]
   set multi [expr {[llength $targets] > 1}]
@@ -288,7 +313,14 @@ proc ecam::walk_ext_caps {args} {
 # as it walks the extended capability list; ecam::show_cxl does its own
 # independent walk for its verbose dump rather than building on this.
 proc ecam::find_cxl {args} {
+  ::chk::nargs ecam::find_cxl $args 1 2 "target ?ext_caps?"
   lassign $args target ext_caps
+  ::chk::oneof ecam::find_cxl target $target {rp ep}
+  foreach cap $ext_caps {
+    if {[catch {dict get $cap cap_id; dict get $cap offset}]} {
+      error "ecam::find_cxl: ext_caps must be the return value of 'ecam::walk_ext_caps <target>' (a list of dicts with cap_id/offset keys), got '$ext_caps'"
+    }
+  }
   variable DVSEC_EXT_CAP_ID
   variable CXL_VENDOR_ID
   variable CXL_DVSEC_ID_NAMES
@@ -513,6 +545,7 @@ proc ecam::print_cxl_dev_status2_decode {dw_val rel_off} {
 #   0x0008 Register Locator DVSEC -- BIR + block-type + offset per register
 #          block (where CXL.io/cache/mem Component/Device registers live)
 proc ecam::show_cxl {args} {
+  ::chk::nargs ecam::show_cxl $args 0 2 "?rp|ep|both? ?dvsec_spec?"
   lassign $args target dvsec_arg
   set targets [resolve_targets $target]
   set multi [expr {[llength $targets] > 1}]
@@ -521,8 +554,16 @@ proc ecam::show_cxl {args} {
   variable CXL_DVSEC_ID_NAMES
   set filter_mode ""
   set filter_val ""
+  # Validate everything up front so a bad argument never reaches hardware.
+  resolve_targets $target
   if {$dvsec_arg ne ""} {
-    set filter_val [expr {$dvsec_arg}]
+    if {$dvsec_arg in {rp ep both}} {
+      error "ecam::show_cxl: unexpected extra target '$dvsec_arg' -- only one target is accepted (pass \"both\" to show rp and ep), usage: ecam::show_cxl ?rp|ep|both? ?dvsec_spec?"
+    }
+    if {[catch {::chk::int ecam::show_cxl dvsec_spec $dvsec_arg 0 0xFFF} dvsec_arg_err]} {
+      error "$dvsec_arg_err -- accepted: a CXL DVSEC ID (0x0, 0x2-0x5, 0x7-0xA) or a DVSEC config-space byte offset (>= 0x100)"
+    }
+    set filter_val [::chk::int ecam::show_cxl dvsec_spec $dvsec_arg 0 0xFFF]
     set filter_mode [expr {[info exists CXL_DVSEC_ID_NAMES([format 0x%04X $filter_val])] ? "id" : "offset"}]
   }
   foreach t $targets {
@@ -914,6 +955,7 @@ proc ecam::require_ep_bars_setup {} {
 # the verbose per-DWORD CXL DVSEC dump (walk_ext_caps below already prints
 # each CXL DVSEC's specific name/ID inline as a one-line summary).
 proc ecam::report {args} {
+  ::chk::nargs ecam::report $args 0 1 "?rp|ep|both?"
   lassign $args target
   set targets [resolve_targets $target]
   foreach t $targets {

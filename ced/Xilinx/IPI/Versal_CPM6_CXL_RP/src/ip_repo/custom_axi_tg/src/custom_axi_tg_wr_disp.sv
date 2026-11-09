@@ -166,7 +166,16 @@ module custom_axi_tg_wr_disp
   logic [         31:0] data_q;
   logic [         11:0] rem;
   logic                 last_txn_r;
-  logic                 active, aw_pend, w_pend;
+  logic                 active;
+  logic                 aw_pend;
+  logic                 w_pend;
+
+  // Initial values are for simulation only (avoids X on AWVALID/WVALID before
+  // the first reset edge); the synchronous reset still controls them
+  initial begin
+    aw_pend = 1'b0;
+    w_pend  = 1'b0;
+  end
 
   //--- generator outputs ----------------------------------------------------
   logic [         47:0] addr_next;
@@ -275,7 +284,7 @@ module custom_axi_tg_wr_disp
   // them whenever AWVALID/WVALID (=aw_pend/w_pend, which DO reset) is low, and
   // load_new always writes them fresh before aw_pend/w_pend can next assert.
   // They are intentionally left out of reset.
-  always_ff @(posedge clk) begin
+  always @(posedge clk) begin
     if (!rstn) begin
       active        <= 1'b0;
       aw_pend       <= 1'b0;
@@ -385,7 +394,8 @@ module custom_axi_tg_wr_disp
     bid_q2      <= bid_q;
 
     err_vld     <= 1'b0;
-    if (ring_dec_vld && ring_dec_hit && (bresp_q2 != RESP_OKAY)) begin
+    // RESP[1] set = SLVERR or DECERR; OKAY and EXOKAY are not errors
+    if (ring_dec_vld && ring_dec_hit && bresp_q2[1]) begin
       err_vld    <= 1'b1;
       err_idx    <= ring_dec_cmd_idx;
       err_slverr <= (bresp_q2 == RESP_SLVERR);  // the only other is DECERR

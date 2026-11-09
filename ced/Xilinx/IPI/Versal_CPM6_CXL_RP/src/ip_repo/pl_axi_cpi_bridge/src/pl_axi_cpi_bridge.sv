@@ -65,6 +65,7 @@
 module pl_axi_cpi_bridge 
   import cxl_tl_enum_pkg::*;
   import cpi_pkg::cpi_flitmode_t;
+  import cpi_pkg::even_parity_pass;
 #(
   // General Parameters 
   parameter bit [1:0] BRDG_ID,
@@ -81,7 +82,8 @@ module pl_axi_cpi_bridge
   parameter bit ARUSER_MEMSPECRD_SUPP = 0, //[0, 1]
   parameter bit ARUSER_MEMINV_SUPP    = 0, //[0, 1]
   parameter bit ARUSER_MEMINVNT_SUPP  = 0, //[0, 1]
-  // CPI Interface Parameters
+  // CPI Interface Parameters (F2A->generate; A2F->check)
+  //  - all CPI parity is reduction XOR AKA EVEN parity
   parameter bit EN_CMD_PARITY = 0,
   parameter bit EN_DAT_PARITY = 0,
   parameter bit EN_BEN_PARITY = 0,
@@ -117,6 +119,7 @@ module pl_axi_cpi_bridge
   // Future provision
   localparam bit ADDR5_SUPP   = 1'b0
 )(
+  output logic                   fatal_err,
   /*** AMBA AXI H.c Revision Interface - Slave Port ***/
   input                          s_axi_aclk,
   input                          s_axi_aresetn,
@@ -261,6 +264,10 @@ module pl_axi_cpi_bridge
   logic                          a2f_dat_block_err;
   logic                          a2f_dat_id_err;
   logic                          a2f_rsp_id_err;
+  logic                          a2f_dat_cmd_par_err;
+  logic                          a2f_dat_bdy_par_err; //bdy="body"
+  logic [7:0]                    a2f_dat_ele_par_err; //ele="element" (of body)
+  logic                          a2f_rsp_cmd_par_err;
 
   debug_axi_cpi_bridge           i_dbg_gpio_if(); //"i_"=internal
   logic                          final_cnt_reset;
@@ -566,7 +573,7 @@ module pl_axi_cpi_bridge
     f2a_dat.header.dsp.f2am.snptype           = SnpNoOp;
     f2a_dat.header.dsp.f2am.tc                = '0;
     f2a_dat.header.dsp.f2am.rsvd14to13        = '0;
-    f2a_dat.header.dsp.f2am.addressparity     = !EN_ADR_PARITY ? '0 : ^{addr_even, addr_odd};
+    f2a_dat.header.dsp.f2am.addressparity     = EN_ADR_PARITY && ^{addr_even, addr_odd};
     f2a_dat.header.dsp.f2am.address51to6_even = addr_even;
     f2a_dat.header.dsp.f2am.tag[ 7: 0]        = wr_issue_wptr[i_axi_awid]; //WROB ptr
     f2a_dat.header.dsp.f2am.tag[11: 8]        = i_axi_awid; //AXI ID (which WROB)
@@ -574,19 +581,19 @@ module pl_axi_cpi_bridge
     f2a_dat.header.dsp.f2am.tag[15]           = 1'b0; //WRn
     f2a_dat.header.dsp.f2am.address51to6_odd  = addr_odd;
     f2a_dat.header.dsp.f2am.ldid              = '0;
-    f2a_dat.header.dsp.f2am.flitmode          = cpi_flitmode_t'('0); //NU: this is a data re-formatter, 
+    f2a_dat.header.dsp.f2am.flitmode          = cpi_flitmode_t'('1); //NU: this is a data re-formatter, 
                                                                      //    not flit aware
     /* Parity */
-    f2a_dat.cmd_parity = EN_CMD_PARITY ? ^(f2a_dat.header) : 1'b0;
+    f2a_dat.cmd_parity = EN_CMD_PARITY && ^(f2a_dat.header);
     /* Payload */
     f2a_dat.body               = s_axi_wdata;
     f2a_dat.byte_enable        = s_axi_wstrb; 
-    f2a_dat.byte_enable_parity = EN_BEN_PARITY ? ^s_axi_wstrb : 1'b0;
+    f2a_dat.byte_enable_parity = EN_BEN_PARITY && ^(s_axi_wstrb);
     f2a_dat.poison             = USER_POISN_SUPP ? s_axi_wuser[WUSER_POIS_BS] : 1'b0;
     f2a_dat.sz                 = 1'b1;
     f2a_dat.eop                = 1'b1;
     for (int pp=0; pp<AXI_DATA_WIDTH/64; pp++)
-    f2a_dat.parity[pp]         = EN_DAT_PARITY ? ^(s_axi_wdata[64*pp+:64]) : 1'b0;
+    f2a_dat.parity[pp]         = EN_DAT_PARITY && ^(s_axi_wdata[64*pp+:64]);
   end
 
   /*** Read Datapath (Read Requests [push] and Read Responses [pop]) ***/
@@ -823,12 +830,13 @@ module pl_axi_cpi_bridge
       f2a_req.header.dsp.f2am.metafield   = NoOp;
       f2a_req.header.dsp.f2am.metavalue   = mem_metavalue_t'('0);
     end
-    f2a_req.header.dsp.f2am.addressparity = !EN_ADR_PARITY ? '0 : ^(s_axi_araddr[AXI_ADDR_WIDTH-1:(5+!ADDR5_SUPP)]);
+    f2a_req.header.dsp.f2am.addressparity = EN_ADR_PARITY && ^(s_axi_araddr[AXI_ADDR_WIDTH-1:(5+!ADDR5_SUPP)]);
     f2a_req.header.dsp.f2am.address51to6  = s_axi_araddr[AXI_ADDR_WIDTH-1:6];
     f2a_req.header.dsp.f2am.ldid          = '0;
-    f2a_req.header.dsp.f2am.flitmode      = cpi_flitmode_t'('0); //NU: this is a data re-formatter, not flit aware
+    f2a_req.header.dsp.f2am.flitmode      = cpi_flitmode_t'('1); //NU: this is a data re-formatter, 
+                                                                 //    not flit aware
     /* Parity */
-    f2a_req.cmd_parity = EN_CMD_PARITY ? ^(f2a_req.header) : 1'b0;
+    f2a_req.cmd_parity = EN_CMD_PARITY && ^(f2a_req.header);
   end
 
   /* CPI Blocking */
@@ -847,14 +855,29 @@ module pl_axi_cpi_bridge
   // Error checking
   always_ff @(posedge s_axi_aclk) begin
     if (!s_axi_aresetn) begin
-      f2a_req_block_err <= 1'b0;
-      f2a_dat_block_err <= 1'b0;
-      a2f_rsp_block_err <= 1'b0;
-      a2f_dat_block_err <= 1'b0;
-      a2f_dat_id_err    <= 1'b0;
-      a2f_rsp_id_err    <= 1'b0;
+      fatal_err           <= 1'b0;
+      f2a_req_block_err   <= 1'b0;
+      f2a_dat_block_err   <= 1'b0;
+      a2f_rsp_block_err   <= 1'b0;
+      a2f_dat_block_err   <= 1'b0;
+      a2f_dat_id_err      <= 1'b0;
+      a2f_rsp_id_err      <= 1'b0;
+      a2f_dat_cmd_par_err <= 1'b0;
+      a2f_dat_bdy_par_err <= 1'b0;
+      a2f_dat_ele_par_err <= '0;
+      a2f_rsp_cmd_par_err <= 1'b0;
     end
     else begin
+      fatal_err <= |{f2a_req_block_err,
+                     f2a_dat_block_err,
+                     a2f_rsp_block_err,
+                     a2f_dat_block_err,
+                     a2f_dat_id_err,
+                     a2f_rsp_id_err,
+                     a2f_dat_cmd_par_err,
+                     a2f_dat_bdy_par_err,
+                     a2f_rsp_cmd_par_err
+                   };
       // Latch error when blocking response violated on CPI interface (AgentBlocking=FabricBlocking=1)
       if (f2a_req.is_valid && f2a_req_block_q)
         f2a_req_block_err <= 1'b1;
@@ -869,6 +892,24 @@ module pl_axi_cpi_bridge
         a2f_dat_id_err <= 1'b1;
       if (a2f_rsp.is_valid && a2f_rsp.header.dsp.a2fm.tag[13:12]!=BRDG_ID)
         a2f_rsp_id_err <= 1'b1;
+      // Latch error when cmd_parity failure detected
+      if (EN_CMD_PARITY) begin
+        if (a2f_dat.is_valid && !even_parity_pass(a2f_dat.cmd_parity, a2f_dat.header.dsp.a2fm))
+          a2f_dat_cmd_par_err <= 1'b1;
+        if (a2f_rsp.is_valid && !even_parity_pass(a2f_rsp.cmd_parity, a2f_rsp.header.dsp.a2fm))
+          a2f_rsp_cmd_par_err <= 1'b1;
+      end
+      // Latch error when data body parity failure detected
+      // - log6(65) = 3 levels of logic
+      // - summarized error is one cycle later (2 levels of logic; 8b reduction) 
+      if (EN_DAT_PARITY) begin
+        a2f_dat_bdy_par_err <= |a2f_dat_ele_par_err;
+        if (a2f_dat.is_valid) begin
+          for (int ii=0; ii<8; ii++) 
+            if (!even_parity_pass(a2f_dat.parity[ii], a2f_dat.body[ii*64+:64]))
+              a2f_dat_ele_par_err[ii] <= 1'b1; 
+        end
+      end
     end
   end
 
@@ -1145,12 +1186,17 @@ module pl_axi_cpi_bridge
        // destination domain
        .dest_clk          (s_axi_aclk),
        // monitor any errors
-       .f2a_req_block_err (f2a_req_block_err),
-       .f2a_dat_block_err (f2a_dat_block_err),
-       .a2f_rsp_block_err (a2f_rsp_block_err),
-       .a2f_dat_block_err (a2f_dat_block_err),
-       .a2f_rsp_id_err    (a2f_rsp_id_err),
-       .a2f_dat_id_err    (a2f_dat_id_err),
+       .fatal_err           (fatal_err),
+       .f2a_req_block_err   (f2a_req_block_err),
+       .f2a_dat_block_err   (f2a_dat_block_err),
+       .a2f_rsp_block_err   (a2f_rsp_block_err),
+       .a2f_dat_block_err   (a2f_dat_block_err),
+       .a2f_rsp_id_err      (a2f_rsp_id_err),
+       .a2f_dat_id_err      (a2f_dat_id_err),
+       .a2f_dat_cmd_par_err (a2f_dat_cmd_par_err),
+       .a2f_dat_bdy_par_err (a2f_dat_bdy_par_err),
+       .a2f_dat_ele_par_err (a2f_dat_ele_par_err),
+       .a2f_rsp_cmd_par_err (a2f_rsp_cmd_par_err),
        // monitor the AXI interface
        .awvalid           (s_axi_awvalid),
        .awready           (s_axi_awready),

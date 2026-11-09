@@ -1,0 +1,9 @@
+tests:
+  - name: basic_cxl_ep_type3_hdm1_fm
+    runs: 3
+  - name: basic_cxl_ep_type3_hdm1_nfm
+    runs: 3
+  - name: basic_cxl_ep_type3_hdm2_fm
+    runs: 3
+  - name: basic_cxl_ep_type3_hdm2_nfm
+    runs: 3

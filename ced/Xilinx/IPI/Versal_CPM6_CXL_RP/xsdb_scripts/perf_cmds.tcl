@@ -55,6 +55,37 @@ proc perf::iface_label_width {} {
 }
 
 #----------------------------------------------------------------------------
+# Argument validation helpers (run BEFORE any hardware access or side effect)
+#----------------------------------------------------------------------------
+# cpi must be a discovered datapath; iface one of IFACE_NAMES.
+proc perf::check_cpi_iface {caller cpi iface} {
+  variable IFACE_NAMES
+  ::chk::cpi $caller $cpi
+  ::chk::oneof $caller iface $iface $IFACE_NAMES
+}
+
+# Optional output channel: "" means stdout; anything else must be an open
+# Tcl channel. Returns the channel to use.
+proc perf::resolve_chan {caller chan} {
+  if {$chan eq ""} { return stdout }
+  return [::chk::channel $caller chan $chan]
+}
+
+# Optional cpi list: "" means every discovered datapath; otherwise every
+# element must be a discovered datapath. The whole list is checked before
+# the caller does anything with any element.
+proc perf::resolve_cpi_list {caller cpi_list} {
+  if {[llength $cpi_list] == 0} {
+    set cpi_list [design::get_cxl_indices]
+    if {[llength $cpi_list] == 0} {
+      error "$caller: no datapaths discovered yet -- call design::discover first"
+    }
+    return $cpi_list
+  }
+  return [::chk::cpi_list $caller $cpi_list]
+}
+
+#----------------------------------------------------------------------------
 # Read / reset
 #----------------------------------------------------------------------------
 # Silent read -- no print. Used internally by compute_latency/bandwidth
@@ -73,8 +104,10 @@ proc perf::read_ram_entries {cpi iface} {
 }
 
 proc perf::read_ram {args} {
+  ::chk::nargs perf::read_ram $args 2 3 "cpi iface ?chan?"
   lassign $args cpi iface chan
-  if {$chan eq ""} { set chan stdout }
+  check_cpi_iface perf::read_ram $cpi $iface
+  set chan [resolve_chan perf::read_ram $chan]
   puts stdout "INFO: This may take several minutes."
   set entries [read_ram_entries $cpi $iface]
   puts $chan [format "Datapath %d | %-*s | Entries: %d" $cpi [iface_label_width] [iface_label $iface] [llength $entries]]
@@ -99,7 +132,9 @@ proc perf::read_cpi_entries {cpi} {
 # Purely a display command -- prints only, returns nothing; call
 # perf::capture instead if you need the entries back.
 proc perf::read_datapath {args} {
+  ::chk::nargs perf::read_datapath $args 1 1 "cpi"
   lassign $args cpi
+  ::chk::cpi perf::read_datapath $cpi
   puts stdout "INFO: This may take several minutes."
   variable IFACE_NAMES
   foreach iface $IFACE_NAMES { read_ram $cpi $iface }
@@ -135,8 +170,10 @@ proc perf::binary_search_entry_count {cpi iface} {
 # boundary. Prints the same one-line summary as perf::read_ram, but returns
 # just the count (an integer), not a list of {cnt tag} entries.
 proc perf::get_ram_entries {args} {
+  ::chk::nargs perf::get_ram_entries $args 2 3 "cpi iface ?chan?"
   lassign $args cpi iface chan
-  if {$chan eq ""} { set chan stdout }
+  check_cpi_iface perf::get_ram_entries $cpi $iface
+  set chan [resolve_chan perf::get_ram_entries $chan]
   set n [binary_search_entry_count $cpi $iface]
   puts $chan [format "Datapath %d | %-*s | Entries: %d" $cpi [iface_label_width] [iface_label $iface] $n]
   return $n
@@ -146,22 +183,27 @@ proc perf::get_ram_entries {args} {
 # command -- prints only, returns nothing; call perf::get_ram_entries
 # directly if you need a single interface's count back.
 proc perf::get_datapath_entries {args} {
+  ::chk::nargs perf::get_datapath_entries $args 1 1 "cpi"
   lassign $args cpi
+  ::chk::cpi perf::get_datapath_entries $cpi
   variable IFACE_NAMES
   foreach iface $IFACE_NAMES { get_ram_entries $cpi $iface }
   return
 }
 
 proc perf::reset_ram {args} {
+  ::chk::nargs perf::reset_ram $args 2 2 "cpi iface"
   lassign $args cpi iface
+  check_cpi_iface perf::reset_ram $cpi $iface
   control::wr32 [design::get_uram_base $cpi $iface] 0
   puts "INFO: reset write pointer for cpi=$cpi iface=$iface"
 }
 
 proc perf::reset_all {args} {
+  ::chk::nargs perf::reset_all $args 0 1 "?cpi_list?"
   lassign $args cpi_list
   variable IFACE_NAMES
-  if {[llength $cpi_list] == 0} { set cpi_list [design::get_cxl_indices] }
+  set cpi_list [resolve_cpi_list perf::reset_all $cpi_list]
   foreach cpi $cpi_list { foreach iface $IFACE_NAMES { reset_ram $cpi $iface } }
   puts "INFO: reset all perf URAMs for cpi(s) $cpi_list"
 }
@@ -171,7 +213,9 @@ proc perf::reset_all {args} {
 # all 4 interfaces)
 #----------------------------------------------------------------------------
 proc perf::capture {args} {
+  ::chk::nargs perf::capture $args 1 1 "cpi"
   lassign $args cpi
+  ::chk::cpi perf::capture $cpi
   variable IFACE_NAMES
   set result [dict create]
   foreach iface $IFACE_NAMES { dict set result $iface [read_ram $cpi $iface] }
@@ -182,8 +226,9 @@ proc perf::capture {args} {
 # bandwidth_all/report see data from one shared window instead of
 # independently-timed ones.
 proc perf::capture_all {args} {
+  ::chk::nargs perf::capture_all $args 0 1 "?cpi_list?"
   lassign $args cpi_list
-  if {[llength $cpi_list] == 0} { set cpi_list [design::get_cxl_indices] }
+  set cpi_list [resolve_cpi_list perf::capture_all $cpi_list]
   variable IFACE_NAMES
   set result [dict create]
   foreach cpi $cpi_list {
@@ -292,7 +337,11 @@ proc perf::compute_latency {cpi path {entry_cache ""}} {
 }
 
 proc perf::latency {args} {
+  variable LATENCY_PATHS
+  ::chk::nargs perf::latency $args 2 2 "cpi path"
   lassign $args cpi path
+  ::chk::cpi perf::latency $cpi
+  ::chk::oneof perf::latency path $path [lsort [array names LATENCY_PATHS]]
   set result [compute_latency $cpi $path]
   puts "cpi $cpi $path latency: n=[dict get $result n] min=[format %.1f [dict get $result min_ns]]ns avg=[format %.1f [dict get $result avg_ns]]ns max=[format %.1f [dict get $result max_ns]]ns (unmatched: src=[dict get $result unmatched_src] dst=[dict get $result unmatched_dst])"
   return $result
@@ -304,8 +353,10 @@ proc perf::latency {args} {
 # independent GB/s figures overstates aggregate throughput)
 #----------------------------------------------------------------------------
 proc perf::bandwidth {args} {
+  ::chk::nargs perf::bandwidth $args 2 3 "cpi iface ?chan?"
   lassign $args cpi iface chan
-  if {$chan eq ""} { set chan stdout }
+  check_cpi_iface perf::bandwidth $cpi $iface
+  set chan [resolve_chan perf::bandwidth $chan]
   variable BYTES_PER_XFER
   variable FREERUN_WIDTH
   set entries [read_ram_entries $cpi $iface]
@@ -441,9 +492,13 @@ proc perf::compute_bandwidth_all {cpi_list {cache_by_cpi ""}} {
 }
 
 proc perf::bandwidth_all {args} {
+  ::chk::nargs perf::bandwidth_all $args 0 3 "?cpi_list? ?chan? ?cache_by_cpi?"
   lassign $args cpi_list chan cache_by_cpi
-  if {$chan eq ""} { set chan stdout }
-  if {[llength $cpi_list] == 0} { set cpi_list [design::get_cxl_indices] }
+  set cpi_list [resolve_cpi_list perf::bandwidth_all $cpi_list]
+  set chan [resolve_chan perf::bandwidth_all $chan]
+  if {$cache_by_cpi ne "" && [catch {dict size $cache_by_cpi}]} {
+    error "perf::bandwidth_all: cache_by_cpi must be a dict of {cpi -> {iface -> entries}} (e.g. from perf::capture_all), got '$cache_by_cpi'"
+  }
   set result [compute_bandwidth_all $cpi_list $cache_by_cpi]
   set per_path [dict get $result per_path]
   foreach key [dict keys $per_path] {
@@ -657,13 +712,14 @@ proc perf::print_bandwidth_table {cpi_list result {chan stdout}} {
 # compute_bandwidth_all call below -- without this, compute_latency and
 # compute_path_bandwidth would each independently re-read the same 4 URAMs.
 proc perf::report {args} {
+  ::chk::nargs perf::report $args 0 2 "?cpi_list? ?chan?"
   lassign $args cpi_list chan
-  if {$chan eq ""} { set chan stdout }
+  set cpi_list [resolve_cpi_list perf::report $cpi_list]
+  set chan [resolve_chan perf::report $chan]
   if {[catch {design::get_clk_hz} clk_err]} {
     error "perf::report: cannot compute latency without a clock frequency -- $clk_err"
   }
   puts stdout "INFO: This may take several minutes."
-  if {[llength $cpi_list] == 0} { set cpi_list [design::get_cxl_indices] }
   set cache_by_cpi [dict create]
   foreach cpi $cpi_list {
     set entry_cache [read_cpi_entries $cpi]
@@ -696,9 +752,11 @@ proc perf::report {args} {
 # handy for saving results. cpi_list defaults to every discovered cpi;
 # filename defaults to "latency_report.txt".
 proc perf::report_to_file {args} {
+  ::chk::nargs perf::report_to_file $args 0 2 "?cpi_list? ?filename?"
   lassign $args cpi_list filename
-  if {[llength $cpi_list] == 0} { set cpi_list [design::get_cxl_indices] }
+  set cpi_list [resolve_cpi_list perf::report_to_file $cpi_list]
   if {$filename eq ""} { set filename "latency_report.txt" }
+  ::chk::file_writable perf::report_to_file filename $filename
   set fh [open $filename w]
   report $cpi_list $fh
   close $fh
@@ -713,8 +771,9 @@ proc perf::report_to_file {args} {
 # perf::capture_all (each entry a {cnt tag} dict), under a name suited to
 # the raw-export workflow perf::raw_to_file builds on.
 proc perf::get_raw {args} {
+  ::chk::nargs perf::get_raw $args 0 1 "?cpi_list?"
   lassign $args cpi_list
-  if {[llength $cpi_list] == 0} { set cpi_list [design::get_cxl_indices] }
+  set cpi_list [resolve_cpi_list perf::get_raw $cpi_list]
   return [capture_all $cpi_list]
 }
 
@@ -775,19 +834,20 @@ proc perf::write_raw_yaml {chan raw} {
 
 # Writes perf::get_raw's data to fname.ftype (any "."-onward suffix already
 # in fname is stripped first). ftype selects the format: "txt" (default),
-# "csv", or "yaml"; errors immediately, without touching the filesystem, if
-# ftype isn't one of those.
+# "csv", or "yaml"; errors immediately, before reading any URAM or touching
+# the filesystem, if ftype isn't one of those or the output file's directory
+# isn't writable.
 proc perf::raw_to_file {args} {
+  ::chk::nargs perf::raw_to_file $args 0 3 "?cpi_list? ?ftype? ?fname?"
   lassign $args cpi_list ftype fname
-  if {[llength $cpi_list] == 0} { set cpi_list [design::get_cxl_indices] }
+  set cpi_list [resolve_cpi_list perf::raw_to_file $cpi_list]
   if {$ftype eq ""} { set ftype txt }
   if {$fname eq ""} { set fname raw_report }
-  if {$ftype ni {txt csv yaml}} {
-    error "unsupported ftype '$ftype' -- expected one of: txt, csv, yaml"
-  }
+  ::chk::oneof perf::raw_to_file ftype $ftype {txt csv yaml}
 
   regsub {\..*$} $fname {} base
   set filename "${base}.${ftype}"
+  ::chk::file_writable perf::raw_to_file fname $filename
   set raw [get_raw $cpi_list]
 
   set fh [open $filename w]

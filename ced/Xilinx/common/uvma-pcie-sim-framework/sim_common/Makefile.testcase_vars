@@ -1,0 +1,24 @@
+# This Makefile will be include-d by a Vivado project to set common variables
+# These variables must be set before this is called:
+#  - TESTCASE_ROOT //a PVS team "testcase" AKA Vivado project
+#  - FW_ROOT       //uvma-pcie-sim-framework root (FW="framework")
+
+# Must specify the incdir path(s) to grab testcase files (comma separated list)
+# This is just a default; testcases can override by setting in its Makefile
+TESTCASE_INCDIR ?= $(TESTCASE_ROOT)/verif,$(TESTCASE_ROOT)/verif/test
+# uvma-pcie-sim-framework root's sim directory path
+FW_SIM_DIR :=$(shell find $(FW_ROOT)/ -maxdepth 2 -name "sim" -path "*sim-framework/cpm6/*")
+
+# Questa's compile.sh is just a thin wrapper, while VCS's compile.sh contains
+# the actual RTL source files.
+DUT_COMPILE_SRC := $(if $(filter questa,$(SIM)),$(PROJ_SIM_DIR)/*_compile.do,$(PROJ_SIM_DIR)/compile.sh)
+
+# Check if directory exists first
+ifneq ($(wildcard $(PROJ_SIM_DIR)),)
+ # Parse the Vivado-generated compile file to extract the Vivado RTL files for compilation
+ DUT_SV   := $(shell egrep -o '^\".*\.(|s)v\"'   $(DUT_COMPILE_SRC) 2>/dev/null | tr -d '\\' | tr -d '"' | sed 's/$$origin_dir\///')
+ # Pick up the locally generated glbl.v
+ DUT_SV   += glbl.v
+ DUT_VHDL := $(shell egrep -o '^\".*\.vhd(l|)\"' $(DUT_COMPILE_SRC) 2>/dev/null | tr -d '\\' | tr -d '"' | sed 's/$$origin_dir\///')
+ DUT_INCD := $(shell egrep -o '\+incdir\+.* '    $(DUT_COMPILE_SRC) 2>/dev/null | sed 's/$$origin_dir\///g')
+endif

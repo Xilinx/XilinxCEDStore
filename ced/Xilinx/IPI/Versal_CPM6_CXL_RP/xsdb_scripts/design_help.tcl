@@ -7,7 +7,8 @@
 namespace eval design {
   variable COMMANDS {
     discover set_clk_hz
-    get_tg_base get_gpio_base get_uram_base get_clk_hz
+    get_tg_base get_trig_gpio_base get_uram_base get_clk_hz
+    get_ext_gpio_base get_ext_gpio_clk_hz set_ext_gpio_clk_hz
     get_num_cpi get_cxl_indices
     connect
     program check_link_status
@@ -16,12 +17,15 @@ namespace eval design {
 
   array set CMD_SUMMARY {
     discover             "parse the generated .hwh once:\
-custom_axi_tg/axil_gpio4/uram_sdp_4Kx44 base addresses + cxl1_clk frequency"
+custom_axi_tg/axil_gpio4/gpio_ext_axil/uram_sdp_4Kx44 base addresses + cxl1_clk and gpio_ext clock frequencies"
     set_clk_hz           "manually set/override the CXL clock frequency"
     get_tg_base          "custom_axi_tg base address for a datapath"
-    get_gpio_base        "axil_gpio4_0 base address"
+    get_trig_gpio_base   "axil_gpio4_0 (multi-datapath trigger GPIO) base address"
     get_uram_base        "uram_sdp_4Kx44 base address for a (cpi, interface) pair"
     get_clk_hz           "the discovered/set cxl1_clk frequency in Hz"
+    get_ext_gpio_base    "gpio_ext_axil_0 (board LEDs/buttons/switches) base address"
+    get_ext_gpio_clk_hz  "the discovered/set gpio_ext_axil_0 clock frequency in Hz"
+    set_ext_gpio_clk_hz  "manually set/override the gpio_ext_axil_0 clock frequency"
     get_num_cpi          "number of datapaths discovered"
     get_cxl_indices      "list of discovered CXL datapath indices"
     connect              "select the JTAG target (shared by every package)"
@@ -38,14 +42,15 @@ custom_axi_tg/axil_gpio4/uram_sdp_4Kx44 base addresses + cxl1_clk frequency"
   set CMD_HELP(discover) [join {
     {Args:}
     {  [proj_dir_or_hwh_path] -- a generated project directory (the parent}
-    {  of p.gen/p.sim/...) or the exact top-level block-design .hwh file}
-    {  path. Default: "./".}
+    {                           of p.gen/p.sim/...) or the exact top-level}
+    {                           block-design .hwh file path. Default: "./".}
     {}
     {Notes:}
     {  - No hardware/JTAG connection required; this only parses the .hwh XML.}
     {  - Populates: per-cpi custom_axi_tg base addresses, axil_gpio4_0's}
-    {    base address, per-(cpi,iface) uram_sdp_4Kx44 base addresses, and}
-    {    the cxl1_clk clock frequency.}
+    {    base address, per-(cpi,iface) uram_sdp_4Kx44 base addresses, the}
+    {    cxl1_clk clock frequency, and gpio_ext_axil_0's base address and}
+    {    clock frequency (its CLK_FREQ_HZ parameter).}
     {  - Warns (doesn't error) if the clock line isn't found -- address-map}
     {    discovery must still succeed either way; call set_clk_hz manually}
     {    in that case.}
@@ -57,7 +62,7 @@ custom_axi_tg/axil_gpio4/uram_sdp_4Kx44 base addresses + cxl1_clk frequency"
 
   set CMD_HELP(set_clk_hz) [join {
     {Args:}
-    {  hz -- clock frequency in Hz (e.g. 333329987), numeric.}
+    {  hz -- clock frequency in Hz (e.g. 333329987), a number > 0.}
     {}
     {Overrides/replaces whatever design::discover auto-discovered, or use}
     {this if auto-discovery warned that cxl1_clk wasn't found. Required}
@@ -73,12 +78,38 @@ custom_axi_tg/axil_gpio4/uram_sdp_4Kx44 base addresses + cxl1_clk frequency"
     {if design::discover hasn't been run, or cpi doesn't exist.}
   } "\n"]
 
-  set CMD_HELP(get_gpio_base) [join {
+  set CMD_HELP(get_trig_gpio_base) [join {
     {No args.}
     {}
-    {Returns axil_gpio4_0's base address (used by hwtg::ext_trigger/}
-    {ext_trigger_all).}
+    {Returns axil_gpio4_0's (the multi-datapath trigger GPIO) base address}
+    {(used by hwtg::ext_trigger/ext_trigger_all). The board LED/pushbutton/}
+    {DIP switch block is get_ext_gpio_base.}
     {Errors if design::discover hasn't found it.}
+  } "\n"]
+
+  set CMD_HELP(get_ext_gpio_base) [join {
+    {No args.}
+    {}
+    {Returns gpio_ext_axil_0's base address (used by gpio::). This is the}
+    {board LED/pushbutton/DIP switch block, not the trigger GPIO}
+    {axil_gpio4_0 (see get_trig_gpio_base). Errors if design::discover}
+    {hasn't found it.}
+  } "\n"]
+
+  set CMD_HELP(get_ext_gpio_clk_hz) [join {
+    {No args.}
+    {}
+    {Returns the clock frequency gpio_ext_axil_0's blink, PWM and debounce}
+    {timing is built from (used by gpio::led_blink). Errors if it was}
+    {neither discovered nor set manually.}
+  } "\n"]
+
+  set CMD_HELP(set_ext_gpio_clk_hz) [join {
+    {Args:}
+    {  hz -- clock frequency in Hz (number > 0)}
+    {}
+    {Overrides gpio_ext_axil_0's clock frequency, for when discovery could}
+    {not find it. Should match the block's CLK_FREQ_HZ parameter.}
   } "\n"]
 
   set CMD_HELP(get_uram_base) [join {
@@ -156,9 +187,11 @@ custom_axi_tg/axil_gpio4/uram_sdp_4Kx44 base addresses + cxl1_clk frequency"
 
   set CMD_HELP(setup_mio_as_gpio) [join {
     {Args:}
-    {  pin      -- MIO pin number (0-51)}
+    {  pin      -- MIO pin number (integer, 0-51)}
     {  dir      -- "in" or "out"}
     {  [dfault] -- initial output value (0/1); required when dir=out}
+    {}
+    {All arguments are validated before any register is written.}
     {}
     {Configures PMC_IOU_SLCR L0/L1/L2 muxing to route the pin through}
     {GPIO1, and sets up PS_GPIO direction/output-enable/initial-value}
@@ -167,7 +200,7 @@ custom_axi_tg/axil_gpio4/uram_sdp_4Kx44 base addresses + cxl1_clk frequency"
 
   set CMD_HELP(verify_mio) [join {
     {Args:}
-    {  pin     -- MIO pin number (0-51)}
+    {  pin     -- MIO pin number (integer, 0-51)}
     {  dir     -- "in" or "out"}
     {  [value] -- 0 or 1: also verify the pin's live DATA_RO bit matches}
     {             this value. Default: -1 (skip this check).}
@@ -179,9 +212,9 @@ custom_axi_tg/axil_gpio4/uram_sdp_4Kx44 base addresses + cxl1_clk frequency"
 
   set CMD_HELP(drive_mio) [join {
     {Args:}
-    {  pin    -- MIO pin number (0-51), must already be configured as a GPIO}
-    {           output via setup_mio_as_gpio}
-    {  action -- one of: hi, lo, pulse_hi (lo->hi), pulse_lo (hi->lo)}
+    {  pin    -- MIO pin number (integer, 0-51), must already be configured as a GPIO}
+    {            output via setup_mio_as_gpio}
+    {  action -- one of: hi, lo, pulse_hi (hi->wait->lo), pulse_lo (lo->wait->hi)}
     {}
     {Calls verify_mio first to confirm the pin is a properly configured}
     {output, then drives it via the MASK_DATA register, reading back}
@@ -190,9 +223,10 @@ custom_axi_tg/axil_gpio4/uram_sdp_4Kx44 base addresses + cxl1_clk frequency"
 
   set CMD_HELP(rmw) [join {
     {Args:}
-    {  addr  -- register address}
-    {  mask  -- bits being modified (1 = write this bit, 0 = preserve it)}
-    {  value -- new value for the masked bits}
+    {  addr  -- register address (integer, 0..0xFFFFFFFFFFFF)}
+    {  mask  -- bits being modified (1 = write this bit, 0 = preserve it;}
+    {           integer, 0..0xFFFFFFFF)}
+    {  value -- new value for the masked bits (integer, 0..0xFFFFFFFF)}
     {}
     {Generic read-modify-write: read, clear the masked bits, OR in the}
     {masked bits of value, write back.}

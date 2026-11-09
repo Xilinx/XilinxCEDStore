@@ -45,6 +45,7 @@ namespace eval perf {
     {Args:}
     {  cpi   -- datapath index (0..design::get_num_cpi-1)}
     {  iface -- one of: f2a_req f2a_data a2f_data a2f_rsp}
+    {  [chan] -- open Tcl channel to print the summary line to (default: stdout)}
     {}
     {Prints "INFO: This may take several minutes." first -- up to}
     {MAX_ENTRIES=4096 individual AXI-Lite reads over JTAG, one per entry.}
@@ -70,6 +71,7 @@ namespace eval perf {
     {Args:}
     {  cpi   -- datapath index}
     {  iface -- one of: f2a_req f2a_data a2f_data a2f_rsp}
+    {  [chan] -- open Tcl channel to print the summary line to (default: stdout)}
     {}
     {Fast alternative to perf::read_ram when you only need the entry COUNT,}
     {not the decoded {cnt tag} entries themselves: binary-searches the}
@@ -106,7 +108,9 @@ namespace eval perf {
     {Args:}
     {  [cpi_list] -- default: every cpi from design::get_cxl_indices.}
     {}
-    {Calls perf::reset_ram for all 4 interfaces on each listed cpi.}
+    {Calls perf::reset_ram for all 4 interfaces on each listed cpi. Every}
+    {element of cpi_list is checked before any URAM is reset, so a bad cpi}
+    {leaves every URAM untouched.}
   } "\n"]
 
   set CMD_HELP(capture) [join {
@@ -151,6 +155,7 @@ namespace eval perf {
     {Args:}
     {  cpi   -- datapath index}
     {  iface -- one of: f2a_req f2a_data a2f_data a2f_rsp}
+    {  [chan] -- open Tcl channel to print the summary line to (default: stdout)}
     {}
     {bytes = (entry count) * 64 (fixed CPI/CXL beat width). span = last}
     {entry's freerun_cnt32 value minus the first entry's (rollover}
@@ -160,7 +165,10 @@ namespace eval perf {
 
   set CMD_HELP(bandwidth_all) [join {
     {Args:}
-    {  [cpi_list] -- default: every cpi.}
+    {  [cpi_list]     -- default: every cpi.}
+    {  [chan]         -- open Tcl channel to print to (default: stdout)}
+    {  [cache_by_cpi] -- optional dict {cpi -> {iface -> entries}}, e.g. from}
+    {                    perf::capture_all, to reuse instead of re-reading}
     {}
     {Per cpi, computes ONE bandwidth figure per logical path (write:}
     {f2a_data -> a2f_rsp, read: f2a_req -> a2f_data) -- NOT one per raw}
@@ -197,6 +205,7 @@ namespace eval perf {
   set CMD_HELP(report) [join {
     {Args:}
     {  [cpi_list] -- default: every cpi.}
+    {  [chan]     -- open Tcl channel to print to (default: stdout)}
     {}
     {Errors immediately (before touching any hardware) if design::get_clk_hz}
     {isn't set -- latency (ns) can't be computed from raw counter deltas}
@@ -233,7 +242,8 @@ namespace eval perf {
   set CMD_HELP(report_to_file) [join {
     {Args:}
     {  [cpi_list] -- default: every cpi.}
-    {  [filename] -- default: "latency_report.txt".}
+    {  [filename] -- default: "latency_report.txt". Checked (directory exists,}
+    {                writable) before any URAM is read.}
     {}
     {Identical to perf::report, but writes the whole report (tables,}
     {histograms, and the bandwidth summary lines normally seen on the}
@@ -257,10 +267,13 @@ namespace eval perf {
     {Args:}
     {  [cpi_list] -- default: every cpi.}
     {  [ftype]    -- "txt" (default), "csv", or "yaml". Errors immediately}
-    {               (before touching the filesystem) if not one of these.}
+    {                (before touching hardware or the filesystem) if not one}
+    {                of these.}
     {  [fname]    -- default: "raw_report". Anything from the first "." in}
-    {               fname onward is stripped, then ".<ftype>" is appended}
-    {               -- so fname.ftype is always the actual output file.}
+    {                fname onward is stripped, then ".<ftype>" is appended}
+    {                -- so fname.ftype is always the actual output file. That}
+    {                file's directory must exist and be writable; this is}
+    {                checked before any URAM is read.}
     {}
     {Writes perf::get_raw's data in the requested format:}
     {  txt  -- "Datapath N" sections, one "IFACE (n entries)" block each,}

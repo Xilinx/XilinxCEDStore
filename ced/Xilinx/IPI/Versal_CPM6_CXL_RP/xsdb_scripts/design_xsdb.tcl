@@ -34,6 +34,7 @@ proc design::current_target_desc {} {
 # actually enumerates and pass in whichever form matches it if the default
 # pattern doesn't.
 proc design::connect {args} {
+  chk::nargs design::connect $args 0 1 "?target_index|name_pattern?"
   lassign $args target
 
   if {$target ne "" && [string is integer -strict $target]} {

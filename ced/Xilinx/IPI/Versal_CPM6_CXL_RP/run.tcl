@@ -24,6 +24,11 @@ proc createDesign {design_name options} {
   update_compile_order -fileset sources_1
 
   ##################################################################
+  # CONSTRAINTS
+  ##################################################################
+  add_files -fileset constrs_1 -norecurse [glob $currentDir/src/constr/*.xdc]
+
+  ##################################################################
   # IP REPOs
   ##################################################################
   set_property ip_repo_paths [list $currentDir/src/ip_repo] [current_project]
@@ -75,6 +80,7 @@ proc createDesign {design_name options} {
   if { $bCheckModules == 1 } {
      set list_check_mods "\
   axil_gpio4\
+  gpio_ext_axil_slave\
   freerun_cnt32\
   uram_sdp_4Kx44\
   cpi_f2a_req_passthrough\
@@ -516,7 +522,7 @@ proc createDesign {design_name options} {
       CONFIG.CPM6_CONFIG(CPM6_CTRL1_OUTBOUND_REGION3_LIMITADDR) {0x0006_FFFF_0000} \
       CONFIG.CPM6_CONFIG(CPM6_CTRL1_OUTBOUND_REGION3_TRGTADDR) {0x0006_0000_0000} \
       CONFIG.CPM6_CONFIG(CPM6_CTRL1_OUTBOUND_REGION4_BASEADDR) {0x0007_0000_0000} \
-      CONFIG.CPM6_CONFIG(CPM6_CTRL1_OUTBOUND_REGION4_LIMITADDR) {0x0007_0000_0000} \
+      CONFIG.CPM6_CONFIG(CPM6_CTRL1_OUTBOUND_REGION4_LIMITADDR) {0x0007_FFFF_0000} \
       CONFIG.CPM6_CONFIG(CPM6_CTRL1_OUTBOUND_REGION4_TRGTADDR) {0x0007_0000_0000} \
       CONFIG.CPM6_CONFIG(CPM6_CTRL1_PF0_BASE_CLASS) {Bridge_device} \
       CONFIG.CPM6_CONFIG(CPM6_CTRL1_PF0_SUB_CLASS_INTF) {PCI_to_PCI_bridge} \
@@ -551,6 +557,7 @@ proc createDesign {design_name options} {
       CONFIG.PS_PMC_CONFIG(PMC_CRP_PL1_REF_CTRL_FREQMHZ) {200} \
       CONFIG.PS_PMC_CONFIG(PMC_CRP_PL2_REF_CTRL_FREQMHZ) $pl2_ref_freq \
       CONFIG.PS_PMC_CONFIG(PMC_MIO41) {DRIVE_STRENGTH 8mA SLEW slow PULL pullup SCHMITT 0 AUX_IO 0 USAGE GPIO OUTPUT_DATA low DIRECTION out} \
+      CONFIG.PS_PMC_CONFIG(PMC_MIO40) {DRIVE_STRENGTH 8mA SLEW slow PULL pullup SCHMITT 0 AUX_IO 0 USAGE GPIO OUTPUT_DATA high DIRECTION out} \
       CONFIG.PS_PMC_CONFIG(PMC_USE_PMC_AXI_NOC0) {1} \
       CONFIG.PS_PMC_CONFIG(PS_NUM_FABRIC_RESETS) {3} \
       CONFIG.PS_PMC_CONFIG(PS_SLR_ID) {0} \
@@ -686,10 +693,11 @@ proc createDesign {design_name options} {
 
     # Create instance: smartconnect_3, and set properties (slow AXI4-Lite
     # programming crossbar for the NUM_CPI custom_axi_tg_N/s_axil interfaces
-    # plus axil_gpio4_0, all clocked by axil_clk instead of cxl1_clk)
+    # plus axil_gpio4_0 and gpio_ext_axil_0, all clocked by axil_clk instead
+    # of cxl1_clk)
     set smartconnect_3 [ create_bd_cell -type ip -vlnv xilinx.com:ip:smartconnect smartconnect_3 ]
     set_property -dict [list \
-      CONFIG.NUM_MI [expr {$num_cpi + 1}] \
+      CONFIG.NUM_MI [expr {$num_cpi + 2}] \
       CONFIG.NUM_SI {1} \
     ] $smartconnect_3
 
@@ -702,6 +710,19 @@ proc createDesign {design_name options} {
     # Create instance: axil_gpio4_0 (replaces axil_gpio16_0 + ilslice_0..3;
     # has one individual output bit per custom_axi_tg_N, no slicing needed)
     set axil_gpio4_0 [add_module_ref axil_gpio4 axil_gpio4_0]
+
+    # Create instance: gpio_ext_axil_0 (board LEDs, pushbuttons and DIP
+    # switches; CLK_FREQ_HZ must match the axil_clk frequency, which is
+    # PL2_REF_CTRL_FREQMHZ)
+    set gpio_ext_axil_0 [add_module_ref gpio_ext_axil_slave gpio_ext_axil_0]
+    set_property -dict [list \
+      CONFIG.CLK_FREQ_HZ [expr {int(round($pl2_ref_freq * 1000000))}] \
+    ] $gpio_ext_axil_0
+
+    # Board GPIO ports (pin locations are in src/constr/gpio_ext_pins.xdc)
+    create_bd_port -dir O -from 7 -to 0 gpio_led
+    create_bd_port -dir I -from 3 -to 0 gpio_pb
+    create_bd_port -dir I -from 3 -to 0 gpio_dip
 
     # Create instance: axil_cxl_pm_viral_0, and set properties
     set axil_cxl_pm_viral_0 [add_module_ref axil_cxl_pm_viral axil_cxl_pm_viral_0]
@@ -749,6 +770,9 @@ proc createDesign {design_name options} {
     connect_bd_intf_net -intf_net smartconnect_3_M[format %02d $num_cpi]_AXI \
       [get_bd_intf_pins smartconnect_3/M[format %02d $num_cpi]_AXI] \
       [get_bd_intf_pins axil_gpio4_0/S_AXI]
+    connect_bd_intf_net -intf_net smartconnect_3_M[format %02d [expr {$num_cpi + 1}]]_AXI \
+      [get_bd_intf_pins smartconnect_3/M[format %02d [expr {$num_cpi + 1}]]_AXI] \
+      [get_bd_intf_pins gpio_ext_axil_0/S_AXI]
 
     # Wire perf_measurement in between ps_wizard_0 and cxl_datapath_N,
     # same two connections that used to go directly between them.
@@ -769,6 +793,13 @@ proc createDesign {design_name options} {
         [get_bd_pins axil_gpio4_0/gpio_out_${cpi}] \
         [get_bd_pins cxl_datapath_${cpi}/tg_start]
     }
+
+    connect_bd_net -net gpio_ext_axil_0_gpio_led \
+      [get_bd_pins gpio_ext_axil_0/gpio_led] [get_bd_ports gpio_led]
+    connect_bd_net -net gpio_pb_1 \
+      [get_bd_ports gpio_pb] [get_bd_pins gpio_ext_axil_0/gpio_pb]
+    connect_bd_net -net gpio_dip_1 \
+      [get_bd_ports gpio_dip] [get_bd_pins gpio_ext_axil_0/gpio_dip]
 
     set cxl1_clk_pins [list \
       [get_bd_pins ps_wizard_0/pl0_ref_clk] \
@@ -805,6 +836,7 @@ proc createDesign {design_name options} {
     }
     lappend axil_clk_pins \
       [get_bd_pins axil_gpio4_0/s_axi_aclk] \
+      [get_bd_pins gpio_ext_axil_0/s_axi_aclk] \
       [get_bd_pins axi_noc2_0/aclk5]
     connect_bd_net -net axil_clk {*}$axil_clk_pins
 
@@ -816,6 +848,7 @@ proc createDesign {design_name options} {
       lappend axil_rstn_pins [get_bd_pins cxl_datapath_${cpi}/axil_rstn]
     }
     lappend axil_rstn_pins [get_bd_pins axil_gpio4_0/s_axi_aresetn]
+    lappend axil_rstn_pins [get_bd_pins gpio_ext_axil_0/s_axi_aresetn]
     connect_bd_net -net axil_rstn {*}$axil_rstn_pins
     connect_bd_net -net axil_cxl_pm_viral_0_cpm6_pm_in  [get_bd_pins axil_cxl_pm_viral_0/cpm6_pm_in] \
     [get_bd_pins ps_wizard_0/cxl1_pm_pm_in]
@@ -843,16 +876,19 @@ proc createDesign {design_name options} {
     # Systematic address scheme (see assign_cpi_addr_segs/exclude_cpi_addr_segs):
     #   custom_axi_tg_N/s_axil  -> 0x0201_002N_0000
     #   axil_gpio4_0/S_AXI      -> 0x0201_0024_0000
-    #   axil_cxl_pm_viral_0/s_axil -> 0x0201_0025_0000
+    #   gpio_ext_axil_0/S_AXI   -> 0x0201_0025_0000
+    #   axil_cxl_pm_viral_0/s_axil -> 0x0201_0026_0000
     #   perf_measurement/uram_sdp_4Kx44_<cpi*4+n> -> 0x0202_00<cpi><n>_0000
     assign_cpi_addr_segs ps_wizard_0/pmcps_0_psv_dpc_0 $num_cpi
     assign_bd_address -offset 0x020100240000 -range 0x00001000 -target_address_space [get_bd_addr_spaces ps_wizard_0/pmcps_0_psv_dpc_0] [get_bd_addr_segs axil_gpio4_0/S_AXI/reg0] -force
-    assign_bd_address -offset 0x020100250000 -range 0x00001000 -target_address_space [get_bd_addr_spaces ps_wizard_0/pmcps_0_psv_dpc_0] [get_bd_addr_segs axil_cxl_pm_viral_0/s_axil/reg0] -force
+    assign_bd_address -offset 0x020100260000 -range 0x00001000 -target_address_space [get_bd_addr_spaces ps_wizard_0/pmcps_0_psv_dpc_0] [get_bd_addr_segs axil_cxl_pm_viral_0/s_axil/reg0] -force
+    assign_bd_address -offset 0x020100250000 -range 0x00001000 -target_address_space [get_bd_addr_spaces ps_wizard_0/pmcps_0_psv_dpc_0] [get_bd_addr_segs gpio_ext_axil_0/S_AXI/reg0] -force
     # NOCPSPCIE_REGION0/1/2 are no longer reachable from psv_pmc_0 now that
     # S00_AXI -> M02_AXI has been removed above (BD 41-3287/BD 41-3129).
     assign_cpi_addr_segs ps_wizard_0/pmcps_0_psv_pmc_0 $num_cpi
     assign_bd_address -offset 0x020100240000 -range 0x00001000 -target_address_space [get_bd_addr_spaces ps_wizard_0/pmcps_0_psv_pmc_0] [get_bd_addr_segs axil_gpio4_0/S_AXI/reg0] -force
-    assign_bd_address -offset 0x020100250000 -range 0x00001000 -target_address_space [get_bd_addr_spaces ps_wizard_0/pmcps_0_psv_pmc_0] [get_bd_addr_segs axil_cxl_pm_viral_0/s_axil/reg0] -force
+    assign_bd_address -offset 0x020100260000 -range 0x00001000 -target_address_space [get_bd_addr_spaces ps_wizard_0/pmcps_0_psv_pmc_0] [get_bd_addr_segs axil_cxl_pm_viral_0/s_axil/reg0] -force
+    assign_bd_address -offset 0x020100250000 -range 0x00001000 -target_address_space [get_bd_addr_spaces ps_wizard_0/pmcps_0_psv_pmc_0] [get_bd_addr_segs gpio_ext_axil_0/S_AXI/reg0] -force
     # NOCPSPCIE_REGION0 is no longer reachable from psv_psm_0 now that
     # S00_AXI -> M02_AXI has been removed above (BD 41-3287/BD 41-3129);
     # excluded here rather than assigned, matching REGION1/REGION2 below.
@@ -864,6 +900,7 @@ proc createDesign {design_name options} {
     # Exclude Address Segments
     exclude_bd_addr_seg -target_address_space [get_bd_addr_spaces ps_wizard_0/pmcps_0_psv_cortexr5_0] [get_bd_addr_segs axil_cxl_pm_viral_0/s_axil/reg0]
     exclude_bd_addr_seg -offset 0x00000000 -range 0x00001000 -target_address_space [get_bd_addr_spaces ps_wizard_0/pmcps_0_psv_cortexr5_0] [get_bd_addr_segs axil_gpio4_0/S_AXI/reg0]
+    exclude_bd_addr_seg -target_address_space [get_bd_addr_spaces ps_wizard_0/pmcps_0_psv_cortexr5_0] [get_bd_addr_segs gpio_ext_axil_0/S_AXI/reg0]
     exclude_bd_addr_seg -target_address_space [get_bd_addr_spaces ps_wizard_0/pmcps_0_psv_cortexr5_0] [get_bd_addr_segs ps_wizard_0/cpm6_0_CPM/cpm6_0_psv_cpm6]
     exclude_bd_addr_seg -target_address_space [get_bd_addr_spaces ps_wizard_0/pmcps_0_psv_cortexr5_0] [get_bd_addr_segs ps_wizard_0/pmcps_0_NOCPSPCIE_REGION0/pmcps_0_psv_noc_pcie_0]
     exclude_bd_addr_seg -target_address_space [get_bd_addr_spaces ps_wizard_0/pmcps_0_psv_cortexr5_0] [get_bd_addr_segs ps_wizard_0/pmcps_0_NOCPSPCIE_REGION1/pmcps_0_psv_noc_pcie_1]
@@ -880,6 +917,7 @@ proc createDesign {design_name options} {
 
     exclude_bd_addr_seg -offset 0x00000000 -range 0x00001000 -target_address_space [get_bd_addr_spaces ps_wizard_0/pmcps_0_psv_cortexr5_1] [get_bd_addr_segs axil_cxl_pm_viral_0/s_axil/reg0]
     exclude_bd_addr_seg -target_address_space [get_bd_addr_spaces ps_wizard_0/pmcps_0_psv_cortexr5_1] [get_bd_addr_segs axil_gpio4_0/S_AXI/reg0]
+    exclude_bd_addr_seg -target_address_space [get_bd_addr_spaces ps_wizard_0/pmcps_0_psv_cortexr5_1] [get_bd_addr_segs gpio_ext_axil_0/S_AXI/reg0]
     exclude_bd_addr_seg -target_address_space [get_bd_addr_spaces ps_wizard_0/pmcps_0_psv_cortexr5_1] [get_bd_addr_segs ps_wizard_0/cpm6_0_CPM/cpm6_0_psv_cpm6]
     exclude_bd_addr_seg -target_address_space [get_bd_addr_spaces ps_wizard_0/pmcps_0_psv_cortexr5_1] [get_bd_addr_segs ps_wizard_0/pmcps_0_NOCPSPCIE_REGION0/pmcps_0_psv_noc_pcie_0]
     exclude_bd_addr_seg -target_address_space [get_bd_addr_spaces ps_wizard_0/pmcps_0_psv_cortexr5_1] [get_bd_addr_segs ps_wizard_0/pmcps_0_NOCPSPCIE_REGION1/pmcps_0_psv_noc_pcie_1]
@@ -896,12 +934,14 @@ proc createDesign {design_name options} {
 
     exclude_bd_addr_seg -target_address_space [get_bd_addr_spaces ps_wizard_0/pmcps_0_psv_cpm_0] [get_bd_addr_segs axil_cxl_pm_viral_0/s_axil/reg0]
     exclude_bd_addr_seg -target_address_space [get_bd_addr_spaces ps_wizard_0/pmcps_0_psv_cpm_0] [get_bd_addr_segs axil_gpio4_0/S_AXI/reg0]
+    exclude_bd_addr_seg -target_address_space [get_bd_addr_spaces ps_wizard_0/pmcps_0_psv_cpm_0] [get_bd_addr_segs gpio_ext_axil_0/S_AXI/reg0]
     exclude_bd_addr_seg -target_address_space [get_bd_addr_spaces ps_wizard_0/pmcps_0_psv_cpm_0] [get_bd_addr_segs ps_wizard_0/pmcps_0_PMC_SLAVE_BOOT_INT/pmcps_0_psv_pmc_slave_boot]
     exclude_bd_addr_seg -target_address_space [get_bd_addr_spaces ps_wizard_0/pmcps_0_psv_cpm_0] [get_bd_addr_segs ps_wizard_0/pmcps_0_PMC_SLAVE_BOOT_STREAM_INT/pmcps_0_psv_pmc_slave_boot_stream]
     exclude_cpi_addr_segs ps_wizard_0/pmcps_0_psv_cpm_0 $num_cpi
 
     exclude_bd_addr_seg -target_address_space [get_bd_addr_spaces ps_wizard_0/pmcps_0_psv_psm_0] [get_bd_addr_segs axil_cxl_pm_viral_0/s_axil/reg0]
     exclude_bd_addr_seg -target_address_space [get_bd_addr_spaces ps_wizard_0/pmcps_0_psv_psm_0] [get_bd_addr_segs axil_gpio4_0/S_AXI/reg0]
+    exclude_bd_addr_seg -target_address_space [get_bd_addr_spaces ps_wizard_0/pmcps_0_psv_psm_0] [get_bd_addr_segs gpio_ext_axil_0/S_AXI/reg0]
     exclude_bd_addr_seg -target_address_space [get_bd_addr_spaces ps_wizard_0/pmcps_0_psv_psm_0] [get_bd_addr_segs ps_wizard_0/cpm6_0_CPM/cpm6_0_psv_cpm6]
     exclude_bd_addr_seg -target_address_space [get_bd_addr_spaces ps_wizard_0/pmcps_0_psv_psm_0] [get_bd_addr_segs ps_wizard_0/pmcps_0_CoreSight_PMC_ROM_INT/pmcps_0_psv_coresight_0]
     exclude_bd_addr_seg -target_address_space [get_bd_addr_spaces ps_wizard_0/pmcps_0_psv_psm_0] [get_bd_addr_segs ps_wizard_0/pmcps_0_CoreSight_A720_CTI_INT/pmcps_0_psv_coresight_a720_cti]
@@ -953,6 +993,11 @@ proc createDesign {design_name options} {
   regenerate_bd_layout
   open_bd_design [get_bd_files $design_name]
   make_wrapper -files [get_files $design_name.bd] -top -import
+  # Explicitly make the BD wrapper the top module. Left to automatic top
+  # selection, Vivado can pick one of the module-reference RTL files added
+  # from src/ (e.g. gpio_ext_axil_slave) instead.
+  set_property top ${design_name}_wrapper [current_fileset]
+  update_compile_order -fileset sources_1
   import_files -fileset utils_1 -flat $currentDir/hooks/soft_link_pdis.tcl
 
   # Copy the README.txt file into the generated project
@@ -968,6 +1013,172 @@ proc createDesign {design_name options} {
     set proj_dir [get_property DIRECTORY [current_project]]
     file copy -force $xsdb_scripts_src [file join $proj_dir xsdb_scripts]
     puts "INFO: copied xsdb_scripts to [file join $proj_dir xsdb_scripts]"
+  }
+
+  ##################################################################
+  # SIMULATION (CED's "Enable Simulation" checkbox, ENABLE_SIM)
+  ##################################################################
+  # Resolves a possibly-relative, possibly-chained symlink to its real
+  # target. [file copy] does not dereference a symlinked directory -- it
+  # just recreates an equivalent symlink at the destination, which breaks
+  # once that destination is the generated project (elsewhere on disk, so
+  # the symlink's relative target no longer resolves to anything real).
+  proc resolve_symlink {path} {
+    set path [file normalize $path]
+    while { [file type $path] eq "link" } {
+      set target [file readlink $path]
+      if { [file pathtype $target] eq "relative" } {
+        set target [file join [file dirname $path] $target]
+      }
+      set path [file normalize $target]
+    }
+    return $path
+  }
+
+  set enable_sim false
+  if { [dict exists $options ENABLE_SIM.VALUE] } {
+    set enable_sim [dict get $options ENABLE_SIM.VALUE]
+  }
+
+  # Printed (if non-empty) as the very last thing in this proc, so a
+  # missing compiled-libs directory isn't missed among the rest of the
+  # INFO-level generation output.
+  set sim_libs_warning ""
+
+  if { $enable_sim && ($::tcl_platform(platform)=="windows") } {
+    puts "WARN: CED simulation with pre-built, advanced features doesn't support Windows"
+  }
+
+  if { $enable_sim && ($::tcl_platform(platform)!="windows") } {
+    # uvma-pcie-sim-framework is a symlink into ../../common/ -- resolve it
+    # to a real directory first so the generated project gets an
+    # independent, self-contained copy of real files (see resolve_symlink
+    # above).
+    set sim_fw_src [resolve_symlink [file join $currentDir uvma-pcie-sim-framework]]
+    if { [file isdirectory $sim_fw_src] } {
+      set proj_dir [get_property DIRECTORY [current_project]]
+      file copy -force $sim_fw_src [file join $proj_dir uvma-pcie-sim-framework]
+      puts "INFO: copied uvma-pcie-sim-framework to [file join $proj_dir uvma-pcie-sim-framework]"
+    } else {
+      error "ENABLE_SIM is checked but uvma-pcie-sim-framework could not be resolved to a real directory (resolved path: $sim_fw_src) -- check the symlink at [file join $currentDir uvma-pcie-sim-framework]"
+    }
+
+    # Copy the verif directory alongside the generated project, resolving
+    # any symlink first so the project gets a self-contained copy.
+    set verif_src [resolve_symlink [file join $currentDir verif]]
+    if { [file isdirectory $verif_src] } {
+      file copy -force $verif_src [file join $proj_dir verif]
+      puts "INFO: copied verif to [file join $proj_dir verif]"
+    } else {
+      error "ENABLE_SIM is checked but verif could not be resolved to a real directory (resolved path: $verif_src) -- check the verif directory at [file join $currentDir verif]"
+    }
+
+    # Simulator, driven by the CED's "Simulator" dropdown (SIMULATOR).
+    # Defaults to QuestaSim when not supplied. Used below for both the
+    # Makefile's {{?sim}} token and, if SIM_LIBS_COMPILED, the compxlib
+    # property.
+    set simulator "QuestaSim"
+    if { [dict exists $options SIMULATOR.VALUE] } {
+      set simulator [dict get $options SIMULATOR.VALUE]
+    }
+    set sim_makefile_tok [expr { ($simulator eq "VCS") ? "vcs" : "questa" }]
+
+    # Number of CPI interfaces, from the CED's NUM_CPI dropdown. Defaults to
+    # 4 when not supplied and used in the Makefiles's {{?num_cpi}} token.
+    set num_cpi_makefile 4
+    if { [dict exists $options NUM_CPI.VALUE] } {
+      set num_cpi_makefile [dict get $options NUM_CPI.VALUE]
+    }
+
+    # Set the project's target simulator to match the GUI selection.
+    # Vivado's target_simulator property enum is {Questa, VCS} (among
+    # others), distinct from the Makefile's lowercase {{?sim}} token.
+    set target_simulator [expr { ($simulator eq "VCS") ? "VCS" : "Questa" }]
+    set_property target_simulator $target_simulator [current_project]
+    puts "INFO: set target_simulator to $target_simulator"
+
+    # Copy the Makefile into the generated project -- only when
+    # ENABLE_SIM is checked, since a user who disregards simulation
+    # entirely shouldn't find a stray Makefile in their project.
+    # Substitutes the {{?sim}} placeholder for the GUI-selected simulator
+    # token so `make` defaults to whichever simulator SIMULATOR selected.
+    set makefile_src [file join $currentDir Makefile]
+    if { [file exists $makefile_src] } {
+      set proj_dir [get_property DIRECTORY [current_project]]
+      set fh [open $makefile_src r]
+      set makefile_contents [read $fh]
+      close $fh
+      set makefile_contents \
+        [string map [list "{{?sim}}"     $sim_makefile_tok \
+                          "{{?num_cpi}}" $num_cpi_makefile] $makefile_contents]
+      set fh [open [file join $proj_dir Makefile] w]
+      puts -nonewline $fh $makefile_contents
+      close $fh
+      puts "INFO: copied Makefile to [file join $proj_dir Makefile] (SIM default set to $sim_makefile_tok, NUM_CPI set to $num_cpi_makefile)"
+    }
+
+    # Copy the simulation README into the generated project -- only when
+    # ENABLE_SIM is checked, like the Makefile above.
+    set readme_sim_src [file join $currentDir README_SIM.txt]
+    if { [file exists $readme_sim_src] } {
+      set proj_dir [get_property DIRECTORY [current_project]]
+      file copy -force $readme_sim_src [file join $proj_dir README_SIM.txt]
+      puts "INFO: copied README_SIM.txt to [file join $proj_dir README_SIM.txt]"
+    }
+
+    # Point Vivado at pre-compiled simulation libraries if the user says
+    # they already have them (SIM_LIBS_COMPILED); otherwise leave Vivado's
+    # compxlib property alone and warn at the end of generation.
+    set sim_libs_compiled false
+    if { [dict exists $options SIM_LIBS_COMPILED.VALUE] } {
+      set sim_libs_compiled [dict get $options SIM_LIBS_COMPILED.VALUE]
+    }
+
+    if { $sim_libs_compiled } {
+      set sim_libs_path ""
+      if { [dict exists $options SIM_LIBS_PATH.VALUE] } {
+        set sim_libs_path [dict get $options SIM_LIBS_PATH.VALUE]
+      }
+      # The compiled library directory must hold the simulator's library
+      # mapping file: modelsim.ini, questasim.ini or questa.ini for Questa
+      # (any one of them), synopsys_sim.setup for VCS.
+      if { $simulator eq "VCS" } {
+        set sim_setup_candidates [list synopsys_sim.setup]
+      } else {
+        set sim_setup_candidates [list modelsim.ini questasim.ini questa.ini]
+      }
+      set sim_setup_found 0
+      if { [file isdirectory $sim_libs_path] } {
+        foreach cand $sim_setup_candidates {
+          if { [file isfile [file join $sim_libs_path $cand]] } {
+            set sim_setup_found 1
+            break
+          }
+        }
+      }
+      if { $sim_setup_found } {
+        set compxlib_prop [expr { ($simulator eq "VCS") ? \
+          "compxlib.vcs_compiled_library_dir" : \
+          "compxlib.questa_compiled_library_dir" }]
+        set_property $compxlib_prop $sim_libs_path [current_project]
+        puts "INFO: set $compxlib_prop to $sim_libs_path"
+
+        # launch_simulation requires sim_1's top to be set explicitly
+        set_property top ${design_name}_wrapper [get_filesets sim_1]
+
+        # Generate the BD's output products or launch_simulation will fail
+        generate_target simulation [get_files $design_name.bd]
+
+        # Pre-generate the simulation scripts now that Vivado knows where
+        # the compiled libraries live. VCS only needs its compile script;
+        # Questa additionally needs the elaborate scripts due to the way
+        # it maps libraries.
+        puts "INFO: generating $simulator simulation scripts"
+        launch_simulation -scripts_only
+      } else {
+        set sim_libs_warning "WARNING: \"Simulation Libraries Compiled?\" was checked but the directory \"$sim_libs_path\" was not found or does not contain any of: [join $sim_setup_candidates {, }]. Point Vivado to the correct compiled simulation library location (Tools > Compile Simulation Libraries, or set_property compxlib.<vcs|questa>_compiled_library_dir) and generate the simulation output products."
+      }
+    }
   }
 
   ##################################################################
@@ -1006,65 +1217,6 @@ proc createDesign {design_name options} {
       -part $cur_part -quiet
     incr impl_idx
   }
-  # Create implementation runs at fastest speed grade for comparison
-  # Parts are named <device>-<package>-<speedgrade>-<tempgrade>-<option>
-  # (e.g. xcvp1902-lsvc784-2MP-e-S-es1). Speed grade rank increases with
-  # both the leading digit and the power/perf class (LP < MP < HP), so
-  # e.g. 3HP is faster than 2MP. Find the fastest speed grade that (a)
-  # actually exists in the part database and (b) is faster than the
-  # part currently selected for this project.
-  set speed_grade_rank [dict create \
-    1LP 0 2LP 1 \
-    1MP 2 2MP 3 \
-    1HP 4 2HP 5 3HP 6 \
-  ]
-
-  set part_fields [split $cur_part "-"]
-  set speed_idx -1
-  set cur_speed ""
-  for {set i 0} {$i < [llength $part_fields]} {incr i} {
-    if { [regexp {^[0-9][A-Z]+$} [lindex $part_fields $i]] } {
-      set speed_idx $i
-      set cur_speed [lindex $part_fields $i]
-      break
-    }
-  }
-
-  set fast_part ""
-  if { $speed_idx >= 0 && [dict exists $speed_grade_rank $cur_speed] } {
-    set cur_rank  [dict get $speed_grade_rank $cur_speed]
-    set best_speed $cur_speed
-    set best_rank  $cur_rank
-    dict for {speed rank} $speed_grade_rank {
-      if { $rank > $best_rank } {
-        set candidate_fields $part_fields
-        lset candidate_fields $speed_idx $speed
-        set candidate_part [join $candidate_fields "-"]
-        if { [llength [get_parts -quiet $candidate_part]] > 0 } {
-          set best_rank  $rank
-          set best_speed $speed
-        }
-      }
-    }
-    if { $best_speed ne $cur_speed } {
-      set candidate_fields $part_fields
-      lset candidate_fields $speed_idx $best_speed
-      set fast_part [join $candidate_fields "-"]
-    }
-  }
-
-  if { $fast_part ne "" } {
-    common::send_gid_msg -ssname BD::TCL -id 2099 -severity "INFO" "Adding fast-part implementation runs targeting $fast_part (faster than $cur_part)."
-    set impl_strategies [concat [list "Implementation Defaults"] $impl_strategies]
-    foreach strategy $impl_strategies {
-      create_run impl_$impl_idx\_$best_speed -parent_run synth_1 -constrset constrs_1 \
-        -flow "Vivado Advanced Implementation $impl_yr" -strategy $strategy \
-        -part $fast_part -quiet
-      incr impl_idx
-    }
-  } else {
-    common::send_gid_msg -ssname BD::TCL -id 2100 -severity "INFO" "No faster speed grade available for part $cur_part; skipping fast-part implementation runs."
-  }
 
   ##################################################################
   # WRITE_DEVICE_IMAGE POST HOOK (refresh boot.pdi/pld.pdi symlinks)
@@ -1076,4 +1228,7 @@ proc createDesign {design_name options} {
 
   puts "INFO: Design generation complete"
   puts "INFO: Refer to the README.txt file inside the project for information"
+  if { $sim_libs_warning ne "" } {
+    puts $sim_libs_warning
+  }
 }

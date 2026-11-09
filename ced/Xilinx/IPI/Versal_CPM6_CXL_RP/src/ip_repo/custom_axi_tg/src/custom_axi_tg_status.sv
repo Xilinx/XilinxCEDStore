@@ -17,7 +17,7 @@
 //  - 21 bits per command:
 //      fully_requested        1   set by a dispatcher off its `roll` pulse
 //      fully_responded        1   set by a dispatcher when its ring entry retires
-//      invalid_response_rcvd  1   set on the first non-OKAY response
+//      invalid_response_rcvd  1   set on the first SLVERR/DECERR response
 //      is_slverr              1   SLVERR (1) vs DECERR (0) of that first error
 //      first_invalid_number  12   PER-ID response ordinal of that error
 //      first_invalid_axiid    4   AXI ID of that error
