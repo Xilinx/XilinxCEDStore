@@ -87,6 +87,15 @@ proc createDesign {design_name options} {
   add_files    -fileset constrs_1 -norecurse ${currentDir}/constrs/ddr_c0c1c4c5.xdc
   import_files -fileset constrs_1            ${currentDir}/constrs/ddr_c0c1c4c5.xdc
 
+  # parameter overrides for TOP/BOT_PL_MUX_MODE for timing arc (implementation only)
+  set cxl_mode_xdc [dict get [dict create Controller_0 ctrl0_timings.xdc Controller_1 ctrl1_timings.xdc] $ctrl_config]
+  import_files -fileset constrs_1 ${currentDir}/constrs/${cxl_mode_xdc}
+  set cxl_mode_xdc_obj [get_files -of_objects [get_filesets constrs_1] -filter "NAME =~ *${cxl_mode_xdc}"]
+  if {[llength $cxl_mode_xdc_obj] != 1} { error "ERROR: expected exactly one ${cxl_mode_xdc} in constrs_1, found: $cxl_mode_xdc_obj" }
+  set_property USED_IN_SYNTHESIS false $cxl_mode_xdc_obj
+  set_property USED_IN_IMPLEMENTATION true $cxl_mode_xdc_obj
+  puts "INFO: CPM6 PL mux mode constraints ${cxl_mode_xdc} added: USED_IN_SYNTHESIS=[get_property USED_IN_SYNTHESIS $cxl_mode_xdc_obj] USED_IN_IMPLEMENTATION=[get_property USED_IN_IMPLEMENTATION $cxl_mode_xdc_obj]"
+
   # Build the block design
   source "${src_dir}/design_1_bd.tcl"
 

@@ -150,7 +150,7 @@ This CED provides a pre-built elf to be used for hardware testing. The source co
 The generation flow then:
 
 1. Adds the local IP repository (`ip/`, containing the `cpa` IP) and imports `src/ctrl_reg_ep.v`.
-2. Adds the DDR pin constraints (`constrs/ddr_c0c1c4c5.xdc`) to the constraints fileset.
+2. Adds the DDR pin constraints (`constrs/ddr_c0c1c4c5.xdc`) to the constraints fileset, and the timing constraints of the selected controller (`constrs/ctrl0_timings.xdc` or `constrs/ctrl1_timings.xdc`, implementation only): override PL_MUX_MODE parameter for timing arc.
 3. Sources the matching sub-design's `design_1_bd.tcl` to build the block design.
 4. Generates the HDL wrapper and sets it as the synthesis top.
 
