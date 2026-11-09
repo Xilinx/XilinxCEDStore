@@ -285,7 +285,13 @@ proc create_root_design { parentCell link_width lane_rate num_pfs ide_cap_en} {
   if {$num_pfs == 8} {
     set dbi1_rstn_0 [ create_bd_port -dir O -type rst dbi1_rstn_0 ]
   }
-  set aclk [ create_bd_port -dir O aclk ]
+  if {$num_pfs == 8} {
+    # clock-type port so the external AXI ports inherit the PL clock domain (avoids SmartConnect clock-domain DRC)
+    set aclk [ create_bd_port -dir O -type clk aclk ]
+    set_property CONFIG.ASSOCIATED_BUSIF {M00_AXI_0:S00_AXI_0:cpm_axi_pl0_0:pl_axil_dbi1_0} $aclk
+  } else {
+    set aclk [ create_bd_port -dir O aclk ]
+  }
 
   # Create instance: ps_wizard_0, and set properties
  # Create instance: ps_wizard_0, and set properties
@@ -783,6 +789,10 @@ proc create_root_design { parentCell link_width lane_rate num_pfs ide_cap_en} {
     assign_bd_address -offset 0x050020000000 -range 0x000100000000 -target_address_space [get_bd_addr_spaces ps_wizard_0/pmcps_0_psv_dpc_0] [get_bd_addr_segs axi_noc2_0/DDR_MC_PORTS/DDR_CH1] -force
     assign_bd_address -offset 0x050000000000 -range 0x00001000 -target_address_space [get_bd_addr_spaces S00_AXI_0] [get_bd_addr_segs M00_AXI_0/Reg] -force
     assign_bd_address -offset 0x050000010000 -range 0x00010000 -target_address_space [get_bd_addr_spaces S00_AXI_0] [get_bd_addr_segs axi_bram_ctrl_0/S_AXI/Mem0] -force
+    # DBI slave segment into the external DBI master address space (32-bit pass-through, absolute DBI addresses)
+    assign_bd_address -offset 0x00000000 -range 0x100000000 -target_address_space [get_bd_addr_spaces pl_axil_dbi1_0] [get_bd_addr_segs ps_wizard_0/cpm6_0_DBI1/cpm6_0_psv_dbi1] -force
+    # cpm_axi_pl0_0 into the CPM address space, at the PS-side address the 1-PF design uses for BRAM0
+    assign_bd_address -offset 0xC0000000 -range 0x00010000 -target_address_space [get_bd_addr_spaces ps_wizard_0/pmcps_0_psv_cpm_0] [get_bd_addr_segs cpm_axi_pl0_0/Reg] -force
   } else {
     assign_bd_address -offset 0x050020000000 -range 0x40000000 -target_address_space [get_bd_addr_spaces ps_wizard_0/pmcps_0_psv_cpm_0] [get_bd_addr_segs axi_noc2_0/DDR_MC_PORTS/DDR_CH1] -force
     assign_bd_address -offset 0x050020000000 -range 0x40000000 -target_address_space [get_bd_addr_spaces ps_wizard_0/pmcps_0_psv_dpc_0] [get_bd_addr_segs axi_noc2_0/DDR_MC_PORTS/DDR_CH1] -force

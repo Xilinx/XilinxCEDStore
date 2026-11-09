@@ -162,15 +162,28 @@ assign int_status_add = 32'hFC2C_0000 + (c2h_chn_vld ? 32'h000 + (c2h_chn_num * 
                                           h2c_chn_vld ? 32'h200 + (h2c_chn_num * 32'h400) + 32'h84 :
                                           32'h0);
 assign int_clr_addr = int_status_add + 32'h8;  // clear address +8 tatus address. just write to it to clear interrupt.
-assign dma_irq_eligible = dma_irq & ~dma_irq_seen;
+// Timing: dma_irq comes straight out of the CPM, so it is registered before it reaches the
+// arbiter / state machine (a single deep cone from the CPM output did not meet 250 MHz).
+//   dma_irq_q        : registered copy of dma_irq (used for the pending checks)
+//   dma_irq_eligible : registered, one-shot-masked request vector fed to the arbiter
+logic [127:0] dma_irq_q;
+always @(posedge clk) begin
+  if (!reset_n) begin
+    dma_irq_q        <= '0;
+    dma_irq_eligible <= '0;
+  end else begin
+    dma_irq_q        <= dma_irq;
+    dma_irq_eligible <= dma_irq & ~dma_irq_seen;
+  end
+end
 
 // One MSI-X per asserted dma_irq bit: re-arm only after that bit deasserts.
 always @(posedge clk) begin
   if (!reset_n) begin
     dma_irq_seen <= '0;
   end else begin
-    dma_irq_seen <= dma_irq_seen & dma_irq;
-    if ((sm_int == SM_INT_GNT) && pcie_msix_grant && dma_irq[chn_num])
+    dma_irq_seen <= dma_irq_seen & dma_irq_q;
+    if ((sm_int == SM_INT_GNT) && pcie_msix_grant && dma_irq_q[chn_num])
       dma_irq_seen[chn_num] <= 1'b1;
   end
 end
@@ -226,7 +239,7 @@ end
 	      end
 	   end
 	   SM_INT_SRD : begin                             //001 Verify interrupt still pending
-	      if (dma_irq[chn_num]) begin
+	      if (dma_irq_q[chn_num]) begin
 	         // IRQ still asserted: proceed to function lookup
 	         sm_int <= SM_FNC_NUM;
 	      end else begin
@@ -356,7 +369,7 @@ assign irq_status = {14'b0,
                      sm_int,          // [5:3]   interrupt SM state
                      pcie_msix_grant, // [2]     MSI-X grant received
                      pcie_msix_req,   // [1]     MSI-X request asserted
-                     |dma_irq};       // [0]     any DMA interrupt pending
+                     |dma_irq_q};     // [0]     any DMA interrupt pending
 
 assign msix_req_pulse   = pcie_msix_req   & ~pcie_msix_req_d;
 assign msix_grant_pulse = pcie_msix_grant & ~pcie_msix_grant_d;
@@ -668,7 +681,7 @@ axil_slave u_axil_slave (
     .irq_clr_done_c2h (irq_clr_done_c2h),
     .irq_clr_done_h2c (irq_clr_done_h2c),
     // Debug status inputs
-    .dma_irq          (dma_irq),
+    .dma_irq          (dma_irq_q),
     .h2c_chn_num      (h2c_chn_num),
     .c2h_chn_num      (c2h_chn_num),
     .irq_status       (irq_status),
