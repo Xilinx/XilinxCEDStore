@@ -1,0 +1,330 @@
+
+################################################################
+# This is a generated script based on design: design_1
+#
+# Though there are limitations about the generated script,
+# the main purpose of this utility is to make learning
+# IP Integrator Tcl commands easier.
+################################################################
+
+namespace eval _tcl {
+proc get_script_folder {} {
+   set script_path [file normalize [info script]]
+   set script_folder [file dirname $script_path]
+   return $script_folder
+}
+}
+variable script_folder
+set script_folder [_tcl::get_script_folder]
+
+################################################################
+# START
+################################################################
+
+# To test this script, run the following commands from Vivado Tcl console:
+# source design_1_script.tcl
+
+# If there is no project opened, this script will create a
+# project, but make sure you do not have an existing project
+# <./myproj/project_1.xpr> in the current working folder.
+
+set list_projs [get_projects -quiet]
+if { $list_projs eq "" } {
+   create_project project_1 myproj -part xc2vp3602-vsvc3340-3HP-e-S
+}
+
+
+# CHANGE DESIGN NAME HERE
+variable design_name
+set design_name design_1
+
+# If you do not already have an existing IP Integrator design open,
+# you can create a design using the following command:
+#    create_bd_design $design_name
+
+# Creating design if needed
+set errMsg ""
+set nRet 0
+
+set cur_design [current_bd_design -quiet]
+set list_cells [get_bd_cells -quiet]
+
+if { ${design_name} eq "" } {
+   # USE CASES:
+   #    1) Design_name not set
+
+   set errMsg "Please set the variable <design_name> to a non-empty value."
+   set nRet 1
+
+} elseif { ${cur_design} ne "" && ${list_cells} eq "" } {
+   # USE CASES:
+   #    2): Current design opened AND is empty AND names same.
+   #    3): Current design opened AND is empty AND names diff; design_name NOT in project.
+   #    4): Current design opened AND is empty AND names diff; design_name exists in project.
+
+   if { $cur_design ne $design_name } {
+      common::send_gid_msg -ssname BD::TCL -id 2001 -severity "INFO" "Changing value of <design_name> from <$design_name> to <$cur_design> since current design is empty."
+      set design_name [get_property NAME $cur_design]
+   }
+   common::send_gid_msg -ssname BD::TCL -id 2002 -severity "INFO" "Constructing design in IPI design <$cur_design>..."
+
+} elseif { ${cur_design} ne "" && $list_cells ne "" && $cur_design eq $design_name } {
+   # USE CASES:
+   #    5) Current design opened AND has components AND same names.
+
+   set errMsg "Design <$design_name> already exists in your project, please set the variable <design_name> to another value."
+   set nRet 1
+} elseif { [get_files -quiet ${design_name}.bd] ne "" } {
+   # USE CASES: 
+   #    6) Current opened design, has components, but diff names, design_name exists in project.
+   #    7) No opened design, design_name exists in project.
+
+   set errMsg "Design <$design_name> already exists in your project, please set the variable <design_name> to another value."
+   set nRet 2
+
+} else {
+   # USE CASES:
+   #    8) No opened design, design_name not in project.
+   #    9) Current opened design, has components, but diff names, design_name not in project.
+
+   common::send_gid_msg -ssname BD::TCL -id 2003 -severity "INFO" "Currently there is no design <$design_name> in project, so creating one..."
+
+   create_bd_design $design_name
+
+   common::send_gid_msg -ssname BD::TCL -id 2004 -severity "INFO" "Making design <$design_name> as current_bd_design."
+   current_bd_design $design_name
+
+}
+
+common::send_gid_msg -ssname BD::TCL -id 2005 -severity "INFO" "Currently the variable <design_name> is equal to \"$design_name\"."
+
+if { $nRet != 0 } {
+   catch {common::send_gid_msg -ssname BD::TCL -id 2006 -severity "ERROR" $errMsg}
+   return $nRet
+}
+
+set bCheckIPsPassed 1
+##################################################################
+# CHECK IPs
+##################################################################
+set bCheckIPs 1
+if { $bCheckIPs == 1 } {
+   set list_check_ips "\ 
+xilinx.com:ip:ps_wizard:1.0\
+"
+
+   set list_ips_missing ""
+   common::send_gid_msg -ssname BD::TCL -id 2011 -severity "INFO" "Checking if the following IPs exist in the project's IP catalog: $list_check_ips ."
+
+   foreach ip_vlnv $list_check_ips {
+      set ip_obj [get_ipdefs -all $ip_vlnv]
+      if { $ip_obj eq "" } {
+         lappend list_ips_missing $ip_vlnv
+      }
+   }
+
+   if { $list_ips_missing ne "" } {
+      catch {common::send_gid_msg -ssname BD::TCL -id 2012 -severity "ERROR" "The following IPs are not found in the IP Catalog:\n  $list_ips_missing\n\nResolution: Please add the repository containing the IP(s) to the project." }
+      set bCheckIPsPassed 0
+   }
+
+}
+
+if { $bCheckIPsPassed != 1 } {
+  common::send_gid_msg -ssname BD::TCL -id 2023 -severity "WARNING" "Will not continue with creation of design due to the error(s) above."
+  return 3
+}
+
+##################################################################
+# DESIGN PROCs
+##################################################################
+
+
+
+# Procedure to create entire design; Provide argument to make
+# procedure reusable. If parentCell is "", will use root.
+proc create_root_design { parentCell link_width lane_rate pl0_freq_mhz pl0_freq_hz ide } {
+
+  variable script_folder
+  variable design_name
+
+  if { $parentCell eq "" } {
+     set parentCell [get_bd_cells /]
+  }
+
+  # Get object for parentCell
+  set parentObj [get_bd_cells $parentCell]
+  if { $parentObj == "" } {
+     catch {common::send_gid_msg -ssname BD::TCL -id 2090 -severity "ERROR" "Unable to find parent cell <$parentCell>!"}
+     return
+  }
+
+  # Make sure parentObj is hier blk
+  set parentType [get_property TYPE $parentObj]
+  if { $parentType ne "hier" } {
+     catch {common::send_gid_msg -ssname BD::TCL -id 2091 -severity "ERROR" "Parent <$parentObj> has TYPE = <$parentType>. Expected to be <hier>."}
+     return
+  }
+
+  # Save current instance; Restore later
+  set oldCurInst [current_bd_instance .]
+
+  # Set parent object as current
+  current_bd_instance $parentObj
+
+
+  # Create interface ports
+  set pcie0_cfg_status_0 [ create_bd_intf_port -mode Master -vlnv xilinx.com:display_cpm6:pcie_cfg_status_rtl:1.0 pcie0_cfg_status_0 ]
+
+  set ctrl0_gt_refclk_0 [ create_bd_intf_port -mode Slave -vlnv xilinx.com:interface:diff_clock_rtl:1.0 ctrl0_gt_refclk_0 ]
+
+  set CTRL0_GT_0 [ create_bd_intf_port -mode Master -vlnv xilinx.com:interface:gt_rtl:1.0 CTRL0_GT_0 ]
+
+  set pcie0_strm_0 [ create_bd_intf_port -mode Slave -vlnv xilinx.com:display_cpm6:pcie_strm_rtl:1.0 pcie0_strm_0 ]
+
+  set pl_axil_dbi0_0 [ create_bd_intf_port -mode Slave -vlnv xilinx.com:interface:aximm_rtl:1.0 pl_axil_dbi0_0 ]
+  set_property -dict [ list \
+   CONFIG.ADDR_WIDTH {32} \
+   CONFIG.ARUSER_WIDTH {16} \
+   CONFIG.AWUSER_WIDTH {16} \
+   CONFIG.BUSER_WIDTH {6} \
+   CONFIG.DATA_WIDTH {32} \
+   CONFIG.FREQ_HZ $pl0_freq_hz \
+   CONFIG.HAS_BRESP {1} \
+   CONFIG.HAS_BURST {0} \
+   CONFIG.HAS_CACHE {0} \
+   CONFIG.HAS_LOCK {0} \
+   CONFIG.HAS_PROT {1} \
+   CONFIG.HAS_QOS {0} \
+   CONFIG.HAS_REGION {0} \
+   CONFIG.HAS_RRESP {1} \
+   CONFIG.HAS_WSTRB {1} \
+   CONFIG.ID_WIDTH {0} \
+   CONFIG.NUM_READ_OUTSTANDING {1} \
+   CONFIG.NUM_READ_THREADS {1} \
+   CONFIG.NUM_WRITE_OUTSTANDING {1} \
+   CONFIG.NUM_WRITE_THREADS {1} \
+   CONFIG.PROTOCOL {AXI4LITE} \
+   CONFIG.READ_WRITE_MODE {READ_WRITE} \
+   CONFIG.RUSER_BITS_PER_BYTE {0} \
+   CONFIG.RUSER_WIDTH {4} \
+   CONFIG.WUSER_BITS_PER_BYTE {0} \
+   CONFIG.WUSER_WIDTH {4} \
+   ] $pl_axil_dbi0_0
+
+
+  # Create ports
+  set pcie0_rstn_0 [ create_bd_port -dir O -type rst pcie0_rstn_0 ]
+  set dbi0_rstn_0 [ create_bd_port -dir O -type rst dbi0_rstn_0 ]
+  set pl0_resetn_0 [ create_bd_port -dir O -type rst pl0_resetn_0 ]
+  set pl0_ref_clk [ create_bd_port -dir O -type clk pl0_ref_clk ]
+
+  # Create instance: ps_wizard_0, and set properties
+  set ps_wizard_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:ps_wizard:1.0 ps_wizard_0 ]
+  set_property -dict [list \
+    CONFIG.CPM6_CONFIG(CPM6_BOARD) {VPK360} \
+    CONFIG.CPM6_CONFIG(CPM6_CTRL0_10B_TAG_EN) {0} \
+    CONFIG.CPM6_CONFIG(CPM6_CTRL0_CFG_STATUS_IF) {1} \
+    CONFIG.CPM6_CONFIG(CPM6_CTRL0_LANE_RATE) $lane_rate \
+    CONFIG.CPM6_CONFIG(CPM6_CTRL0_IDE_CAP_EN) $ide \
+    CONFIG.CPM6_CONFIG(CPM6_CTRL0_LINK_IDE_STREAM_EN) $ide \
+    CONFIG.CPM6_CONFIG(CPM6_CTRL0_SELECTIVE_IDE_STREAM_EN) $ide \
+    CONFIG.CPM6_CONFIG(CPM6_CTRL0_LINK_WIDTH) $link_width \
+    CONFIG.CPM6_CONFIG(CPM6_CTRL0_PERST) {PS_MIO_18} \
+    CONFIG.CPM6_CONFIG(CPM6_CTRL0_PERST_DIR) {out} \
+    CONFIG.CPM6_CONFIG(CPM6_CTRL0_PORT_TYPE) {PCIE_RP} \
+    CONFIG.CPM6_CONFIG(CPM6_CTRL0_PROTOCOL) {PCIE_6_1} \
+    CONFIG.CPM6_CONFIG(CPM6_PL_AXIL_DBI0_IF) {1} \
+    CONFIG.PS_PMC_CONFIG(CPM6_CTRL0_LINK_WIDTH) $link_width \
+    CONFIG.PS_PMC_CONFIG(CPM6_CTRL0_PERST) {PS_MIO_18} \
+    CONFIG.PS_PMC_CONFIG(CPM6_CTRL0_PERST_DIR) {out} \
+    CONFIG.PS_PMC_CONFIG(CPM6_CTRL0_PROTOCOL) {PCIE_6_1} \
+    CONFIG.PS_PMC_CONFIG(PMC_CRP_PL0_REF_CTRL_FREQMHZ) $pl0_freq_mhz \
+    CONFIG.PS_PMC_CONFIG(PMC_MIO40) {DRIVE_STRENGTH 8mA SLEW slow PULL pullup SCHMITT 0 AUX_IO 0 USAGE GPIO OUTPUT_DATA default DIRECTION out} \
+    CONFIG.PS_PMC_CONFIG(PMC_MIO41) {DRIVE_STRENGTH 8mA SLEW slow PULL pullup SCHMITT 0 AUX_IO 0 USAGE GPIO OUTPUT_DATA default DIRECTION out} \
+    CONFIG.PS_PMC_CONFIG(PS_MIO18) {DRIVE_STRENGTH 8mA SLEW slow PULL pullup SCHMITT 0 AUX_IO 0 USAGE Unassigned OUTPUT_DATA default DIRECTION out} \
+    CONFIG.PS_PMC_CONFIG(PS_NUM_FABRIC_RESETS) {1} \
+    CONFIG.PS_PMC_CONFIG(PS_SLR_ID) {0} \
+    CONFIG.PS_PMC_CONFIG(PS_USE_PMCPL_CLK0) {1} \
+  ] $ps_wizard_0
+
+
+  # Create interface connections
+  connect_bd_intf_net -intf_net ctrl0_gt_refclk_0_1 [get_bd_intf_ports ctrl0_gt_refclk_0] [get_bd_intf_pins ps_wizard_0/ctrl0_gt_refclk]
+  connect_bd_intf_net -intf_net pcie0_strm_0_1 [get_bd_intf_ports pcie0_strm_0] [get_bd_intf_pins ps_wizard_0/pcie0_strm]
+  connect_bd_intf_net -intf_net pl_axil_dbi0_0_1 [get_bd_intf_ports pl_axil_dbi0_0] [get_bd_intf_pins ps_wizard_0/pl_axil_dbi0]
+  connect_bd_intf_net -intf_net ps_wizard_0_CTRL0_GT [get_bd_intf_ports CTRL0_GT_0] [get_bd_intf_pins ps_wizard_0/CTRL0_GT]
+  connect_bd_intf_net -intf_net ps_wizard_0_pcie0_cfg_status [get_bd_intf_ports pcie0_cfg_status_0] [get_bd_intf_pins ps_wizard_0/pcie0_cfg_status]
+
+  # Create port connections
+  connect_bd_net -net ps_wizard_0_dbi0_rstn  [get_bd_pins ps_wizard_0/dbi0_rstn] \
+  [get_bd_ports dbi0_rstn_0]
+  connect_bd_net -net ps_wizard_0_pcie0_rstn  [get_bd_pins ps_wizard_0/pcie0_rstn] \
+  [get_bd_ports pcie0_rstn_0]
+  connect_bd_net -net ps_wizard_0_pl0_ref_clk  [get_bd_pins ps_wizard_0/pl0_ref_clk] \
+  [get_bd_pins ps_wizard_0/pcie0_clk] \
+  [get_bd_pins ps_wizard_0/dbi0_clk] \
+  [get_bd_ports pl0_ref_clk]
+  connect_bd_net -net ps_wizard_0_pl0_resetn  [get_bd_pins ps_wizard_0/pl0_resetn] \
+  [get_bd_ports pl0_resetn_0]
+
+  # Create address segments
+  # Automatic, version-agnostic address assignment (no hardcoded segment names).
+  assign_bd_address
+
+  # IDE: this design has no NoC, so the SoC platform adds the NoC, LPDDR5 and the PS settings for
+  # the SEC firmware on R5_0. M00_AXI_0 gives the R5 PCIe config access through the PL config bridge.
+  if {$ide} {
+    set_property CONFIG.PS_PMC_CONFIG(PS_LPD_AXI_NOC_DATA_WIDTH) {128} $ps_wizard_0
+    set ::platform_ddr 1
+    source [file join $script_folder .. platform run.tcl]
+
+    set axi_noc2_0 [get_bd_cells -filter {VLNV =~ *axi_noc2*}]
+    set M00_AXI_0 [ create_bd_intf_port -mode Master -vlnv xilinx.com:interface:aximm_rtl:1.0 M00_AXI_0 ]
+    set_property -dict [ list \
+     CONFIG.ADDR_WIDTH {42} \
+     CONFIG.DATA_WIDTH {32} \
+     CONFIG.PROTOCOL {AXI4LITE} \
+     ] $M00_AXI_0
+    set_property CONFIG.ASSOCIATED_BUSIF {M00_AXI_0} [get_bd_ports pl0_ref_clk]
+    set smartconnect_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:smartconnect:1.0 smartconnect_0 ]
+    set_property CONFIG.NUM_SI {1} $smartconnect_0
+    connect_bd_intf_net [get_bd_intf_pins smartconnect_0/M00_AXI] [get_bd_intf_ports M00_AXI_0]
+    connect_bd_net [get_bd_pins ps_wizard_0/pl0_ref_clk] [get_bd_pins smartconnect_0/aclk]
+    connect_bd_net [get_bd_pins proc_sys_reset_0/peripheral_aresetn] [get_bd_pins smartconnect_0/aresetn]
+    platform_noc_add $axi_noc2_0 [list [dict create kind master pin smartconnect_0/S00_AXI clk ps_wizard_0/pl0_ref_clk width 32]]
+    set noc_m [format M%02d_AXI [expr {[get_property CONFIG.NUM_MI $axi_noc2_0] - 1}]]
+    set_property CONFIG.APERTURES {{0x201_4000_0000 1G}} [get_bd_intf_pins $axi_noc2_0/$noc_m]
+    foreach si {S00_AXI S01_AXI S03_AXI} {
+      set_property CONFIG.REMAPS "$noc_m {{0xE000_0000 0x201_4000_0000 256M}}" [get_bd_intf_pins $axi_noc2_0/$si]
+    }
+    assign_bd_address
+    foreach asp {cortexr5_0 cortexr5_1 cpm_0} {
+      assign_bd_address -offset 0xE0000000 -range 0x10000000 -target_address_space [get_bd_addr_spaces ps_wizard_0/pmcps_0_psv_$asp] [get_bd_addr_segs M00_AXI_0/Reg] -force
+    }
+    # A72/PMC/DPC need a 256 MB segment: the 64 KB default does not reach the Endpoint's
+    # config space (bus 1 = ECAM offset 0x10_0000).
+    foreach asp {cortexa72_0 cortexa72_1 pmc_0 dpc_0} {
+      catch {assign_bd_address -offset 0x201_4000_0000 -range 0x10000000 -target_address_space [get_bd_addr_spaces ps_wizard_0/pmcps_0_psv_$asp] [get_bd_addr_segs M00_AXI_0/Reg] -force}
+    }
+    exclude_bd_addr_seg -target_address_space [get_bd_addr_spaces ps_wizard_0/pmcps_0_psv_psm_0] [get_bd_addr_segs M00_AXI_0/Reg]
+  }
+
+
+
+  # Restore current instance
+  current_bd_instance $oldCurInst
+
+  validate_bd_design
+  save_bd_design
+}
+# End of create_root_design()
+
+
+##################################################################
+# MAIN FLOW
+##################################################################
+
+create_root_design "" $link_width $lane_rate $pl0_freq_mhz $pl0_freq_hz $::ide
+
+
