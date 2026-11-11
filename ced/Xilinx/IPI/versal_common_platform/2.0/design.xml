@@ -8,7 +8,7 @@
  
 <Name>versal_comn_platform</Name>
  
-<DisplayName>Versal Embedded Common Platform</DisplayName>
+<DisplayName>Versal Embedded Common Platform (Deprecated)</DisplayName>
 
 <Description>The embedded base platform is the foundation for embedded software flows including Vitis Software Acceleration, enablement of Linux and Real time Operating Systems.  It is also the starting point for application specific platforms and examples.  
 
