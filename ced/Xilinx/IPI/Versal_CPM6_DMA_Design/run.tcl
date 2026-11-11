@@ -38,6 +38,7 @@ proc createDesign {design_name options} {
   if {[dict exists $options DDR_EN.VALUE]} { set dma_ddr_enabled [dict get $options DDR_EN.VALUE] }
   set ddr_en [expr {$dma_ddr_enabled ? "DDR_ENABLED" : "DDR_DISABLED"}]
   set num_pfs 1                 ; if {[dict exists $options NUM_PFS.VALUE]}   { set num_pfs [dict get $options NUM_PFS.VALUE] }
+  set num_vfs 0                 ; if {[dict exists $options NUM_VFS.VALUE]}   { set num_vfs [dict get $options NUM_VFS.VALUE] }
   set lane_rate   "64.0_GT/s"   ; if {[dict exists $options CTRL_LANE_RATE.VALUE]}  { set lane_rate   [dict get $options CTRL_LANE_RATE.VALUE] }
   set link_width  "X8"          ; if {[dict exists $options CTRL_LINK_WIDTH.VALUE]} { set link_width  [dict get $options CTRL_LINK_WIDTH.VALUE] }
   set link_width_int [string index $link_width end]
@@ -52,6 +53,7 @@ proc createDesign {design_name options} {
   puts "INFO: DDR Enablament    = $ddr_en"
   puts "INFO: IDE CAP Enablament = $ide_cap_en"
   puts "INFO: Num of PF's       = $num_pfs"
+  puts "INFO: Num of VF's       = $num_vfs"
 
   # ----------------------------------------------------------------
   # Set sub-design directory and top module based on controller config
@@ -76,6 +78,14 @@ proc createDesign {design_name options} {
       error "NUM_PFS=8 is only supported for DDR_EN=true (Controller_0 or Controller_1) (got ${ctrl_config}/${ddr_en})"
     }
     set sub_src "src_8pf"
+  }
+  # 8 PF + 32 VF (4 VFs per PF, SR-IOV): own RTL set src_8pf_32vf/ (different pl_example, FLR slave, LPD AXI port)
+  # and the 32-VF branch of design_1_bd.tcl
+  if {$num_vfs ne "0"} {
+    if {$num_vfs ne "32" || $num_pfs ne "8"} {
+      error "NUM_VFS=${num_vfs} is not supported: only 0 or 32 VFs, and 32 requires NUM_PFS=8 (got NUM_PFS=${num_pfs})"
+    }
+    set sub_src "src_8pf_32vf"
   }
 
   if {[string equal [get_filesets -quiet sources_1] ""]} {
@@ -102,6 +112,7 @@ if { $ddr_en eq "DDR_ENABLED" } {
   puts $fd "    parameter LINK_WIDTH    = $link_width_int;"
   puts $fd "    parameter LANE_RATE = \"$lane_rate\";"
   puts $fd "    parameter NUM_PFS = $num_pfs;"
+  puts $fd "    parameter NUM_VFS = $num_vfs;"
   puts $fd "    parameter IDE_CAP_EN = $ide_cap_val;"
   puts $fd "endpackage"
   close $fd
