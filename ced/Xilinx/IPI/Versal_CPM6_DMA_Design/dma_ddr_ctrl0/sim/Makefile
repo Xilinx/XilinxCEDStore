@@ -76,9 +76,28 @@ NUM_PFS := $(shell grep -oE "NUM_PFS[[:space:]]*=[[:space:]]*[0-9]+" "$(DEFINES_
 ifeq ($(strip $(NUM_PFS)),)
   NUM_PFS := 1
 endif
+NUM_VFS := $(shell grep -oE "NUM_VFS[[:space:]]*=[[:space:]]*[0-9]+" "$(DEFINES_FILE)" 2>/dev/null | grep -oE "[0-9]+")
+ifeq ($(strip $(NUM_VFS)),)
+  NUM_VFS := 0
+endif
 
 ifeq ($(NUM_PFS),8)
-  TEST ?= test_s_dma_ddr_ctrlr0_multipf
+  ifeq ($(NUM_VFS),32)
+    # 8 PF + 32 VF (SR-IOV, 4 VFs per PF): the test enables VF enumeration in the VIP itself; +ENABLE_VF=4 is passed as well.
+    # VF_MODE=<n>: 0 enumeration + register checks only, 1 PFs only, 2 one VF only (PF0-VF0), 3 all 40 functions (default)
+    # VF_ITER=<n>: iterations over the selected functions (default 1)
+    TEST ?= test_s_dma_ddr_ctrlr0_8pf_32vf
+    # Enumerating 40 functions takes 500us to over 1000us depending on the seed, longer than the default enumeration timeout
+    PARG_VF := +ENABLE_VF=4 +ENUM_TIMEOUT=3000
+    ifneq ($(VF_MODE),)
+      PARG_VF += +VF_MODE=$(VF_MODE)
+    endif
+    ifneq ($(VF_ITER),)
+      PARG_VF += +VF_ITER=$(VF_ITER)
+    endif
+  else
+    TEST ?= test_s_dma_ddr_ctrlr0_multipf
+  endif
   # The full 8-PF test (40 iterations) needs ~2.5h of wall time; raise the default per-test timeout to 4h
   ifeq ($(origin REGR_TIMEOUT),file)
     REGR_TIMEOUT := 14400
@@ -130,6 +149,7 @@ else
   PARG  += +SIM_TIMEOUT=5000us
 endif
 PARG  += $(PARG_NUM_ITER)
+PARG  += $(PARG_VF)
 PARG  += +CPM6_VIVADO
 PARG  += +PCIE_LINK_PIPE
 ifneq ($(PL0_CLK),)

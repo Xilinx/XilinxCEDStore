@@ -28,6 +28,10 @@ proc addOptions {DESIGNOBJ PROJECT_PARAM.BOARD_PART} {
         value "1" \
         value_list {1 8} \
         enabled true]
+    lappend x [dict create name "NUM_VFS" type "string" \
+        value "0" \
+        value_list {0 32} \
+        enabled false]
     lappend x [dict create name "CTRL_LANE_RATE" type "string" \
         value "64.0_GT/s" \
         value_list {16.0_GT/s 32.0_GT/s 64.0_GT/s} \
@@ -61,6 +65,7 @@ proc addGUILayout {DESIGNOBJ PROJECT_PARAM.BOARD_PART} {
 
     set panel2 [ced::add_panel -name panel2 -parent $page -designObject $designObj -layout horizontal]
     ced::add_param -name NUM_PFS -display_name "Num of PFs" -parent $panel2 -designObject $designObj -widget comboBox
+    ced::add_param -name NUM_VFS -display_name "Num of VFs" -parent $panel2 -designObject $designObj -widget comboBox
 
     set panel3 [ced::add_panel -name panel3 -parent $page -designObject $designObj -layout horizontal]
     ced::add_param -name CTRL_LANE_RATE -display_name "Link Speed" -parent $panel3 -designObject $designObj -widget comboBox
@@ -79,5 +84,24 @@ updater {PROJECT_PARAM.PART} {DDR_EN.ENABLEMENT DDR_EN.VALUE} {
     } else {
         set DDR_EN.ENABLEMENT false
         set DDR_EN.VALUE false
+    }
+}
+
+# VFs (0 or 32 = 4 per PF) can only be chosen together with 8 PFs; with 1 PF the option is disabled and reset to 0
+updater {NUM_PFS.VALUE} {NUM_VFS.ENABLEMENT NUM_VFS.VALUE} {
+    if {${NUM_PFS.VALUE} eq "8"} {
+        set NUM_VFS.ENABLEMENT true
+    } else {
+        set NUM_VFS.ENABLEMENT false
+        set NUM_VFS.VALUE 0
+    }
+}
+
+# The VF option is only shown in the GUI when 8 PFs are selected; with 1 PF it is hidden
+gui_updater {NUM_PFS.VALUE} {NUM_VFS.VISIBLE} {
+    if {${NUM_PFS.VALUE} eq "8"} {
+        set NUM_VFS.VISIBLE true
+    } else {
+        set NUM_VFS.VISIBLE false
     }
 }

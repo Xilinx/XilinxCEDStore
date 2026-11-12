@@ -148,7 +148,7 @@ if { $bCheckIPsPassed != 1 } {
 
 # Procedure to create entire design; Provide argument to make
 # procedure reusable. If parentCell is "", will use root.
-proc create_root_design { parentCell link_width lane_rate num_pfs ide_cap_en} {
+proc create_root_design { parentCell link_width lane_rate num_pfs ide_cap_en {num_vfs 0}} {
 
   variable script_folder
   variable design_name
@@ -277,6 +277,19 @@ proc create_root_design { parentCell link_width lane_rate num_pfs ide_cap_en} {
      CONFIG.PROTOCOL {AXI4} \
      ] $cpm_axi_pl0_0
   }
+  # 32-VF only: LPD-to-PL AXI master (PS LPD_AXI_PL, driven by the R5 for FLR) taken out of the BD as a port
+  if {$num_vfs == 32} {
+    set M_LPD_AXI_0 [ create_bd_intf_port -mode Master -vlnv xilinx.com:interface:aximm_rtl:1.0 M_LPD_AXI_0 ]
+    set_property -dict [ list \
+     CONFIG.ADDR_WIDTH {44} \
+     CONFIG.DATA_WIDTH {32} \
+     CONFIG.FREQ_HZ {249997498} \
+     CONFIG.HAS_REGION {0} \
+     CONFIG.NUM_READ_OUTSTANDING {2} \
+     CONFIG.NUM_WRITE_OUTSTANDING {2} \
+     CONFIG.PROTOCOL {AXI4} \
+     ] $M_LPD_AXI_0
+  }
 
 
   # Create ports
@@ -288,7 +301,9 @@ proc create_root_design { parentCell link_width lane_rate num_pfs ide_cap_en} {
   if {$num_pfs == 8} {
     # clock-type port so the external AXI ports inherit the PL clock domain (avoids SmartConnect clock-domain DRC)
     set aclk [ create_bd_port -dir O -type clk aclk ]
-    set_property CONFIG.ASSOCIATED_BUSIF {M00_AXI_0:S00_AXI_0:cpm_axi_pl0_0:pl_axil_dbi0_0} $aclk
+    set aclk_busif {M00_AXI_0:S00_AXI_0:cpm_axi_pl0_0:pl_axil_dbi0_0}
+    if {$num_vfs == 32} { append aclk_busif ":M_LPD_AXI_0" }
+    set_property CONFIG.ASSOCIATED_BUSIF $aclk_busif $aclk
   } else {
     set aclk [ create_bd_port -dir O aclk ]
   }
@@ -452,6 +467,91 @@ proc create_root_design { parentCell link_width lane_rate num_pfs ide_cap_en} {
     CONFIG.CPM6_CONFIG(CPM6_CTRL0_PF7_MSIX_TABLE_OFFSET) {0x10000} \
     CONFIG.CPM6_CONFIG(CPM6_CTRL0_PF7_MSIX_VECTORS) {4} \
     CONFIG.CPM6_CONFIG(CPM6_PL_AXIL_DBI0_IF) {1} \
+    ] $ps_wizard_0
+  }
+
+  # 32-VF: SR-IOV (4 VFs per PF = 32 VFs), VF BARs / MSI-X, 8 MSI-X vectors per PF, FLR, extended config space,
+  # VF inbound regions, DMA descriptor range and the LPD-to-PL port (overrides the 8-PF values above)
+  if {$num_vfs == 32} {
+    set_property -dict [list \
+      CONFIG.CPM6_CONFIG(CPM6_CTRL0_DMA_DSC_BASEADDR) {0x0000_0500_2000_0000} \
+      CONFIG.CPM6_CONFIG(CPM6_CTRL0_DMA_DSC_LIMITADDR) {0x0000_0501_1fff_0000} \
+      CONFIG.CPM6_CONFIG(CPM6_CTRL0_EXT_CFG_SPACE_EN) {1} \
+      CONFIG.CPM6_CONFIG(CPM6_CTRL0_FLR_EN) {1} \
+      CONFIG.CPM6_CONFIG(CPM6_CTRL0_INBOUND_REGION5_BAR_NUM) {BAR_1} \
+      CONFIG.CPM6_CONFIG(CPM6_CTRL0_INBOUND_REGION5_FUNC) {VF*} \
+      CONFIG.CPM6_CONFIG(CPM6_CTRL0_INBOUND_REGION5_TRGTADDR) {0x500_0000_0000} \
+      CONFIG.CPM6_CONFIG(CPM6_CTRL0_INBOUND_REGION6_BAR_NUM) {BAR_2} \
+      CONFIG.CPM6_CONFIG(CPM6_CTRL0_INBOUND_REGION6_FUNC) {VF*} \
+      CONFIG.CPM6_CONFIG(CPM6_CTRL0_INBOUND_REGION6_TRGTADDR) {0x500_0002_0000} \
+      CONFIG.CPM6_CONFIG(CPM6_CTRL0_INBOUND_REGION7_BAR_NUM) {BAR_5} \
+      CONFIG.CPM6_CONFIG(CPM6_CTRL0_INBOUND_REGION7_FUNC) {VF*} \
+      CONFIG.CPM6_CONFIG(CPM6_CTRL0_INBOUND_REGION7_TRGTADDR) {0x500_2000_0000} \
+      CONFIG.CPM6_CONFIG(CPM6_CTRL0_NUM_INBOUND_REGIONS) {8} \
+      CONFIG.CPM6_CONFIG(CPM6_CTRL0_PF0_BAR5_SIZE) {512} \
+      CONFIG.CPM6_CONFIG(CPM6_CTRL0_PF0_MSIX_VECTORS) {8} \
+      CONFIG.CPM6_CONFIG(CPM6_CTRL0_PF1_MSIX_VECTORS) {8} \
+      CONFIG.CPM6_CONFIG(CPM6_CTRL0_PF2_MSIX_VECTORS) {8} \
+      CONFIG.CPM6_CONFIG(CPM6_CTRL0_PF3_MSIX_VECTORS) {8} \
+      CONFIG.CPM6_CONFIG(CPM6_CTRL0_PF4_MSIX_VECTORS) {8} \
+      CONFIG.CPM6_CONFIG(CPM6_CTRL0_PF5_MSIX_VECTORS) {8} \
+      CONFIG.CPM6_CONFIG(CPM6_CTRL0_PF6_MSIX_VECTORS) {8} \
+      CONFIG.CPM6_CONFIG(CPM6_CTRL0_PF7_MSIX_VECTORS) {8} \
+      CONFIG.CPM6_CONFIG(CPM6_CTRL0_SRIOV_CAP_EN) {1} \
+      CONFIG.CPM6_CONFIG(CPM6_CTRL0_VFG0_BAR0_SIZE) {32} \
+      CONFIG.CPM6_CONFIG(CPM6_CTRL0_VFG0_BAR1_EN) {1} \
+      CONFIG.CPM6_CONFIG(CPM6_CTRL0_VFG0_BAR1_SCALE) {Kilobytes} \
+      CONFIG.CPM6_CONFIG(CPM6_CTRL0_VFG0_BAR1_SIZE) {4} \
+      CONFIG.CPM6_CONFIG(CPM6_CTRL0_VFG0_BAR2_EN) {1} \
+      CONFIG.CPM6_CONFIG(CPM6_CTRL0_VFG0_BAR2_SIZE) {4} \
+      CONFIG.CPM6_CONFIG(CPM6_CTRL0_VFG0_BAR3_EN) {1} \
+      CONFIG.CPM6_CONFIG(CPM6_CTRL0_VFG0_BAR3_SIZE) {4} \
+      CONFIG.CPM6_CONFIG(CPM6_CTRL0_VFG0_BAR4_EN) {1} \
+      CONFIG.CPM6_CONFIG(CPM6_CTRL0_VFG0_BAR5_EN) {1} \
+      CONFIG.CPM6_CONFIG(CPM6_CTRL0_VFG0_BAR5_SCALE) {Kilobytes} \
+      CONFIG.CPM6_CONFIG(CPM6_CTRL0_VFG0_BAR5_SIZE) {4} \
+      CONFIG.CPM6_CONFIG(CPM6_CTRL0_VFG0_MSIX_EN) {1} \
+      CONFIG.CPM6_CONFIG(CPM6_CTRL0_VFG0_MSIX_PBA_OFFSET) {0x1400} \
+      CONFIG.CPM6_CONFIG(CPM6_CTRL0_VFG0_MSIX_TABLE_OFFSET) {0x1000} \
+      CONFIG.CPM6_CONFIG(CPM6_CTRL0_VFG0_MSIX_VECTORS) {8} \
+      CONFIG.CPM6_CONFIG(CPM6_CTRL0_VFG0_TOTAL_VFS) {4} \
+      CONFIG.CPM6_CONFIG(CPM6_CTRL0_VFG1_MSIX_EN) {1} \
+      CONFIG.CPM6_CONFIG(CPM6_CTRL0_VFG1_MSIX_PBA_OFFSET) {0x1400} \
+      CONFIG.CPM6_CONFIG(CPM6_CTRL0_VFG1_MSIX_TABLE_OFFSET) {0x1000} \
+      CONFIG.CPM6_CONFIG(CPM6_CTRL0_VFG1_MSIX_VECTORS) {8} \
+      CONFIG.CPM6_CONFIG(CPM6_CTRL0_VFG1_TOTAL_VFS) {4} \
+      CONFIG.CPM6_CONFIG(CPM6_CTRL0_VFG2_MSIX_EN) {1} \
+      CONFIG.CPM6_CONFIG(CPM6_CTRL0_VFG2_MSIX_PBA_OFFSET) {0x1400} \
+      CONFIG.CPM6_CONFIG(CPM6_CTRL0_VFG2_MSIX_TABLE_OFFSET) {0x1000} \
+      CONFIG.CPM6_CONFIG(CPM6_CTRL0_VFG2_MSIX_VECTORS) {8} \
+      CONFIG.CPM6_CONFIG(CPM6_CTRL0_VFG2_TOTAL_VFS) {4} \
+      CONFIG.CPM6_CONFIG(CPM6_CTRL0_VFG3_MSIX_EN) {1} \
+      CONFIG.CPM6_CONFIG(CPM6_CTRL0_VFG3_MSIX_PBA_OFFSET) {0x1400} \
+      CONFIG.CPM6_CONFIG(CPM6_CTRL0_VFG3_MSIX_TABLE_OFFSET) {0x1000} \
+      CONFIG.CPM6_CONFIG(CPM6_CTRL0_VFG3_MSIX_VECTORS) {8} \
+      CONFIG.CPM6_CONFIG(CPM6_CTRL0_VFG3_TOTAL_VFS) {4} \
+      CONFIG.CPM6_CONFIG(CPM6_CTRL0_VFG4_MSIX_EN) {1} \
+      CONFIG.CPM6_CONFIG(CPM6_CTRL0_VFG4_MSIX_PBA_OFFSET) {0x1400} \
+      CONFIG.CPM6_CONFIG(CPM6_CTRL0_VFG4_MSIX_TABLE_OFFSET) {0x1000} \
+      CONFIG.CPM6_CONFIG(CPM6_CTRL0_VFG4_MSIX_VECTORS) {8} \
+      CONFIG.CPM6_CONFIG(CPM6_CTRL0_VFG4_TOTAL_VFS) {4} \
+      CONFIG.CPM6_CONFIG(CPM6_CTRL0_VFG5_MSIX_EN) {1} \
+      CONFIG.CPM6_CONFIG(CPM6_CTRL0_VFG5_MSIX_PBA_OFFSET) {0x1400} \
+      CONFIG.CPM6_CONFIG(CPM6_CTRL0_VFG5_MSIX_TABLE_OFFSET) {0x1000} \
+      CONFIG.CPM6_CONFIG(CPM6_CTRL0_VFG5_MSIX_VECTORS) {8} \
+      CONFIG.CPM6_CONFIG(CPM6_CTRL0_VFG5_TOTAL_VFS) {4} \
+      CONFIG.CPM6_CONFIG(CPM6_CTRL0_VFG6_MSIX_EN) {1} \
+      CONFIG.CPM6_CONFIG(CPM6_CTRL0_VFG6_MSIX_PBA_OFFSET) {0x1400} \
+      CONFIG.CPM6_CONFIG(CPM6_CTRL0_VFG6_MSIX_TABLE_OFFSET) {0x1000} \
+      CONFIG.CPM6_CONFIG(CPM6_CTRL0_VFG6_MSIX_VECTORS) {8} \
+      CONFIG.CPM6_CONFIG(CPM6_CTRL0_VFG6_TOTAL_VFS) {4} \
+      CONFIG.CPM6_CONFIG(CPM6_CTRL0_VFG7_MSIX_EN) {1} \
+      CONFIG.CPM6_CONFIG(CPM6_CTRL0_VFG7_MSIX_PBA_OFFSET) {0x1400} \
+      CONFIG.CPM6_CONFIG(CPM6_CTRL0_VFG7_MSIX_TABLE_OFFSET) {0x1000} \
+      CONFIG.CPM6_CONFIG(CPM6_CTRL0_VFG7_MSIX_VECTORS) {8} \
+      CONFIG.CPM6_CONFIG(CPM6_CTRL0_VFG7_TOTAL_VFS) {4} \
+      CONFIG.PS_PMC_CONFIG(PS_LPD_AXI_PL_DATA_WIDTH) {32} \
+      CONFIG.PS_PMC_CONFIG(PS_USE_LPD_AXI_PL) {1} \
     ] $ps_wizard_0
   }
 
@@ -729,6 +829,9 @@ proc create_root_design { parentCell link_width lane_rate num_pfs ide_cap_en} {
     connect_bd_intf_net -intf_net ps_wizard_0_cpm_axi_pl0 [get_bd_intf_ports cpm_axi_pl0_0] [get_bd_intf_pins ps_wizard_0/cpm_axi_pl0]
     connect_bd_intf_net -intf_net smartconnect_0_M00_AXI [get_bd_intf_ports M00_AXI_0] [get_bd_intf_pins smartconnect_0/M00_AXI]
     connect_bd_intf_net -intf_net smartconnect_0_M01_AXI [get_bd_intf_pins smartconnect_0/M01_AXI] [get_bd_intf_pins axi_bram_ctrl_0/S_AXI]
+    if {$num_vfs == 32} {
+      connect_bd_intf_net -intf_net ps_wizard_0_LPD_AXI_PL [get_bd_intf_pins ps_wizard_0/LPD_AXI_PL] [get_bd_intf_ports M_LPD_AXI_0]
+    }
   } else {
     connect_bd_intf_net -intf_net ps_wizard_0_cpm_axi_pl0 [get_bd_intf_pins ps_wizard_0/cpm_axi_pl0] [get_bd_intf_pins axi_bram_ctrl_0/S_AXI]
   }
@@ -772,6 +875,9 @@ proc create_root_design { parentCell link_width lane_rate num_pfs ide_cap_en} {
   # 8-PF only: SmartConnect clock/reset and DBI0 clock/reset
   if {$num_pfs == 8} {
     connect_bd_net [get_bd_pins ps_wizard_0/pl0_ref_clk] [get_bd_pins smartconnect_0/aclk] [get_bd_pins ps_wizard_0/dbi0_clk]
+    if {$num_vfs == 32} {
+      connect_bd_net [get_bd_pins ps_wizard_0/pl0_ref_clk] [get_bd_pins ps_wizard_0/lpd_axi_pl_aclk]
+    }
     connect_bd_net [get_bd_pins proc_sys_reset_0/peripheral_aresetn] [get_bd_pins smartconnect_0/aresetn]
     connect_bd_net [get_bd_pins ps_wizard_0/dbi0_rstn] [get_bd_ports dbi0_rstn_0]
   }
@@ -786,12 +892,28 @@ proc create_root_design { parentCell link_width lane_rate num_pfs ide_cap_en} {
   if {$num_pfs == 8} {
     assign_bd_address -offset 0x050020000000 -range 0x000100000000 -target_address_space [get_bd_addr_spaces ps_wizard_0/pmcps_0_psv_cpm_0] [get_bd_addr_segs axi_noc2_0/DDR_MC_PORTS/DDR_CH1] -force
     assign_bd_address -offset 0x050020000000 -range 0x000100000000 -target_address_space [get_bd_addr_spaces ps_wizard_0/pmcps_0_psv_dpc_0] [get_bd_addr_segs axi_noc2_0/DDR_MC_PORTS/DDR_CH1] -force
-    assign_bd_address -offset 0x050000000000 -range 0x00001000 -target_address_space [get_bd_addr_spaces S00_AXI_0] [get_bd_addr_segs M00_AXI_0/Reg] -force
-    assign_bd_address -offset 0x050000010000 -range 0x00010000 -target_address_space [get_bd_addr_spaces S00_AXI_0] [get_bd_addr_segs axi_bram_ctrl_0/S_AXI/Mem0] -force
-    # DBI slave segment into the external DBI master address space (32-bit pass-through, absolute DBI addresses)
-    assign_bd_address -offset 0x00000000 -range 0x100000000 -target_address_space [get_bd_addr_spaces pl_axil_dbi0_0] [get_bd_addr_segs ps_wizard_0/cpm6_0_DBI0/cpm6_0_psv_dbi0] -force
-    # cpm_axi_pl0_0 into the CPM address space, at the PS-side address the 1-PF design uses for BRAM0
-    assign_bd_address -offset 0xC0000000 -range 0x00010000 -target_address_space [get_bd_addr_spaces ps_wizard_0/pmcps_0_psv_cpm_0] [get_bd_addr_segs cpm_axi_pl0_0/Reg] -force
+    if {$num_vfs == 32} {
+      # 32-VF address plan (as in the 8PF_32VF reference design)
+      assign_bd_address -offset 0x050000000000 -range 0x00040000 -target_address_space [get_bd_addr_spaces S00_AXI_0] [get_bd_addr_segs M00_AXI_0/Reg] -force
+      assign_bd_address -offset 0xC0000000 -range 0x00010000 -target_address_space [get_bd_addr_spaces S00_AXI_0] [get_bd_addr_segs axi_bram_ctrl_0/S_AXI/Mem0] -force
+      assign_bd_address -offset 0x44A00000 -range 0xBB600000 -target_address_space [get_bd_addr_spaces pl_axil_dbi0_0] [get_bd_addr_segs ps_wizard_0/cpm6_0_DBI0/cpm6_0_psv_dbi0] -force
+      assign_bd_address -offset 0x44A00000 -range 0x00010000 -target_address_space [get_bd_addr_spaces ps_wizard_0/pmcps_0_psv_cpm_0] [get_bd_addr_segs cpm_axi_pl0_0/Reg] -force
+      assign_bd_address -offset 0x80000000 -range 0x00010000 -target_address_space [get_bd_addr_spaces ps_wizard_0/pmcps_0_psv_cortexa72_0] [get_bd_addr_segs M_LPD_AXI_0/Reg] -force
+      assign_bd_address -offset 0x80000000 -range 0x00010000 -target_address_space [get_bd_addr_spaces ps_wizard_0/pmcps_0_psv_cortexa72_1] [get_bd_addr_segs M_LPD_AXI_0/Reg] -force
+      assign_bd_address -offset 0x80000000 -range 0x00010000 -target_address_space [get_bd_addr_spaces ps_wizard_0/pmcps_0_psv_cortexr5_0] [get_bd_addr_segs M_LPD_AXI_0/Reg] -force
+      assign_bd_address -offset 0x80000000 -range 0x00010000 -target_address_space [get_bd_addr_spaces ps_wizard_0/pmcps_0_psv_cortexr5_1] [get_bd_addr_segs M_LPD_AXI_0/Reg] -force
+      assign_bd_address -offset 0x80000000 -range 0x00010000 -target_address_space [get_bd_addr_spaces ps_wizard_0/pmcps_0_psv_dpc_0] [get_bd_addr_segs M_LPD_AXI_0/Reg] -force
+      assign_bd_address -offset 0x80000000 -range 0x00010000 -target_address_space [get_bd_addr_spaces ps_wizard_0/pmcps_0_psv_pmc_0] [get_bd_addr_segs M_LPD_AXI_0/Reg] -force
+      assign_bd_address -offset 0x80000000 -range 0x00010000 -target_address_space [get_bd_addr_spaces ps_wizard_0/pmcps_0_psv_psm_0] [get_bd_addr_segs M_LPD_AXI_0/Reg] -force
+      exclude_bd_addr_seg -target_address_space [get_bd_addr_spaces ps_wizard_0/pmcps_0_psv_cpm_0] [get_bd_addr_segs M_LPD_AXI_0/Reg]
+    } else {
+      assign_bd_address -offset 0x050000000000 -range 0x00001000 -target_address_space [get_bd_addr_spaces S00_AXI_0] [get_bd_addr_segs M00_AXI_0/Reg] -force
+      assign_bd_address -offset 0x050000010000 -range 0x00010000 -target_address_space [get_bd_addr_spaces S00_AXI_0] [get_bd_addr_segs axi_bram_ctrl_0/S_AXI/Mem0] -force
+      # DBI slave segment into the external DBI master address space (32-bit pass-through, absolute DBI addresses)
+      assign_bd_address -offset 0x00000000 -range 0x100000000 -target_address_space [get_bd_addr_spaces pl_axil_dbi0_0] [get_bd_addr_segs ps_wizard_0/cpm6_0_DBI0/cpm6_0_psv_dbi0] -force
+      # cpm_axi_pl0_0 into the CPM address space, at the PS-side address the 1-PF design uses for BRAM0
+      assign_bd_address -offset 0xC0000000 -range 0x00010000 -target_address_space [get_bd_addr_spaces ps_wizard_0/pmcps_0_psv_cpm_0] [get_bd_addr_segs cpm_axi_pl0_0/Reg] -force
+    }
   } else {
     assign_bd_address -offset 0x050020000000 -range 0x40000000 -target_address_space [get_bd_addr_spaces ps_wizard_0/pmcps_0_psv_cpm_0] [get_bd_addr_segs axi_noc2_0/DDR_MC_PORTS/DDR_CH1] -force
     assign_bd_address -offset 0x050020000000 -range 0x40000000 -target_address_space [get_bd_addr_spaces ps_wizard_0/pmcps_0_psv_dpc_0] [get_bd_addr_segs axi_noc2_0/DDR_MC_PORTS/DDR_CH1] -force
@@ -814,4 +936,4 @@ proc create_root_design { parentCell link_width lane_rate num_pfs ide_cap_en} {
 # MAIN FLOW
 ##################################################################
 
-create_root_design "" $link_width $lane_rate $num_pfs $ide_cap_en
+create_root_design "" $link_width $lane_rate $num_pfs $ide_cap_en $num_vfs

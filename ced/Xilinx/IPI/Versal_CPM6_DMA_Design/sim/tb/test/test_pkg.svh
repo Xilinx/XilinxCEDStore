@@ -129,5 +129,7 @@ package test_pkg;
   `include "dma/test_s_dma_ddr_ctrlr1.sv"
   `include "dma/test_s_dma_ddr_ctrlr1_msix.sv"
   `include "dma/test_s_dma_ddr_ctrlr1_multipf.sv"
+  `include "dma/test_s_dma_ddr_ctrlr1_8pf_32vf.sv"
+  `include "dma/test_s_dma_ddr_ctrlr0_8pf_32vf.sv"
 
 endpackage
