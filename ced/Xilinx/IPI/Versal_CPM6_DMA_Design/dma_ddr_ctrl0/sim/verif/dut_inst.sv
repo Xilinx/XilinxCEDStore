@@ -8,6 +8,7 @@
 // generation for this configuration completes without them driven
 // (see dma_ddr_ctrl1/sim/README.txt "AVAILABLE TESTS" for what is/isn't
 // independently re-verified beyond BD/sim-script generation).
+`define XLNOC_DUT_INST tb_top.dma_ddr_top_i
 wire [7:0] ctrl0_gt_grx_n;
 wire [7:0] ctrl0_gt_grx_p;
 wire [7:0] ctrl0_gt_gtx_n;

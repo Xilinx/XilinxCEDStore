@@ -7,21 +7,22 @@ variable currentDir [file dirname $currentFile]
 source "$currentDir/run.tcl"
 
 proc getSupportedParts {} {
-    return [get_parts {xc2vp3*} -quiet]
+    return [get_parts {xc2vp3602-vsvc3340*} -quiet]
 }
 
 proc getSupportedBoards {} {
 }
 
 proc addOptions {DESIGNOBJ PROJECT_PARAM.BOARD_PART} {
+    set ide_ok [string match "*vsvc3340*" ${PROJECT_PARAM.BOARD_PART}]
     lappend x [dict create name "CTRL_CONFIG" type "string" \
         value "Controller_1" \
         value_list {Controller_0 Controller_1} \
         enabled true]
-    lappend x [dict create name "DDR_EN" type "boolean" \
-        value "false" \
-        enabled true]
     lappend x [dict create name "IDE_CAP_EN" type "boolean" \
+        value "false" \
+        enabled [expr {$ide_ok ? "true" : "false"}]]
+    lappend x [dict create name "DDR_EN" type "boolean" \
         value "false" \
         enabled true]
     lappend x [dict create name "NUM_PFS" type "string" \
@@ -39,6 +40,10 @@ proc addOptions {DESIGNOBJ PROJECT_PARAM.BOARD_PART} {
     lappend x [dict create name "CTRL_LINK_WIDTH" type "string" \
         value "X8" \
         value_list {X1 X2 X4 X8} \
+        enabled true]
+    lappend x [dict create name "CTRL_LINK_WIDTH_MAX4" type "string" \
+        value "X4" \
+        value_list {X1 X2 X4} \
         enabled true]
     return $x
 }
@@ -77,11 +82,20 @@ proc addGUILayout {DESIGNOBJ PROJECT_PARAM.BOARD_PART} {
 # Add any future conditions directly in these blocks
 # ========================================================================
 
-# Controls enablement and value reset
-updater {PROJECT_PARAM.PART} {DDR_EN.ENABLEMENT DDR_EN.VALUE} {
+# Controls enablement of IDE and DDR_EN, and DDR_EN value
+# - IDE is only enabled on the supported part
+# - DDR_EN is forced on (and locked) when IDE is selected
+updater {PROJECT_PARAM.PART IDE_CAP_EN.VALUE} {IDE_CAP_EN.ENABLEMENT DDR_EN.ENABLEMENT DDR_EN.VALUE} {
     if {[string match -nocase "xc2vp3602-vsvc3340*" ${PROJECT_PARAM.PART}]} {
-        set DDR_EN.ENABLEMENT true
+        set IDE_CAP_EN.ENABLEMENT true
+        if {${IDE_CAP_EN.VALUE}} {
+            set DDR_EN.VALUE true
+            set DDR_EN.ENABLEMENT false
+        } else {
+            set DDR_EN.ENABLEMENT true
+        }
     } else {
+        set IDE_CAP_EN.ENABLEMENT false
         set DDR_EN.ENABLEMENT false
         set DDR_EN.VALUE false
     }
@@ -94,6 +108,21 @@ updater {NUM_PFS.VALUE} {NUM_VFS.ENABLEMENT NUM_VFS.VALUE} {
     } else {
         set NUM_VFS.ENABLEMENT false
         set NUM_VFS.VALUE 0
+    }
+}
+
+# NFVO1369 / NSVO1369 packages of xc2vp31xx / xc2vp32xx bond only one CPM6 GT quad per controller
+# (see cpm6_gt_pad_props in run.tcl), so x8 is not available there. Restrict the CTRL_LINK_WIDTH range
+# to X1/X2/X4 for those parts and fall back to X4 if X8 was selected.
+# ========================================================================
+updater {PROJECT_PARAM.PART} {CTRL_LINK_WIDTH.RANGE CTRL_LINK_WIDTH.VALUE} {
+    if {[regexp -nocase -- {^xc2vp3[12]02-n[fs]vo1369-} ${PROJECT_PARAM.PART}]} {
+        set CTRL_LINK_WIDTH.RANGE {X1 X2 X4}
+        if {${CTRL_LINK_WIDTH.VALUE} eq "X8"} {
+            set CTRL_LINK_WIDTH.VALUE "X4"
+        }
+    } else {
+        set CTRL_LINK_WIDTH.RANGE {X1 X2 X4 X8}
     }
 }
 

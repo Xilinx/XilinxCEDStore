@@ -27,6 +27,27 @@ proc copy_overlay {src dst} {
   }
 }
 
+# GT quad / refclk selection for packages that do not bond every GTM2 quad.
+# On xc2vp31xx / xc2vp32xx in the NFVO1369 and NSVO1369 packages GTM2_QUAD_X0Y1/X0Y3 and GTM2_REFCLK_X0Y2/X0Y3/X0Y6/X0Y7 have no package pins.
+# The CPM6 GT interface is hard-wired per quad, so the quad cannot be moved with a LOC: the lane 0 pad selects the quad instead
+# (see ttcl/ttcl_init.tcl). ctrl0 -> QUAD0 (GTM2_QUAD_X0Y0, GTM2_REFCLK_X0Y0), ctrl1 -> QUAD2 (GTM2_QUAD_X0Y2, GTM2_REFCLK_X0Y4).
+# x8 uses both quads of the controller, so it cannot be fixed here. Returns a property list for ps_wizard, or {} when nothing applies.
+proc cpm6_gt_pad_props {ctrl link_width part} {
+  if {![regexp -nocase {^xc2vp3[12]02-n[fs]vo1369-} $part]} { return {} }
+  if {$link_width > 4} {
+    puts "WARNING: $part: controller $ctrl x$link_width needs both GT quads of the controller and one has no bonded pins on this package. GT pads left at default."
+    return {}
+  }
+  set q [expr {$ctrl * 2}]
+  set props {}
+  for {set l 0} {$l < 8} {incr l} {
+    lappend props "CONFIG.CPM6_CONFIG(CPM6_CTRL${ctrl}_LANE${l}_PAD)" "QUAD[expr {$q + ($l >> 2)}]_CH[expr {3 - ($l & 3)}]"
+  }
+  lappend props "CONFIG.CPM6_CONFIG(CPM6_CTRL${ctrl}_REFCLK)" "QUAD${q}_REFCLK0"
+  puts "INFO: $part: controller $ctrl GT pads moved to QUAD$q (bonded quad/refclk on this package)"
+  return $props
+}
+
 proc createDesign {design_name options} {
   variable currentDir
   puts "DEBUG: options dict = $options"
