@@ -1,17 +1,26 @@
-// Round-robin arbiter for 128 request channels.
+// Round-robin arbiter for 128 request channels, pipelined.
 //
 // Algorithm (masked-priority):
 //   1. Build a mask that enables only channels AFTER last_served
 //      (i.e., mask[i] = 1 when i > last_served).
-//   2. Apply mask to req -> masked_req.
-//   3. Isolate the lowest set bit of masked_req using the two's-complement
-//      trick: sel = masked_req & (-masked_req).
-//   4. If masked_req is empty (wrap-around), fall back to the lowest set bit
-//      of the full req vector.
-//   5. Encode the one-hot sel to a binary channel number (grant_chn).
-//   6. On advance, record served_chn (the channel actually processed by the
+//   2. Find the lowest requesting channel among the masked requests and
+//      among all requests (the wrap-around fallback).
+//   3. Grant the masked one if there is one, else the full one.
+//   4. On advance, record served_chn (the channel actually processed by the
 //      caller) as last_served — NOT grant_chn, which may have shifted to a
 //      newly-arrived lower-indexed channel during processing.
+//
+// The lowest-set-bit search is hierarchical (16 groups of 8 channels) and the
+// pipeline registers it in three stages, so no path is longer than a few LUT
+// levels at a 250 MHz clock:
+//   stage 0  mask_q       registered mask for the current last_served
+//   stage 1  g_*          per group: any request, lowest requesting channel
+//   stage 2  m_*, f_*     lowest requesting channel, masked and full
+//   stage 3  grant_*      the grant
+// grant_chn/grant_vld therefore follow req a few cycles late. The caller must
+// only act on a grant whose channel is still requesting (pl_example checks
+// dma_irq_eligible[grant_chn]), and grant_vld is held low from advance until
+// the pipeline settles on the new last_served before the next grant.
 //
 // Ports:
 //   clk        : system clock (all logic synchronous to rising edge)
@@ -43,77 +52,95 @@ module rr_arbiter_128 (
     output logic         grant_vld   // 1 = grant_chn is valid
 );
 
+    localparam int HOLD = 3;  // cycles grant_vld stays low after advance (pipeline depth after last_served)
+
     // ----------------------------------------------------------------
     // State
     // ----------------------------------------------------------------
     logic [6:0] last_served;
+    logic [2:0] hold;
 
-    // ----------------------------------------------------------------
-    // Mask: allow only channels strictly after last_served
-    //   mask[i] = 1  when i > last_served
-    // ----------------------------------------------------------------
-    logic [127:0] mask;
-
-    always_comb begin
-        for (int i = 0; i < 128; i++)
-            mask[i] = (7'(i) > last_served);
+    always_ff @(posedge clk) begin
+        if (!reset_n) begin
+            last_served <= 7'd127;
+            hold        <= 3'(HOLD);
+        end else if (advance) begin
+            last_served <= served_chn;
+            hold        <= 3'(HOLD);
+        end else if (hold != 3'd0) begin
+            hold        <= hold - 3'd1;
+        end
     end
 
     // ----------------------------------------------------------------
-    // Masked request: only post-last_served channels
+    // Stage 0: mask, allowing only channels strictly after last_served
+    //   mask_q[i] = 1  when i > last_served
     // ----------------------------------------------------------------
-    logic [127:0] masked_req;
-    logic         masked_any;
+    logic [127:0] mask_q;
 
-    assign masked_req = req & mask;
-    assign masked_any = |masked_req;
-
-    // ----------------------------------------------------------------
-    // Isolate lowest set bit using two's-complement negation:
-    //   x & (-x)  ==  x & (~x + 1)
-    // sel_masked: lowest requesting channel after last_served
-    // sel_full  : lowest requesting channel across all 128 (wrap fallback)
-    // ----------------------------------------------------------------
-    logic [127:0] sel_masked;
-    logic [127:0] sel_full;
-    logic [127:0] sel;
-
-    assign sel_masked = masked_req & (~masked_req + 128'd1);
-    assign sel_full   = req        & (~req        + 128'd1);
-
-    // prefer masked window; fall back to wrap-around
-    assign sel = masked_any ? sel_masked : sel_full;
-
-    // ----------------------------------------------------------------
-    // Output: grant valid if any request is pending
-    // ----------------------------------------------------------------
-    assign grant_vld = |req;
-
-    // ----------------------------------------------------------------
-    // One-hot to binary encoder
-    // sel has exactly one bit set (by construction); the loop assigns
-    // grant_chn for every set bit — with only one bit set the last
-    // (and only) assignment is the correct channel number.
-    // ----------------------------------------------------------------
-    always_comb begin
-        grant_chn = 7'h0;
+    always_ff @(posedge clk) begin
         for (int i = 0; i < 128; i++)
-            if (sel[i]) grant_chn = 7'(i);
+            mask_q[i] <= (7'(i) > last_served);
     end
 
     // ----------------------------------------------------------------
-    // Track the last served channel.
-    // Use served_chn (caller's registered chn_num) rather than the
-    // combinatorial grant_chn, which may have shifted to a newly-arrived
-    // lower-indexed channel by the time advance is asserted.
-    // Reset to 127 so the first masked scan finds nothing and falls
-    // back to the full vector, effectively starting at channel 0.
+    // Lowest requesting channel of an 8-channel group: {any, index}
+    // ----------------------------------------------------------------
+    function automatic logic [3:0] ffs8(input logic [7:0] v);
+        ffs8 = 4'b0;
+        for (int i = 7; i >= 0; i--)
+            if (v[i]) ffs8 = {1'b1, 3'(i)};
+    endfunction
+
+    // ----------------------------------------------------------------
+    // Stage 1: per group of 8, any request and the lowest one, for the
+    // masked requests and for all of them
+    // ----------------------------------------------------------------
+    logic [15:0] m_gany_q, f_gany_q;
+    logic [2:0]  m_gidx_q [16];
+    logic [2:0]  f_gidx_q [16];
+
+    always_ff @(posedge clk) begin
+        for (int g = 0; g < 16; g++) begin
+            {m_gany_q[g], m_gidx_q[g]} <= ffs8(req[g*8 +: 8] & mask_q[g*8 +: 8]);
+            {f_gany_q[g], f_gidx_q[g]} <= ffs8(req[g*8 +: 8]);
+        end
+    end
+
+    // ----------------------------------------------------------------
+    // Stage 2: lowest requesting group, then its lowest channel
+    // ----------------------------------------------------------------
+    logic       m_vld_q, f_vld_q;
+    logic [6:0] m_idx_q, f_idx_q;
+    logic       m_vld_d, f_vld_d;
+    logic [6:0] m_idx_d, f_idx_d;
+
+    always_comb begin
+        m_vld_d = 1'b0;
+        m_idx_d = 7'd0;
+        f_vld_d = 1'b0;
+        f_idx_d = 7'd0;
+        for (int g = 15; g >= 0; g--) begin
+            if (m_gany_q[g]) begin m_vld_d = 1'b1; m_idx_d = {4'(g), m_gidx_q[g]}; end
+            if (f_gany_q[g]) begin f_vld_d = 1'b1; f_idx_d = {4'(g), f_gidx_q[g]}; end
+        end
+    end
+
+    always_ff @(posedge clk) begin
+        m_vld_q <= m_vld_d;
+        m_idx_q <= m_idx_d;
+        f_vld_q <= f_vld_d;
+        f_idx_q <= f_idx_d;
+    end
+
+    // ----------------------------------------------------------------
+    // Stage 3: prefer the masked window; fall back to wrap-around.
+    // Valid if any request is pending, once the pipeline has settled after
+    // the last advance.
     // ----------------------------------------------------------------
     always_ff @(posedge clk) begin
-        if (!reset_n)
-            last_served <= 7'd127;
-        else if (advance)
-            last_served <= served_chn;
+        grant_chn <= m_vld_q ? m_idx_q : f_idx_q;
+        grant_vld <= f_vld_q && (hold == 3'd0) && !advance;
     end
 
 endmodule
